@@ -284,6 +284,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-segment[aria-pressed="true"] {
+  border-block-end-color: var(--pop) !important;
   border-end-start-radius: 0 !important;
   border-end-end-radius: 0 !important;
   box-shadow: var(--ink-bar-bottom) !important;

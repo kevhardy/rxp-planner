@@ -305,6 +305,7 @@ describe("each primitive", () => {
     ["Segment", "press", "background", "var(--press)"],
     ["On segment", "rest", "background", "var(--selection)"],
     ["On segment", "press", "background", "var(--press)"],
+    ["On segment", "rest", "border-block-end-color", "var(--pop)"],
     ["On segment", "rest", "border-end-start-radius", "0"],
     ["On segment", "rest", "border-end-end-radius", "0"],
     ["On segment", "rest", "box-shadow", "var(--ink-bar-bottom)"],
