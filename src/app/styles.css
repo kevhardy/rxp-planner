@@ -1977,6 +1977,10 @@ label {
   background-position: 0 0;
 }
 
+.guide-icon:not(.vector, .missing) {
+  box-shadow: var(--ring-guide-sprite);
+}
+
 .guide-icon.missing {
   background-image: var(--guide-icon-outline);
   background-size: 100% 100%;

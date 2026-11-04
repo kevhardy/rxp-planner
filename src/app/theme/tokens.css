@@ -26,11 +26,11 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* A vector guide icon is a pale fill in a thin dark outline, which a pale
-     page washes out. A half-pixel rim in the 3:1 border color holds its edge
-     at the weight of the line icons beside it, where a rim in --text reads
-     heavier. */
-  --ring-guide-icon: drop-shadow(0 0 0.5px var(--control-border));
+  /* With no rim, a vector icon's pale fill reads as a filled shape lighter
+     than the page, as in dark mode. A rim around the icon's own dark outline
+     thickens it into a frame and dulls the yellow quest marks. */
+  --ring-guide-icon: none;
+  --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
   --press: #d7e1ed;
@@ -117,10 +117,13 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* Dimming keeps a white fill, such as the speech bubble, quieter than the
-     text beside it. A rim in the darkest surface gives a dark icon, such as
-     the book, an edge, where a pale rim reads as a second outline. Two
-     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
-  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
+     text beside it. A mid-tone rim gives a dark icon, such as the book or a
+     dark spell sprite, an edge on the dark surface, where a pale rim reads as
+     a second outline around a white fill. Two half-pixel shadows stay crisp,
+     where one 1px shadow blurs into a halo. */
+  --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
+  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
   --press: #1e2c3f;
