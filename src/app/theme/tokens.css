@@ -10,6 +10,8 @@
   --raised: #fff;
   --hover: #e3e9f1;
   --line: #c3ccd7;
+  /* A divider inside a float on --raised. */
+  --raised-line: var(--line);
   --control-border: #6d7a8b;
   --text: #17202b;
   --muted: #4c5868;
@@ -91,6 +93,9 @@
   --raised: #323d4b;
   --hover: #29323d;
   --line: #364252;
+  /* --line all but vanishes on the dark --raised, so this mix brings a
+     divider there to the contrast of the light one. */
+  --raised-line: color-mix(in srgb, var(--text) 15%, var(--line));
   --control-border: #7e8da4;
   --text: #e3e8ee;
   --muted: #aab6c5;

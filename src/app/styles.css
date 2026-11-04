@@ -2616,7 +2616,7 @@ legend {
 .warn-guide + .warn-guide {
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--raised-line);
 }
 
 .warn-kind + .warn-kind {
