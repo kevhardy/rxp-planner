@@ -2414,7 +2414,7 @@ legend {
   grid-column: span var(--span);
 }
 
-/* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 13 Mono characters of 8px each where glyph widths round to whole pixels, 17px for the picker, and 18px of padding and border. */
+/* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 78px of Plex Sans at the body size, 17px for the picker, and 18px of padding and border. */
 @container (width < 759px) {
   :is(.command-form, .tag-checks, .tag-values) > *,
   .arg-run > * {
