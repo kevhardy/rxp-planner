@@ -368,6 +368,43 @@ describe("MapCanvas", () => {
     ]);
   });
 
+  it("draws a casing under every shape for each cased shape, and none for the others", () => {
+    const at = (x: number, y: number): ViewPoint => ({ x, y });
+    render(
+      <MapCanvas
+        mapView={mapView}
+        aspect={1}
+        maxZoom={() => 40}
+        scene={() => null}
+        pins={[]}
+        shapes={[
+          { key: "a", points: [at(10, 10), at(20, 20)], closed: false, className: "route upcoming", fade: 0.5, cased: true },
+          { key: "b", points: [at(30, 30), at(40, 40), at(30, 40)], closed: true, className: "route selected", cased: true },
+          { key: "c", points: [at(50, 50), at(60, 60)], closed: false, className: "rxp-line selected" },
+        ]}
+        areas={[]}
+        spawns={[]}
+        label="Map"
+        describe={() => ""}
+        menu={() => undefined}
+        view={{ fit: { x: 50, y: 50, width: 100 } }}
+      />,
+    );
+    const drawn = [...document.querySelectorAll(".map-overlay svg > :is(polyline, polygon)")].map((s) => [
+      s.tagName,
+      s.getAttribute("class"),
+      s.getAttribute("points"),
+      s.getAttribute("opacity"),
+    ]);
+    expect(drawn).toEqual([
+      ["polyline", "route upcoming casing", "10,10 20,20", "0.5"],
+      ["polygon", "route selected casing", "30,30 40,40 30,40", null],
+      ["polyline", "route upcoming", "10,10 20,20", "0.5"],
+      ["polygon", "route selected", "30,30 40,40 30,40", null],
+      ["polyline", "rxp-line selected", "50,50 60,60", null],
+    ]);
+  });
+
   it("leaves every button in the marks' layer out of the press look, and presses the map's own controls", () => {
     render(
       <MapCanvas

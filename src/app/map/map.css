@@ -455,6 +455,11 @@
   stroke: var(--step-upcoming);
 }
 
+.map-overlay svg .casing {
+  stroke: var(--art-shade);
+  stroke-width: 4.5px;
+}
+
 .pin {
   display: grid;
   place-items: center;
@@ -559,6 +564,11 @@
 .pin-upcoming:hover:not(:disabled) {
   background: var(--step-upcoming);
   color: var(--art-ink);
+}
+
+/* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
+.pin-upcoming {
+  opacity: calc(0.5 + var(--fade, 1) * 0.5);
 }
 
 .pin-start,

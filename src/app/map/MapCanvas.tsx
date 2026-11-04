@@ -79,6 +79,8 @@ export interface Shape {
   closed: boolean;
   className: string;
   fade?: number;
+  /** Draws a dark edge under the line, beneath every shape. */
+  cased?: boolean;
 }
 
 export interface Spawn {
@@ -208,6 +210,10 @@ export function MapCanvas(props: {
   );
   const menu = opened?.menu ?? (opened?.at ? props.menu(opened.at, pxPerPercent) : pins.find((p) => p.key === opened?.pin)?.menu);
   const polyline = (points: ViewPoint[]) => points.map((p) => `${p.x},${p.y}`).join(" ");
+  const outline = (s: Shape, className: string, key: string) => {
+    const Line = s.closed ? "polygon" : "polyline";
+    return <Line key={key} className={className} opacity={s.fade} points={polyline(s.points)} />;
+  };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
   const [paths, shared] = useMemo(
     () => [props.spawns.filter((s) => s.colors.length === 1), props.spawns.filter((s) => s.colors.length > 1)],
@@ -241,13 +247,8 @@ export function MapCanvas(props: {
             <span key={s.key} className="spawn" style={{ "--at-x": `${s.at.x}%`, "--at-y": `${s.at.y}%`, "--fill": slices(s.colors) }} />
           ))}
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {shapes.map((s) =>
-              s.closed ? (
-                <polygon key={s.key} className={s.className} opacity={s.fade} points={polyline(s.points)} />
-              ) : (
-                <polyline key={s.key} className={s.className} opacity={s.fade} points={polyline(s.points)} />
-              ),
-            )}
+            {shapes.filter((s) => s.cased).map((s) => outline(s, `${s.className} casing`, `casing:${s.key}`))}
+            {shapes.map((s) => outline(s, s.className, s.key))}
           </svg>
           {pins.map((pin) => {
             const at = moving?.key === pin.key ? moving.at : pin.at;
