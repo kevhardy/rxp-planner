@@ -156,12 +156,13 @@
   flex: none;
   flex-direction: column;
   gap: var(--space-1);
-  width: 52px;
+  /* Holds a clock as long as "1:02:03", seven mono figures of 0.6em. */
+  width: 56px;
   padding: 2px 0;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-align: right;
 }
 
