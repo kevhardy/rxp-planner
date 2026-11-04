@@ -2016,6 +2016,10 @@ label {
   background-position: center;
 }
 
+.guide-icon.vector.pale {
+  filter: var(--ring-guide-icon-pale);
+}
+
 .guide-icon:not(.vector, .missing) {
   box-shadow: var(--ring-guide-sprite);
 }
