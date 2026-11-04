@@ -480,6 +480,19 @@ describe("Checkbox", () => {
     expect([box.indeterminate, cascade(box.nextElementSibling!, "visibility")?.value]).toEqual([true, "visible"]);
   });
 
+  it("fills an unchecked box like a text field", () => {
+    render(
+      <>
+        <Checkbox aria-label="Off" checked={false} onChange={() => {}} />
+        <Input aria-label="Name" />
+      </>,
+    );
+    const fills = [screen.getByRole("checkbox", { name: "Off" }), screen.getByRole("textbox", { name: "Name" })].map(
+      (field) => cascade(field, "background")?.value,
+    );
+    expect(fills).toEqual(["var(--field)", "var(--field)"]);
+  });
+
   it("keeps the disabled border while it is checked", () => {
     render(<Checkbox aria-label="Hidden" checked disabled onChange={() => {}} />);
     expect(cascade(screen.getByRole("checkbox", { name: "Hidden" }), "border-color")?.value).toBe("var(--disabled-fg)");
