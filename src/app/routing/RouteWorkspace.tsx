@@ -870,7 +870,7 @@ export function RouteWorkspace(props: {
           <NewLegsMenu leg={newLegs} onChange={changeNewLegs} />
           {zones.length > 0 && (
             <Described text="Show the routing zone edges">
-              <Button variant="ghost" size={28} className="zone-borders-toggle" pressed={borders} onClick={() => setBorders(!borders)}>
+              <Button variant="ghost" size={28} pressed={borders} onClick={() => setBorders(!borders)}>
                 Zone borders
               </Button>
             </Described>
