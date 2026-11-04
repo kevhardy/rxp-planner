@@ -69,6 +69,10 @@ const VECTOR_ICONS: ReadonlyMap<GuideIconKey, string> = new Map([
   [textureKey("interface/cursor/crosshair/interact")!, interact],
 ]);
 
+// The white speech bubbles outshine the text beside them on a dark page, where
+// the colored marks do not.
+const PALE_VECTORS: ReadonlySet<string> = new Set([talk, gossip, emote]);
+
 const vectorsByCatalog = new WeakMap<GuideIconCatalog, Map<GuideIconEntry, string>>();
 
 function vectorByCatalogEntry(catalog: GuideIconCatalog) {
@@ -113,7 +117,12 @@ export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | Guide
   if (size.width > 0 && size.height > 0) box["--icon-ratio"] = String(size.width / size.height);
   const entry = typeof icon === "string" ? catalog.get(icon) : icon;
   const vector = (typeof icon === "string" ? VECTOR_ICONS.get(icon) : undefined) ?? (entry && vectorByCatalogEntry(catalog).get(entry));
-  if (vector) return { className: "guide-icon vector", vars: { ...box, "--icon-url": `url("${vector}")` }, drawn: true };
+  if (vector)
+    return {
+      className: PALE_VECTORS.has(vector) ? "guide-icon vector pale" : "guide-icon vector",
+      vars: { ...box, "--icon-url": `url("${vector}")` },
+      drawn: true,
+    };
   if (!entry) return { className: "guide-icon missing", vars: box, drawn: false };
   const { cell } = entry;
   const vars = {

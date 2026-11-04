@@ -850,12 +850,11 @@ label {
   --segment-pressed-fill: var(--raised);
 }
 
-.topbar .popover {
-  top: calc(100% + 8px + var(--ruler-band));
-}
-
-.topbar .split-menu {
-  top: calc(100% + 6px + var(--ruler-band));
+/* The top bar's controls end 6.5px above the ruler band. 4px more leaves a
+   4px gap below the guide strip's top edge, so a float's edge clears it. */
+.topbar :is(.popover, .split-menu) {
+  top: calc(100% + 10.5px + var(--ruler-band));
+  outline: 1px solid var(--float-edge);
 }
 
 .brand {
@@ -1088,6 +1087,7 @@ label {
 
 .lib-toggle > .count {
   margin-left: auto;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Where the pointer can hover, a group's actions share the toggle's cell, so at
@@ -1153,6 +1153,10 @@ label {
   margin-top: var(--space-2);
   padding-top: var(--space-2);
   border-top: 1px solid var(--line);
+}
+
+.lib-toggle:is(.depth-1, .depth-2) {
+  font-weight: var(--font-weight-medium);
 }
 
 .lib-toggle.depth-1 {
@@ -1887,15 +1891,15 @@ label {
   padding-inline: var(--space-1);
 }
 
-/* A rule sets the Clear action apart from the colors, and wraps with it. */
+/* The last color holds Clear and its rule on its line, so a wrap never
+   starts a line with the rule. */
 .rxp-clear {
   display: flex;
   align-items: center;
   gap: var(--space-1);
 }
 
-.rxp-clear::before {
-  content: "";
+.rxp-clear-rule {
   width: 1px;
   height: var(--line-height-caption);
   background: var(--line);
@@ -2014,6 +2018,10 @@ label {
   background-image: var(--icon-url);
   background-size: 87.5% 87.5%;
   background-position: center;
+}
+
+.guide-icon.vector.pale {
+  filter: var(--ring-guide-icon-pale);
 }
 
 .guide-icon:not(.vector, .missing) {
@@ -2629,14 +2637,10 @@ legend {
   color: inherit;
 }
 
-/* The top bar's popover offset ends 1.5px below the guide strip's top edge.
-   2.5px more leaves a 4px gap, so the popover's ring clears that edge. */
 .warnings.popover {
-  top: calc(100% + 8px + var(--ruler-band) + 2.5px);
   width: min(620px, 100vw - 16px);
   max-height: calc(100vh - 78px);
   padding: 0;
-  outline: 1px solid var(--float-edge);
 }
 
 .warnings.popover:not([hidden]) {

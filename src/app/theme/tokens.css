@@ -30,6 +30,7 @@
      than the page, as in dark mode. A rim around the icon's own dark outline
      thickens it into a frame and dulls the yellow quest marks. */
   --ring-guide-icon: none;
+  --ring-guide-icon-pale: none;
   --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
@@ -101,7 +102,7 @@
   --topbar: #2d3643;
   --bg: #161b22;
   --surface: #212933;
-  --pane-head: #2a3340;
+  --pane-head: #2d3644;
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
   --raised: #36414f;
@@ -123,12 +124,14 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* Dimming keeps a white fill, such as the speech bubble, quieter than the
-     text beside it. A mid-tone rim gives a dark icon, such as the book or a
-     dark spell sprite, an edge on the dark surface, where a pale rim reads as
-     a second outline around a white fill. Two half-pixel shadows stay crisp,
-     where one 1px shadow blurs into a halo. */
+     text beside it. The same dimming turns yellow and red marks brown, so
+     colored icons keep their full color. A mid-tone rim gives a dark icon,
+     such as the book or a dark spell sprite, an edge on the dark surface,
+     where a pale rim reads as a second outline around a white fill. Two
+     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
-  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon-pale: brightness(0.8) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
