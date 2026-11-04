@@ -17,6 +17,9 @@
   --text: #17202b;
   --muted: #4c5868;
   --map-backdrop: #2e3844;
+  /* Halfway to --surface, so an empty map does not draw the eye as the
+     darkest block on the page. */
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -87,11 +90,13 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --topbar: #303a48;
+  --topbar: #2d3643;
   --bg: #161b22;
   --surface: #212933;
   --pane-head: #2a3340;
-  --raised: #323d4b;
+  /* As light as --control-border allows at 3:1, so a secondary button on the
+     top bar reads as a control. */
+  --raised: #36414f;
   /* Darker than every surface it sits on, so a field reads as a well, even
      in a float on --raised. */
   --field: #1c232c;
@@ -104,6 +109,7 @@
   --text: #e3e8ee;
   --muted: #aab6c5;
   --map-backdrop: #11161c;
+  --map-empty: var(--bg);
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -212,7 +218,12 @@
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
-  --ring-pressed: inset 0 0 0 1px var(--accent);
+  /* A wash over the element's own fill, so a pressed toggle reads as on
+     against whatever surface it sits on. */
+  --pressed-wash: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* The second shadow is the wash: a spread wider than any control fills the
+     whole padding box. */
+  --ring-pressed: inset 0 0 0 1px var(--accent), inset 0 0 0 100vmax var(--pressed-wash);
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
 

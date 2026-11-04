@@ -279,14 +279,13 @@ describe("each primitive", () => {
     ["Pressed", "rest", "box-shadow", "var(--ring-pressed)"],
     ["Pressed", "press", "background", "var(--press)"],
     ["Pressed", "rest", "color", "var(--text)"],
-    ["Open", "rest", "border-color", "transparent"],
-    ["Open", "rest", "border-end-start-radius", "0"],
-    ["Open", "rest", "border-end-end-radius", "0"],
-    ["Open", "rest", "box-shadow", "var(--ink-bar-open)"],
+    ["Open", "rest", "border-color", "var(--accent)"],
+    ["Open", "rest", "box-shadow", "var(--ring-pressed)"],
     ["Open", "rest", "color", "var(--text)"],
-    ["Open", "rest", "background", "var(--selection)"],
     ["Open", "press", "background", "var(--press)"],
-    ["Open primary", "rest", "background", "var(--selection)"],
+    ["Open primary", "rest", "box-shadow", "var(--ring-pressed)"],
+    ["Open primary", "rest", "background", "var(--raised)"],
+    ["Open primary", "hover", "background", "var(--raised)"],
     ["Open primary", "press", "background", "var(--press)"],
     ["Closed primary", "press", "background", "var(--primary-press)"],
     ["Disabled", "rest", "border-color", "var(--disabled-fg)"],
@@ -306,6 +305,7 @@ describe("each primitive", () => {
     ["Segment", "press", "background", "var(--press)"],
     ["On segment", "rest", "background", "var(--selection)"],
     ["On segment", "press", "background", "var(--press)"],
+    ["On segment", "rest", "border-block-end-color", "var(--pop)"],
     ["On segment", "rest", "border-end-start-radius", "0"],
     ["On segment", "rest", "border-end-end-radius", "0"],
     ["On segment", "rest", "box-shadow", "var(--ink-bar-bottom)"],
@@ -478,6 +478,19 @@ describe("Checkbox", () => {
     render(<Checkbox aria-label="Import all" checked={false} indeterminate onChange={() => {}} />);
     const box = screen.getByRole<HTMLInputElement>("checkbox", { name: "Import all" });
     expect([box.indeterminate, cascade(box.nextElementSibling!, "visibility")?.value]).toEqual([true, "visible"]);
+  });
+
+  it("fills an unchecked box like a text field", () => {
+    render(
+      <>
+        <Checkbox aria-label="Off" checked={false} onChange={() => {}} />
+        <Input aria-label="Name" />
+      </>,
+    );
+    const fills = [screen.getByRole("checkbox", { name: "Off" }), screen.getByRole("textbox", { name: "Name" })].map(
+      (field) => cascade(field, "background")?.value,
+    );
+    expect(fills).toEqual(["var(--field)", "var(--field)"]);
   });
 
   it("keeps the disabled border while it is checked", () => {

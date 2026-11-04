@@ -827,8 +827,8 @@ label {
   stroke: var(--control-border);
 }
 
-/* Library opens a pane, not a popover, so it reads as a pressed toggle and
-   leaves the underline to the current mode. */
+/* Library opens a pane, not a popover, so it is not a popover trigger and
+   takes the pressed look here. */
 .library-toggle[aria-expanded="true"] {
   border-color: var(--accent);
   box-shadow: var(--ring-pressed);
@@ -1888,11 +1888,11 @@ label {
 .rxp-text {
   flex: 1;
   min-width: 70px;
-  min-height: var(--control-small);
-  padding: 1px var(--space-2);
+  min-height: var(--control-field);
+  padding: calc(var(--space-1) - 1px) var(--space-2);
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--raised);
+  background: var(--field);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   white-space: pre-wrap;

@@ -19,12 +19,17 @@ const on = (fgs: string[], bgs: string[], min: number) => fgs.flatMap((fg) => bg
 const PAIRS: Pair[] = [
   ...on(["text", "muted"], ["topbar", "bg", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
   ["placeholder", "field", 4.5],
+  ...on(["text", "muted"], ["map-empty"], 4.5),
   ["text", "field", 4.5],
   ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
   ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
   ...on(["pop", "accent"], ["surface", "selection"], 3),
   ...on(["accent"], ["topbar", "pane-head", "raised", "hover"], 3),
+  ...["topbar", "pane-head", "surface", "raised", "hover"].flatMap((ground): Pair[] => [
+    ["text", "pressed-wash", 4.5, { ground: `var(--${ground})` }],
+    ["accent", "pressed-wash", 3, { ground: `var(--${ground})` }],
+  ]),
   ["pop-fg", "pop-ink", 4.5],
   ...on(
     KINDS.map((kind) => `kind-${kind}`),
@@ -127,10 +132,11 @@ function color(theme: Theme, name: string, element: Record<string, string> = {})
   if (value === undefined) throw new Error(`No token --${name}`);
   const alias = /^var\(--([\w-]+)\)$/.exec(value);
   if (alias) return color(theme, alias[1]!, element);
-  // color-mix in srgb mixes the encoded channels, not linear light.
-  const mix = /^color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, var\(--([\w-]+)\)\)$/.exec(value);
+  // color-mix in srgb mixes the encoded channels, not linear light. A mix with transparent is a wash, which
+  // the element's `ground` shows through.
+  const mix = /^color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, (?:var\(--([\w-]+)\)|transparent)\)$/.exec(value);
   if (mix) {
-    const [a, b, share] = [color(theme, mix[1]!, element), color(theme, mix[3]!, element), Number(mix[2]) / 100];
+    const [a, b, share] = [color(theme, mix[1]!, element), color(theme, mix[3] ?? "ground", element), Number(mix[2]) / 100];
     return [0, 1, 2].map((i) => Math.round(a[i]! * share + b[i]! * (1 - share))) as Rgb;
   }
   const hex = /^#([\da-f]{3}|[\da-f]{6})$/i.exec(value)?.[1];
