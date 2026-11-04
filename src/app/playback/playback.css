@@ -571,7 +571,7 @@
   flex-direction: column;
   min-width: 0;
   max-width: 240px;
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
 }
@@ -586,7 +586,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--muted);
+  color: var(--label);
 }
 
 .estimate-swatch {

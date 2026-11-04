@@ -116,7 +116,7 @@ a {
 }
 
 .count {
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
@@ -1550,9 +1550,9 @@ label {
 
 .step-footer {
   margin-top: 1px;
-  color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  color: var(--label);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .foot-text {
@@ -2607,6 +2607,11 @@ legend {
 
 .warn-item[aria-disabled] {
   cursor: progress;
+}
+
+.warn-place,
+.warn-place > .muted {
+  color: var(--label);
 }
 
 .warn-place {
