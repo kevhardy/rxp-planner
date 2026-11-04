@@ -1515,8 +1515,8 @@ label {
 }
 
 .step-notes {
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-note);
+  line-height: var(--line-height-note);
 }
 
 .step-does .row-text,
@@ -1535,8 +1535,16 @@ label {
   flex-direction: column;
   gap: 1px;
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-note);
+  line-height: var(--line-height-note);
+}
+
+/* Mono runs wider and heavier than the place name before it. Tabular
+   figures keep a coordinate's width steady as its digits change. */
+.step-where .ui-mono,
+.outline-summary .ui-mono {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
 }
 
 .where-mark {

@@ -64,8 +64,8 @@
   border: 1px solid transparent;
   border-radius: var(--radius-control);
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   font-weight: var(--font-weight-regular);
   white-space: nowrap;
 }
