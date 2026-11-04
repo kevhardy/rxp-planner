@@ -2336,9 +2336,10 @@ legend {
   opacity: 1;
 }
 
+/* The start margin leaves room for the button's padding and border, so its text sits on the rows' 16px text edge. */
 .outline-add {
   display: block;
-  margin: var(--space-2) var(--space-3) 0;
+  margin: var(--space-2) var(--space-3) 0 calc(var(--space-4) - var(--space-2) - 1px);
 }
 
 .outline-gap .popover,
