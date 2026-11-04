@@ -160,16 +160,19 @@
   font-weight: var(--font-weight-regular);
 }
 
+/* The manifest gives each sprite's offset and sheet width in pixels at a
+   24px icon. */
 .map-icon {
+  --size: 20px;
   display: inline-block;
   flex: none;
   width: var(--size);
   height: var(--size);
   border-radius: var(--radius-round);
   background-image: var(--image);
-  background-position: var(--image-x) var(--image-y);
+  background-position: calc(var(--image-x) * var(--size) / 24) calc(var(--image-y) * var(--size) / 24);
   background-repeat: no-repeat;
-  background-size: var(--image-w) auto;
+  background-size: calc(var(--image-w) * var(--size) / 24) auto;
 }
 
 .map-overlay .poi {
@@ -178,8 +181,15 @@
 }
 
 .map-overlay .poi-icon {
-  background-color: var(--art-ink);
+  background-color: var(--map-icon-backing);
   box-shadow: var(--art-icon-halo);
+}
+
+/* A city holds many plain points, so they draw a step smaller than the
+   guide's own marks. */
+.map-overlay .poi:not(.marked, :focus-visible) .poi-icon,
+.map-overlay .poi-row:not(:focus-visible) .poi-icon:not(.marked) {
+  --size: 16px;
 }
 
 .map-overlay .poi .poi-icon {
@@ -238,7 +248,7 @@
   position: absolute;
   top: var(--at-y);
   left: var(--at-x);
-  translate: -10px -50%;
+  translate: -8px -50%;
   pointer-events: auto;
 }
 
@@ -1072,6 +1082,19 @@
   color: var(--text);
 }
 
+.legend-row[aria-pressed="false"] .legend-name,
+.legend-filter[aria-pressed="false"] .legend-name,
+.legend-step.off .legend-name {
+  color: var(--muted);
+}
+
+/* A filter's dimmed icon shows how the map draws its marks, whatever the
+   filter's state. */
+.legend-row[aria-pressed="false"] > .map-icon:not(.dim),
+.legend-step.off > .step-swatch {
+  opacity: 0.6;
+}
+
 .legend-row .map-icon {
   background-color: var(--art-ink);
   box-shadow: var(--ring-control);
@@ -1456,6 +1479,7 @@
 
 .map-overlay .poi.marked .poi-icon,
 .map-overlay .poi-row .poi-icon.marked {
+  background-color: var(--art-ink);
   box-shadow: var(--art-icon-halo-marked);
 }
 
