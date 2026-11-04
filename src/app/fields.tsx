@@ -406,6 +406,7 @@ export function ConditionEditor(props: {
         />
         {props.compact && (
           <IconButton
+            size={28}
             icon="sliders"
             label={`${open ? "Hide" : "Show"} ${props.label.toLowerCase()} filters`}
             description="Condition filters"

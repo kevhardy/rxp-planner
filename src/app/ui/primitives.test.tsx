@@ -161,6 +161,9 @@ describe("each primitive", () => {
         <Button variant="ghost">Ghost</Button>
         <Button variant="primary">Primary</Button>
         <Button variant="danger">Danger</Button>
+        <Button variant="secondary" size={28}>
+          Field height
+        </Button>
         <Button variant="secondary" size={32}>
           Large
         </Button>
@@ -177,6 +180,7 @@ describe("each primitive", () => {
           Disabled ghost
         </Button>
         <IconButton icon="x" label="Icon" />
+        <IconButton icon="x" label="Field height icon" size={28} />
         <IconButton icon="x" label="Large icon" size={32} />
         <IconButton icon="plus" label="Open" popoverOpen />
         <IconButton icon="plus" label="Open primary" variant="primary" popoverOpen />
@@ -232,10 +236,12 @@ describe("each primitive", () => {
   const ROWS: Array<[name: string, look: keyof typeof LOOKS, property: string, value: string]> = [
     ["Secondary", "rest", "height", small],
     ["Secondary", "rest", "min-width", small],
+    ["Field height", "rest", "height", "var(--control-field)"],
     ["Large", "rest", "height", large],
     ["Wrap", "rest", "height", "auto"],
     ["Wrap", "rest", "min-height", small],
     ["Icon", "rest", "width", small],
+    ["Field height icon", "rest", "width", "var(--control-field)"],
     ["Large icon", "rest", "width", large],
     ["Segment", "rest", "height", small],
     ["Segment", "rest", "min-width", small],

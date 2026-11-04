@@ -234,7 +234,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
                   description="The NPC killed."
                   onCommit={(id) => (id === undefined ? "Extra kills need a mob." : set(line, "mob", id))}
                 />
-                <Button variant="secondary" onClick={() => remove(line)}>
+                <Button variant="secondary" size={28} onClick={() => remove(line)}>
                   Remove
                 </Button>
               </div>
@@ -257,7 +257,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
             description="The NPC killed."
             onCommit={(id) => stage(setMob, id === undefined ? "" : String(id))}
           />
-          <Button variant="secondary" onClick={add}>
+          <Button variant="secondary" size={28} onClick={add}>
             Add
           </Button>
         </div>

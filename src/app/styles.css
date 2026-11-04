@@ -2168,16 +2168,6 @@ label {
   margin-top: calc(var(--space-4) + var(--space-1));
 }
 
-:is(.sim-kill-fields, .add-line, .condition-text) > .ui-button {
-  /* stylelint-disable-next-line declaration-no-important -- The primitive sets its height with !important and has no size for a row of fields. */
-  height: var(--control-field) !important;
-}
-
-:is(.sim-kill-fields, .add-line, .condition-text) > .ui-button[data-icon-only] {
-  /* stylelint-disable-next-line declaration-no-important -- As above, for the width of a square button. */
-  width: var(--control-field) !important;
-}
-
 fieldset {
   margin: var(--space-3) 0 0;
   padding: var(--space-1) var(--space-2) var(--space-2);

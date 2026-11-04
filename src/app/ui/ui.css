@@ -78,6 +78,10 @@
   line-height: var(--line-height-body);
 }
 
+.ui-button[data-size="28"] {
+  height: var(--control-field) !important;
+}
+
 .ui-button[data-wrap] {
   height: auto !important;
   min-height: var(--control-small) !important;
@@ -89,6 +93,10 @@
 .ui-button[data-icon-only] {
   width: var(--control-small) !important;
   padding: 0;
+}
+
+.ui-button[data-icon-only][data-size="28"] {
+  width: var(--control-field) !important;
 }
 
 .ui-button[data-icon-only][data-size="32"] {

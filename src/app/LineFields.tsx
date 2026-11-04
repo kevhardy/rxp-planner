@@ -546,6 +546,7 @@ export function AddLineMenu(props: {
           </Select>
           <Button
             variant="primary"
+            size={28}
             onClick={() => {
               const failed = props.onAdd(LINE_TEMPLATES.find((t) => t.key === key)!.make);
               setError(failed);
