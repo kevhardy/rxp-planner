@@ -1,13 +1,5 @@
 export { worldToMap, mapToWorld, worldToCanvas, canvasToWorld, locateCanvas } from "../../packages/data-contract/geometry.ts";
-export type {
-  WorldBounds,
-  WorldPoint,
-  WorldLocation,
-  WorldFailure,
-  WorldResult,
-  CanvasPoint,
-  CanvasFailure,
-} from "../../packages/data-contract/geometry.ts";
+export type { WorldBounds, WorldPoint, WorldLocation, CanvasPoint } from "../../packages/data-contract/geometry.ts";
 export type { InstanceId, UiMapId, ZoneId } from "../../packages/data-contract/shared.ts";
 import type { WorldLocation } from "../../packages/data-contract/geometry.ts";
 
@@ -85,9 +77,9 @@ export const RXP_ZONE_NAMES = [
   "Zephras Isle",
 ] as const;
 
-export type RxpZoneName = (typeof RXP_ZONE_NAMES)[number];
+type RxpZoneName = (typeof RXP_ZONE_NAMES)[number];
 
-export interface PercentTransform {
+interface PercentTransform {
   xScale: number;
   xOffset: number;
   yScale: number;

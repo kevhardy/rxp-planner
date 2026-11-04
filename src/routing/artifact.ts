@@ -17,7 +17,7 @@ export const COARSE_PATH = "coarse.bin";
 /** Tile [x, y] of the frame, from its origin. */
 export type Tile = [number, number];
 /** Where native pixel [0, 0] is. */
-export interface Frame {
+interface Frame {
   /** The first ADT tile column and row of the map. */
   origin: Tile;
   size: Tile;
@@ -25,7 +25,7 @@ export interface Frame {
   cellsPerTile: 128;
   tileWorldUnits: number;
 }
-export interface TileCoverage {
+interface TileCoverage {
   tile: Tile;
   /** `present` has a tile asset; `missing` has terrain upstream but not here. A tile that is not listed has no ground. */
   state: "present" | "missing";
@@ -37,7 +37,7 @@ export interface Asset {
   sha256: string;
 }
 /** The input files of the floor build, for provenance only. */
-export interface FloorInputs {
+interface FloorInputs {
   dataset: { path: string; sha256: string };
   spawns: { path: string; sha256: string };
   liquidTypes: { path: string; sha256: string };

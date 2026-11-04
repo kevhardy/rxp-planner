@@ -77,7 +77,7 @@ export type Fly = (leg: FlightLeg) => TravelEstimate | undefined | Promise<Trave
  */
 export type Walk = (leg: TravelLeg & { readonly mode: "Run"; readonly toward: Spawn }) => { seconds?: number; way?: string };
 
-export type TravelTarget = Target | { kind: "bind" };
+type TravelTarget = Target | { kind: "bind" };
 
 /**
  * `from` is where the leg starts; the first travel of a route without a start

@@ -64,7 +64,7 @@ export function say(names: RowNames, labels: ReadonlyMap<string, number>): Say {
 
 type Phrase = (a: Args, say: Say) => string;
 
-export interface DoRow {
+interface DoRow {
   role: "do";
   mark: MarkKind | ((a: Args, say: Say) => MarkKind);
   /** Shown when the line has no `>>` text. */
@@ -74,12 +74,12 @@ export interface DoRow {
 }
 
 /** A step check, as a plain phrase. The row does not evaluate it. */
-export interface CheckRow {
+interface CheckRow {
   role: "check";
   phrase: Phrase;
 }
 
-export interface SettingRow {
+interface SettingRow {
   role: "setting";
   phrase: Phrase;
   /** RXP's meaning, for the tooltip. */
@@ -98,7 +98,7 @@ export interface WhereRow {
 }
 
 /** A command whose arguments, or whether it has `>>` text, decide its role. */
-export interface EitherRow {
+interface EitherRow {
   role: "either";
   pick: (a: Args, hasText: boolean) => "do" | "check";
   do: DoRow;

@@ -23,7 +23,7 @@ import { clamp, mapCover, type Frame, type Inset } from "./viewport.ts";
 export type { Fit, Frame } from "./viewport.ts";
 export type { UserMove } from "./view.ts";
 
-export type PinKind =
+type PinKind =
   | "goto"
   | "waypoint"
   | "previous"

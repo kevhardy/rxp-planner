@@ -3,7 +3,7 @@ import { registerArgs, type AddonGuide } from "./addon.ts";
 import { readZip } from "./zip.ts";
 import { splitGuideText } from "./text.ts";
 
-export type ImportSource = { kind: "zip" } | { kind: "lua" } | { kind: "text" };
+type ImportSource = { kind: "zip" } | { kind: "lua" } | { kind: "text" };
 
 /**
  * An imported guide. `registerArgs` holds the group and default arguments of

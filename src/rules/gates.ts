@@ -18,7 +18,7 @@ export interface GateState {
 }
 
 /** What a runtime gate reads. Without `state`, every gate but `.maxlevel` passes. */
-export interface GateContext {
+interface GateContext {
   level: number;
   state: GateState | undefined;
   /** The step index of each `#label`, as `stepLabels` gives it. */

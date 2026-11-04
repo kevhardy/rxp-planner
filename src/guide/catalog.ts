@@ -17,7 +17,7 @@ export interface ArgSpec {
   note?: string;
 }
 
-export type CommandCategory = "quest" | "location" | "npc" | "item" | "spell" | "travel" | "character" | "step";
+type CommandCategory = "quest" | "location" | "npc" | "item" | "spell" | "travel" | "character" | "step";
 
 export interface CommandSpec {
   name: string;
@@ -36,9 +36,9 @@ export interface CommandSpec {
   separator?: "semicolon" | "whole";
 }
 
-export type TagScope = "header" | "step" | "both";
+type TagScope = "header" | "step" | "both";
 
-export type TagValueKind = "flag" | "text" | "number" | "label" | "condition" | "zone";
+type TagValueKind = "flag" | "text" | "number" | "label" | "condition" | "zone";
 
 export interface TagSpec {
   name: string;

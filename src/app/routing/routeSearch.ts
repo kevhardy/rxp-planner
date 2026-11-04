@@ -15,7 +15,7 @@ export type Shown = Omit<SearchKey, "plan"> & { plan: RoutePlan | null };
 
 type Settings = Omit<SearchKey, "mode">;
 
-export type Routed = SearchKey & ({ kind: "routed"; journeys: Journeys } | { kind: "failed" } | { kind: "cancelled" });
+type Routed = SearchKey & ({ kind: "routed"; journeys: Journeys } | { kind: "failed" } | { kind: "cancelled" });
 
 interface Trying {
   mode: string;

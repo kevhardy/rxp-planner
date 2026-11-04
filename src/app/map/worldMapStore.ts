@@ -12,7 +12,7 @@ export interface MapFocusRequest {
 
 export type FocusResult = { kind: "focused" } | { kind: "unavailable"; message: string };
 
-export interface Highlight {
+interface Highlight {
   owner: string;
   key: string;
 }

@@ -32,7 +32,7 @@ export interface Observation {
 }
 
 /** A corridor run's routed result, as the corridor check gives it. */
-export interface Estimate {
+interface Estimate {
   kind: LegResult["kind"];
   /** The best route found so far of a `missing-coverage` or `limit` result. */
   provisional?: true;
@@ -53,14 +53,14 @@ export interface RoutedCorridor {
  * `uncalibrated`: no matching observation. `not-comparable`: matching
  * observations, but the estimate is not a terrain route.
  */
-export type CalibrationStatus = "calibrated" | "uncalibrated" | "not-comparable";
+type CalibrationStatus = "calibrated" | "uncalibrated" | "not-comparable";
 
-export interface ComparedObservation extends Observation {
+interface ComparedObservation extends Observation {
   /** Estimate minus observed, in seconds and in percent of observed. Only for a terrain route. */
   error?: { seconds: number; percent: number };
 }
 
-export interface CalibrationEntry {
+interface CalibrationEntry {
   corridor: string;
   from: Point;
   to: Point;

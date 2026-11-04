@@ -54,7 +54,7 @@ export interface LayoutInput {
   upcomingSteps: StepShow;
 }
 
-export type LaidPin = Omit<Pin, "activate" | "menu" | "move" | "drag"> & {
+type LaidPin = Omit<Pin, "activate" | "menu" | "move" | "drag"> & {
   target: { step: number; line: number | null; drag?: StepPoint | undefined } | { spot: QuestSpot; title: string };
 };
 

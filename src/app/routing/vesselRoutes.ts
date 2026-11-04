@@ -5,7 +5,7 @@ import type { AtlasPaths } from "./lines.ts";
 
 const DOCK_REACH_YARDS = 25;
 
-export interface Hop {
+interface Hop {
   route: WorldMapRoute;
   reversed: boolean;
 }

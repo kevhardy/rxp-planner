@@ -24,14 +24,14 @@ export type MapFocusTarget =
   | { kind: "line"; doc: GuideDocument; at: LinePos }
   | { kind: "feature"; feature: Feature; location: FeatureLocation };
 
-export interface FocusMark {
+interface FocusMark {
   at: ViewPoint;
   label: string;
   pois: readonly WorldMapPoi[];
   place?: WorldMapPlace;
 }
 
-export interface FocusPath {
+interface FocusPath {
   points: readonly ViewPoint[];
   closed: boolean;
 }
