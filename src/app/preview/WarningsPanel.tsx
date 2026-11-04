@@ -84,7 +84,7 @@ export function WarningsPanel() {
     observer.observe(el);
     for (const child of el.children) observer.observe(child);
     return () => observer.disconnect();
-  });
+  }, [open, groups]);
 
   useOutsidePress(open, wrap, () => setOpen(false));
 

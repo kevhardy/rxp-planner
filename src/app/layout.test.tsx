@@ -41,15 +41,20 @@ afterEach(() => {
 
 function measure(height: number): (height: number) => void {
   let body = height;
-  let observed: () => void = () => {};
+  const observers = new Set<() => void>();
   vi.stubGlobal(
     "ResizeObserver",
     class {
+      readonly callback: () => void;
       constructor(callback: () => void) {
-        observed = callback;
+        this.callback = callback;
       }
-      observe() {}
-      disconnect() {}
+      observe() {
+        observers.add(this.callback);
+      }
+      disconnect() {
+        observers.delete(this.callback);
+      }
     },
   );
   vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockImplementation(function (this: HTMLElement) {
@@ -60,7 +65,7 @@ function measure(height: number): (height: number) => void {
   });
   return (next) => {
     body = next;
-    observed();
+    for (const observed of observers) observed();
   };
 }
 
