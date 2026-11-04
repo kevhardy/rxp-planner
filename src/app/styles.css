@@ -5,6 +5,7 @@
 ::placeholder {
   color: var(--muted);
   font-family: var(--font-sans);
+  font-style: italic;
   opacity: 1;
 }
 

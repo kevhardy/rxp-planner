@@ -557,6 +557,7 @@ summary::-webkit-details-marker {
 :is(.ui-input, .ui-textarea)::placeholder {
   color: var(--placeholder);
   font-family: var(--font-sans);
+  font-style: italic;
 }
 
 :is(.ui-input, .ui-textarea):disabled::placeholder {
