@@ -962,6 +962,12 @@ label {
   margin-left: -1px;
 }
 
+/* The disabled look clears the main half's border, so the group draws the outline both halves share. */
+.split:has(.split-main:is(:disabled, [aria-disabled="true"])) {
+  outline: 1px solid var(--control-border);
+  outline-offset: -1px;
+}
+
 .split-menu {
   position: absolute;
   top: calc(100% + 6px);
