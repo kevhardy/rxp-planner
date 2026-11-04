@@ -100,6 +100,7 @@ export function MapLegend(props: {
       key={id}
       name={name}
       icon={categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
+      iconClass={SWATCHES[id]}
       count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
       on={shows(id)}
       onToggle={() => store.setCategories([id], !shows(id))}
@@ -244,6 +245,14 @@ export function MapLegend(props: {
   );
 }
 
+// The map draws these layers as text or lines, not as game icons.
+const SWATCHES: Partial<Record<CategoryId, string>> = {
+  references: "reference-swatch",
+  zones: "label-swatch",
+  landmarks: "label-swatch landmark",
+  routes: "route-swatch",
+};
+
 const LEGEND_ROWS = ".legend-heading, .legend-row, .legend-step, .legend-filter, .legend-body > button";
 
 function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
@@ -291,7 +300,7 @@ function LegendGroup(
 function LegendRow(props: {
   name: string;
   icon: string | undefined;
-  iconClass?: string;
+  iconClass?: string | undefined;
   count: number | undefined;
   on: boolean;
   disabled?: boolean;

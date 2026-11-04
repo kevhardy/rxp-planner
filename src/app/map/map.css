@@ -1044,6 +1044,42 @@
   background-image: conic-gradient(var(--objective-1) 0 33%, var(--objective-2) 0 67%, var(--objective-3) 0);
 }
 
+/* The halo reaches 4.5px past the box, so the whole mark fills the 18px column. */
+.legend-row .reference-swatch {
+  width: 9px;
+  height: 9px;
+  background-color: var(--map-terrain);
+  box-shadow: var(--art-icon-halo-marked);
+}
+
+.legend-row .label-swatch,
+.legend-row .route-swatch {
+  display: grid;
+  place-items: center;
+  background-color: var(--map-terrain);
+  box-shadow: var(--ring-line);
+}
+
+.legend-row .label-swatch::before {
+  content: "Aa";
+  color: var(--map-label);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-micro);
+  text-shadow: var(--art-label-halo);
+}
+
+.legend-row .label-swatch.landmark::before {
+  content: "a";
+  font-weight: var(--font-weight-regular);
+}
+
+.legend-row .route-swatch::before {
+  content: "";
+  width: 14px;
+  border-top: 2px dashed var(--transport-line);
+}
+
 .legend-name {
   flex: 1;
   min-width: 0;
