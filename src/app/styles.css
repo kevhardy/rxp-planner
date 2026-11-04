@@ -2583,6 +2583,12 @@ legend {
   color: var(--pop-ink);
 }
 
+/* The open trigger keeps the alert color it has when closed, and takes only
+   the border and wash of an open toggle. */
+.warnings-menu .ui-button[aria-expanded="true"] .warnings-total.warn svg {
+  color: inherit;
+}
+
 .warnings.popover {
   width: min(600px, 100vw - 16px);
   max-height: calc(100vh - 76px);

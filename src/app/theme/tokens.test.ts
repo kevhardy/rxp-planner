@@ -23,7 +23,8 @@ const PAIRS: Pair[] = [
   ["text", "field", 4.5],
   ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
-  ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
+  ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),
+  ["pop-ink", "pressed-wash", 4.5, { ground: "var(--topbar)" }],
   ...on(["pop", "accent"], ["surface", "selection"], 3),
   ...on(["accent"], ["topbar", "pane-head", "raised", "hover"], 3),
   ...["topbar", "pane-head", "surface", "raised", "hover"].flatMap((ground): Pair[] => [

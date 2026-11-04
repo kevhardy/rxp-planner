@@ -125,7 +125,9 @@
 
   --accent: #7fa3c9;
   --pop: #ff6b5a;
-  --pop-ink: #ff7d6e;
+  /* Tuned to 4.5:1 under the open-toggle wash on the top bar, where the
+     Warnings count keeps it. */
+  --pop-ink: #ff8f82;
   --pop-fg: #1a2028;
 
   --primary-bg: #4a73a0;
