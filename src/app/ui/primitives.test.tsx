@@ -303,7 +303,7 @@ describe("each primitive", () => {
     ["Segment", "hover", "background", "var(--hover)"],
     ["Segment", "hover", "color", "var(--text)"],
     ["Segment", "press", "background", "var(--press)"],
-    ["On segment", "rest", "background", "var(--selection)"],
+    ["On segment", "rest", "background", "var(--segment-pressed-fill, var(--selection))"],
     ["On segment", "press", "background", "var(--press)"],
     ["On segment", "rest", "border-block-end-color", "var(--pop)"],
     ["On segment", "rest", "border-end-start-radius", "0"],

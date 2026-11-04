@@ -292,8 +292,10 @@ summary::-webkit-details-marker {
   font-weight: var(--font-weight-bold) !important;
 }
 
+/* A caller sets --segment-pressed-fill to quiet the current segment when
+   another control in its bar is the stronger cue. */
 .ui-segment[aria-pressed="true"]:where(:not(:active)) {
-  background: var(--selection) !important;
+  background: var(--segment-pressed-fill, var(--selection)) !important;
 }
 
 .ui-segment:focus-visible {

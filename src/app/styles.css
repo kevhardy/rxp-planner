@@ -332,6 +332,10 @@ label {
   line-height: var(--line-height-body);
 }
 
+.narrow-notice svg {
+  color: var(--warn);
+}
+
 .region-character {
   position: relative;
   flex: none;
@@ -824,7 +828,7 @@ label {
 }
 
 .ruler-major {
-  stroke: var(--control-border);
+  stroke: var(--tick-major);
 }
 
 /* Library opens a pane, not a popover, so it is not a popover trigger and
@@ -836,6 +840,12 @@ label {
 
 .library-toggle[aria-expanded="true"] svg {
   color: var(--accent);
+}
+
+/* While the Library pane is open, the mode keeps only its coral bar, so the
+   open Library toggle is the one strong cue in the top bar. */
+.topbar:has(.library-toggle[aria-expanded="true"]) .ui-segmented {
+  --segment-pressed-fill: var(--raised);
 }
 
 .topbar .popover {
@@ -1585,8 +1595,8 @@ label {
 .step-footer {
   margin-top: 1px;
   color: var(--label);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .foot-text {
@@ -1629,9 +1639,9 @@ label {
 .step-note,
 .step-skip {
   overflow: hidden;
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1653,10 +1663,6 @@ label {
   padding: 0 var(--space-1);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
-}
-
-.step-skip {
-  color: var(--muted);
 }
 
 .header-row .step-skip {
@@ -1973,6 +1979,10 @@ label {
   background-image: var(--icon-url);
   background-size: 100% 100%;
   background-position: 0 0;
+}
+
+.guide-icon:not(.vector, .missing) {
+  box-shadow: var(--ring-guide-sprite);
 }
 
 .guide-icon.missing {
@@ -2577,6 +2587,12 @@ legend {
   color: var(--pop-ink);
 }
 
+/* The open trigger keeps the alert color it has when closed, and takes only
+   the border and wash of an open toggle. */
+.warnings-menu .ui-button[aria-expanded="true"] .warnings-total.warn svg {
+  color: inherit;
+}
+
 .warnings.popover {
   width: min(600px, 100vw - 16px);
   max-height: calc(100vh - 76px);
@@ -2592,6 +2608,12 @@ legend {
 .warnings {
   --warnings-indent: 44px;
   --warnings-place-width: 100px;
+}
+
+/* On a raised card, the --pane-head of a docked pane reads as a sunken band. */
+.warnings .panel-head {
+  border-bottom-color: var(--raised-line);
+  background: var(--raised);
 }
 
 .warnings .panel-head h2 {

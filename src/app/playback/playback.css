@@ -234,8 +234,8 @@
   gap: var(--space-1);
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   white-space: nowrap;
 }
 

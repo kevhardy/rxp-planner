@@ -23,7 +23,8 @@ const PAIRS: Pair[] = [
   ["text", "field", 4.5],
   ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
-  ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
+  ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),
+  ["pop-ink", "pressed-wash", 4.5, { ground: "var(--topbar)" }],
   ...on(["pop", "accent"], ["surface", "selection"], 3),
   ...on(["accent"], ["topbar", "pane-head", "raised", "hover"], 3),
   ...["topbar", "pane-head", "surface", "raised", "hover"].flatMap((ground): Pair[] => [
@@ -44,6 +45,7 @@ const PAIRS: Pair[] = [
   ...on(OBJECTIVES, ["surface", "raised", "selection", "map-terrain"], 3),
   ...OBJECTIVES.map((objective): Pair => [objective, "objective-tint", 3, { objective: `var(--${objective})` }]),
   ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming"], ["map-terrain"], 3),
+  ...on(["map-label", "map-label-strong", "map-border"], ["map-backdrop"], 4.5),
   ["map-character", "art-paper", 3],
   ...on(["stack-two", "stack-more"], ["map-interior"], 3),
   ...on(["warn", "danger", "ok"], ["surface", "press"], 4.5),
