@@ -11,7 +11,7 @@ import {
   type TimelineStep,
 } from "../../rules/index.ts";
 import { Described } from "../Described.tsx";
-import { useEventListener } from "../effects.ts";
+import { useEventListener, useWidth } from "../effects.ts";
 import { Icon, WarningMark } from "../icons.tsx";
 import { IconButton } from "../ui/Button.tsx";
 import { Field, Select, Slider } from "../ui/Field.tsx";
@@ -120,6 +120,38 @@ function guideStatus(guide: PricedGuide, routable: boolean): string {
 function GuideProgress({ guide }: { guide: PricedGuide }) {
   const { asked, pending } = guide.priced.routing;
   return <progress aria-label={`Routing ${guide.name}`} max={asked} value={asked - pending} />;
+}
+
+/** The narrowest band, in px, so that a short estimate does not read as a stray mark. */
+const MIN_BAND = 6;
+/** Bands closer than this, in px, join into one. */
+const JOIN_GAP = 4;
+
+/**
+ * Draws the spans, in timeline seconds, as bands on a track `width` px wide:
+ * each band at least `MIN_BAND` px wide and centered on its span, with bands
+ * closer than `JOIN_GAP` px joined. Returns each band's left edge and width as
+ * fractions of the track, sorted by left edge.
+ */
+export function estimateBands(
+  spans: readonly { start: number; seconds: number }[],
+  total: number,
+  width: number,
+): { at: number; size: number }[] {
+  if (!(total > 0) || !Number.isFinite(width) || width < MIN_BAND) return [];
+  const bands: [number, number][] = [];
+  for (const span of [...spans].sort((a, b) => a.start - b.start)) {
+    const from = (span.start / total) * width;
+    const to = ((span.start + span.seconds) / total) * width;
+    const size = Math.max(MIN_BAND, to - from);
+    const left = Math.min(Math.max(0, (from + to - size) / 2), width - size);
+    const last = bands.at(-1);
+    if (last && left - last[1] < JOIN_GAP) {
+      last[0] = Math.min(last[0], left);
+      last[1] = Math.max(last[1], left + size);
+    } else bands.push([left, left + size]);
+  }
+  return bands.map(([left, right]) => ({ at: left / width, size: (right - left) / width }));
 }
 
 function estimateOf(playback: Playback, index: number): string {
@@ -396,6 +428,9 @@ function TimelineDock({ routing }: { routing: HostRouting | undefined }) {
     () => (playback ? playback.timeline.steps.flatMap((_, i) => playback.ways(i).filter((way) => way.estimate)) : []),
     [playback],
   );
+  const track = useRef<HTMLDivElement>(null);
+  const trackWidth = useWidth(track);
+  const bands = useMemo(() => estimateBands(marks, total, trackWidth), [marks, total, trackWidth]);
   const progress = playback?.routing;
   const estimates = progress ? Object.entries({ ...(progress.pending > 0 && { pending: progress.pending }), ...progress.straight }) : [];
   const why = estimates.map(([reason, n]) => `${n} ${ESTIMATE_REASONS[reason as EstimateReason]}`).join(", ");
@@ -437,7 +472,7 @@ function TimelineDock({ routing }: { routing: HostRouting | undefined }) {
         {formatClock(playhead)} <span className="muted">/ {formatClock(total)}</span>
       </span>
       <div className="playback-scrubber">
-        <div className="playback-track" style={{ "--played": total > 0 ? Math.min(1, playhead / total) : 0 }}>
+        <div ref={track} className="playback-track" style={{ "--played": total > 0 ? Math.min(1, playhead / total) : 0 }}>
           <Slider
             aria-label="Playhead"
             aria-valuetext={`${formatClock(playhead)} of ${formatClock(total)}`}
@@ -449,14 +484,9 @@ function TimelineDock({ routing }: { routing: HostRouting | undefined }) {
             onChange={(e) => store.seek(Number(e.target.value))}
           />
           <div className="playback-marks" aria-hidden="true">
-            {total > 0 &&
-              marks.map((way, i) => (
-                <span
-                  key={i}
-                  className="playback-mark"
-                  style={{ "--at-x": `${(way.start / total) * 100}%`, "--size-w": `${Math.max(0.2, (way.seconds / total) * 100)}%` }}
-                />
-              ))}
+            {bands.map((band, i) => (
+              <span key={i} className="playback-mark" style={{ "--at-x": `${band.at * 100}%`, "--size-w": `${band.size * 100}%` }} />
+            ))}
             {total > 0 &&
               priced
                 .slice(1)

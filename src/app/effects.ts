@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useSyncExternalStore, type RefObject } from "react";
+import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefObject } from "react";
 import type { AssetMap, Retains, Status } from "./async.ts";
 
 type Listener<E> = (event: E) => void;
@@ -131,4 +131,21 @@ export function usePendingAction<T>(pending: RefObject<T | null>, perform: (valu
     pending.current = null;
     perform(value);
   });
+}
+
+/** The element's width in whole px, or `Infinity` before the first measure and where the browser has no `ResizeObserver`. */
+export function useWidth(ref: RefObject<HTMLElement | null>): number {
+  const [width, setWidth] = useState(Infinity);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    // `clientWidth` rounds, and can round a fractional track up past its edge.
+    const measure = () => setWidth(Math.floor(el.getBoundingClientRect().width));
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    // React renders the observer's first update after the first paint.
+    measure();
+    return () => observer.disconnect();
+  }, [ref]);
+  return width;
 }

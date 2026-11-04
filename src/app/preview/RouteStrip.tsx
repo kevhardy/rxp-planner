@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type RefObject } from "react";
+import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import {
   describeGuideStatus,
   resolveStartLevel,
@@ -13,7 +13,7 @@ import {
 import type { GameRules } from "../../data/index.ts";
 import { useEditor, useGameData, useStores } from "../context.ts";
 import { Described } from "../Described.tsx";
-import { useOutsidePress, usePendingAction } from "../effects.ts";
+import { useOutsidePress, usePendingAction, useWidth } from "../effects.ts";
 import { guideMeta } from "../../rules/registration.ts";
 import { Icon } from "../icons.tsx";
 import { useLayout } from "../layout.ts";
@@ -55,22 +55,6 @@ export function RouteStrip() {
       <RouteCards route={route} />
     </section>
   );
-}
-
-function useWidth(ref: RefObject<HTMLElement | null>): number {
-  const [width, setWidth] = useState(Infinity);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-    // `clientWidth` rounds, and can round a fractional track up past its edge.
-    const measure = () => setWidth(Math.floor(el.getBoundingClientRect().width));
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    // React renders the observer's first update after the first paint.
-    measure();
-    return () => observer.disconnect();
-  }, [ref]);
-  return width;
 }
 
 const pageLabel = (page: RoutePage, count: number) => `Guides ${page.from + 1} to ${page.to + 1} of ${count}`;

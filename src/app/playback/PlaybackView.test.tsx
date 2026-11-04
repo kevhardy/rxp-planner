@@ -16,7 +16,7 @@ import { Dialog } from "../Dialog.tsx";
 import { searchLane, type RoutingEngine, type RoutingLoad } from "../routing/engine.ts";
 import { DEFAULT_SETTINGS, type PreviewSettings } from "../preview/settings.ts";
 import { createStores, DEFAULT_SAVED_SETTINGS } from "../stores.ts";
-import { PlaybackView } from "./PlaybackView.tsx";
+import { estimateBands, PlaybackView } from "./PlaybackView.tsx";
 import type { HostRouting } from "./store.ts";
 
 const host = vi.hoisted(() => ({ routing: undefined as HostRouting | undefined }));
@@ -358,6 +358,27 @@ describe("Playback step time parts", () => {
 });
 
 describe("Playback straight-line estimates", () => {
+  it("widens a short estimate to 6px about its center, joins bands under 4px apart, and keeps bands on the track", () => {
+    const spans = [
+      { start: 255, seconds: 10 },
+      { start: 100, seconds: 1 },
+      { start: 106, seconds: 1 },
+      { start: 200, seconds: 50 },
+      { start: 300, seconds: 3 },
+      { start: 301, seconds: 0 },
+      { start: 999, seconds: 1 },
+    ];
+    // At 1000 s on a 1000px track, one second is one px.
+    const px = estimateBands(spans, 1000, 1000).map((b) => [Math.round(b.at * 10000) / 10, Math.round(b.size * 10000) / 10]);
+    expect(px).toEqual([
+      [97.5, 12],
+      [200, 50],
+      [255, 10],
+      [298, 6.5],
+      [994, 6],
+    ]);
+  });
+
   it("says that routing did not load and what to do, and logs the technical reason once, not on each render", async () => {
     host.routing = { router: null, unavailable: "No routing artifact is installed." };
     const log = vi.spyOn(console, "error").mockImplementation(() => {});

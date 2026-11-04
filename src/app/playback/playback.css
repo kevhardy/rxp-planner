@@ -269,9 +269,7 @@
   background: var(--bar-wait);
 }
 
-.step-bar.bar-travel.estimate,
-.playback-mark,
-.estimate-swatch {
+.step-bar.bar-travel.estimate {
   /* stylelint-disable-next-line function-disallowed-list -- hatch: estimate */
   background: repeating-linear-gradient(-45deg, var(--bar-travel) 0 3px, transparent 3px 5px);
 }
@@ -473,17 +471,21 @@
   top: calc(var(--control-small) / 2 + 3px + 2px);
   right: 0;
   left: 0;
-  height: 6px;
+  height: 3px;
   pointer-events: none;
+}
+
+.playback-mark,
+.estimate-swatch {
+  border-radius: var(--radius-round);
+  background: var(--bar-travel);
 }
 
 .playback-mark {
   position: absolute;
   left: var(--at-x);
-  box-sizing: border-box;
-  width: max(3px, var(--size-w));
+  width: var(--size-w);
   height: 100%;
-  border-top: 2px solid var(--bar-travel);
 }
 
 .playback-guide-mark {
@@ -590,10 +592,8 @@
 
 .estimate-swatch {
   flex: none;
-  box-sizing: border-box;
   width: 14px;
-  height: 6px;
-  border-top: 2px solid var(--bar-travel);
+  height: 3px;
 }
 
 .character-marker {
