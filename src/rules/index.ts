@@ -6,7 +6,6 @@ export * from "./simulate.ts";
 export * from "./lineQuest.ts";
 export * from "./questAccess.ts";
 export * from "./insertion.ts";
-export type { DropChance, DropSource } from "./drops.ts";
 export {
   addSimDone,
   extraKillsLine,
@@ -20,7 +19,6 @@ export {
   type KillXpKey,
   type SimKey,
   type SimLinePos,
-  type SimKeyWarning,
 } from "./simComments.ts";
 export * from "./model.ts";
 export * from "./timeline.ts";

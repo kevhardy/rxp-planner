@@ -10,7 +10,7 @@ import { lineQuest } from "./lineQuest.ts";
 import { collectLine, refKey, type ObjectiveRef, type QuestProgress, type RouteSimulation, type SimData } from "./simulate.ts";
 
 /** How the player works on an objective: kill its mobs, kill mobs for a drop, or loot objects or items on the ground. */
-export type OpportunityKind = "kill" | "drop" | "object";
+type OpportunityKind = "kill" | "drop" | "object";
 
 export interface Spawn {
   /** The zone that the source lists the point under. */
@@ -37,7 +37,7 @@ export interface OpportunityData extends Pick<SimData, "quest" | "locateGoto" | 
   giverName(questId: number): string | undefined;
 }
 
-export interface Opportunity {
+interface Opportunity {
   questId: number;
   /** `index` is the number `.complete` takes; null when the data does not establish it. */
   objective: { row: number; index: number | null; name: string };

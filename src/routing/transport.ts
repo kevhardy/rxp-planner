@@ -11,7 +11,7 @@ import { SNAP, type LegResult } from "./search.ts";
 export const rideCost = ({ seconds }: Pick<TransportLinkRecord, "seconds">) => seconds.average;
 
 /** A place where a ground leg of a ride can start or end. `height` is set for a stop that has one. */
-export interface RideStop extends MapPoint {
+interface RideStop extends MapPoint {
   height?: number;
   /** A place in a flight: no ground leg starts or ends here. */
   air?: true;

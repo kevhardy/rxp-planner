@@ -202,7 +202,7 @@ export interface SimItem {
   sold: boolean;
 }
 
-export type SimDropper = Pick<Dropper, "id" | "chance" | "guaranteed">;
+type SimDropper = Pick<Dropper, "id" | "chance" | "guaranteed">;
 
 /** An exact name match: one NPC or item, or several entities sharing the name, with the NPCs among them. */
 export type NameMatch = { kind: "npc" | "item"; id: number } | { kind: "ambiguous"; npcIds: readonly number[] };
@@ -314,7 +314,7 @@ export interface SimStart {
 }
 
 /** Objective progress in a `SimStart`. Its `count` counts as progress already made, as `ObjectiveProgress.kills.counted` does. */
-export type SeededProgress = Pick<ObjectiveProgress, "count" | "complete">;
+type SeededProgress = Pick<ObjectiveProgress, "count" | "complete">;
 
 /** An objective: `objectives[row]` of the quest. */
 export interface ObjectiveRef {
@@ -331,7 +331,7 @@ export interface XpGain {
   checkpoint: number;
 }
 
-export interface TurnInXp {
+interface TurnInXp {
   at: Location;
   questId: number;
   xp: number;
@@ -468,7 +468,7 @@ export interface StepSnapshot {
  * `hearthKey`. Only the priced timeline knows them; a step not listed
  * assumes its `state=` `hearth`, else a ready Hearthstone.
  */
-export type HearthClock = ReadonlyMap<string, number>;
+type HearthClock = ReadonlyMap<string, number>;
 
 export const hearthKey = (guide: number, step: number) => `${guide}/${step}`;
 

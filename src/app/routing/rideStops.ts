@@ -11,7 +11,7 @@ const MARKED_MODES: Readonly<Record<string, string>> = {
   flight: "Flight master",
 };
 
-export interface RideConnection {
+interface RideConnection {
   link: TransportLink;
   ground: TransportStop;
   rideRequires: RideRequirements;

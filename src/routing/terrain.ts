@@ -21,7 +21,7 @@ export const HAZARD = 2;
  * terrain upstream, but the artifact does not include it or it failed to
  * load. `no-terrain`: the tile has no terrain upstream.
  */
-export type Coverage = "present" | "missing-coverage" | "no-terrain";
+type Coverage = "present" | "missing-coverage" | "no-terrain";
 const COVERAGES: readonly Coverage[] = ["present", "missing-coverage", "no-terrain"];
 
 /** `[x, y]` cells of a region, from its north-west corner. */

@@ -7,7 +7,7 @@ interface Sourced<T> {
 }
 
 /** Riding: the level it is learned at, the speed factor over running, and its cast in seconds. */
-export interface Mount {
+interface Mount {
   level: number;
   speed: number;
   cast: number;

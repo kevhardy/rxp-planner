@@ -78,7 +78,7 @@ export type LegUpdate = { mode: string; leg: number; searching?: true; trying?: 
  * A leg between stops on two maps without a way through the rides that the
  * trip may take. It has no route and adds no time.
  */
-export interface Crossing {
+interface Crossing {
   kind: "crossing";
 }
 

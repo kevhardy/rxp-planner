@@ -8,7 +8,7 @@ export type Speed = (typeof SPEEDS)[number];
 
 export type HostRouting = { router: WayRouter } | { router: null; unavailable: string };
 
-export type PlaybackStatus =
+type PlaybackStatus =
   | { kind: "none" }
   | { kind: "pricing" }
   | { kind: "failed"; error: string }

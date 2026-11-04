@@ -60,7 +60,7 @@ export type GotoForm =
   /** `<uiMapId>/<instance>` with HereBeDragons world coordinates. */
   | "world";
 
-export type GotoFailure =
+type GotoFailure =
   /** RXP does not know the zone name, or neither the data nor the client knows the map ID. */
   | "unknown-zone"
   | "no-bounds"

@@ -25,7 +25,7 @@ export interface LegReport {
 }
 
 /** `from` and `to` are stop IDs of the transport file. */
-export type PartReport =
+type PartReport =
   | ({ kind: "ground" } & Omit<LegReport, "parts">)
   | { kind: "ride"; service: string; from: string; to: string; seconds: RideSeconds; placeholder?: true };
 

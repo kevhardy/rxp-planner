@@ -158,7 +158,7 @@ export interface TerrainRoute {
  * A leg that does not follow terrain: horizontal distance at the mode speed.
  * It makes no claim that the ground between the stops is passable.
  */
-export interface StraightEstimate {
+interface StraightEstimate {
   kind: "straight";
   points: [Point, Point];
   /** Horizontal world units. */

@@ -66,7 +66,7 @@ export interface FloorCell {
   /** The swim node is magma or slime. Only a cell with a swim node can set it. */
   hazard: boolean;
 }
-export interface FloorChunk {
+interface FloorChunk {
   /** Chunk column and row in the tile, 0 to 15. */
   chunk: Tile;
   /** 64 cells in row order: cell `y * 8 + x`. */
@@ -108,7 +108,7 @@ export interface Building {
    */
   paths: FloorPoint[][];
 }
-export interface DoorRef {
+interface DoorRef {
   /** The tile that holds the building, from this tile. */
   home: Tile;
   building: number;

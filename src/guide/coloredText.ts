@@ -34,7 +34,7 @@ function spec<C extends string>(color: C, name: string, description: string) {
   return { color, name, code: `RXP_${color}_` as const, description };
 }
 
-export type RxpColorSpec = (typeof RXP_COLORS)[number];
+type RxpColorSpec = (typeof RXP_COLORS)[number];
 export type RxpColor = RxpColorSpec["color"];
 
 /** Half-open UTF-16 offsets into the RXP source, as `String.slice` takes them. */
