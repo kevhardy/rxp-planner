@@ -1887,15 +1887,15 @@ label {
   padding-inline: var(--space-1);
 }
 
-/* A rule sets the Clear action apart from the colors, and wraps with it. */
+/* The last color holds Clear and its rule on its line, so a wrap never
+   starts a line with the rule. */
 .rxp-clear {
   display: flex;
   align-items: center;
   gap: var(--space-1);
 }
 
-.rxp-clear::before {
-  content: "";
+.rxp-clear-rule {
   width: 1px;
   height: var(--line-height-caption);
   background: var(--line);
