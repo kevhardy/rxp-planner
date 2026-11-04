@@ -11,13 +11,20 @@ export interface LabelBox {
   height: number;
 }
 
-export function clearLabels(movable: readonly LabelBox[], fixed: readonly LabelBox[]): { x: number; y: number }[] {
-  const placed = [...movable];
+export interface MovableLabel extends LabelBox {
+  /** Moves as far as it takes to clear, where another label hides when no clear spot is within MAX_MOVE pixels. */
+  mustShow?: boolean;
+}
+
+/** Moves each label clear of the fixed boxes and of the other labels, the shortest way, or returns null to hide it. */
+export function clearLabels(movable: readonly MovableLabel[], fixed: readonly LabelBox[]): ({ x: number; y: number } | null)[] {
+  const placed: (LabelBox | null)[] = [...movable];
   return movable.map((box, i) => {
     if (!fixed.some((f) => covers(box, f))) return { x: 0, y: 0 };
-    const to = nearestFree(box, [...fixed, ...placed.filter((_, j) => j !== i)]);
-    placed[i] = { ...box, ...to };
-    return { x: to.x - box.x, y: to.y - box.y };
+    const others = placed.filter((p, j): p is LabelBox => p !== null && j !== i);
+    const to = nearestFree(box, [...fixed, ...others], box.mustShow ? Infinity : MAX_MOVE);
+    placed[i] = to ? { ...box, ...to } : null;
+    return to ? { x: to.x - box.x, y: to.y - box.y } : null;
   });
 }
 
@@ -53,18 +60,22 @@ export function pickLabels(labels: readonly PlaceLabelBoxes[]): { name: boolean;
 const covers = (a: LabelBox, b: LabelBox) =>
   Math.abs(a.x - b.x) < (a.width + b.width) / 2 && Math.abs(a.y - b.y) < (a.height + b.height) / 2;
 
-const GAP = 2;
+// A gap of about one space between two names on a line would read as one name.
+const GAP_X = 12;
+const GAP_Y = 4;
 
 const REACH = 32;
+// Farther than this, a moved name sits over a neighboring zone and names the wrong place.
+const MAX_MOVE = 2 * REACH;
 
-function nearestFree(box: LabelBox, obstacles: readonly LabelBox[]): { x: number; y: number } {
+function nearestFree(box: LabelBox, obstacles: readonly LabelBox[], limit: number): { x: number; y: number } | undefined {
   const grown = obstacles.map((o) => ({
-    left: o.x - (o.width + box.width) / 2 - GAP,
-    right: o.x + (o.width + box.width) / 2 + GAP,
-    top: o.y - (o.height + box.height) / 2 - GAP,
-    bottom: o.y + (o.height + box.height) / 2 + GAP,
+    left: o.x - (o.width + box.width) / 2 - GAP_X,
+    right: o.x + (o.width + box.width) / 2 + GAP_X,
+    top: o.y - (o.height + box.height) / 2 - GAP_Y,
+    bottom: o.y + (o.height + box.height) / 2 + GAP_Y,
   }));
-  for (let reach = REACH; ; reach *= 2) {
+  for (let reach = REACH; reach <= limit; reach *= 2) {
     const near = grown.filter(
       (g) => Math.hypot(Math.max(g.left - box.x, 0, box.x - g.right), Math.max(g.top - box.y, 0, box.y - g.bottom)) < reach,
     );

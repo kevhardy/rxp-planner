@@ -22,7 +22,7 @@ const SPACING = 20;
 const STEPS = Array.from({ length: 9 }, (_, k) => (k - 4) * (SPACING / 2));
 const OFFSETS = STEPS.flatMap((x) => STEPS.map((y) => ({ x, y }))).sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y));
 
-function spread(marks: readonly PlacedMark[], stops: readonly ViewPoint[], pxPerPercent: number, aspect: number): ViewPoint[] {
+export function spread(marks: readonly PlacedMark[], stops: readonly ViewPoint[], pxPerPercent: number, aspect: number): ViewPoint[] {
   const screen = (p: ViewPoint) => ({ x: p.x * pxPerPercent, y: (p.y * pxPerPercent) / aspect });
   const taken = stops.map(screen);
   const free = (p: ViewPoint) => taken.every((q) => Math.abs(p.x - q.x) >= SPACING || Math.abs(p.y - q.y) >= SPACING);

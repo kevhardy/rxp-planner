@@ -18,6 +18,7 @@ import {
   useMapSettings,
   useMapSettingsStore,
   type CategoryId,
+  type LayerId,
   type MapSettings,
   type StepShow,
 } from "./mapSettings.ts";
@@ -199,18 +200,30 @@ export function MapLegend(props: {
               </LegendGroup>
             );
           }
-          if (layer.id === "zoneBorders")
+          if (layer.id === "zones") {
+            const labelIds = MAP_LABELS.flatMap(layerCategories);
+            const labelsOn = labelIds.filter(shows).length;
             return (
-              <LegendRow
-                key={layer.id}
-                name={layer.name}
-                icon={undefined}
-                iconClass="zone-border-swatch"
-                count={undefined}
-                on={shows("zone-borders")}
-                onToggle={() => store.setCategories(["zone-borders"], !shows("zone-borders"))}
-              />
+              <LegendGroup
+                key="labels"
+                name="Map labels"
+                pressed={labelsOn === labelIds.length ? true : labelsOn === 0 ? false : "mixed"}
+                onToggle={() => store.setCategories(labelIds, labelsOn < labelIds.length)}
+              >
+                {row("zones", layer.name)}
+                <LegendRow
+                  name={LAYER_NAMES.zoneBorders}
+                  icon={undefined}
+                  iconClass="zone-border-swatch"
+                  count={undefined}
+                  on={shows("zone-borders")}
+                  onToggle={() => store.setCategories(["zone-borders"], !shows("zone-borders"))}
+                />
+                {row("landmarks", LAYER_NAMES.landmarks)}
+              </LegendGroup>
             );
+          }
+          if (MAP_LABELS.includes(layer.id)) return null;
           if (ids.length === 1) return row(ids[0]!, layer.name);
           return (
             <LegendGroup
@@ -251,6 +264,9 @@ export function MapLegend(props: {
     </details>
   );
 }
+
+const MAP_LABELS: readonly LayerId[] = ["zones", "zoneBorders", "landmarks"];
+const LAYER_NAMES = Object.fromEntries(LAYERS.map((l) => [l.id, l.name])) as Record<LayerId, string>;
 
 // The map draws these layers as text or lines, not as game icons.
 const SWATCHES: Partial<Record<CategoryId, string>> = {

@@ -277,10 +277,6 @@
   border-left: 1px solid var(--line);
 }
 
-.zone-borders-toggle {
-  border-color: var(--control-border);
-}
-
 .dialog.route-text-dialog {
   width: min(680px, 94vw);
 }
