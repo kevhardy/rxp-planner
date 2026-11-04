@@ -7,7 +7,7 @@ const either = (...values) => `(?:${values.join("|")})`;
 
 const hairline = String.raw`-?(?:1|1\.5|2)px`;
 const spaceVar = String.raw`var\(--space-[0-9]+\)`;
-const columnVar = String.raw`var\(--(?:warnings-indent|warnings-place-width|legend-eye-column|legend-label-start|ruler-band)\)`;
+const columnVar = String.raw`var\(--(?:warnings-indent|warnings-place-width|legend-label-start|ruler-band)\)`;
 const number = String.raw`[0-9]+(?:\.[0-9]+)?(?![\w.%])`;
 const calcBody = String.raw`${either(spaceVar, columnVar, number, String.raw`[\s()+*/-]`)}+`;
 const centeredLine = String.raw`calc\(\(var\(--control-[a-z]+\) - 1lh\) / 2\)`;

@@ -239,7 +239,6 @@
   --route-label-bg: color-mix(in srgb, var(--art-ink) 75%, transparent);
   --route-crossing: color-mix(in srgb, var(--route-pending) 85%, transparent);
   --route-focus: color-mix(in srgb, var(--route-end) 50%, transparent);
-  --ride-mark-border: color-mix(in srgb, var(--route-stop) 85%, transparent);
   --ride-mark-bg: color-mix(in srgb, var(--route-chip) 92%, transparent);
   --skipped-tiles-fill: color-mix(in srgb, var(--route-pending) 12%, transparent);
   --skipped-tiles-line: color-mix(in srgb, var(--route-pending) 70%, transparent);

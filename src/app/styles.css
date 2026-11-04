@@ -2031,7 +2031,7 @@ label {
 .form-label:has(+ .tag-values)::before {
   content: "";
   display: block;
-  height: calc(var(--line-height-small) + var(--space-1) + (var(--control-small) - var(--line-height-body)) / 2);
+  height: calc(var(--line-height-caption) + var(--space-1) + (var(--control-field) - var(--line-height-body)) / 2);
 }
 
 .condition {
