@@ -675,8 +675,8 @@
   display: flex;
   flex-direction: column;
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
 }
 
@@ -744,8 +744,8 @@
 .route-legs .route-leg-steps {
   margin: 0 var(--space-6) var(--space-2) calc(var(--space-8) + var(--space-2));
   color: var(--text);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .route-leg-steps .route-step-time {
@@ -853,8 +853,8 @@
 
 .ride-popover p.muted {
   margin: var(--space-2) 0 0;
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .ride-steps li {
