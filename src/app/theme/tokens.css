@@ -83,7 +83,7 @@
   --line: #364252;
   --control-border: #74839a;
   --text: #e3e8ee;
-  --muted: #9eabbb;
+  --muted: #aab6c5;
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
