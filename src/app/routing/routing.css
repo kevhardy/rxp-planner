@@ -614,10 +614,10 @@
 .legend-row .zone-border-swatch {
   /* stylelint-disable function-disallowed-list -- stripe: zone border line */
   background:
-    linear-gradient(90deg, transparent 7px, var(--zone-swatch-line) 7px 8px, transparent 8px),
-    linear-gradient(90deg, transparent 6px, var(--zone-swatch-halo) 6px 9px, transparent 9px), var(--map-terrain);
+    linear-gradient(90deg, transparent 7px, var(--zone-swatch-line) 7px 9px, transparent 9px),
+    linear-gradient(90deg, transparent 6px, var(--zone-swatch-halo) 6px 10px, transparent 10px), var(--map-terrain);
   /* stylelint-enable function-disallowed-list */
-  box-shadow: var(--ring-line);
+  box-shadow: var(--ring-control);
 }
 
 .route-steps,

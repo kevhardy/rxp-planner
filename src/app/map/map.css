@@ -899,8 +899,7 @@
 }
 
 .map-legend {
-  --legend-mark: 20px;
-  --legend-row: calc(var(--control-small) + 2px);
+  --legend-mark: 16px;
   --legend-label-start: calc(var(--space-3) + var(--legend-mark) + var(--space-2));
   position: relative;
   flex: 0 1 280px;
@@ -956,7 +955,6 @@
 
 .legend-body {
   overflow: auto;
-  border-top: 1px solid var(--line);
 }
 
 .legend-body[data-clipped] {
@@ -973,8 +971,12 @@
   align-items: center;
   gap: var(--space-1);
   min-height: var(--control-small);
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
   padding: 0 var(--space-2) 0 var(--space-3);
+}
+
+.legend-body > .legend-group:first-child > .legend-heading {
+  margin-top: var(--space-2);
 }
 
 .legend-heading h3 {
@@ -1015,7 +1017,7 @@
   align-items: center;
   gap: var(--space-2);
   width: 100%;
-  min-height: var(--legend-row);
+  min-height: var(--control-small);
   padding: 2px var(--space-3);
   text-align: left;
 }
@@ -1062,10 +1064,10 @@
   background-image: conic-gradient(var(--objective-1) 0 33%, var(--objective-2) 0 67%, var(--objective-3) 0);
 }
 
-/* The halo reaches 4.5px past the box, so the whole mark fills the 18px column. */
+/* The halo reaches 4.5px past the box, so the whole mark fills the swatch column. */
 .legend-row .reference-swatch {
-  width: 9px;
-  height: 9px;
+  width: calc(var(--legend-mark) - 9px);
+  height: calc(var(--legend-mark) - 9px);
   background-color: var(--map-terrain);
   box-shadow: var(--art-icon-halo-marked);
 }
@@ -1075,7 +1077,7 @@
   display: grid;
   place-items: center;
   background-color: var(--map-terrain);
-  box-shadow: var(--ring-line);
+  box-shadow: var(--ring-control);
 }
 
 .legend-row .label-swatch::before {
@@ -1094,8 +1096,8 @@
 
 .legend-row .route-swatch::before {
   content: "";
-  width: 14px;
-  border-top: 2px dashed var(--transport-line);
+  width: 12px;
+  border-top: 2px dashed var(--map-transport);
 }
 
 .legend-name {
@@ -1120,7 +1122,7 @@
 .legend-step {
   align-items: center;
   gap: var(--space-2);
-  min-height: var(--legend-row);
+  min-height: var(--control-small);
   padding: 2px var(--space-3);
 }
 
