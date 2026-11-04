@@ -353,3 +353,14 @@ describe("distance", () => {
     ]);
   });
 });
+
+// An inset shadow paints the box outside a hole. Where the hole's edge meets the box's edge at a fractional
+// position, a browser can antialias the two edges apart and leave a hairline in the bar's color.
+it.each([...tokens.light, ...tokens.element].filter(([name]) => name.startsWith("--ink-bar-")))(
+  "pushes the hole of %s past the box's other edges",
+  (_, value) => {
+    const [, x, y, blur, spread] = /^inset (-?\d+)(?:px)? (-?\d+)(?:px)? (\d+)(?:px)? (-?\d+)px var/.exec(value) ?? [];
+    expect({ blur, spread }).toEqual({ blur: "0", spread: "-1" });
+    expect(Math.abs(Number(x)) + Math.abs(Number(y))).toBeGreaterThan(1);
+  },
+);
