@@ -850,12 +850,11 @@ label {
   --segment-pressed-fill: var(--raised);
 }
 
-.topbar .popover {
-  top: calc(100% + 8px + var(--ruler-band));
-}
-
-.topbar .split-menu {
-  top: calc(100% + 6px + var(--ruler-band));
+/* The top bar's controls end 6.5px above the ruler band. 4px more leaves a
+   4px gap below the guide strip's top edge, so a float's edge clears it. */
+.topbar :is(.popover, .split-menu) {
+  top: calc(100% + 10.5px + var(--ruler-band));
+  outline: 1px solid var(--float-edge);
 }
 
 .brand {
@@ -2633,14 +2632,10 @@ legend {
   color: inherit;
 }
 
-/* The top bar's popover offset ends 1.5px below the guide strip's top edge.
-   2.5px more leaves a 4px gap, so the popover's ring clears that edge. */
 .warnings.popover {
-  top: calc(100% + 8px + var(--ruler-band) + 2.5px);
   width: min(620px, 100vw - 16px);
   max-height: calc(100vh - 78px);
   padding: 0;
-  outline: 1px solid var(--float-edge);
 }
 
 .warnings.popover:not([hidden]) {
