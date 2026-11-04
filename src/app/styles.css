@@ -838,6 +838,12 @@ label {
   color: var(--accent);
 }
 
+/* While the Library pane is open, the mode keeps only its coral bar, so the
+   open Library toggle is the one strong cue in the top bar. */
+.topbar:has(.library-toggle[aria-expanded="true"]) .ui-segmented {
+  --segment-pressed-fill: var(--raised);
+}
+
 .topbar .popover {
   top: calc(100% + 8px + var(--ruler-band));
 }
