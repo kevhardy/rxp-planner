@@ -31,6 +31,9 @@ interface GuideWarnings {
 
 const ITEM_LIMIT = 10;
 
+/** Kinds that mean the quest data is incomplete, not that the guide is wrong. */
+const DATA_NOTES: ReadonlySet<WarningKind> = new Set(["unknownQuest", "noQuestXp", "noKillTarget", "noKillCount"]);
+
 export function WarningsPanel() {
   const route = useRoute();
   const data = useGameData();
@@ -147,7 +150,7 @@ export function WarningsPanel() {
                   const key = `${group.guide}:${kind}`;
                   const shown = expanded.has(key) ? items : items.slice(0, ITEM_LIMIT);
                   return (
-                    <details key={kind} className="warn-kind" open>
+                    <details key={kind} className={DATA_NOTES.has(kind) ? "warn-kind data-note" : "warn-kind"} open>
                       <summary>
                         <DisclosureIcon />
                         {KIND_LABELS[kind]}{" "}
