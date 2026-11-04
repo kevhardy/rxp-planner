@@ -295,11 +295,13 @@
 
   --font-size-micro: 11px;
   --font-size-small: 12px;
+  --font-size-caption: 13px;
   --font-size-body: 14px;
   --font-size-pane-title: 16px;
   --font-size-title: 20px;
   --line-height-micro: 16px;
   --line-height-small: 16px;
+  --line-height-caption: 16px;
   --line-height-body: 20px;
   --line-height-pane-title: 20px;
   --line-height-title: 28px;
@@ -321,6 +323,7 @@
   --radius-round: 999px;
 
   --control-small: 24px;
+  --control-field: 28px;
   --control-large: 32px;
   --choice-box: 14px;
 

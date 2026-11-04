@@ -466,7 +466,6 @@ summary::-webkit-details-marker {
   gap: var(--space-1);
 }
 
-.ui-field-label,
 .ui-field-hint {
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -474,6 +473,8 @@ summary::-webkit-details-marker {
 
 .ui-field-label {
   color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .ui-field-hint {
@@ -507,7 +508,7 @@ summary::-webkit-details-marker {
 
 .ui-input,
 .ui-select > select {
-  height: var(--control-small);
+  height: var(--control-field);
   padding: 0 var(--space-2);
 }
 
