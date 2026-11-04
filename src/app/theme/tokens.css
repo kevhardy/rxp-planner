@@ -51,7 +51,7 @@
   --disabled-bg: #dde3ea;
   --disabled-fg: #8893a1;
 
-  --warn: #8f5603;
+  --warn: #825800;
   --danger: #b42318;
   --danger-fg: #fff;
   --ok: #13703a;
@@ -73,7 +73,7 @@
   --rxp-enemy: #b42318;
   --rxp-friendly: #13703a;
   --rxp-loot: #1f5fc2;
-  --rxp-warn: #8a5406;
+  --rxp-warn: #825800;
   --rxp-buy: #334c00;
   --rxp-pick: #a3218f;
 
