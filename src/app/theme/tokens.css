@@ -3,9 +3,9 @@
 
   --bg: #d8dee6;
   --surface: #f0f3f7;
-  --pane-head: #dfe6ef;
+  --pane-head: #e4ebf4;
   --raised: #fff;
-  --hover: #e5eaf0;
+  --hover: #e9edf2;
   --line: #c3ccd7;
   --control-border: #6d7a8b;
   --text: #17202b;
@@ -15,8 +15,8 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 
-  --selection: #d9e3ef;
-  --press: #d5e1ee;
+  --selection: #d8e7fb;
+  --press: #d6e1ed;
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -77,7 +77,7 @@
 
   --bg: #1a2028;
   --surface: #222a34;
-  --pane-head: #283342;
+  --pane-head: #25303f;
   --raised: #2c3644;
   --hover: #29323d;
   --line: #364252;
@@ -89,8 +89,8 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%2374839a' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 
-  --selection: #2a3a4e;
-  --press: #243246;
+  --selection: #233a54;
+  --press: #1e2c3f;
 
   --accent: #7fa3c9;
   --pop: #ff6b5a;
