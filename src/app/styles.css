@@ -2090,6 +2090,10 @@ label {
   border-radius: 0;
 }
 
+.step-form {
+  max-width: 880px;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
@@ -2223,9 +2227,19 @@ label {
 
 .sim-kill-fields {
   display: grid;
-  grid-template-columns: 112px minmax(0, 320px) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-3) var(--space-4);
+}
+
+/* A count holds a few digits, but a placeholder such as "Automatic" needs
+   the wider field. */
+.sim-kill-fields .arg-short .ui-input {
+  width: 64px;
+}
+
+.sim-kill-fields .arg-short .ui-input[placeholder] {
+  width: 112px;
 }
 
 .sim-kill-xp {
@@ -2505,7 +2519,7 @@ legend {
   gap: var(--space-3) var(--space-4);
 }
 
-:is(.command-form, .tag-checks, .tag-values) > *,
+:is(.command-form, .tag-values) > *,
 .arg-run > * {
   --span: 3;
   grid-column: span var(--span);
@@ -2513,13 +2527,16 @@ legend {
 
 /* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 78px of Plex Sans at the body size, 17px for the picker, and 18px of padding and border. */
 @container (width < 759px) {
-  :is(.command-form, .tag-checks, .tag-values) > *,
+  :is(.command-form, .tag-values) > *,
   .arg-run > * {
     --span: 5;
   }
 }
 
+/* Three to a row, because the longest label, "Not in Season of Mastery",
+   wraps in a fifth of the form's measure. */
 .tag-checks {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   row-gap: var(--space-2);
 }
 
