@@ -28,13 +28,13 @@ export class SourceValidation {
     if (this.sets.size !== sources.length) throw new Error("A source set appears twice");
   }
 
-  has(source: SourceKey): boolean {
-    return this.sets.has(source);
+  requireDeclared(source: SourceKey, where: string): void {
+    if (!this.sets.has(source)) throw new Error(`${where}: ${source} is not among the bundle's sources`);
   }
 
   require(source: SourceKey, where: string): void {
     if (typeof source !== "string") throw new Error(`${where}: invalid source`);
-    if (!source.startsWith("override:") && !this.sets.has(source)) throw new Error(`${where}: ${source} is not among the bundle's sources`);
+    if (!source.startsWith("override:")) this.requireDeclared(source, where);
   }
 
   check(provenance: unknown, where: string): void {
@@ -159,7 +159,7 @@ export function validateGameDataFile(input: unknown): asserts input is GameDataR
         if (guaranteed !== undefined) {
           if (dropper.type !== "npc" || !isObject(guaranteed) || !name(guaranteed.source))
             throw new Error(`${where}: invalid guaranteed drop`);
-          if (!registry.has(guaranteed.source)) throw new Error(`${where}: ${guaranteed.source} is not among the bundle's sources`);
+          registry.requireDeclared(guaranteed.source, where);
         }
       });
     }
