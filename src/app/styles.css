@@ -971,10 +971,9 @@ label {
   margin-left: -1px;
 }
 
-/* The disabled look clears the main half's border, so the group draws the outline both halves share. */
-.split:has(.split-main:is(:disabled, [aria-disabled="true"])) {
-  outline: 1px solid var(--control-border);
-  outline-offset: -1px;
+/* A disabled main half has no fill, so the live half drops its fill to match. */
+.split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
+  background: none;
 }
 
 .split-menu {
