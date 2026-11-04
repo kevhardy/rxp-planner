@@ -1517,8 +1517,8 @@ label {
 
 .step-notes .row-text {
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .act-xp {
@@ -1532,8 +1532,8 @@ label {
   flex-direction: column;
   gap: 1px;
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .where-mark {
@@ -2170,8 +2170,8 @@ fieldset {
 legend {
   padding: 0 var(--space-1);
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .dock-body.lines-view {
@@ -2635,8 +2635,8 @@ legend {
 .warn-place {
   flex: none;
   min-width: var(--warnings-place-width);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .warn-more {

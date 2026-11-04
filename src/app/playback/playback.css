@@ -533,8 +533,8 @@
   min-width: 0;
   padding: 0 var(--space-1);
   overflow-x: clip;
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .playback-chain-name {

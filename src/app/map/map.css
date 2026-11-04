@@ -760,8 +760,8 @@
 
 .map-menu-action {
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   visibility: hidden;
 }
@@ -956,6 +956,8 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .legend-heading [aria-pressed="mixed"] svg {
