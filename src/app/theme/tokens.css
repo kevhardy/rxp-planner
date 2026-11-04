@@ -99,8 +99,10 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* The icons' own dark outline vanishes on a dark page, so a slate rim
-     draws their edge, and a dimmer fill keeps a pale icon from glaring. */
-  --ring-guide-icon: brightness(0.85) drop-shadow(0 0 0.5px var(--control-border)) drop-shadow(0 0 0.5px var(--control-border));
+     draws their edge. Four unblurred half-pixel shifts give a thin rim that
+     stays crisp, where a blurred shadow softens the edge. */
+  --ring-guide-icon: drop-shadow(0.5px 0 var(--control-border)) drop-shadow(-0.5px 0 var(--control-border))
+    drop-shadow(0 0.5px var(--control-border)) drop-shadow(0 -0.5px var(--control-border));
 
   --selection: #233a54;
   --press: #1e2c3f;
