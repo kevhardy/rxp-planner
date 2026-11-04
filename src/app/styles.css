@@ -246,6 +246,7 @@ label {
 .mk > svg,
 .mk .guide-icon {
   display: block;
+  margin-inline-end: 0;
 }
 
 .mk.tex {
@@ -1921,6 +1922,7 @@ label {
   display: inline-block;
   width: var(--box-w);
   height: var(--box-h);
+  margin-inline-end: 2px;
   vertical-align: middle;
   background-image: var(--rxp-guide-icons, none, var(--guide-icon-outline));
   background-size:
@@ -2217,6 +2219,7 @@ legend {
 
 .outline-summary > .guide-icon {
   flex: none;
+  margin-inline-end: 0;
 }
 
 .outline-text {
