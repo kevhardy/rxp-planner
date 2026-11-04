@@ -4,10 +4,11 @@
   /* In both themes the top bar is the lightest band and the guide strip the
      darkest, so the strip parts the top bar from the pane heads below it. */
   --topbar: #f1f5fa;
-  --bg: #d1dae5;
+  --bg: #cbd5e1;
   --surface: #ebf0f6;
-  --pane-head: #dbe4ef;
+  --pane-head: #d3dde9;
   --raised: #fff;
+  --field: var(--raised);
   --hover: #e3e9f1;
   --line: #c3ccd7;
   /* A divider inside a float on --raised. */
@@ -31,7 +32,7 @@
 
   --accent: #3f6690;
   --pop: #d9473a;
-  --pop-ink: #b83226;
+  --pop-ink: #b22f23;
   --pop-fg: #fff;
 
   --primary-bg: var(--accent);
@@ -91,6 +92,9 @@
   --surface: #212933;
   --pane-head: #2a3340;
   --raised: #323d4b;
+  /* Darker than every surface it sits on, so a field reads as a well, even
+     in a float on --raised. */
+  --field: #1c232c;
   --hover: #29323d;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
@@ -108,7 +112,7 @@
      text beside it. A rim in the darkest surface gives a dark icon, such as
      the book, an edge, where a pale rim reads as a second outline. Two
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
-  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
+  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
 
   --selection: #233a54;
   --press: #1e2c3f;
@@ -168,20 +172,19 @@
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
-  /* 82% is the least share at which the border reaches 3:1 on the light
+  /* 85% is the least share at which the border reaches 3:1 on the light
      page background. */
-  --warn-border: color-mix(in srgb, var(--warn) 82%, var(--surface));
-  --danger-border: color-mix(in srgb, var(--danger) 82%, var(--surface));
-  --add-done-border: color-mix(in srgb, var(--ok) 82%, var(--surface));
+  --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
+  --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
+  --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
-  /* 90% is the least share that keeps a placeholder at 4.5:1 on a dark
-     input, too close to --muted to tell it from a value, so placeholders are
-     also italic. */
-  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--raised));
+  /* 90% keeps a placeholder at 4.5:1 on a field in either theme, too close
+     to --muted to tell it from a value, so placeholders are also italic. */
+  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--field));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));
@@ -209,6 +212,7 @@
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
+  --ring-pressed: inset 0 0 0 1px var(--accent);
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
 

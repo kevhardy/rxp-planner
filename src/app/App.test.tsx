@@ -572,7 +572,7 @@ describe("top bar", () => {
       cascade(library, "background")?.value,
       cascade(library, "border-color")?.value,
       cascade(library, "box-shadow")?.value,
-    ]).toEqual(["true", "var(--selection)", "var(--accent)", undefined]);
+    ]).toEqual(["true", "none", "var(--accent)", "var(--ring-pressed)"]);
   });
 
   it("closes the Preview as popover on the first Escape and the library drawer on the second", async () => {

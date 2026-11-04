@@ -150,13 +150,18 @@
   background: var(--press) !important;
 }
 
+/* A pressed toggle has no fill, so it reads as on without the selection fill
+   of the current mode. Accent text falls under 4.5:1 on the dark top bar, so
+   only the icon takes the accent. The inset ring doubles the border, which a
+   secondary toggle already draws in --control-border when off. */
 .ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) {
   border-color: var(--accent) !important;
+  box-shadow: var(--ring-pressed) !important;
   color: var(--text) !important;
 }
 
-.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]):where(:not(:active)) {
-  background: var(--selection) !important;
+.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) svg {
+  color: var(--accent);
 }
 
 .ui-button[data-variant="danger"] {
@@ -505,7 +510,7 @@ summary::-webkit-details-marker {
   margin: 0;
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--raised);
+  background: var(--field);
   color: var(--text);
   font-family: inherit;
   font-size: var(--font-size-body);

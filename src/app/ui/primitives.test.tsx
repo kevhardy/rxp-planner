@@ -276,7 +276,7 @@ describe("each primitive", () => {
     ["Danger", "hover", "background", "var(--danger-hover)"],
     ["Danger", "press", "background", "var(--danger-press)"],
     ["Pressed", "rest", "border-color", "var(--accent)"],
-    ["Pressed", "rest", "background", "var(--selection)"],
+    ["Pressed", "rest", "box-shadow", "var(--ring-pressed)"],
     ["Pressed", "press", "background", "var(--press)"],
     ["Pressed", "rest", "color", "var(--text)"],
     ["Open", "rest", "border-color", "transparent"],
