@@ -3,12 +3,12 @@
 
   /* In both themes the top bar is the lightest band and the guide strip the
      darkest, so the strip parts the top bar from the pane heads below it. */
-  --topbar: #f8fafc;
-  --bg: #d3dbe5;
-  --surface: #f3f6f9;
-  --pane-head: #dfe7f1;
+  --topbar: #f1f5fa;
+  --bg: #d1dae5;
+  --surface: #ebf0f6;
+  --pane-head: #dbe4ef;
   --raised: #fff;
-  --hover: #e8edf3;
+  --hover: #e3e9f1;
   --line: #c3ccd7;
   --control-border: #6d7a8b;
   --text: #17202b;
@@ -23,8 +23,8 @@
      1px shadow blurs into a halo. */
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--text)) drop-shadow(0 0 0.5px var(--text));
 
-  --selection: #d8e7fb;
-  --press: #d6e1ed;
+  --selection: #d4e4f9;
+  --press: #d7e1ed;
 
   --accent: #3f6690;
   --pop: #d9473a;
