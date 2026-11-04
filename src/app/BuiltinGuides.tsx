@@ -12,7 +12,6 @@ import type { CurrentGuide } from "./store.ts";
 import { Button, DisclosureIcon, IconButton } from "./ui/Button.tsx";
 import { EmptyState } from "./ui/EmptyState.tsx";
 import { ItemButton } from "./ui/ItemButton.tsx";
-import { Mono } from "./ui/Text.tsx";
 
 const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/";
 const SOURCE_URL = "https://github.com/RestedXP/RXPGuides";
@@ -60,10 +59,7 @@ export function BuiltinSection(props: {
       <div className="lib-row lib-group-head">
         <ItemButton className="lib-toggle" aria-expanded={open} onClick={() => onToggle(BUILTIN_SECTION)}>
           <DisclosureIcon />
-          <span className="lib-name">RestedXP Guides</span>{" "}
-          <span className="count">
-            <Mono>{builtinVersion}</Mono>
-          </span>
+          <span className="lib-name">RestedXP Guides</span> <span className="count">{builtinVersion}</span>
         </ItemButton>
       </div>
       {open && (
