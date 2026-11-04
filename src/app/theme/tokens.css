@@ -36,6 +36,10 @@
   --selection: #d4e4f9;
   --press: #d7e1ed;
 
+  /* The progress arc carries the level, so a pale track keeps the ring
+     below the step title in weight. */
+  --level-track: var(--line);
+
   --accent: #3f6690;
   --pop: #d9473a;
   --pop-ink: #b22f23;
@@ -99,17 +103,17 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --topbar: #2d3643;
-  --bg: #161b22;
-  --surface: #212933;
-  --pane-head: #2d3644;
+  --topbar: #323b49;
+  --bg: #1a2028;
+  --surface: #222a35;
+  --pane-head: #2c3542;
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
   --raised: #36414f;
   /* Darker than every surface it sits on, so a field reads as a well, even
      in a float on --raised. */
-  --field: #1c232c;
-  --hover: #29323d;
+  --field: #1d242e;
+  --hover: #283039;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
@@ -139,11 +143,13 @@
   --selection: #233a54;
   --press: #1e2c3f;
 
+  --level-track: var(--control-border);
+
   --accent: #7fa3c9;
   --pop: #ff6b5a;
   /* Tuned to 4.5:1 under the open-toggle wash on the top bar, where the
      Warnings count keeps it. */
-  --pop-ink: #ff8f82;
+  --pop-ink: #ff978b;
   --pop-fg: #1a2028;
 
   --primary-bg: #4a73a0;
@@ -181,9 +187,9 @@
   --rxp-buy-swatch: var(--rxp-buy);
 
   /* A light rim outlines a float on a dark page, where a shadow does not show. */
-  --elevation-1: 0 0 0 1px #46536a, 0 1px 2px rgb(8 11 16 / 0.5);
-  --elevation-2: 0 0 0 1px #46536a, 0 14px 34px -8px rgb(8 11 16 / 0.8);
-  --float-edge: #46536a;
+  --elevation-1: 0 0 0 1px #586782, 0 1px 2px rgb(8 11 16 / 0.5);
+  --elevation-2: 0 0 0 1px #586782, 0 14px 34px -8px rgb(8 11 16 / 0.8);
+  --float-edge: #586782;
   --scrim: rgb(8 11 16 / 0.6);
 
   --objective-1: #ffa8b5;

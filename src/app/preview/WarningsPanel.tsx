@@ -77,6 +77,15 @@ export function WarningsPanel() {
     (items?.[Math.min(at, items.length - 1)] ?? button.current)?.focus();
   }, [groups]);
 
+  useEffect(() => {
+    const el = body.current;
+    if (!open || !el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => el.toggleAttribute("data-clipped", el.scrollHeight > el.clientHeight));
+    observer.observe(el);
+    for (const child of el.children) observer.observe(child);
+    return () => observer.disconnect();
+  });
+
   useOutsidePress(open, wrap, () => setOpen(false));
 
   const close = () => {
