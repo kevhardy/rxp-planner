@@ -36,6 +36,10 @@
   --selection: #d4e4f9;
   --press: #d7e1ed;
 
+  /* The progress arc carries the level, so a pale track keeps the ring
+     below the step title in weight. */
+  --level-track: var(--line);
+
   --accent: #3f6690;
   --pop: #d9473a;
   --pop-ink: #b22f23;
@@ -138,6 +142,8 @@
 
   --selection: #233a54;
   --press: #1e2c3f;
+
+  --level-track: var(--control-border);
 
   --accent: #7fa3c9;
   --pop: #ff6b5a;

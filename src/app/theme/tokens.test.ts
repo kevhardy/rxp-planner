@@ -238,11 +238,13 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(contrast(color(theme, token(own.color), element), color(theme, token(own.background), element))).toBeGreaterThanOrEqual(3);
   });
 
-  it.each(["surface", "selection"])("draws the level ring's track at 3:1 or more on --%s", (bg) => {
-    let stroke: string | undefined;
-    styles.walkRules(".sim-ring .track", (rule) => rule.walkDecls("stroke", (decl) => void (stroke = decl.value)));
-    expect(contrast(color(theme, token(stroke)), color(theme, bg))).toBeGreaterThanOrEqual(3);
-  });
+  it.each([".before", ".earned"].flatMap((arc) => ["surface", "selection"].map((bg) => [arc, bg])))(
+    "draws the level ring's %s arc at 3:1 or more on --%s",
+    (arc, bg) => {
+      const stroke = written(`.sim-ring ${arc}`, [styles]).stroke;
+      expect(contrast(color(theme, token(stroke)), color(theme, bg))).toBeGreaterThanOrEqual(3);
+    },
+  );
 
   it("puts the selected step's number at 4.5:1 or more on its badge", () => {
     const own = written(".step-row.selected .step-no", [styles]);
