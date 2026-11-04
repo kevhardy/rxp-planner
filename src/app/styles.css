@@ -2155,8 +2155,8 @@ label {
   margin-bottom: var(--space-2);
   padding: 0;
   color: var(--text);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
   font-weight: var(--font-weight-bold);
 }
 
