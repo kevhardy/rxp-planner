@@ -2602,17 +2602,18 @@ legend {
 
 .warn-guide + .warn-guide {
   margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
 }
 
 .warn-kind + .warn-kind {
-  margin-top: var(--space-1);
-  padding-top: var(--space-1);
-  border-top: 1px solid var(--line);
+  margin-top: var(--space-3);
 }
 
 .warn-kind > summary {
   padding-left: var(--space-6);
   color: var(--warn);
+  font-weight: var(--font-weight-bold);
 }
 
 .warn-kind.data-note > summary {
