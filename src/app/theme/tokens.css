@@ -281,7 +281,7 @@
   --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 80%, var(--art-ink));
   --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 70%, var(--art-ink));
   --map-step-rim: color-mix(in srgb, var(--art-ink) 60%, transparent);
-  --font-size-map-step: 10px;
+  --font-size-map-step: 11px;
   --line-height-map-step: 1;
 
   --stack-two: #36c3dc;
