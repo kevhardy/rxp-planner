@@ -169,6 +169,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
               <div className="sim-kill-fields">
                 <DraftField
                   label="Kills here"
+                  layout="stacked"
                   draftName="kills"
                   className="arg-short"
                   mono
@@ -217,6 +218,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
               >
                 <DraftField
                   label="Count"
+                  layout="stacked"
                   draftName="extra count"
                   className="arg-short"
                   mono
@@ -242,6 +244,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
         <div className="sim-kill-fields" role="group" aria-label="New extra kills">
           <DraftField
             label="Count"
+            layout="stacked"
             draftName="new extra count"
             className="arg-short"
             mono
@@ -281,6 +284,7 @@ function MobField(props: {
   return (
     <DraftField
       label="Mob"
+      layout="stacked"
       draftName={props.draftName}
       className="arg-grow"
       mono
