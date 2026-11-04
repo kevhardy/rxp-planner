@@ -36,6 +36,7 @@
   display: grid;
   place-content: center;
   margin: 0;
+  background: var(--bg);
   text-align: center;
   text-wrap: balance;
 }
@@ -102,7 +103,11 @@
   white-space: nowrap;
 }
 
+/* Place names draw over unmarked markers. Selected pins, marked points, and
+   hovered or focused marks come later in the overlay at z-index 1 or more, so
+   they still draw over the names. */
 .map-overlay .place {
+  z-index: 1;
   top: var(--at-y);
   left: var(--at-x);
   translate: -50% -50%;
@@ -895,6 +900,7 @@
 
 .map-legend {
   --legend-mark: 20px;
+  --legend-row: calc(var(--control-small) + 2px);
   --legend-label-start: calc(var(--space-3) + var(--legend-mark) + var(--space-2));
   position: relative;
   flex: 0 1 280px;
@@ -967,7 +973,7 @@
   align-items: center;
   gap: var(--space-1);
   min-height: var(--control-small);
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   padding: 0 var(--space-2) 0 var(--space-3);
 }
 
@@ -1009,7 +1015,7 @@
   align-items: center;
   gap: var(--space-2);
   width: 100%;
-  min-height: var(--control-small);
+  min-height: var(--legend-row);
   padding: 2px var(--space-3);
   text-align: left;
 }
@@ -1114,7 +1120,7 @@
 .legend-step {
   align-items: center;
   gap: var(--space-2);
-  min-height: var(--control-small);
+  min-height: var(--legend-row);
   padding: 2px var(--space-3);
 }
 

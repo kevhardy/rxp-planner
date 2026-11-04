@@ -282,10 +282,6 @@
   white-space: pre;
 }
 
-.route-slope {
-  column-gap: var(--space-1);
-}
-
 .slope-degrees {
   width: 4em;
 }

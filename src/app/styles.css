@@ -2048,7 +2048,7 @@ label {
   color: var(--label);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-bold);
 }
 
 .form-label:has(+ .tag-values) {
@@ -2168,6 +2168,13 @@ label {
   margin-top: var(--space-4);
 }
 
+.sim-kill-fields {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 320px) auto;
+  align-items: start;
+  gap: var(--space-3) var(--space-4);
+}
+
 .sim-kill-xp {
   display: inline-flex;
   align-items: center;
@@ -2182,7 +2189,6 @@ label {
 /* Lines up with the inputs below the field labels: one --line-height-small
    label line and the --space-1 gap of a stacked field. */
 .sim-kill-fields > :not(.ui-field) {
-  --span: 3;
   justify-self: start;
   margin-top: calc(var(--space-4) + var(--space-1));
 }
@@ -2432,8 +2438,7 @@ legend {
 
 .command-form,
 .tag-checks,
-.tag-values,
-.sim-kill-fields {
+.tag-values {
   container-type: inline-size;
   display: grid;
   grid-template-columns: repeat(15, minmax(0, 1fr));
@@ -2441,25 +2446,17 @@ legend {
   gap: var(--space-3) var(--space-4);
 }
 
-:is(.command-form, .tag-checks, .tag-values, .sim-kill-fields) > *,
+:is(.command-form, .tag-checks, .tag-values) > *,
 .arg-run > * {
   --span: 3;
   grid-column: span var(--span);
 }
 
-.sim-kill-fields > .arg-grow {
-  --span: 4;
-}
-
 /* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 78px of Plex Sans at the body size, 17px for the picker, and 18px of padding and border. */
 @container (width < 759px) {
-  :is(.command-form, .tag-checks, .tag-values, .sim-kill-fields) > *,
+  :is(.command-form, .tag-checks, .tag-values) > *,
   .arg-run > * {
     --span: 5;
-  }
-
-  .sim-kill-fields > .arg-grow {
-    --span: 7;
   }
 }
 
