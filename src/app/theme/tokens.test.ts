@@ -127,7 +127,12 @@ function color(theme: Theme, name: string, element: Record<string, string> = {})
   }
   const hex = /^#([\da-f]{3}|[\da-f]{6})$/i.exec(value)?.[1];
   if (hex === undefined) throw new Error(`--${name} is not an opaque color: ${value}`);
-  const full = hex.length === 3 ? [...hex].map((digit) => digit + digit).join("") : hex;
+  const full =
+    hex.length === 3
+      ? Array.from(hex)
+          .map((digit) => digit + digit)
+          .join("")
+      : hex;
   return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16)) as Rgb;
 }
 

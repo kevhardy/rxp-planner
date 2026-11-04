@@ -74,7 +74,9 @@ describe("coloredText", () => {
     expect(texts).toContain("Kill |cRXP_ENEMY_Moonkin|r. Loot them for their |T132832:0|t|cRXP_LOOT_[Small Eggs]|r");
     const look = (source: string) => {
       const { pieces } = coloredText(source);
-      const chars = pieces.flatMap((p) => (p.kind === "text" ? [...source.slice(...p.range)].map((c) => [c, p.color] as const) : []));
+      const chars = pieces.flatMap((p) =>
+        p.kind === "text" ? Array.from(source.slice(...p.range)).map((c) => [c, p.color] as const) : [],
+      );
       const opaque = pieces.flatMap((p) => (p.kind === "opaque" ? [source.slice(...p.range)] : []));
       return { chars, opaque };
     };
@@ -85,7 +87,7 @@ describe("coloredText", () => {
       let at = 0;
       for (const piece of text.pieces) {
         if (piece.kind !== "text") continue;
-        const length = [...source.slice(...piece.range)].length;
+        const length = Array.from(source.slice(...piece.range)).length;
         const to = piece.color === "LOOT" ? "WARN" : "LOOT";
         const after = editColoredText(text, { kind: "color", range: piece.range, color: to }).text;
         const expected = before.chars.map(([c, was], i) => [c, i >= at && i < at + length ? to : was] as const);
