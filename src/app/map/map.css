@@ -938,9 +938,8 @@
 }
 
 .map-legend[open] > summary {
+  border-bottom: 1px solid var(--raised-line);
   border-radius: var(--radius-float) var(--radius-float) 0 0;
-  background: var(--selection);
-  box-shadow: var(--ink-bar-open);
 }
 
 .map-legend summary > svg {
@@ -1058,6 +1057,11 @@
   box-shadow: var(--ring-control);
 }
 
+/* Ship, zeppelin, and tram art is dark at its edge and would sink into a dark card. */
+.legend-group[data-layer="transport"] .map-icon:not(.route-swatch) {
+  outline: 1px solid var(--layer-swatch-border);
+}
+
 .legend-row .spawn-swatch {
   border-radius: var(--radius-control);
   /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
@@ -1108,11 +1112,13 @@
 
 .legend-count {
   color: var(--label);
-}
-
-.legend-count {
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+}
+
+.legend-state {
+  color: var(--muted);
+  font-style: italic;
 }
 
 .legend-filter {
