@@ -555,21 +555,23 @@
 .pin-previous:hover:not(:disabled),
 .pin-upcoming,
 .pin-upcoming:hover:not(:disabled) {
-  width: 13px;
-  height: 13px;
-  font-size: var(--font-size-mark);
-  line-height: var(--line-height-mark);
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--map-step-rim);
+  color: var(--art-paper);
+  font-size: var(--font-size-map-step);
+  line-height: var(--line-height-map-step);
+  text-shadow: var(--art-text-halo);
 }
 
 .pin-previous,
 .pin-previous:hover:not(:disabled) {
-  background: var(--step-previous);
+  background: var(--map-step-previous-fill);
 }
 
 .pin-upcoming,
 .pin-upcoming:hover:not(:disabled) {
-  background: var(--step-upcoming);
-  color: var(--art-ink);
+  background: var(--map-step-upcoming-fill);
 }
 
 /* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
@@ -1176,11 +1178,13 @@
 }
 
 .step-swatch.previous {
-  background: var(--step-previous);
+  border-color: var(--map-step-rim);
+  background: var(--map-step-previous-fill);
 }
 
 .step-swatch.upcoming {
-  background: var(--step-upcoming);
+  border-color: var(--map-step-rim);
+  background: var(--map-step-upcoming-fill);
 }
 
 .stack-swatch {
