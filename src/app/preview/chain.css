@@ -13,8 +13,8 @@
   max-width: 190px;
   overflow: hidden;
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
 }
 
