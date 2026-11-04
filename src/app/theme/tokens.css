@@ -112,7 +112,7 @@
      text beside it. A rim in the darkest surface gives a dark icon, such as
      the book, an edge, where a pale rim reads as a second outline. Two
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
-  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
+  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
 
   --selection: #233a54;
   --press: #1e2c3f;
