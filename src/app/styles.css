@@ -1034,6 +1034,10 @@ label {
   background: var(--selection);
 }
 
+.lib-row.current {
+  box-shadow: var(--ink-bar-start);
+}
+
 .lib-toggle,
 .lib-guide {
   display: flex;
