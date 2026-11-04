@@ -175,8 +175,8 @@
 
 .ui-button:is(:disabled, [aria-disabled="true"]),
 .ui-button:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
-  border-color: transparent !important;
-  background: var(--disabled-bg) !important;
+  border-color: var(--disabled-fg) !important;
+  background: none !important;
   box-shadow: none !important;
   color: var(--disabled-fg) !important;
   font-weight: var(--font-weight-regular) !important;
@@ -186,8 +186,7 @@
 
 .ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]),
 .ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
-  background: none !important;
-  color: var(--disabled-fg) !important;
+  border-color: transparent !important;
 }
 
 .ui-disclosure {
