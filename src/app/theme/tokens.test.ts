@@ -24,7 +24,7 @@ const PAIRS: Pair[] = [
   ["raised-line", "raised", 1.5],
   ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
   ...on(["pop", "accent"], ["surface", "selection"], 3),
-  ...on(["accent"], ["raised", "hover"], 3),
+  ...on(["accent"], ["topbar", "pane-head", "raised", "hover"], 3),
   ["pop-fg", "pop-ink", 4.5],
   ...on(
     KINDS.map((kind) => `kind-${kind}`),
