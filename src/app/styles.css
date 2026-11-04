@@ -1041,12 +1041,14 @@ label {
   background: var(--hover);
 }
 
-.lib-row:focus-within,
-.lib-row.current {
-  background: var(--selection);
+/* Only the open guide takes the selection fill. A focused row, such as a
+   group just folded open, keeps the hover fill. */
+.lib-row:focus-within:not(.current) {
+  background: var(--hover);
 }
 
 .lib-row.current {
+  background: var(--selection);
   box-shadow: var(--ink-bar-start);
 }
 
