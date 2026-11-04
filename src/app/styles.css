@@ -805,7 +805,7 @@ label {
   height: 50px;
   padding: 0 var(--space-3) var(--ruler-band) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--pane-head);
+  background: var(--topbar);
   white-space: nowrap;
 }
 
@@ -860,7 +860,7 @@ label {
 }
 
 .logo-paper-fill {
-  fill: var(--pane-head);
+  fill: var(--topbar);
 }
 
 .wordmark b {

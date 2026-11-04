@@ -1,11 +1,14 @@
 :root {
   color-scheme: light;
 
-  --bg: #d8dee6;
-  --surface: #f0f3f7;
-  --pane-head: #dde3eb;
+  /* In both themes the top bar is the lightest band and the guide strip the
+     darkest, so the strip parts the top bar from the pane heads below it. */
+  --topbar: #f8fafc;
+  --bg: #d3dbe5;
+  --surface: #f3f6f9;
+  --pane-head: #dfe7f1;
   --raised: #fff;
-  --hover: #e9edf2;
+  --hover: #e8edf3;
   --line: #c3ccd7;
   --control-border: #6d7a8b;
   --text: #17202b;
@@ -80,20 +83,21 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #1a2028;
-  --surface: #222a34;
-  --pane-head: #2b3542;
-  --raised: #2c3644;
-  --hover: #29323d;
+  --topbar: #303a48;
+  --bg: #161b22;
+  --surface: #1d242d;
+  --pane-head: #2a3340;
+  --raised: #323d4b;
+  --hover: #252e39;
   --line: #364252;
-  --control-border: #74839a;
+  --control-border: #7e8da4;
   --text: #e3e8ee;
   --muted: #aab6c5;
   --map-backdrop: #11161c;
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
-  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%2374839a' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* The icons' own dark outline vanishes on a dark page, so a slate rim
      draws their edge, and a dimmer fill keeps a pale icon from glaring. */
   --ring-guide-icon: brightness(0.85) drop-shadow(0 0 0.5px var(--control-border)) drop-shadow(0 0 0.5px var(--control-border));
@@ -140,8 +144,8 @@
   --rxp-pick: #e77ad8;
 
   /* A light rim outlines a float on a dark page, where a shadow does not show. */
-  --elevation-1: 0 0 0 1px #3a4656, 0 1px 2px rgb(8 11 16 / 0.5);
-  --elevation-2: 0 0 0 1px #3a4656, 0 14px 34px -8px rgb(8 11 16 / 0.8);
+  --elevation-1: 0 0 0 1px #46536a, 0 1px 2px rgb(8 11 16 / 0.5);
+  --elevation-2: 0 0 0 1px #46536a, 0 14px 34px -8px rgb(8 11 16 / 0.8);
   --scrim: rgb(8 11 16 / 0.6);
 
   --objective-1: #ffa8b5;
@@ -156,11 +160,11 @@
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
-  /* 80% is the least share at which the border reaches 3:1 on the light
+  /* 82% is the least share at which the border reaches 3:1 on the light
      page background. */
-  --warn-border: color-mix(in srgb, var(--warn) 80%, var(--surface));
-  --danger-border: color-mix(in srgb, var(--danger) 80%, var(--surface));
-  --add-done-border: color-mix(in srgb, var(--ok) 80%, var(--surface));
+  --warn-border: color-mix(in srgb, var(--warn) 82%, var(--surface));
+  --danger-border: color-mix(in srgb, var(--danger) 82%, var(--surface));
+  --add-done-border: color-mix(in srgb, var(--ok) 82%, var(--surface));
   --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);

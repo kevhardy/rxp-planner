@@ -123,7 +123,7 @@
   min-height: var(--head-height);
   padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--pane-head);
   color: var(--text);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -283,7 +283,7 @@
   min-height: var(--head-height);
   padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--pane-head);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
