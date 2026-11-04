@@ -493,7 +493,7 @@
   margin: 0;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);

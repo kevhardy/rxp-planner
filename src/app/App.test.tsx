@@ -487,7 +487,7 @@ describe("top bar", () => {
     const more = screen.getByRole<HTMLButtonElement>("button", { name: "More guide actions" });
     expect([more.disabled, cascade(more, "background")?.value, cascade(more, "border-color")?.value]).toEqual([
       false,
-      "var(--surface)",
+      "var(--raised)",
       "var(--control-border)",
     ]);
   });
@@ -559,7 +559,7 @@ describe("top bar", () => {
       await user.click(trigger);
       looks.push([trigger.getAttribute("aria-expanded"), cascade(trigger, "background")?.value, cascade(trigger, "box-shadow")?.value]);
     }
-    expect(looks).toEqual(Array(3).fill(["true", "var(--selection)", "var(--ink-bar-bottom)"]));
+    expect(looks).toEqual(Array(3).fill(["true", "var(--selection)", "var(--ink-bar-open)"]));
   });
 
   it("closes the Preview as popover on the first Escape and the library drawer on the second", async () => {

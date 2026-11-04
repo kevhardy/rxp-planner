@@ -212,6 +212,7 @@ label {
   min-height: var(--head-height);
   padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
   border-bottom: 1px solid var(--line);
+  background: var(--pane-head);
 }
 
 .panel-head h2 {
@@ -517,7 +518,7 @@ label {
   padding: var(--space-2) var(--space-4);
   border: 1px solid var(--text);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   pointer-events: none;
 }
@@ -544,7 +545,7 @@ label {
   max-height: 86vh;
   padding: var(--space-4);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   overflow: auto;
 }
@@ -803,7 +804,7 @@ label {
   height: 50px;
   padding: 0 var(--space-3) var(--ruler-band) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--surface);
+  background: var(--pane-head);
   white-space: nowrap;
 }
 
@@ -851,7 +852,7 @@ label {
 }
 
 .logo-paper-fill {
-  fill: var(--surface);
+  fill: var(--pane-head);
 }
 
 .wordmark b {
@@ -1003,11 +1004,11 @@ label {
   color: var(--text);
 }
 
-.lib-row:hover,
-.lib-row:focus-within {
-  background: var(--selection);
+.lib-row:hover {
+  background: var(--hover);
 }
 
+.lib-row:focus-within,
 .lib-row.current {
   background: var(--selection);
 }
@@ -1070,7 +1071,7 @@ label {
   .lib-group-head > .row-actions {
     justify-self: end;
     padding-left: var(--space-1);
-    background: var(--selection);
+    background: inherit;
     pointer-events: none;
   }
 
@@ -1242,7 +1243,7 @@ label {
 }
 
 .step-row:hover {
-  background: var(--bg);
+  background: var(--hover);
 }
 
 .step-row.selected {
@@ -1757,7 +1758,7 @@ label {
   display: block;
   overflow: auto;
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
 }
 
@@ -1768,7 +1769,7 @@ label {
 }
 
 .options [role="option"]:hover {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .options [role="option"][aria-selected="true"] {
@@ -1840,7 +1841,7 @@ label {
   padding: 1px var(--space-2);
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--raised);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   white-space: pre-wrap;
@@ -2540,7 +2541,7 @@ legend {
 }
 
 .warnings summary:hover {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .warn-guide > summary {

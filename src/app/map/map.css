@@ -279,7 +279,7 @@
   padding: 0;
   list-style: none;
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   overflow: hidden auto;
   overscroll-behavior: contain;
@@ -491,7 +491,7 @@
   translate: 12px -50%;
   padding: 1px var(--space-2);
   border-radius: var(--radius-round);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-1);
   font-size: var(--font-size-micro);
   line-height: var(--line-height-micro);
@@ -628,7 +628,7 @@
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-1);
 }
 
@@ -690,7 +690,7 @@
 }
 
 .map-menu-row:hover > .ui-menu-item {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .map-menu a {
@@ -882,7 +882,7 @@
   flex: 0 1 280px;
   min-width: 180px;
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
@@ -911,13 +911,13 @@
 }
 
 .map-legend summary:hover {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .map-legend[open] > summary {
   border-radius: var(--radius-float) var(--radius-float) 0 0;
   background: var(--selection);
-  box-shadow: var(--ink-bar-bottom);
+  box-shadow: var(--ink-bar-open);
 }
 
 .map-legend summary > svg {
@@ -1277,7 +1277,7 @@
 }
 
 .search-wowhead:hover {
-  background: var(--selection);
+  background: var(--hover);
   color: var(--text);
 }
 

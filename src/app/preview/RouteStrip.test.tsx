@@ -323,7 +323,7 @@ describe("route card looks", () => {
     expect([
       card.classList.contains("inactive"),
       ...([[], ["hover"], ["active"]] satisfies State[][]).map((states) => looks(card, states)),
-    ]).toEqual([true, ["var(--surface)", "var(--warn)"], ["var(--selection)", "var(--warn)"], ["var(--press)", "var(--warn)"]]);
+    ]).toEqual([true, ["var(--surface)", "var(--warn)"], ["var(--hover)", "var(--warn)"], ["var(--press)", "var(--warn)"]]);
   });
 
   it("keeps a hidden start card's status border under the current look", () => {
