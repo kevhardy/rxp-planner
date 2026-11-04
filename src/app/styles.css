@@ -825,6 +825,13 @@ label {
   stroke: var(--control-border);
 }
 
+/* Library opens a pane, not a popover, so it reads as a pressed toggle and
+   leaves the underline to the current mode. */
+.library-toggle[aria-expanded="true"] {
+  border-color: var(--accent);
+  background: var(--selection);
+}
+
 .topbar .popover {
   top: calc(100% + 8px + var(--ruler-band));
 }

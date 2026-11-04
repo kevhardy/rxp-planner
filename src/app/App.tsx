@@ -192,9 +192,10 @@ function TopBar(props: {
       <Described text="Your guides and RestedXP's built-in guides">
         <Button
           ref={props.libraryButton}
+          className="library-toggle"
           variant="ghost"
           size={32}
-          popoverOpen={props.libraryOpen}
+          expanded={props.libraryOpen}
           aria-controls="library-drawer"
           onClick={props.onLibrary}
         >
