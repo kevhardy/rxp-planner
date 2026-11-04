@@ -3,12 +3,12 @@
 
   /* In both themes the top bar is the lightest band and the guide strip the
      darkest, so the strip parts the top bar from the pane heads below it. */
-  --topbar: #f8fafc;
-  --bg: #d3dbe5;
-  --surface: #f3f6f9;
-  --pane-head: #dfe7f1;
+  --topbar: #f1f5fa;
+  --bg: #d1dae5;
+  --surface: #ebf0f6;
+  --pane-head: #dbe4ef;
   --raised: #fff;
-  --hover: #e8edf3;
+  --hover: #e3e9f1;
   --line: #c3ccd7;
   --control-border: #6d7a8b;
   --text: #17202b;
@@ -23,8 +23,8 @@
      1px shadow blurs into a halo. */
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--text)) drop-shadow(0 0 0.5px var(--text));
 
-  --selection: #d8e7fb;
-  --press: #d6e1ed;
+  --selection: #d4e4f9;
+  --press: #d7e1ed;
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -85,10 +85,10 @@
 
   --topbar: #303a48;
   --bg: #161b22;
-  --surface: #1d242d;
+  --surface: #212933;
   --pane-head: #2a3340;
   --raised: #323d4b;
-  --hover: #252e39;
+  --hover: #29323d;
   --line: #364252;
   --control-border: #7e8da4;
   --text: #e3e8ee;
@@ -98,11 +98,10 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* The icons' own dark outline vanishes on a dark page, so a slate rim
-     draws their edge. Four unblurred half-pixel shifts give a thin rim that
-     stays crisp, where a blurred shadow softens the edge. */
-  --ring-guide-icon: drop-shadow(0.5px 0 var(--control-border)) drop-shadow(-0.5px 0 var(--control-border))
-    drop-shadow(0 0.5px var(--control-border)) drop-shadow(0 -0.5px var(--control-border));
+  /* A pale fill holds its own edge on a dark page, where any pale rim reads
+     as a second outline. Dimming keeps a white fill, such as the speech
+     bubble, quieter than the text beside it. */
+  --ring-guide-icon: brightness(0.92);
 
   --selection: #233a54;
   --press: #1e2c3f;
@@ -172,9 +171,9 @@
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
-  /* 70% keeps a placeholder lighter than --muted, and at 3:1 or more on an
+  /* 90% keeps a placeholder lighter than --muted, and at 4.5:1 or more on an
      input in both themes. */
-  --placeholder: color-mix(in srgb, var(--muted) 70%, var(--raised));
+  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--raised));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));
@@ -304,12 +303,15 @@
   --font-size-micro: 11px;
   --font-size-small: 12px;
   --font-size-caption: 13px;
+  --font-size-note: 13px;
   --font-size-body: 14px;
   --font-size-pane-title: 16px;
   --font-size-title: 20px;
   --line-height-micro: 16px;
   --line-height-small: 16px;
   --line-height-caption: 16px;
+  /* Caption text that wraps, where 16px packs the lines too tight. */
+  --line-height-note: 18px;
   --line-height-body: 20px;
   --line-height-pane-title: 20px;
   --line-height-title: 28px;

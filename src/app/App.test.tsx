@@ -487,7 +487,7 @@ describe("top bar", () => {
     const more = screen.getByRole<HTMLButtonElement>("button", { name: "More guide actions" });
     expect([more.disabled, cascade(more, "background")?.value, cascade(more, "border-color")?.value]).toEqual([
       false,
-      "var(--raised)",
+      "none",
       "var(--control-border)",
     ]);
   });
