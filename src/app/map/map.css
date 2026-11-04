@@ -875,7 +875,6 @@
 }
 
 .map-legend {
-  --legend-eye-column: 24px;
   --legend-mark: 20px;
   --legend-label-start: calc(var(--space-3) + var(--legend-mark) + var(--space-2));
   position: relative;
@@ -1106,8 +1105,16 @@
   padding: 2px var(--space-3);
 }
 
-.legend-step .legend-count {
-  margin-right: var(--legend-eye-column);
+/* Step rows show their state with the toggles' eye, but Step display sets it, so it has no pressed fill. */
+.legend-step svg {
+  box-sizing: content-box;
+  margin-right: -2px;
+  padding: 2px;
+  color: var(--text);
+}
+
+.legend-step svg.off {
+  color: var(--muted);
 }
 
 .step-swatch {

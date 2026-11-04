@@ -336,6 +336,7 @@ function StepRow(props: { side: "previous" | "selected" | "upcoming" | "optional
       <span className={`step-swatch ${props.side}`} aria-hidden="true" />
       <span className="legend-name">{props.name}</span>
       {props.show && <span className="legend-count">{SHOW_NAMES[props.show]}</span>}
+      {props.show === "hidden" ? <Icon name="eyeOff" className="off" /> : <Icon name="eye" />}
     </div>
   );
 }
