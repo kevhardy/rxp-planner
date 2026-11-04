@@ -174,7 +174,7 @@ export function LineEditor(props: {
         <DraftScope.Provider value={{ object: line, guide }}>{editor}</DraftScope.Provider>
         {home === "lines" && rendered && (
           <span className="shows-as">
-            Shows as: <GuideText parts={guideText(text, (type, id) => names.lookup(type, id)?.name)} links="entity" />
+            Shows as: <GuideText parts={guideText(text, (type, id) => names.lookup(type, id)?.name, { colors: true })} links="entity" />
           </span>
         )}
         {home === "lines" && lineHasMapReference(line) && <FocusOnMap line={line} pos={pos} />}

@@ -282,7 +282,9 @@ label {
   width: 13px;
   height: 13px;
   margin: 1.5px;
-  stroke-width: 1.75;
+  /* Drawn 1.75px wide through the 13/16 scale, the weight of the 16px
+     interface icons such as the trash can. */
+  stroke-width: 2.15;
 }
 .mk-cast {
   --kind: var(--kind-train);
@@ -1039,12 +1041,14 @@ label {
   background: var(--hover);
 }
 
-.lib-row:focus-within,
-.lib-row.current {
-  background: var(--selection);
+/* Only the open guide takes the selection fill. A focused row, such as a
+   group just folded open, keeps the hover fill. */
+.lib-row:focus-within:not(.current) {
+  background: var(--hover);
 }
 
 .lib-row.current {
+  background: var(--selection);
   box-shadow: var(--ink-bar-start);
 }
 
@@ -1872,12 +1876,29 @@ label {
   display: flex;
   flex-basis: 100%;
   flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-1);
   margin-top: var(--space-1);
   margin-left: calc(-1 * var(--space-1));
 }
 
 .rxp-swatch {
+  gap: var(--space-1);
   padding-inline: var(--space-1);
+}
+
+/* A rule sets the Clear action apart from the colors, and wraps with it. */
+.rxp-clear {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.rxp-clear::before {
+  content: "";
+  width: 1px;
+  height: var(--line-height-caption);
+  background: var(--line);
 }
 
 .rxp-swatch-color {
@@ -1937,9 +1958,16 @@ label {
 :is(.rxp-colored, .rxp-swatch-color)[data-color="PICK"] {
   --rxp: var(--rxp-pick);
 }
+.rxp-swatch-color[data-color="BUY"] {
+  --rxp: var(--rxp-buy-swatch);
+}
 
 .rxp-colored {
   color: var(--rxp);
+}
+
+.rxp-colored a {
+  color: inherit;
 }
 
 .rxp-chip {
@@ -1978,11 +2006,14 @@ label {
   background-repeat: no-repeat;
 }
 
+/* The vector art fills its 16-unit view box, where a game sprite has a
+   frame and padding. At 14/16 of the box, a vector icon matches the 1em
+   sprite beside 14px text in weight. */
 .guide-icon.vector {
   filter: var(--ring-guide-icon);
   background-image: var(--icon-url);
-  background-size: 100% 100%;
-  background-position: 0 0;
+  background-size: 87.5% 87.5%;
+  background-position: center;
 }
 
 .guide-icon:not(.vector, .missing) {
@@ -2598,10 +2629,14 @@ legend {
   color: inherit;
 }
 
+/* The top bar's popover offset ends 1.5px below the guide strip's top edge.
+   2.5px more leaves a 4px gap, so the popover's ring clears that edge. */
 .warnings.popover {
+  top: calc(100% + 8px + var(--ruler-band) + 2.5px);
   width: min(620px, 100vw - 16px);
-  max-height: calc(100vh - 76px);
+  max-height: calc(100vh - 78px);
   padding: 0;
+  outline: 1px solid var(--float-edge);
 }
 
 .warnings.popover:not([hidden]) {
@@ -2659,11 +2694,13 @@ legend {
 .warn-kind > summary {
   padding-left: var(--space-6);
   color: var(--warn);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   font-weight: var(--font-weight-bold);
 }
 
 .warn-kind.data-note > summary {
-  color: var(--text);
+  color: var(--label);
 }
 
 .warn-kind ul {
@@ -2693,6 +2730,11 @@ legend {
   flex: 1;
   min-width: 0;
   text-wrap: pretty;
+}
+
+.warn-message .ui-mono {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .warn-place {

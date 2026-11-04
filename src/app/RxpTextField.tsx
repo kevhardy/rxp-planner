@@ -291,7 +291,7 @@ export function RxpTextField(props: {
       </span>
       <div className="rxp-colors" role="group" aria-label={`${label} colors`}>
         {RXP_COLORS.map(swatch)}
-        {swatch(null)}
+        <span className="rxp-clear">{swatch(null)}</span>
       </div>
       {picking && (
         <IconPicker

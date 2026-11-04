@@ -491,6 +491,11 @@ describe("EditorDock markup", () => {
     const shows = (card: HTMLElement) => card.querySelector(".shows-as")!.textContent;
     const note = await showLine(user, 1);
     expect(shows(note)).toBe("Shows as: Kill Boars for [Boar Meat]");
+    const shownColors = [...note.querySelectorAll<HTMLElement>(".shows-as .rxp-colored")].map((el) => [el.dataset.color, el.textContent]);
+    expect(shownColors).toEqual([
+      ["ENEMY", "Boars"],
+      ["LOOT", "[Boar Meat]"],
+    ]);
     const noteText = within(note).getByRole("textbox", { name: "Text" });
     expect(shownText(noteText)).toBe("Kill Boars for |T133970:0|t[Boar Meat]");
     expect([...noteText.querySelectorAll(".rxp-colored")].map((el) => el.textContent)).toEqual(["Boars", "[Boar Meat]"]);

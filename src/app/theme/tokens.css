@@ -76,9 +76,15 @@
   --rxp-warn: #825800;
   --rxp-buy: #334c00;
   --rxp-pick: #a3218f;
+  /* Text needs the dark BUY above, which reads as black in an 8px dot. */
+  --rxp-buy-swatch: #5a8a00;
 
   --elevation-1: 0 0 0 1px rgb(23 32 43 / 0.14), 0 1px 2px rgb(23 32 43 / 0.12);
   --elevation-2: 0 0 0 1px rgb(23 32 43 / 0.12), 0 12px 30px -8px rgb(23 32 43 / 0.3);
+  /* The elevation ring is translucent, so its tone follows what lies behind
+     it. A float that spans the guide strip and the map takes this solid
+     edge to keep one tone on all four sides. */
+  --float-edge: #9fabba;
   --scrim: rgb(23 32 43 / 0.45);
 
   --objective-1: #ed346a;
@@ -122,7 +128,7 @@
      a second outline around a white fill. Two half-pixel shadows stay crisp,
      where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
-  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
@@ -167,10 +173,12 @@
   --rxp-warn: #e5b53c;
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
+  --rxp-buy-swatch: var(--rxp-buy);
 
   /* A light rim outlines a float on a dark page, where a shadow does not show. */
   --elevation-1: 0 0 0 1px #46536a, 0 1px 2px rgb(8 11 16 / 0.5);
   --elevation-2: 0 0 0 1px #46536a, 0 14px 34px -8px rgb(8 11 16 / 0.8);
+  --float-edge: #46536a;
   --scrim: rgb(8 11 16 / 0.6);
 
   --objective-1: #ffa8b5;
