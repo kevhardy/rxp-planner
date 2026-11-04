@@ -4,9 +4,9 @@
   /* In both themes the top bar is the lightest band and the guide strip the
      darkest, so the strip parts the top bar from the pane heads below it. */
   --topbar: #f1f5fa;
-  --bg: #d1dae5;
+  --bg: #cbd5e1;
   --surface: #ebf0f6;
-  --pane-head: #dbe4ef;
+  --pane-head: #d3dde9;
   --raised: #fff;
   --hover: #e3e9f1;
   --line: #c3ccd7;
@@ -31,7 +31,7 @@
 
   --accent: #3f6690;
   --pop: #d9473a;
-  --pop-ink: #b83226;
+  --pop-ink: #b22f23;
   --pop-fg: #fff;
 
   --primary-bg: var(--accent);
@@ -168,11 +168,11 @@
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
-  /* 82% is the least share at which the border reaches 3:1 on the light
+  /* 85% is the least share at which the border reaches 3:1 on the light
      page background. */
-  --warn-border: color-mix(in srgb, var(--warn) 82%, var(--surface));
-  --danger-border: color-mix(in srgb, var(--danger) 82%, var(--surface));
-  --add-done-border: color-mix(in srgb, var(--ok) 82%, var(--surface));
+  --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
+  --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
+  --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
