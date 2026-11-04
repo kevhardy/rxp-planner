@@ -123,7 +123,7 @@
   min-height: var(--head-height);
   padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--pane-head);
+  background: var(--surface);
   color: var(--text);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -243,6 +243,7 @@
   display: flex;
   width: 40px;
   height: 2px;
+  margin-top: calc(var(--space-1) - 1px);
   overflow: hidden;
   border-radius: var(--radius-control);
   background: var(--line);
@@ -282,7 +283,7 @@
   min-height: var(--head-height);
   padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--pane-head);
+  background: var(--surface);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
