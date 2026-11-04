@@ -129,6 +129,7 @@
   font-size: var(--font-size-micro);
   line-height: var(--line-height-micro);
   font-weight: var(--font-weight-regular);
+  opacity: 0.75;
 }
 
 .map-icon {

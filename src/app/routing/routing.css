@@ -772,7 +772,7 @@
   place-items: center;
   width: 18px;
   height: 18px;
-  border: 1px solid var(--ride-mark-border);
+  border: 1px solid var(--transport-line);
   border-radius: var(--radius-control);
   translate: -50% -50%;
   background: var(--ride-mark-bg);
