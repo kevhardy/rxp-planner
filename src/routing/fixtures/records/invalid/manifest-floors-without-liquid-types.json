@@ -1,0 +1,60 @@
+{
+  "validator": "manifest",
+  "error": "manifest.floors.liquidTypes: missing",
+  "input": {
+    "schema": "restedxp-routing-artifact",
+    "version": 4,
+    "id": "routing-forever-1.60.1.70124-m0-80fe70c25d05bae1",
+    "scope": {
+      "variant": "forever",
+      "build": "1.60.1.70124",
+      "map": 0
+    },
+    "frame": {
+      "origin": [23, 20],
+      "size": [23, 42],
+      "tilePixels": 512,
+      "cellsPerTile": 128,
+      "tileWorldUnits": 533.3333333333334
+    },
+    "tiles": [
+      {
+        "tile": [9, 22],
+        "state": "present"
+      },
+      {
+        "tile": [10, 22],
+        "state": "missing"
+      }
+    ],
+    "zones": [1426, 1432],
+    "assets": [
+      {
+        "path": "floors/9_22.bin",
+        "bytes": 686,
+        "sha256": "2fda5602729715add28c45e167b45965fbe4d4fb406d7515e11fa6909376af7d"
+      },
+      {
+        "path": "tiles/9_22.bin",
+        "bytes": 35434,
+        "sha256": "0ddf4e002f0e69299dfaa9b227354eaa530d020becd9d6831b37c42a64d35708"
+      },
+      {
+        "path": "zones.bin",
+        "bytes": 264,
+        "sha256": "592ab581892171a1f7e37483fbf7111b20e3cb2f7f538f62ca670ac9d111fd83"
+      }
+    ],
+    "floors": {
+      "dataset": {
+        "path": "data/entities-forever.json.gz",
+        "sha256": "e5c73f80ea76dd02d48c7141e2b5db41c8132ba8bea4626528421821f79fa32a"
+      },
+      "spawns": {
+        "path": "inputs/routing/spawns.csv",
+        "sha256": "6c6f707da1d984a5ef4bf826c8b6e38ca4612cb693d7e843062436bfb1efdc62"
+      }
+    },
+    "floorClimb": 1.0666664
+  }
+}

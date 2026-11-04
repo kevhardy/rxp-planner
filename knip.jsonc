@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "rules": { "types": "off", "nsTypes": "off" },
+  "workspaces": {
+    ".": {
+      // The configs in integration/ throw without an installed dataset, and the Vitest plugin loads every
+      // config that package.json names. The Vite plugin still reads the test settings in vite.config.ts.
+      "vitest": false,
+      "entry": [
+        "scripts/playback-performance.ts",
+        "scripts/guides/simulation-diff.ts",
+        "scripts/routing/cli.ts",
+        "scripts/routing/transport-benchmark.ts",
+        "scripts/data-contract/consumer.ts",
+        "{src,scripts}/**/*.test-d.{ts,tsx}",
+      ],
+    },
+    "packages/oxlint-plugin-rxpplanner": {
+      "entry": ["src/**/*.test.ts"],
+    },
+  },
+}

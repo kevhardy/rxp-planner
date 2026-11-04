@@ -1,0 +1,12 @@
+{
+  "name": "oxlint-plugin-rxpplanner",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@oxlint/plugins": "1.90.0"
+  },
+  "devDependencies": {
+    "oxlint": "1.90.0"
+  }
+}

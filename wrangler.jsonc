@@ -1,0 +1,9 @@
+{
+  "name": "rxp-planner",
+  "compatibility_date": "2026-10-22",
+  "assets": {
+    "directory": "./dist",
+  },
+  // Cloudflare attaches a custom domain only in a zone of the deploying account.
+  "routes": [{ "pattern": "rxp-planner.quest", "custom_domain": true }],
+}

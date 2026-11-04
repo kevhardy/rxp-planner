@@ -1,0 +1,65 @@
+import { checkExamples } from "../examples.ts";
+import rule from "./no-string-of-caught-error.ts";
+
+checkExamples("no-string-of-caught-error", rule, [
+  { name: "C01", code: "try { f(); } catch (error) { alert(errorText(error)); }" },
+  { name: "C02", code: 'const error = new Error("x"); alert(String(error));' },
+  { name: "C03", code: "p.then((value) => String(value));" },
+  { name: "C04", code: "try { f(); } catch (error) { [1].map((error) => String(error)); }" },
+  { name: "C05", code: "p.catch((error) => `Failed: ${(error as Error).message}`);" },
+  { name: "C06", code: "p.catch((error) => tag`${error}`);" },
+  { name: "C07", code: "function String(value: unknown) { return value; } try { f(); } catch (error) { alert(String(error)); }" },
+  { name: "C08", code: "p.then(undefined, (error) => console.error(error));" },
+  { name: "C09", code: "try { f(); } catch (error) { alert(error === stop); }" },
+  { name: "C10", code: "p.catch((error) => (error instanceof Error ? error.message : String(error)));" },
+  { name: "C11", code: "p.catch((error) => (error instanceof Error ? error.message : (String(error) as string)));" },
+  { name: "C12", code: 'try { f(); } catch (error) { alert(`Search ${error ? "failed" : "stopped"}`); }' },
+  { name: "C20", code: "try { f(); } catch (error) { alert(String(error)); }", reports: [["String(error)", 36]] },
+  { name: "C21", code: "try { f(); } catch (error) { alert(`Failed: ${error}`); }", reports: [["error", 47]] },
+  { name: "C22", code: 'try { f(); } catch (error) { alert("Failed: " + error); }', reports: [['"Failed: " + error', 36]] },
+  { name: "C23", code: "p.catch((error) => String(error));", reports: [["String(error)", 20]] },
+  { name: "C24", code: "p.then(() => 1, (error) => String(error));", reports: [["String(error)", 28]] },
+  { name: "C25", code: "p.catch(function (error) { return String(error); });", reports: [["String(error)", 35]] },
+  { name: "C26", code: "p.catch((error: unknown) => String(error as Error));", reports: [["String(error as Error)", 29]] },
+  { name: "C27", code: "try { f(); } catch (error) { setTimeout(() => alert(String(error))); }", reports: [["String(error)", 53]] },
+  {
+    name: "C28",
+    code: "p.catch(((error: unknown) => String(error)) satisfies (error: unknown) => string);",
+    reports: [["String(error)", 30]],
+  },
+  { name: "C29", code: 'p.catch((error: unknown = "Unknown error") => String(error));', reports: [["String(error)", 47]] },
+  { name: "C30", code: "p.catch(function show(error) { return String(error); });", reports: [["String(error)", 39]] },
+  { name: "C31", code: 'p.catch((error) => (error instanceof Error ? String(error) : "unknown"));', reports: [["String(error)", 46]] },
+  { name: "C32", code: "p.catch((error) => (other instanceof Error ? other.message : String(error)));", reports: [["String(error)", 62]] },
+  {
+    name: "C33",
+    code: "p.catch((error) => (error instanceof TypeError ? error.message : String(error)));",
+    reports: [["String(error)", 66]],
+  },
+  {
+    name: "C34",
+    code: "const Error = Object; p.catch((error) => (error instanceof Error ? error.message : String(error)));",
+    reports: [["String(error)", 84]],
+  },
+  {
+    name: "C35",
+    code: "p.catch((error) => (error instanceof Error && error.message) || String(error));",
+    reports: [["String(error)", 65]],
+  },
+  { name: "C36", code: 'p.catch((error) => (error === Error ? "same" : String(error)));', reports: [["String(error)", 48]] },
+  {
+    name: "C37",
+    code: "p.catch((error) => `Failed: ${error instanceof Error ? error : String(error)}`);",
+    reports: [["error instanceof Error ? error : String(error)", 31]],
+  },
+  {
+    name: "C38",
+    code: 'try { f(); } catch (error) { alert(String(error || "Unknown error")); }',
+    reports: [['String(error || "Unknown error")', 36]],
+  },
+  {
+    name: "C39",
+    code: 'p.then(() => 1, (error) => "Failed: " + (error ?? "unknown"));',
+    reports: [['"Failed: " + (error ?? "unknown")', 28]],
+  },
+]);

@@ -1,0 +1,3 @@
+# Byte pins and guide text need the exact repository bytes, so Git never converts line endings.
+* -text
+guides/** -whitespace

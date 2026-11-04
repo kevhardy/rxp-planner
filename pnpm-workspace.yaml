@@ -1,0 +1,4 @@
+reporter: silent
+packages:
+  - packages/data-contract
+  - packages/oxlint-plugin-rxpplanner

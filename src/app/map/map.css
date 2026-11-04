@@ -1,0 +1,1434 @@
+.region-map > .map-panel {
+  flex: 1;
+}
+
+.map-panel > .panel-head {
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.map-panel > .panel-head h2 {
+  margin-right: 0;
+}
+
+.map-shown {
+  flex: 1 1 96px;
+  max-width: 150px;
+}
+
+.map-shown > select {
+  text-overflow: ellipsis;
+}
+
+.map-body {
+  --pin: var(--map-step);
+  --step-previous: var(--kind-command);
+  --step-upcoming: var(--map-step-upcoming);
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.map-body > .empty {
+  margin: var(--space-2) 0 0;
+}
+
+.map-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  background: var(--art-backdrop);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* Laid out at the zoomed size, not scaled: Chrome snaps each tile to whole
+   layout pixels, and a scale would magnify the error. */
+.map-stage {
+  position: relative;
+  transform: var(--pan);
+  width: calc(min(100cqw, 100cqh * var(--aspect, 1.5)) * var(--zoom, 1));
+  aspect-ratio: var(--aspect, 1.5);
+  user-select: none;
+  overflow: hidden;
+}
+
+.map-stage.zoomed {
+  cursor: grab;
+}
+
+/* Chrome misses clicks on elements that a counter-scale leaves under one
+   layout pixel, so nothing here scales. */
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: var(--pan);
+  width: calc(min(100cqw, 100cqh * var(--aspect, 1.5)) * var(--zoom, 1));
+  aspect-ratio: var(--aspect, 1.5);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Limit layer reuse to pans because promoted layers at fractional positions soften settled markers and labels. */
+.map-viewport.panning .map-overlay {
+  will-change: transform;
+}
+
+.map-stage img.tile {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  width: var(--size-w);
+  height: var(--size-h);
+  display: block;
+  pointer-events: none;
+}
+
+.map-overlay .place,
+.map-overlay .poi {
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.map-overlay .place {
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: -50% -50%;
+  color: var(--map-label);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-small);
+  text-align: center;
+  text-shadow: var(--art-label-halo);
+}
+
+.map-overlay .place-zone {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.map-overlay .place-capital {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--map-label-strong);
+}
+
+.map-overlay .place-landmark {
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  font-weight: var(--font-weight-regular);
+}
+
+.map-overlay .place small {
+  display: block;
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  font-weight: var(--font-weight-regular);
+}
+
+.map-icon {
+  display: inline-block;
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--radius-round);
+  background-image: var(--image);
+  background-position: var(--image-x) var(--image-y);
+  background-repeat: no-repeat;
+  background-size: var(--image-w) auto;
+}
+
+.map-overlay .poi {
+  display: flex;
+  translate: -50% -50%;
+}
+
+.map-overlay .poi-icon {
+  background-color: var(--art-ink);
+  box-shadow: var(--art-icon-halo);
+}
+
+.map-overlay .poi .poi-icon {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.map-overlay .poi:focus-visible,
+.map-overlay .poi-row:focus-visible {
+  outline: none;
+  filter: none;
+}
+
+.pin,
+.quest-marker,
+.map-overlay .ride-mark,
+.map-overlay .poi,
+.map-overlay .poi-row {
+  --mark-reach: 8px;
+}
+
+.map-overlay .poi.marked,
+.pin.selected,
+.map-overlay .ride-mark[aria-pressed="true"] {
+  --mark-reach: 10px;
+}
+
+.pin:focus-visible::before,
+.quest-marker:focus-visible::before,
+.map-overlay .ride-mark:focus-visible::before,
+.map-overlay .poi:focus-visible .poi-icon::before,
+.map-overlay .poi-row:focus-visible::before {
+  content: "";
+  position: absolute;
+  inset: calc(1px - var(--mark-reach));
+  border: 2px solid var(--art-paper);
+  border-radius: inherit;
+  filter: var(--art-focus-edge);
+  pointer-events: none;
+}
+
+.map-overlay .poi-name {
+  position: absolute;
+  pointer-events: none;
+  top: 50%;
+  left: 100%;
+  translate: 4px -50%;
+  color: var(--map-label);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-micro);
+  text-shadow: var(--art-label-halo);
+}
+
+.map-overlay .poi-group {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: -10px -50%;
+  pointer-events: auto;
+}
+
+.map-overlay .poi-group.marked:not(:hover, :has(:focus-visible)),
+.map-overlay .poi.marked:not(:focus-visible) {
+  z-index: 2;
+}
+
+/* An open row raises its whole group, because the group is the row's
+   stacking context. */
+.map-overlay .poi-group:hover:not(:has(:focus-visible)) {
+  z-index: 3;
+}
+
+.map-overlay .poi-group:has(:focus-visible),
+.map-overlay .pin:focus-visible,
+.map-overlay .quest-marker:focus-visible,
+.map-overlay .poi:focus-visible {
+  z-index: 4;
+}
+
+.map-overlay .poi-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-round);
+}
+
+.map-overlay .poi-row .poi-icon + .poi-icon {
+  margin-left: calc(-1 * var(--space-1));
+}
+
+.map-overlay .poi-row .poi-name {
+  translate: 6px -50%;
+}
+
+.map-overlay .poi-more {
+  margin-left: 2px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-round);
+  background: var(--art-ink);
+  color: var(--art-paper);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+}
+
+/* A change to `--panel-cover` fires no event, so an open marker list observes
+   this box, whose height follows it. */
+.poi-cover {
+  visibility: hidden;
+  position: absolute;
+  width: 0;
+  height: var(--panel-cover, 0px);
+  pointer-events: none;
+}
+
+.poi-list {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-float);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+}
+
+.poi-list.open {
+  visibility: visible;
+}
+
+.poi-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  overflow-wrap: anywhere;
+}
+
+.poi-item small {
+  flex: none;
+  color: var(--muted);
+}
+
+.map-overlay svg.routes polyline {
+  stroke: var(--transport-line);
+  stroke-dasharray: 6px 4px;
+}
+
+.map-overlay svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.map-overlay svg.areas {
+  overflow: hidden;
+}
+
+.map-overlay .areas path {
+  fill: var(--fill);
+  fill-opacity: 0.22;
+  fill-rule: evenodd;
+  stroke: var(--fill);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .areas .halo {
+  fill: none;
+  stroke: var(--area-halo);
+  stroke-width: 3.5px;
+}
+
+.map-overlay .areas .focus path:not(.halo) {
+  fill-opacity: 0.34;
+  stroke-width: 2.5px;
+}
+
+.map-overlay .areas .dim {
+  opacity: 0.12;
+}
+
+.map-overlay .spawns {
+  opacity: 0.7;
+}
+
+.map-overlay .spawns path {
+  fill: none;
+  stroke: var(--fill);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .spawns .edge {
+  stroke: var(--art-shade-soft);
+  stroke-width: 7px;
+}
+
+.map-overlay .spawn {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-round);
+  translate: -50% -50%;
+  background: var(--fill);
+  box-shadow: var(--art-outline);
+  opacity: 0.7;
+}
+
+.map-overlay .focus-mark {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--text);
+  border-radius: var(--radius-round);
+  translate: -50% -50%;
+  box-shadow: var(--art-focus-halo);
+  pointer-events: none;
+}
+
+.map-overlay polyline,
+.map-overlay polygon {
+  fill: none;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .route {
+  stroke-width: 2.5px;
+  stroke-dasharray: 5px 4px;
+  stroke-linejoin: round;
+}
+
+.map-overlay .route.selected {
+  stroke-dasharray: none;
+}
+
+.map-overlay .rxp-line {
+  stroke-width: 2px;
+}
+
+.map-overlay svg .focus-path {
+  stroke: var(--text);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  opacity: 0.8;
+}
+
+.map-overlay svg .previous {
+  stroke: var(--step-previous);
+}
+
+.map-overlay svg .selected {
+  stroke: var(--pin);
+}
+
+.map-overlay svg .upcoming {
+  stroke: var(--step-upcoming);
+}
+
+.pin {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--surface);
+  border-radius: var(--radius-round);
+  translate: -50% -50%;
+  background: var(--pin);
+  color: var(--surface);
+  font-size: var(--font-size-mark);
+  line-height: var(--line-height-mark);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+  opacity: var(--fade, 1);
+  pointer-events: auto;
+}
+
+.pin:hover,
+.pin:focus-visible {
+  opacity: 1;
+}
+
+.pin:focus-visible {
+  outline: none;
+}
+
+.pin:hover:not(:disabled) {
+  border-color: var(--text);
+  background: var(--pin);
+}
+
+.pin-goto,
+.pin-waypoint {
+  cursor: grab;
+}
+
+.pin-goto::after,
+.pin-waypoint::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--radius-round);
+}
+
+.pin-waypoint,
+.pin-waypoint:hover:not(:disabled) {
+  border: 2px solid var(--pin);
+  background: var(--surface);
+  color: var(--pin);
+}
+
+.pin-chip {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: 12px -50%;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-round);
+  background: var(--surface);
+  box-shadow: var(--elevation-1);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.pin.selected {
+  z-index: 1;
+  box-shadow: var(--art-icon-halo-marked);
+}
+
+.pin-start,
+.pin-end,
+.pin-both,
+.pin-objective {
+  z-index: 1;
+}
+
+.pin.moving {
+  z-index: 2;
+  cursor: grabbing;
+  box-shadow: var(--ring-moving);
+}
+
+.pin-previous,
+.pin-previous:hover:not(:disabled),
+.pin-upcoming,
+.pin-upcoming:hover:not(:disabled) {
+  width: 13px;
+  height: 13px;
+  font-size: var(--font-size-mark);
+  line-height: var(--line-height-mark);
+}
+
+.pin-previous,
+.pin-previous:hover:not(:disabled) {
+  background: var(--step-previous);
+}
+
+.pin-upcoming,
+.pin-upcoming:hover:not(:disabled) {
+  background: var(--step-upcoming);
+  color: var(--art-ink);
+}
+
+.pin-start,
+.pin-end,
+.pin-both,
+.pin-start:hover:not(:disabled),
+.pin-end:hover:not(:disabled),
+.pin-both:hover:not(:disabled) {
+  display: flex;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  filter: var(--art-drop-shade);
+}
+
+.pin-objective,
+.pin-objective:hover:not(:disabled) {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--art-ink);
+  border-radius: var(--radius-control);
+  rotate: 45deg;
+  background: var(--fill, var(--kind-complete));
+  box-shadow: var(--art-pin-halo);
+}
+
+.pin-objective:hover:not(:disabled) {
+  border-color: var(--text);
+}
+
+/* The icon sheet has no gray question mark, so incomplete quests need a filter. */
+.quest-marker {
+  display: flex;
+  border-radius: var(--radius-control);
+  translate: -50% -50%;
+  filter: var(--art-drop-shade);
+  pointer-events: auto;
+}
+
+.quest-marker .dim,
+.map-menu .dim {
+  opacity: 0.45;
+}
+
+.quest-marker .incomplete,
+.map-menu .incomplete {
+  filter: var(--art-icon-gray);
+}
+
+.quest-marker:hover .dim,
+.quest-marker:focus-visible .dim {
+  opacity: 1;
+}
+
+.quest-marker:focus-visible {
+  outline: none;
+}
+
+.quest-card h3 {
+  margin: var(--space-1) 0 2px;
+}
+
+.quest-card > ul {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quest-card > ul > li {
+  padding: var(--space-2) 0;
+}
+
+.quest-card > ul > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.map-zoom,
+.map-top {
+  position: absolute;
+  top: 12px;
+  z-index: 3;
+}
+
+.map-zoom {
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  box-shadow: var(--elevation-1);
+}
+
+.map-zoom > .ui-button {
+  border-radius: 0;
+}
+
+.map-zoom > .ui-button + .ui-button {
+  border-top-color: var(--line);
+}
+
+.map-zoom > .ui-button:first-child {
+  border-radius: var(--radius-control) var(--radius-control) 0 0;
+}
+
+.map-zoom > .ui-button:last-child {
+  border-radius: 0 0 var(--radius-control) var(--radius-control);
+}
+
+.map-zoom > .ui-button:focus-visible,
+.map-legend summary:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+.map-menu {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  min-width: 160px;
+  max-width: 280px;
+  max-height: calc(100% - var(--panel-cover, 0px));
+  overflow-y: auto;
+  padding: var(--space-1);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  cursor: default;
+}
+
+.map-menu-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-bold);
+}
+
+.map-menu-group {
+  display: grid;
+}
+
+.map-menu-group + .map-menu-group {
+  margin-top: var(--space-1);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--line);
+}
+
+.map-menu-row:hover > .ui-menu-item {
+  background: var(--selection);
+}
+
+.map-menu a {
+  color: inherit;
+  text-decoration: underline var(--control-border);
+  text-underline-offset: 3px;
+}
+
+.map-menu a:hover,
+.map-menu a:focus-visible {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+.map-menu-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-height: var(--control-large);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-2);
+}
+
+.map-menu-row > :not(button) {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.map-menu-row a {
+  pointer-events: auto;
+}
+
+.map-menu-row > .map-icon,
+.map-menu-row > svg {
+  flex: none;
+  margin-top: var(--space-1);
+}
+
+.map-menu-row > svg {
+  color: var(--muted);
+}
+
+.map-menu-row > .ui-menu-item {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  padding: 0;
+}
+
+.map-menu-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.map-menu-note {
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-round);
+  color: var(--muted);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+}
+
+.map-menu-action {
+  color: var(--muted);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.map-menu-row:hover > .map-menu-action,
+.map-menu-row:has(> button:focus-visible) > .map-menu-action {
+  visibility: visible;
+}
+
+.map-menu-row:hover > svg,
+.map-menu-row:has(> button:focus-visible) > svg {
+  color: var(--text);
+}
+
+.map-top {
+  right: 60px;
+  bottom: calc(12px + var(--panel-cover, 0px));
+  left: 12px;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  align-content: flex-start;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.map-top > * {
+  pointer-events: auto;
+}
+
+.map-popover {
+  display: flex;
+  flex: 0 1 240px;
+  flex-direction: column;
+  min-width: 180px;
+  margin-left: auto;
+  padding: var(--space-2) var(--space-2) var(--space-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.map-popover header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.map-popover h3 {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  margin: 2px 0 0;
+}
+
+/* A scroller clips an outer ring, so the body spans the popover's padding and a ring's reach under the last row. */
+.map-popover-body {
+  overflow: auto;
+  margin: 0 calc(-1 * var(--space-2)) calc(-1 * var(--space-1));
+  padding: 0 var(--space-2) var(--space-1);
+}
+
+.map-popover-body[data-clipped] {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.map-popover-body:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+.map-popover dl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px var(--space-2);
+  margin: var(--space-2) 0 0;
+}
+
+.map-popover dl > div {
+  display: contents;
+}
+
+.map-popover dt {
+  color: var(--muted);
+}
+
+.map-popover dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.map-note {
+  flex: 1 1 160px;
+  min-width: 0;
+  max-height: 40%;
+  overflow: auto;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-float);
+  color: var(--text);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.map-note p {
+  margin: 0;
+}
+
+.map-note p + p {
+  margin-top: var(--space-1);
+}
+
+.map-legend {
+  --legend-eye-column: 24px;
+  --legend-mark: 20px;
+  --legend-label-start: calc(var(--space-3) + var(--legend-mark) + var(--space-2));
+  position: relative;
+  flex: 0 1 280px;
+  min-width: 180px;
+  border-radius: var(--radius-float);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.map-legend[open] {
+  padding-bottom: var(--space-2);
+}
+
+.map-legend:not([open]) {
+  flex-basis: auto;
+  min-width: 0;
+  border-radius: var(--radius-control);
+  box-shadow: var(--elevation-1);
+}
+
+.map-legend summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.map-legend summary:hover {
+  background: var(--selection);
+}
+
+.map-legend[open] > summary {
+  border-radius: var(--radius-float) var(--radius-float) 0 0;
+  background: var(--selection);
+  box-shadow: var(--ink-bar-bottom);
+}
+
+.map-legend summary > svg {
+  margin-left: auto;
+  color: var(--muted);
+}
+
+.legend-body,
+.legend-group {
+  display: grid;
+}
+
+.legend-body {
+  overflow: auto;
+  border-top: 1px solid var(--line);
+}
+
+.legend-body[data-clipped] {
+  border-bottom: 1px solid var(--line);
+}
+
+.legend-body :focus-visible {
+  outline-offset: var(--focus-offset-inside);
+  scroll-margin: 0;
+}
+
+.legend-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control-small);
+  margin-top: var(--space-3);
+  padding: 0 var(--space-2) 0 var(--space-3);
+}
+
+.legend-heading h3 {
+  flex: 1;
+  margin: 0;
+}
+
+.legend-heading [aria-pressed="mixed"] svg {
+  opacity: 0.55;
+}
+
+.step-display .popover:not([hidden]) {
+  display: grid;
+  gap: var(--space-3);
+  width: max-content;
+  padding: var(--space-3);
+}
+
+.step-display-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: calc(-1 * var(--space-1)) calc(-1 * var(--space-1)) 0 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.step-show {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.legend-row,
+.legend-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-small);
+  padding: 2px var(--space-3);
+  text-align: left;
+}
+
+.legend-row,
+.legend-step {
+  display: grid;
+  grid-template-columns: var(--legend-mark) minmax(0, 1fr);
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+}
+
+.legend-row > :first-child,
+.legend-step > :first-child {
+  justify-self: center;
+}
+
+.legend-row svg,
+.legend-filter svg,
+.legend-heading > .ui-button[aria-pressed] svg {
+  box-sizing: content-box;
+  padding: 2px;
+  border-radius: var(--radius-control);
+}
+
+.legend-row svg,
+.legend-filter svg {
+  flex: none;
+  margin: 0 -2px 0 auto;
+  color: var(--muted);
+}
+
+.legend-row[aria-pressed="true"] svg,
+.legend-filter[aria-pressed="true"] svg {
+  color: var(--text);
+}
+
+.legend-row[aria-pressed="true"]:not(:disabled) svg,
+.legend-filter[aria-pressed="true"]:not(:disabled) svg,
+.legend-heading > .ui-button[aria-pressed="true"]:not(:disabled) svg {
+  background: var(--press);
+}
+
+.legend-row .map-icon {
+  background-color: var(--art-ink);
+  box-shadow: var(--ring-control);
+}
+
+.legend-row .spawn-swatch {
+  border-radius: var(--radius-control);
+  /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
+  background-image: conic-gradient(var(--objective-1) 0 33%, var(--objective-2) 0 67%, var(--objective-3) 0);
+}
+
+.legend-name {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+}
+
+.legend-count {
+  color: var(--muted);
+}
+
+.legend-count {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.legend-filter {
+  padding-left: var(--legend-label-start);
+}
+
+.legend-step {
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-small);
+  padding: 2px var(--space-3);
+}
+
+.legend-step .legend-count {
+  margin-right: var(--legend-eye-column);
+}
+
+.step-swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--surface);
+  border-radius: var(--radius-round);
+  background: var(--pin);
+}
+
+.step-swatch.optional {
+  border-color: var(--pin);
+  background: var(--pin-faded);
+}
+
+.step-swatch.previous {
+  background: var(--step-previous);
+}
+
+.step-swatch.upcoming {
+  background: var(--step-upcoming);
+}
+
+.stack-swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--stack);
+  /* stylelint-disable-next-line function-disallowed-list -- hatch: stacked points */
+  background: repeating-linear-gradient(45deg, var(--stack) 0 2px, transparent 2px 6px);
+}
+
+.stack-swatch.two {
+  --stack: var(--stack-two);
+}
+
+.stack-swatch.more {
+  --stack: var(--stack-more);
+}
+
+.step-swatch,
+.stack-swatch {
+  outline: 1px solid var(--control-border);
+}
+
+.legend-reset {
+  justify-self: start;
+  margin: var(--space-2) var(--space-3) 0;
+}
+
+.map-search:not([hidden]) {
+  display: inline-flex;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-field svg {
+  position: absolute;
+  left: var(--space-2);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search-field .ui-input {
+  width: 280px;
+  padding-left: var(--space-8);
+}
+
+.search-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 8px;
+  z-index: 30;
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  width: min(560px, calc(100% - 16px));
+  padding: var(--space-3);
+  overflow-y: auto;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.search-panel[hidden],
+.search-results[hidden] {
+  display: none;
+}
+
+.search-panel > *,
+.search-results > * {
+  min-width: 0;
+}
+
+.search-results,
+.search-chosen {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.search-chosen .back {
+  justify-self: start;
+}
+
+.search-filters summary {
+  cursor: pointer;
+}
+
+.search-filter-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.search-filter-fields .ui-select {
+  flex: 1 1 160px;
+}
+
+.levels {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--muted);
+}
+
+.levels .ui-input {
+  width: 52px;
+  appearance: textfield;
+}
+
+.levels .ui-input::-webkit-inner-spin-button {
+  display: none;
+}
+
+.search-group h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 2px;
+}
+
+.search-group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-group li {
+  display: flex;
+  align-items: center;
+}
+
+.search-row {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-control);
+}
+
+.search-level {
+  flex: none;
+  width: 20px;
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  text-align: right;
+}
+
+.search-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-meta {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  text-overflow: ellipsis;
+}
+
+.search-wowhead {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-control);
+  color: var(--muted);
+}
+
+.search-wowhead:hover {
+  background: var(--selection);
+  color: var(--text);
+}
+
+.search-more {
+  margin-top: 2px;
+}
+
+.feature-card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.feature-card h4,
+.feature-card h5,
+.feature-card p {
+  margin: 0;
+}
+
+.feature-card h5 {
+  margin-bottom: var(--space-1);
+}
+
+.feature-card ul {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-card li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.feature-card li > span:first-child {
+  flex: 1;
+  min-width: 90px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.feature-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+  margin-left: auto;
+}
+
+.copy-reference {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.copy-reference code {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--text);
+}
+
+.copy-reference-text {
+  width: 100%;
+}
+
+.focus-on-map {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.focus-on-map [role="status"] {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.map-overlay .poi.marked .poi-icon,
+.map-overlay .poi-row .poi-icon.marked {
+  box-shadow: var(--art-icon-halo-marked);
+}
+
+.map-overlay .poi.marked .poi-name,
+.map-overlay .poi-row .poi-name {
+  color: var(--art-paper);
+}
+
+.map-stage image.interior-layer {
+  display: block;
+  pointer-events: none;
+}
+
+.map-stage svg.interior-outline {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  width: var(--size-w);
+  height: var(--size-h);
+  overflow: visible;
+  pointer-events: none;
+  /* Panning moves only the parent stage, so the browser can reuse the drawn outline. Zoom still redraws it. At fractional
+     positions, the outline can look slightly softer. */
+  will-change: transform;
+}
+
+.interior-fill {
+  fill: var(--map-interior);
+}
+
+.interior-outline-border,
+.interior-outline-line {
+  fill: none;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.interior-outline-border {
+  stroke: var(--art-ink);
+  stroke-width: 4px;
+}
+
+.interior-outline-line {
+  stroke: var(--art-paper);
+  stroke-width: 2px;
+}
+
+.inside-box {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+}
+
+.inside-box-title {
+  margin: 0 0 var(--space-1);
+  font-weight: var(--font-weight-bold);
+}
+
+.interior-stack-two {
+  fill: var(--stack-two);
+}
+
+.interior-stack-more {
+  fill: var(--stack-more);
+}
+
+.map-stage image.interior-mask {
+  image-rendering: pixelated;
+}

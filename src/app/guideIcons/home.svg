@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><defs>
+<linearGradient id="home-roof" x1="4.80" y1="4.10" x2="13.54" y2="6.97" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f4d23c"/><stop offset="0.4" stop-color="#d9b020"/><stop offset="0.8" stop-color="#c4ae12"/><stop offset="1" stop-color="#a9a52c"/></linearGradient>
+<linearGradient id="home-eave" x1="8.42" y1="8.63" x2="14.11" y2="6.79" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9c8418"/><stop offset="1" stop-color="#6f6a1e"/></linearGradient>
+<linearGradient id="home-verge" x1="1.56" y1="5.63" x2="4.80" y2="4.10" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6b6032"/><stop offset="1" stop-color="#4a4224"/></linearGradient>
+<linearGradient id="home-verge2" x1="4.80" y1="4.10" x2="8.04" y2="8.21" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6f6331"/><stop offset="1" stop-color="#3e361b"/></linearGradient>
+<linearGradient id="home-gable" x1="5.18" y1="3.98" x2="5.18" y2="6.80" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#38321b"/><stop offset="1" stop-color="#5c5432"/></linearGradient>
+<linearGradient id="home-lwall" x1="2.47" y1="5.72" x2="7.90" y2="14.90" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8a826c"/><stop offset="1" stop-color="#5f5848"/></linearGradient>
+<linearGradient id="home-rwall" x1="10.75" y1="6.96" x2="10.75" y2="13.98" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5a533d"/><stop offset="1" stop-color="#7d7562"/></linearGradient>
+<linearGradient id="home-shade" x1="10.75" y1="6.96" x2="10.75" y2="9.63" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3f3b18" stop-opacity="1"/><stop offset="0.55" stop-color="#6a6630" stop-opacity="0.9"/><stop offset="1" stop-color="#6a6630" stop-opacity="0"/></linearGradient>
+<linearGradient id="home-arch" x1="3.28" y1="6.04" x2="7.90" y2="14.90" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c8c0a2"/><stop offset="0.55" stop-color="#ada58a"/><stop offset="1" stop-color="#cbc4a8"/></linearGradient>
+<linearGradient id="home-door" x1="5.73" y1="9.12" x2="5.73" y2="14.03" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3e3724"/><stop offset="0.55" stop-color="#231d12"/><stop offset="1" stop-color="#0e0b06"/></linearGradient>
+</defs>
+<g fill="#1d1408" stroke="#1d1408" stroke-width="1.2" stroke-linejoin="round"><path d="M4.80,4.10L1.56,6.17L8.02,4.09L11.26,2.02Z"/><path d="M7.90,14.90L2.47,12.74L2.47,5.72L7.90,7.88Z"/><path d="M7.90,7.88L2.47,5.72L5.18,3.98Z"/><path d="M7.90,14.90L13.59,13.06L13.59,6.04L7.90,7.88Z"/><path d="M4.80,4.10L1.56,6.17L1.56,5.26L4.80,3.18Z"/><path d="M8.04,8.75L14.50,6.67L14.50,5.75L8.04,7.83Z"/><path d="M8.04,7.83L4.80,3.18L11.26,1.10L14.50,5.75Z"/><path d="M8.04,8.75L4.80,4.10L4.80,3.18L8.04,7.83Z"/></g>
+<path d="M4.80,4.10L1.56,6.17L8.02,4.09L11.26,2.02Z" fill="#2a2414" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M7.90,14.90L2.47,12.74L2.47,5.72L7.90,7.88Z" fill="url(#home-lwall)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M6.68,14.41L6.68,10.73L6.61,10.05L6.40,9.38L6.07,8.79L5.65,8.33L5.18,8.04L4.72,7.96L4.30,8.09L3.97,8.42L3.76,8.92L3.69,9.53L3.69,13.22Z" fill="url(#home-arch)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M6.16,14.21L6.16,10.52L6.12,10.08L5.98,9.64L5.76,9.25L5.49,8.95L5.18,8.76L4.88,8.71L4.61,8.80L4.39,9.01L4.25,9.34L4.21,9.74L4.21,13.43Z" fill="url(#home-door)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M7.90,7.88L2.47,5.72L5.18,3.98Z" fill="url(#home-gable)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M5.78,6.70L4.59,6.22L5.18,5.05Z" fill="#7a6c38" opacity="0.8"/>
+<path d="M7.90,14.90L13.59,13.06L13.59,6.04L7.90,7.88Z" fill="url(#home-rwall)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M7.90,7.88L13.59,6.04L13.59,8.71L7.90,10.55Z" fill="url(#home-shade)"/>
+<path d="M4.80,4.10L1.56,6.17L1.56,5.26L4.80,3.18Z" fill="url(#home-verge)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M8.04,8.75L14.50,6.67L14.50,5.75L8.04,7.83Z" fill="url(#home-eave)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M8.04,7.83L4.80,3.18L11.26,1.10L14.50,5.75Z" fill="url(#home-roof)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/>
+<path d="M6.28,3.42L7.92,5.76" stroke="#f6dc66" stroke-width="0.16" stroke-linecap="round" opacity="0.3"/>
+<path d="M7.36,3.07L8.99,5.42" stroke="#f6dc66" stroke-width="0.16" stroke-linecap="round" opacity="0.3"/>
+<path d="M8.44,2.73L10.07,5.07" stroke="#f6dc66" stroke-width="0.16" stroke-linecap="round" opacity="0.3"/>
+<path d="M9.51,2.38L11.14,4.72" stroke="#f6dc66" stroke-width="0.16" stroke-linecap="round" opacity="0.3"/>
+<path d="M10.59,2.03L12.22,4.37" stroke="#f6dc66" stroke-width="0.16" stroke-linecap="round" opacity="0.3"/>
+<path d="M8.04,8.75L4.80,4.10L4.80,3.18L8.04,7.83Z" fill="url(#home-verge2)" stroke="#1d1408" stroke-width="0.14" stroke-linejoin="round"/></svg>

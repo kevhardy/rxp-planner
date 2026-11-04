@@ -1,0 +1,308 @@
+:root {
+  color-scheme: light;
+
+  --bg: #ececec;
+  --surface: #f7f7f7;
+  --line: #d6d6d6;
+  --control-border: #7e7e7e;
+  --text: #1d1d1d;
+  --muted: #616161;
+
+  --selection: #e6e6e6;
+  --press: #e0e0e0;
+
+  --primary-bg: #1d1d1d;
+  --primary-fg: #f7f7f7;
+  --primary-hover: #373737;
+  --primary-press: #000;
+
+  --danger-hover: #c4382c;
+  --danger-press: #8f1b12;
+
+  --disabled-bg: #e0e0e0;
+  --disabled-fg: #979797;
+
+  --warn: #8f5603;
+  --danger: #b42318;
+  --danger-fg: #fff;
+  --ok: #13703a;
+
+  --kind-accept: #a16207;
+  --kind-turnin: #15803d;
+  --kind-complete: #c2410c;
+  --kind-goto: #0369a1;
+  --kind-target: #b5177a;
+  --kind-train: #7042c8;
+  --kind-vendor: #6d3c0c;
+  --kind-command: #6b645b;
+  --kind-use: #0f766e;
+  --kind-equip: #2f55c7;
+
+  /* Tuned to 4.5:1 on surface. `addon.guideTextColors` in Themes.lua sets
+     FRIENDLY and BUY apart by lightness only, so BUY is a yellower green that
+     stays apart from FRIENDLY and WARN. */
+  --rxp-enemy: #b42318;
+  --rxp-friendly: #13703a;
+  --rxp-loot: #1f5fc2;
+  --rxp-warn: #8a5406;
+  --rxp-buy: #334c00;
+  --rxp-pick: #a3218f;
+
+  --elevation-1: 0 0 0 1px rgb(29 29 29 / 0.16), 0 1px 2px rgb(29 29 29 / 0.14);
+  --elevation-2: 0 0 0 1px rgb(29 29 29 / 0.14), 0 10px 28px -6px rgb(29 29 29 / 0.3);
+  --scrim: rgb(29 29 29 / 0.45);
+
+  --objective-1: #ef356b;
+  --objective-2: #009828;
+  --objective-3: #0085e2;
+  --objective-4: #009293;
+  --objective-5: #bb55e4;
+  --objective-6: #878700;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #131313;
+  --surface: #1a1a1a;
+  --line: #313131;
+  --control-border: #797979;
+  --text: #e8e8e8;
+  --muted: #9f9f9f;
+
+  --selection: #2b2b2b;
+  --press: #303030;
+
+  --primary-bg: #e8e8e8;
+  --primary-fg: #1a1a1a;
+  --primary-hover: #d1d1d1;
+  --primary-press: #bcbcbc;
+
+  --danger-hover: #e86a55;
+  --danger-press: #dc5f4c;
+
+  --disabled-bg: #272727;
+  --disabled-fg: #656565;
+
+  --warn: #e3a33b;
+  --danger: #f2735f;
+  --danger-fg: #1a1a1a;
+  --ok: #4cc472;
+
+  --kind-accept: #dcae2f;
+  --kind-turnin: #4cc472;
+  --kind-complete: #f0874a;
+  --kind-goto: #4fb3e8;
+  --kind-target: #ee72bb;
+  --kind-train: #ae8ff2;
+  --kind-vendor: #bc8253;
+  --kind-command: #a59e93;
+  --kind-use: #3fc7b0;
+  --kind-equip: #7c9cf5;
+
+  --rxp-enemy: #ff7b6b;
+  --rxp-friendly: #5ccf7f;
+  --rxp-loot: #79abff;
+  --rxp-warn: #e5b53c;
+  --rxp-buy: #b6ea3a;
+  --rxp-pick: #e77ad8;
+
+  --elevation-1: 0 0 0 1px rgb(0 0 0 / 0.6), 0 1px 2px rgb(0 0 0 / 0.5);
+  --elevation-2: 0 0 0 1px rgb(0 0 0 / 0.7), 0 12px 32px -6px rgb(0 0 0 / 0.7);
+  --scrim: rgb(0 0 0 / 0.6);
+
+  --objective-1: #ffa8b5;
+  --objective-2: #4ee75f;
+  --objective-3: #95c9ff;
+  --objective-4: #2decd6;
+  --objective-5: #e4a9ff;
+  --objective-6: #cccd00;
+}
+
+:root {
+  --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
+  --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
+  --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
+  /* 80% clears 77%, the least share at which the border reaches 3:1 on its
+     tint and on the light selection. */
+  --warn-border: color-mix(in srgb, var(--warn) 80%, var(--surface));
+  --danger-border: color-mix(in srgb, var(--danger) 80%, var(--surface));
+  --add-done-border: color-mix(in srgb, var(--ok) 80%, var(--surface));
+  --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
+  --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
+  --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
+  --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
+  --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
+
+  --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));
+  --token-race-border: color-mix(in srgb, var(--kind-goto) 50%, var(--control-border));
+  --token-class-border: color-mix(in srgb, var(--kind-train) 50%, var(--control-border));
+  --token-mode-border: color-mix(in srgb, var(--kind-turnin) 50%, var(--control-border));
+
+  --chain-link-ink: color-mix(in srgb, var(--text) 45%, var(--line));
+  --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
+  --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));
+
+  --map-step: color-mix(in srgb, var(--kind-goto) 80%, var(--text));
+
+  --ink-bar-start: inset 2px 0 0 var(--text);
+  --ink-bar-top: inset 0 2px 0 var(--text);
+  --ink-bar-bottom: inset 0 -2px 0 var(--text);
+
+  --focus-ring: 2px solid var(--text);
+  --focus-offset: 2px;
+  --focus-offset-inside: -4px;
+  --ring-focus-gap: inset 0 0 0 6px var(--surface);
+  --ring-gap-end: inset -2px 0 var(--surface);
+  --ink-bar-start-inside: inset 8px 0 0 var(--text);
+
+  --ring-line: 0 0 0 1px var(--line);
+  --ring-control: inset 0 0 0 1px var(--control-border);
+  --ring-warn: 0 0 0 1px var(--warn);
+  --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+
+  --bar-travel: var(--kind-goto);
+  --bar-kill: var(--danger);
+  --bar-interact: var(--muted);
+  --bar-wait: var(--control-border);
+
+  /* A data URL cannot read a token, so it holds the light `--control-border`,
+     which is 3:1 on the surface, selection, and press of both themes. */
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e7e7e' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+
+:root {
+  --art-backdrop: #07080a;
+  --art-ink: #0b0f17;
+  --art-paper: #fff;
+  --map-label: #f3ecd8;
+  --map-label-strong: #ffe8a3;
+  --map-border: #fff4d6;
+  --map-interior: #2a2622;
+  --map-terrain: #2c3a2a;
+  --map-transport: #9bd0ff;
+  --map-character: #c8102e;
+  --map-enemy: #ff7b6b;
+  --map-enemy-dead: #a59e93;
+  --map-step-upcoming: #4cc472;
+
+  --stack-two: #36c3dc;
+  --stack-more: #ee72bb;
+
+  --route-start: #66e0ba;
+  --route-end: #f5cf74;
+  --route-stop: #e7eeee;
+  --route-line: #66e0ba;
+  --route-straight: #ffad66;
+  --route-failed: #ff8a94;
+  --route-pending: #d9e4e6;
+  --route-preview: #7fd4ff;
+  --route-chip: #12333b;
+  --route-label: #ffcf9e;
+  --art-route-preview-ring: 0 0 0 2px var(--route-preview);
+  --art-route-preview-halo: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--route-preview), 0 0 0 4.5px var(--art-ink);
+  --route-ink: color-mix(in srgb, var(--art-ink) 85%, transparent);
+  --route-arrows: color-mix(in srgb, var(--art-paper) 70%, transparent);
+  --route-label-bg: color-mix(in srgb, var(--art-ink) 75%, transparent);
+  --route-crossing: color-mix(in srgb, var(--route-pending) 85%, transparent);
+  --route-focus: color-mix(in srgb, var(--route-end) 50%, transparent);
+  --ride-mark-border: color-mix(in srgb, var(--route-stop) 85%, transparent);
+  --ride-mark-bg: color-mix(in srgb, var(--route-chip) 92%, transparent);
+  --skipped-tiles-fill: color-mix(in srgb, var(--route-pending) 12%, transparent);
+  --skipped-tiles-line: color-mix(in srgb, var(--route-pending) 70%, transparent);
+  --layer-swatch-border: color-mix(in srgb, var(--art-paper) 40%, transparent);
+  --transport-line: color-mix(in srgb, var(--map-transport) 70%, transparent);
+
+  --zone-border-line: color-mix(in srgb, var(--map-border) 75%, transparent);
+  --zone-border-halo: color-mix(in srgb, var(--art-ink) 40%, transparent);
+  --zone-swatch-line: color-mix(in srgb, var(--map-border) 90%, transparent);
+  --zone-swatch-halo: color-mix(in srgb, var(--art-ink) 50%, transparent);
+
+  --art-shade: color-mix(in srgb, var(--art-ink) 80%, transparent);
+  --art-shade-soft: color-mix(in srgb, var(--art-ink) 60%, transparent);
+  --area-halo: color-mix(in srgb, var(--art-ink) 55%, transparent);
+  --mob-border: color-mix(in srgb, var(--art-ink) 90%, transparent);
+
+  --art-outline: 0 0 0 1px color-mix(in srgb, var(--art-ink) 70%, transparent);
+  --art-outline-wide: 0 0 0 2px var(--art-shade);
+  --art-pin-halo: 0 0 0 1.5px var(--art-paper);
+  /* Each drop-shadow copies the shape and the shadows before it, so four 1px
+     shifts give a focused mark's ring a solid ink edge on both sides, corners
+     included. In the map's scaled SVGs, a filter's lengths are user units, so
+     this filter is for HTML only. */
+  --art-focus-edge: drop-shadow(1px 0 var(--art-ink)) drop-shadow(-1px 0 var(--art-ink)) drop-shadow(0 1px var(--art-ink))
+    drop-shadow(0 -1px var(--art-ink));
+  --art-focus-halo:
+    0 0 0 2px color-mix(in srgb, var(--art-paper) 85%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--art-paper) 85%, transparent);
+  --art-icon-halo:
+    0 0 0 1.5px var(--art-ink), 0 0 0 2.5px color-mix(in srgb, var(--art-paper) 75%, transparent), 0 1px 4px var(--art-shade-soft);
+  --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+  --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
+  --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
+  --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
+  --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
+  --art-icon-gray: grayscale(1) brightness(1.1);
+}
+
+/* Each reads a color that its element sets for itself, which has no value
+   on :root, so each token is set on its element. */
+.mk {
+  --kind-tint: color-mix(in srgb, var(--kind) 15%, var(--surface));
+}
+
+.ui-item[data-objective] {
+  --objective-tint: color-mix(in srgb, var(--objective) 14%, var(--surface));
+  --ink-bar-objective: inset -3px 0 0 var(--objective);
+}
+
+.step-swatch {
+  --pin-faded: color-mix(in srgb, var(--pin) 45%, transparent);
+}
+
+:root {
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --font-size-micro: 11px;
+  --font-size-small: 12px;
+  --font-size-body: 13px;
+  --font-size-pane-title: 15px;
+  --font-size-title: 20px;
+  --line-height-micro: 16px;
+  --line-height-small: 16px;
+  --line-height-body: 20px;
+  --line-height-pane-title: 20px;
+  --line-height-title: 28px;
+  --font-weight-regular: 400;
+  --font-weight-bold: 600;
+
+  --font-size-mark: 8px;
+  --line-height-mark: 1;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-control: 3px;
+  --radius-float: 6px;
+  --radius-round: 999px;
+
+  --control-small: 24px;
+  --control-large: 32px;
+  --choice-box: 14px;
+
+  --motion-state: 90ms;
+  --motion-move: 160ms;
+  --motion-loop: 800ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-state: 0ms;
+    --motion-move: 0ms;
+    --motion-loop: 0ms;
+  }
+}

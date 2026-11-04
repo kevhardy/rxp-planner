@@ -1,0 +1,649 @@
+.playback {
+  position: relative;
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  gap: 1px;
+  background: var(--line);
+  grid-template-columns: var(--steps-w) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.playback-steps,
+.playback-stage {
+  min-height: 0;
+}
+
+.playback-stage {
+  display: flex;
+  flex-direction: column;
+}
+
+.playback-stage .map-body {
+  flex: 1;
+}
+
+.playback-notice.problem {
+  color: var(--text);
+}
+
+.playback-notice-detail {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--muted);
+}
+
+.playback-steps > .panel-head h2 {
+  margin-right: 0;
+}
+
+.playback-legend-button {
+  margin-right: auto;
+}
+
+.playback-legend {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 6px;
+  border-radius: var(--radius-control);
+}
+
+.estimate-mark {
+  color: var(--text);
+  font-weight: var(--font-weight-bold);
+}
+
+.playback-step-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.playback-stage:has(.playback-calculate) {
+  --panel-cover: calc(2px + var(--space-2) + var(--line-height-small) + var(--space-2) + 32px + var(--space-3) + var(--space-3));
+}
+
+.playback-stage .map-foot {
+  bottom: var(--space-3);
+}
+
+.playback-calculate {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  pointer-events: auto;
+}
+
+.playback-calculate-caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+}
+
+.playback-calculate-left {
+  margin-left: auto;
+}
+
+.playback-calculate-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.playback-calculate-actions > .ui-button {
+  flex: 1;
+}
+
+.playback-step {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 76px;
+}
+
+.playback-guide {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: baseline;
+  gap: 2px var(--space-2);
+  min-height: var(--head-height);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+/* A sticky band can cover its own focused step. The band's height changes as
+   it wraps, and scroll-padding is one length for the whole pane, so the band
+   stops sticking instead. */
+.playback-step:has(> button:focus-visible) > .playback-guide {
+  position: static;
+}
+
+.playback-guide h3 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-bold);
+}
+
+.playback-step > .ui-item {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.playback-gutter {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-1);
+  width: 52px;
+  padding: 2px 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  text-align: right;
+}
+
+.playback-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.playback-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.playback-head > .mk {
+  align-self: flex-start;
+}
+
+.playback-title-text {
+  display: -webkit-box;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+
+.playback-kills-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.playback-step.current :is(.playback-title-text, .playback-kills-text) {
+  display: block;
+}
+
+.playback-warnings {
+  display: grid;
+  gap: 2px;
+  color: var(--warn);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.playback-warning > svg {
+  justify-self: center;
+  margin-top: 2px;
+}
+
+.playback-duo {
+  flex: none;
+  color: var(--text);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+.playback-length {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+}
+
+.step-bars {
+  display: flex;
+  width: 40px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: var(--radius-control);
+  background: var(--line);
+}
+
+.playback-step:not(.current) .step-bars {
+  visibility: hidden;
+}
+
+.step-bar {
+  flex: none;
+  width: var(--size-w);
+}
+
+.bar-travel {
+  background: var(--bar-travel);
+}
+.bar-kill {
+  background: var(--bar-kill);
+}
+.bar-interact {
+  background: var(--bar-interact);
+}
+.bar-wait {
+  background: var(--bar-wait);
+}
+
+.step-bar.bar-travel.estimate {
+  /* stylelint-disable-next-line function-disallowed-list -- hatch: estimate */
+  background: repeating-linear-gradient(-45deg, var(--bar-travel) 0 3px, transparent 3px 5px);
+}
+
+.now-doing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--head-height);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.now-doing-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.character-card {
+  display: flex;
+  flex: 0 1 240px;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 200px;
+  max-height: calc(100% - (2 * var(--space-2) + 2 * var(--line-height-small)) - var(--space-2));
+  margin-left: auto;
+  overflow: auto;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.character-level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--space-2);
+}
+
+.character-level-no {
+  font-weight: var(--font-weight-bold);
+}
+
+.character-xp {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.character-stats {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 var(--space-3);
+  margin: 0;
+}
+
+.character-stats > div {
+  display: contents;
+}
+
+.character-stats dt {
+  color: var(--muted);
+}
+
+.character-stats dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.character-card .state-log {
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--line);
+}
+
+.character-card summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.character-count {
+  margin-left: auto;
+}
+
+.playback-dock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
+  background: var(--surface);
+  grid-column: 1 / -1;
+}
+
+.playback-transport {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.playback-play svg {
+  fill: currentColor;
+}
+
+.playback-scrubber {
+  flex: 1;
+  min-width: 160px;
+  padding: var(--space-2) 0 var(--space-1);
+}
+
+.playback-track {
+  position: relative;
+  padding-bottom: var(--space-2);
+}
+
+.playback-scrubber .ui-slider {
+  display: block;
+  width: 100%;
+}
+
+.playback-marks {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  pointer-events: none;
+}
+
+.playback-mark,
+.estimate-swatch {
+  border-top: 2px dashed var(--text);
+}
+
+.playback-mark {
+  position: absolute;
+  left: var(--at-x);
+  width: var(--size-w);
+  height: 100%;
+}
+
+.playback-guide-mark {
+  position: absolute;
+  left: var(--at-x);
+  width: 2px;
+  height: 100%;
+  margin-left: -1px;
+  background: var(--muted);
+}
+
+.playback-chain {
+  position: relative;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.playback-chain-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--at-x);
+  width: var(--size-w);
+  display: flex;
+  flex-direction: column;
+  min-width: 8px;
+  border-left: 1px solid var(--line);
+}
+
+.playback-chain-guide:first-child {
+  border-left: none;
+}
+
+.playback-chain-guide.boundary {
+  width: 8px;
+  margin-left: calc(-1 * var(--space-1));
+  border-left: none;
+}
+
+.playback-chain-guide > .ui-item {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0 var(--space-1);
+  overflow-x: clip;
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+.playback-chain-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playback-chain-guide svg {
+  flex: none;
+  color: var(--ok);
+}
+
+.playback-chain progress {
+  flex: none;
+  width: 32px;
+}
+
+.playback-clock {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.playback-speed {
+  flex: none;
+}
+
+.playback-routing {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 240px;
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.playback-routing > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playback-estimates {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+}
+
+.estimate-swatch {
+  flex: none;
+  width: 14px;
+}
+
+.character-marker {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  margin: calc(-1 * var(--space-2)) 0 0 calc(-1 * var(--space-2));
+  border: 3px solid var(--art-paper);
+  border-radius: var(--radius-round);
+  background: var(--map-character);
+  box-shadow: var(--art-outline-wide);
+  pointer-events: none;
+}
+
+.character-chip {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--art-shade);
+  color: var(--art-paper);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.mob-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mob {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  translate: -50% -50%;
+  border: 2px solid var(--mob-border);
+  border-radius: var(--radius-round);
+  background: var(--map-enemy);
+}
+
+.mob.dead {
+  background: var(--map-enemy-dead);
+  animation: mob-die var(--motion-move) ease-out;
+}
+
+@keyframes mob-die {
+  from {
+    background: var(--map-enemy);
+    box-shadow: var(--art-enemy-burst);
+    transform: scale(1.6);
+  }
+}
+
+.mob-countdown {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--art-shade);
+  color: var(--art-paper);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  transform: translateY(-50%);
+}
+
+.mob-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-1) 0 var(--space-1) 2px;
+}
+
+.mob-legend .mob {
+  position: relative;
+  flex: none;
+  translate: none;
+  margin: 0 var(--space-6) 0 0;
+  animation: none;
+}
+
+.playback-settings {
+  display: inline-flex;
+  flex: none;
+}
+
+.playback-settings .popover:not([hidden]) {
+  display: grid;
+  grid-template-columns: max-content max-content 1fr;
+  gap: var(--space-3);
+  width: 300px;
+}
+
+.playback-settings .popover > *,
+.playback-settings .playback-setting > *,
+.playback-settings .ui-field-error {
+  grid-column: 1 / -1;
+}
+
+.playback-settings .popover > .playback-setting,
+.playback-settings .playback-setting > .ui-field {
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+/* A grid item stretches across its columns, and a stretched control takes a click on the blank space beside it. */
+.playback-settings .popover > .ui-button,
+.playback-settings .playback-setting > .ui-choice {
+  justify-self: start;
+}

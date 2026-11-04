@@ -1,0 +1,9 @@
+{
+  "id": "routing-forever-1.60.1.70124-m0-bdefc88aa88d6fe1",
+  "scope": {
+    "variant": "forever",
+    "build": "1.60.1.70124",
+    "map": 0
+  },
+  "manifestSha256": "939dbfaf05f8fe4f10ccca1ebc7a400f03b9f9ce4ec0adf30733e11a151b1dc9"
+}

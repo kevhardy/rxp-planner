@@ -1,0 +1,10 @@
+node_modules/
+dist/
+
+.cache/
+.wrangler/
+/.claude/worktrees/
+
+# The installed release file, and the temporary folders that an install makes.
+/.local-data/
+/.local-data.*/

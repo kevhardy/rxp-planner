@@ -1,0 +1,816 @@
+.ui-button,
+.ui-segment,
+.ui-menu-item,
+.ui-tab,
+.ui-item,
+.ui-mark,
+.ui-art {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-state),
+    color var(--motion-state),
+    border-color var(--motion-state),
+    box-shadow var(--motion-state);
+}
+
+:is(.ui-button, .ui-segment, .ui-menu-item, .ui-tab, .ui-item):is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
+}
+
+.ui-button,
+.ui-segment,
+.ui-menu-item,
+.ui-tab {
+  min-width: var(--control-small) !important;
+}
+
+.ui-item,
+.ui-art {
+  position: relative;
+}
+
+.ui-item::after,
+.ui-art::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: min(0px, (100% - var(--control-small)) / 2) !important;
+}
+
+:is(.ui-button, .ui-segment, .ui-menu-item, .ui-tab, .ui-item, .ui-art):focus-visible {
+  outline: var(--focus-ring) !important;
+}
+
+.ui-button svg,
+.ui-segment svg,
+.ui-menu-item svg {
+  flex: none;
+}
+
+.ui-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--control-small) !important;
+  padding: 0 var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  font-weight: var(--font-weight-regular);
+  white-space: nowrap;
+}
+
+.ui-button[data-size="32"] {
+  gap: var(--space-2);
+  height: var(--control-large) !important;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.ui-button[data-wrap] {
+  height: auto !important;
+  min-height: var(--control-small) !important;
+  padding-block: var(--space-1);
+  text-align: start;
+  white-space: normal;
+}
+
+.ui-button[data-icon-only] {
+  width: var(--control-small) !important;
+  padding: 0;
+}
+
+.ui-button[data-icon-only][data-size="32"] {
+  width: var(--control-large) !important;
+}
+
+.ui-button[data-variant="primary"] {
+  background: var(--primary-bg);
+  color: var(--primary-fg);
+  font-weight: var(--font-weight-bold);
+}
+
+.ui-button[data-variant="primary"]:hover {
+  background: var(--primary-hover) !important;
+}
+
+.ui-button[data-variant="primary"]:active {
+  background: var(--primary-press) !important;
+}
+
+.ui-button[data-variant="secondary"] {
+  border-color: var(--control-border);
+  background: var(--surface);
+}
+
+.ui-button:is([data-variant="secondary"], [data-variant="ghost"]):hover {
+  border-color: var(--control-border) !important;
+  background: var(--selection) !important;
+  color: var(--text) !important;
+}
+
+.ui-button:is([data-variant="secondary"], [data-variant="ghost"]):active {
+  background: var(--press) !important;
+}
+
+.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"] {
+  border-color: transparent !important;
+  border-end-start-radius: 0 !important;
+  border-end-end-radius: 0 !important;
+  box-shadow: var(--ink-bar-bottom) !important;
+  color: var(--text) !important;
+}
+
+.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"]:where(
+    :not(:active)
+  ) {
+  background: var(--selection) !important;
+}
+
+.ui-button[aria-expanded="true"]:where([data-popover]):active {
+  background: var(--press) !important;
+}
+
+.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) {
+  border-color: var(--text) !important;
+  background: var(--press) !important;
+  color: var(--text) !important;
+}
+
+.ui-button[data-variant="danger"] {
+  background: var(--danger);
+  color: var(--danger-fg);
+  font-weight: var(--font-weight-bold);
+}
+
+.ui-button[data-variant="danger"]:hover {
+  background: var(--danger-hover) !important;
+}
+
+.ui-button[data-variant="danger"]:active {
+  background: var(--danger-press) !important;
+}
+
+.ui-button:is(:disabled, [aria-disabled="true"]),
+.ui-button:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
+  border-color: transparent !important;
+  background: var(--disabled-bg) !important;
+  box-shadow: none !important;
+  color: var(--disabled-fg) !important;
+  font-weight: var(--font-weight-regular) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]),
+.ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
+  background: none !important;
+  color: var(--disabled-fg) !important;
+}
+
+.ui-disclosure {
+  display: inline-flex;
+  flex: none;
+  vertical-align: middle;
+  transition: rotate var(--motion-state);
+}
+
+[aria-expanded="false"] > .ui-disclosure,
+details:not([open]) > summary > .ui-disclosure {
+  rotate: -90deg;
+}
+
+summary {
+  list-style: none;
+}
+
+progress {
+  display: block;
+  height: 6px;
+  border: none;
+  border-radius: var(--radius-round);
+  background: var(--line);
+  accent-color: var(--text);
+  appearance: none;
+}
+
+progress::-webkit-progress-bar {
+  border-radius: var(--radius-round);
+  background: var(--line);
+}
+
+progress::-webkit-progress-value {
+  border-radius: var(--radius-round);
+  background: var(--primary-bg);
+}
+
+progress::-moz-progress-bar {
+  border-radius: var(--radius-round);
+  background: var(--primary-bg);
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.ui-segmented {
+  display: inline-flex;
+  flex: none;
+}
+
+.ui-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-small) !important;
+  padding: 0 var(--space-2);
+  border-block: 1px solid var(--control-border);
+  border-inline-start: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+}
+
+.ui-segmented[data-size="32"] > .ui-segment {
+  gap: var(--space-2);
+  height: var(--control-large) !important;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.ui-segment:first-child {
+  border-inline-start-color: var(--control-border);
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
+}
+
+.ui-segment:last-child {
+  border-inline-end: 1px solid var(--control-border);
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+}
+
+.ui-segment:hover {
+  background: var(--selection) !important;
+  color: var(--text) !important;
+}
+
+.ui-segment:active {
+  background: var(--press) !important;
+}
+
+.ui-segment[aria-pressed="true"] {
+  border-end-start-radius: 0 !important;
+  border-end-end-radius: 0 !important;
+  box-shadow: var(--ink-bar-bottom) !important;
+  color: var(--text) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+.ui-segment[aria-pressed="true"]:where(:not(:active)) {
+  background: var(--selection) !important;
+}
+
+.ui-segment:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+.ui-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-large) !important;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  text-align: start;
+}
+
+.ui-menu-item:is(:hover, :focus-visible) {
+  background: var(--selection) !important;
+}
+
+.ui-menu-item:active {
+  background: var(--press) !important;
+}
+
+.ui-menu-item:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+.ui-menu-check {
+  display: inline-flex;
+  flex: none;
+  width: var(--space-4);
+}
+
+.ui-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-small) !important;
+  padding: 0 var(--space-3);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ui-tab[data-size="32"] {
+  height: var(--control-large) !important;
+}
+
+.ui-tab:hover {
+  background: var(--selection) !important;
+  color: var(--text) !important;
+}
+
+.ui-tab:active {
+  background: var(--press) !important;
+}
+
+.ui-tab[aria-selected="true"] {
+  box-shadow: var(--ink-bar-bottom) !important;
+  color: var(--text) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+/* :where() adds no specificity, so a disabled tab's look still wins over the selected fill. */
+.ui-tab[aria-selected="true"]:where(:not(:active)) {
+  background: var(--selection) !important;
+}
+
+.ui-tab:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+.ui-item {
+  display: block;
+  min-width: 0;
+  color: var(--text);
+  text-align: start;
+  white-space: normal;
+}
+
+.ui-item:hover {
+  background: var(--selection) !important;
+}
+
+.ui-item:active {
+  background: var(--press) !important;
+}
+
+.ui-item:is([aria-current]:not([aria-current="false"]), [data-chosen][aria-pressed="true"]) {
+  border-start-start-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+  box-shadow: var(--ink-bar-start) !important;
+}
+
+.ui-item:is([aria-current]:not([aria-current="false"]), [data-chosen][aria-pressed="true"]):where(:not(:active)) {
+  background: var(--selection) !important;
+}
+
+.ui-item[data-objective] {
+  box-shadow: var(--ink-bar-objective) !important;
+}
+
+.ui-item[data-objective]:is(:hover, :focus-visible):not(
+    :active,
+    [aria-current]:not([aria-current="false"]),
+    [data-chosen][aria-pressed="true"]
+  ) {
+  background: var(--objective-tint) !important;
+}
+
+.ui-item[data-objective]:is([aria-current]:not([aria-current="false"]), [data-chosen][aria-pressed="true"]) {
+  box-shadow: var(--ink-bar-start), var(--ink-bar-objective) !important;
+}
+
+.ui-item:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+}
+
+:is(.ui-menu-item, .ui-tab, .ui-item):is(:disabled, [aria-disabled="true"]),
+:is(.ui-menu-item, .ui-tab, .ui-item):is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
+  background: none !important;
+  box-shadow: none !important;
+  color: var(--disabled-fg) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+@property --pan {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --at-x {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --at-y {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --at-bottom {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --size-w {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --size-h {
+  syntax: "*";
+  inherits: false;
+}
+
+.ui-mark {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+}
+
+.ui-art {
+  border-radius: var(--radius-control);
+}
+
+.ui-field {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.ui-field[data-layout="stacked"] {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--space-1);
+}
+
+.ui-field-label,
+.ui-field-hint {
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.ui-field-error {
+  flex-basis: 100%;
+  color: var(--danger);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.ui-input,
+.ui-select > select,
+.ui-textarea {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-regular);
+  transition:
+    background-color var(--motion-state),
+    border-color var(--motion-state);
+}
+
+.ui-input,
+.ui-select > select {
+  height: var(--control-small);
+  padding: 0 var(--space-2);
+}
+
+.ui-input[data-size="32"],
+.ui-select[data-size="32"] > select {
+  height: var(--control-large);
+  padding: 0 var(--space-3);
+}
+
+.ui-input[data-mono],
+.ui-textarea {
+  font-family: var(--font-mono);
+}
+
+.ui-textarea {
+  padding: var(--space-2);
+  resize: vertical;
+}
+
+:is(.ui-input, .ui-select > select, .ui-textarea):hover {
+  border-color: var(--text);
+}
+
+:is(.ui-input, .ui-select > select, .ui-textarea)[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+:is(.ui-input, .ui-select > select, .ui-textarea):disabled,
+:is(.ui-input, .ui-select > select, .ui-textarea):disabled:hover {
+  border-color: var(--disabled-bg);
+  background: var(--disabled-bg);
+  color: var(--disabled-fg);
+  cursor: default;
+}
+
+:is(.ui-input, .ui-textarea)::placeholder {
+  font-family: inherit;
+}
+
+:is(.ui-input, .ui-textarea):disabled::placeholder {
+  color: var(--disabled-fg);
+}
+
+.ui-select {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+
+.ui-select > select {
+  flex: 1;
+  appearance: none;
+  padding-inline-end: var(--space-6);
+  cursor: pointer;
+}
+
+/* Chromium's own stylesheet fades a disabled select to 0.7 opacity, over the disabled colors that every field uses. */
+.ui-select > select:disabled {
+  opacity: 1;
+}
+
+.ui-select[data-size="32"] > select {
+  padding-inline-end: calc(var(--space-6) + var(--space-1));
+}
+
+.ui-select > svg {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  color: var(--muted);
+  translate: 0 -50%;
+  pointer-events: none;
+}
+
+.ui-select[data-size="32"] > svg {
+  right: var(--space-3);
+}
+
+.ui-select:has(> select:disabled) > svg {
+  /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The chevron is not a control. It shows that its select is disabled. */
+  color: var(--disabled-fg);
+}
+
+.ui-choice {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: var(--control-small);
+  min-height: var(--control-small);
+  padding-block: calc((var(--control-small) - 1lh) / 2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.ui-choice-box {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  align-self: flex-start;
+  height: 1lh;
+}
+
+.ui-choice-box > input {
+  width: var(--choice-box);
+  height: var(--choice-box);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-state),
+    border-color var(--motion-state);
+}
+
+.ui-choice-box > input[type="radio"] {
+  border-radius: var(--radius-round);
+}
+
+.ui-choice:hover > .ui-choice-box > input:enabled {
+  border-color: var(--text);
+}
+
+/* A radio also matches :indeterminate while no radio in its group is checked,
+   so only a checkbox shows as mixed. :where adds no specificity, so the
+   disabled rules below still win. */
+.ui-choice-box > input:is(:checked, :where([type="checkbox"]):indeterminate) {
+  border-color: var(--primary-bg);
+  background: var(--primary-bg);
+}
+
+.ui-choice:hover > .ui-choice-box > input:enabled:is(:checked, :where([type="checkbox"]):indeterminate) {
+  border-color: var(--primary-hover);
+  background: var(--primary-hover);
+}
+
+.ui-choice-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--primary-fg);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ui-choice-box > input:is(:checked, :where([type="checkbox"]):indeterminate) + .ui-choice-mark {
+  visibility: visible;
+}
+
+.ui-radio-dot {
+  width: var(--space-1);
+  height: var(--space-1);
+  border-radius: var(--radius-round);
+  background: currentColor;
+}
+
+.ui-choice:has(input:disabled) {
+  /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The label is not a control. Its text shows that its box is disabled. */
+  color: var(--disabled-fg);
+  cursor: default;
+}
+
+.ui-choice-box > input:disabled {
+  border-color: var(--disabled-fg);
+  background: var(--disabled-bg);
+  cursor: default;
+}
+
+.ui-choice-box > input:disabled:is(:checked, :where([type="checkbox"]):indeterminate) {
+  background: var(--disabled-fg);
+}
+
+.ui-slider {
+  height: var(--control-small);
+  margin: 0;
+  accent-color: var(--text);
+}
+
+.ui-heading {
+  margin: 0;
+  color: inherit;
+  font-weight: var(--font-weight-bold);
+}
+
+:is(.ui-heading, .ui-text)[data-tone="muted"] {
+  color: var(--muted);
+}
+
+:is(.ui-heading, .ui-text)[data-size="micro"] {
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+:is(.ui-heading, .ui-text)[data-size="small"] {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+:is(.ui-heading, .ui-text)[data-size="body"] {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+:is(.ui-heading, .ui-text)[data-size="pane-title"] {
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
+}
+
+:is(.ui-heading, .ui-text)[data-size="title"] {
+  font-size: var(--font-size-title);
+  line-height: var(--line-height-title);
+}
+
+p.ui-text {
+  margin: 0;
+}
+
+.ui-mono {
+  font-family: var(--font-mono);
+}
+
+.ui-stack {
+  display: flex;
+  min-width: 0;
+}
+
+.ui-stack[data-direction="column"] {
+  flex-direction: column;
+}
+
+.ui-stack[data-wrap] {
+  flex-wrap: wrap;
+}
+
+.ui-stack[data-align="start"] {
+  align-items: flex-start;
+}
+
+.ui-stack[data-align="center"] {
+  align-items: center;
+}
+
+.ui-stack[data-align="baseline"] {
+  align-items: baseline;
+}
+
+.ui-stack[data-align="end"] {
+  align-items: flex-end;
+}
+
+.ui-stack[data-gap="1"] {
+  gap: var(--space-1);
+}
+
+.ui-stack[data-gap="2"] {
+  gap: var(--space-2);
+}
+
+.ui-stack[data-gap="3"] {
+  gap: var(--space-3);
+}
+
+.ui-stack[data-gap="4"] {
+  gap: var(--space-4);
+}
+
+.ui-stack[data-gap="6"] {
+  gap: var(--space-6);
+}
+
+.ui-stack[data-gap="8"] {
+  gap: var(--space-8);
+}
+
+.ui-card {
+  border-radius: var(--radius-float);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+}
+
+.ui-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.ui-empty > p {
+  margin: 0;
+}
+
+.ui-empty-title {
+  color: var(--text);
+  font-weight: var(--font-weight-bold);
+}
+
+.ui-empty-line {
+  color: var(--muted);
+}
+
+.ui-empty-action {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}

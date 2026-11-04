@@ -1,0 +1,79 @@
+{
+  "schema": "restedxp-routing-artifact",
+  "version": 4,
+  "id": "routing-forever-1.60.1.70124-m0-e4aaebc3f9b98eff",
+  "scope": {
+    "variant": "forever",
+    "build": "1.60.1.70124",
+    "map": 0
+  },
+  "frame": {
+    "origin": [30, 30],
+    "size": [3, 2],
+    "tilePixels": 512,
+    "cellsPerTile": 128,
+    "tileWorldUnits": 533.3333333333334
+  },
+  "tiles": [
+    {
+      "tile": [0, 0],
+      "state": "present"
+    },
+    {
+      "tile": [2, 0],
+      "state": "present"
+    },
+    {
+      "tile": [0, 1],
+      "state": "present"
+    }
+  ],
+  "zones": [],
+  "assets": [
+    {
+      "path": "coarse.bin",
+      "bytes": 12252,
+      "sha256": "41febd9655e11df7ce3d7ca44912882ad37585dca31829ccb57f4ad5aa88d3aa"
+    },
+    {
+      "path": "floors/0_0.bin",
+      "bytes": 650,
+      "sha256": "826cf3f9410006863e4a8cae92df82f772c07bb1b1b5556e6f6607e5db507eec"
+    },
+    {
+      "path": "tiles/0_0.bin",
+      "bytes": 36130,
+      "sha256": "ff9bf58d9a8c32093f01342d323c86b5a096aa7cea78967576689627397ba1e9"
+    },
+    {
+      "path": "tiles/0_1.bin",
+      "bytes": 36130,
+      "sha256": "08ed4adcec54cc503d5c6515e9e524c94278528c482fa3309a0527000d0024a6"
+    },
+    {
+      "path": "tiles/2_0.bin",
+      "bytes": 35362,
+      "sha256": "19916c5afac0202d975a1fb088e7e1db843cd956bfccafcc35986ca5572ed9ea"
+    },
+    {
+      "path": "zones.bin",
+      "bytes": 776,
+      "sha256": "cd6715e9cae04bfcae27dae549a0e4e7fe0e87da38cf7cd3419388ea769aeb3b"
+    }
+  ],
+  "floors": {
+    "dataset": {
+      "path": "data/entities-forever.json.gz",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "spawns": {
+      "path": "inputs/routing/spawns.csv",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "liquidTypes": {
+      "path": "inputs/routing/liquid-types.csv",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "floorClimb": 1.0666664
+}

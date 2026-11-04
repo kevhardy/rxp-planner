@@ -1,0 +1,871 @@
+.map-overlay .route-lines polyline,
+.map-overlay .route-lines path {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .route-lines .leg-outline {
+  stroke: var(--art-shade);
+  stroke-width: 4.5px;
+}
+
+/* The edge is a wider stroke under the halo, not --art-focus-edge, because a
+   filter's lengths are user units in the map's scaled SVG, and they grow
+   with the zoom. */
+.map-overlay .route-leg:focus {
+  outline: none;
+}
+
+.map-overlay .route-lines .leg-halo {
+  stroke: transparent;
+  stroke-width: 10px;
+}
+
+.map-overlay .route-lines .leg-edge {
+  stroke-width: 14px;
+}
+
+.map-overlay .leg-chosen .leg-edge,
+.map-overlay .route-leg:focus-visible .leg-edge {
+  stroke: var(--art-ink);
+}
+
+.map-overlay .leg-chosen .leg-halo {
+  stroke: var(--route-preview);
+}
+
+.map-overlay .route-leg:focus-visible .leg-halo {
+  stroke: var(--art-paper);
+}
+
+.map-overlay .route-leg.chosen:focus-visible .leg-halo {
+  stroke-width: 14px;
+}
+
+.map-overlay .route-leg.chosen:focus-visible .leg-edge {
+  stroke-width: 18px;
+}
+
+.map-overlay .route-lines .leg-line {
+  stroke: var(--route-line);
+  stroke-width: 2px;
+}
+
+.map-overlay .route-lines .leg-indoor {
+  stroke: var(--route-ink);
+  stroke-width: 2.5px;
+  stroke-dasharray: 3px 4px;
+  stroke-linecap: butt;
+}
+
+.map-overlay .route-lines .leg-ride {
+  stroke: var(--route-ink);
+  stroke-width: 2.5px;
+  stroke-dasharray: 8px 6px;
+  stroke-linecap: butt;
+}
+
+.map-overlay .route-lines .leg-arrows {
+  stroke: var(--route-arrows);
+  stroke-width: 1.2px;
+}
+
+.map-overlay .route-lines .leg-straight .leg-line {
+  stroke: var(--route-straight);
+  stroke-dasharray: 7px 4px;
+}
+
+.map-overlay .route-lines .leg-provisional .leg-line {
+  stroke: var(--route-failed);
+  stroke-dasharray: 6px 3px;
+}
+
+.map-overlay .route-lines .leg-failed .leg-line {
+  stroke: var(--route-failed);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4px 4px;
+}
+
+.map-overlay .route-lines .leg-pending .leg-line {
+  stroke: var(--route-pending);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4px 4px;
+}
+
+.map-overlay .route-lines .leg-preview .leg-line {
+  stroke: var(--route-preview);
+  stroke-width: 1.5px;
+  stroke-dasharray: 3px 3px;
+}
+
+.map-overlay .route-lines .leg-crossing .leg-line {
+  stroke: var(--route-pending);
+  stroke-width: 1.5px;
+  stroke-dasharray: 2px 5px;
+}
+
+.map-overlay .route-lines .leg-preview .leg-arrows,
+.map-overlay .route-lines .leg-pending .leg-arrows,
+.map-overlay .route-lines .leg-crossing .leg-arrows {
+  display: none;
+}
+
+.map-overlay .ride-stop {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--route-stop);
+  border-radius: var(--radius-round);
+  background: var(--route-chip);
+  color: var(--route-stop);
+  box-shadow: var(--art-outline);
+  pointer-events: none;
+}
+
+.map-overlay .ride-stop.ride-leave {
+  border-color: var(--route-chip);
+  background: var(--route-stop);
+  color: var(--route-chip);
+}
+
+.map-overlay .route-label {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: -50% -140%;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--route-label-bg);
+  color: var(--route-label);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.map-overlay .route-label.leg-failed,
+.map-overlay .route-label.leg-provisional {
+  color: var(--route-failed);
+}
+
+.map-overlay .route-label.leg-crossing {
+  color: var(--route-crossing);
+}
+
+.map-overlay svg.skipped-tiles polygon {
+  fill: var(--skipped-tiles-fill);
+  stroke: var(--skipped-tiles-line);
+  stroke-width: 1px;
+  stroke-dasharray: 4px 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .skipped-label {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  translate: -50% -50%;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--art-shade-soft);
+  color: var(--route-pending);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.pin.pin-route-start,
+.pin.pin-route-stop,
+.pin.pin-route-end {
+  border-color: var(--art-ink);
+  color: var(--art-ink);
+  cursor: grab;
+}
+
+.pin.pin-route-start,
+.pin.pin-route-end {
+  width: 18px;
+  height: 18px;
+}
+
+.pin-route-start {
+  --pin: var(--route-start);
+}
+
+.pin-route-end {
+  --pin: var(--route-end);
+}
+
+.pin-route-stop {
+  --pin: var(--route-stop);
+}
+
+.pin.pin-route-start.selected,
+.pin.pin-route-stop.selected,
+.pin.pin-route-end.selected {
+  box-shadow: var(--art-route-preview-halo);
+}
+
+.route-workspace {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  container-type: size;
+}
+
+.route-bar {
+  margin: 0;
+  min-width: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.route-failed {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.route-failed .ui-empty-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.route-failed details {
+  padding: 0 var(--space-4) var(--space-3);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.route-failed summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control-small);
+  cursor: pointer;
+}
+
+.route-failed details > p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.route-bar > .ui-select {
+  max-width: 160px;
+}
+
+.dialog.route-text-dialog {
+  width: min(680px, 94vw);
+}
+
+.route-text-dialog .ui-textarea {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  white-space: pre;
+}
+
+.route-slope {
+  column-gap: var(--space-1);
+}
+
+.slope-degrees {
+  width: 4em;
+}
+
+/* The sum sits on the parent because a property cannot add to its own inherited value. */
+.route-map {
+  --strip-cover: calc(var(--panel-cover, 0px) + var(--strip-h, 0px));
+
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  container: route-map / inline-size;
+}
+
+.route-map > .map-viewport {
+  position: relative;
+}
+
+.route-map-notices {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 60px;
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.route-map-notices > * {
+  pointer-events: auto;
+}
+
+.route-menu {
+  display: inline-flex;
+}
+
+.route-menu .popover:not([hidden]) {
+  display: grid;
+  gap: var(--space-1);
+  width: max-content;
+  padding: var(--space-2);
+}
+
+.route-menu .popover > .ui-button {
+  justify-content: flex-start;
+}
+
+.map-stage img.router-layer {
+  position: absolute;
+  top: var(--at-y);
+  left: var(--at-x);
+  width: var(--size-w);
+  height: var(--size-h);
+  display: block;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.route-layers .layer-legend {
+  margin: 2px 0 var(--space-1) var(--space-6);
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.route-layers .layer-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: var(--space-2);
+  border: 1px solid var(--layer-swatch-border);
+  background: var(--fill);
+  vertical-align: -1px;
+}
+
+.route-layers p {
+  max-width: 40ch;
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.route-workspace .route-strip {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.route-workspace .route-strip > .map-popover {
+  grid-area: 1 / 1;
+  justify-self: end;
+  width: min(340px, 100%);
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin-left: 0;
+  /* `hidden` would let Tab scroll the header away. */
+  overflow: clip;
+}
+
+.route-workspace .route-strip > .map-top-bound {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: var(--strip-bound, 0);
+  visibility: hidden;
+}
+
+@container route-map (width < 1000px) {
+  .route-workspace .route-strip {
+    --strip-bound: calc(50cqh - var(--panel-cover, 0px) / 2);
+
+    position: static;
+    grid-area: 2 / 1;
+    max-height: var(--strip-bound);
+    /* stylelint-disable-next-line declaration-property-value-allowed-list -- room for the panel, not a space */
+    margin-bottom: var(--panel-cover, 0px);
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .route-workspace .route-strip > .map-popover {
+    z-index: 1;
+    grid-row: 1 / -1;
+    width: auto;
+    justify-self: stretch;
+    align-self: end;
+  }
+
+  .route-map > .map-viewport {
+    grid-area: 1 / 1 / -1;
+    --panel-cover: var(--strip-cover);
+  }
+}
+
+.route-popover-actions,
+.route-popover-settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.route-popover-actions {
+  gap: var(--space-1);
+}
+
+.stop-levels {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.stop-levels legend,
+.stop-levels p {
+  margin: 0 0 2px;
+  padding: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.route-workspace .route-foot {
+  display: flex;
+  grid-area: 2 / 1;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+  margin-right: calc(-1 * (var(--space-8) + var(--space-4)));
+  pointer-events: none;
+}
+
+.route-workspace .route-foot > .map-readout {
+  flex: 1 1 340px;
+}
+
+@container route-map (width < 1000px) {
+  .route-workspace .route-foot {
+    margin-right: 0;
+  }
+}
+
+.route-workspace .route-corner {
+  display: flex;
+  flex: 1 0 min(420px, 100%);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: min(460px, 100%);
+  pointer-events: none;
+}
+
+.route-corner > * {
+  pointer-events: auto;
+}
+
+.route-chip,
+.route-note {
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-float);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.route-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+
+.route-chip > * {
+  flex: none;
+}
+
+.route-chip > [aria-live] {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.route-strip:has(> .route-summary) .route-chip > [aria-live] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-busy {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--line);
+  border-top-color: var(--text);
+  border-radius: var(--radius-round);
+  animation: route-busy var(--motion-loop) linear infinite;
+}
+
+@keyframes route-busy {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.route-chip.route-warn > span,
+.route-warn {
+  color: var(--warn);
+}
+
+.route-chip.route-error > span,
+.route-error {
+  color: var(--danger);
+}
+
+.route-floors {
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-floors span[role="img"] {
+  display: inline-flex;
+  margin-right: var(--space-1);
+  vertical-align: -1px;
+}
+
+.route-descents {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.route-info {
+  display: inline-flex;
+  border-radius: var(--radius-round);
+  color: var(--muted);
+}
+
+.route-falls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-3);
+  max-height: 5lh;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  list-style: none;
+}
+
+.route-falls li {
+  display: grid;
+  grid-column: span 2;
+  grid-template-columns: subgrid;
+}
+
+.route-falls li > :first-child {
+  text-align: end;
+}
+
+.route-fall-damage {
+  color: var(--muted);
+}
+
+.map-overlay svg.zone-borders path {
+  fill: none;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay svg.zone-borders .zone-border-halo {
+  stroke: var(--zone-border-halo);
+  stroke-width: 3px;
+}
+
+.map-overlay svg.zone-borders .zone-border-line {
+  stroke: var(--zone-border-line);
+  stroke-width: 1px;
+}
+
+.legend-row .zone-border-swatch {
+  /* stylelint-disable function-disallowed-list -- stripe: zone border line */
+  background:
+    linear-gradient(90deg, transparent 7px, var(--zone-swatch-line) 7px 8px, transparent 8px),
+    linear-gradient(90deg, transparent 6px, var(--zone-swatch-halo) 6px 9px, transparent 9px), var(--map-terrain);
+  /* stylelint-enable function-disallowed-list */
+  box-shadow: var(--ring-line);
+}
+
+.route-steps,
+.route-legs {
+  margin-top: var(--space-2);
+}
+
+.route-steps h4,
+.route-legs h4 {
+  margin: 0 0 2px;
+}
+
+.route-step-list,
+.route-legs ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-leg-show,
+.route-step {
+  display: grid;
+  align-items: start;
+  gap: var(--space-2);
+  width: 100%;
+  border-radius: var(--radius-control);
+}
+
+.route-step {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-content: center;
+  min-height: var(--control-small);
+  padding: 2px var(--space-2);
+}
+
+.route-step > svg {
+  margin-top: 1px;
+  color: var(--muted);
+}
+
+.route-step.route-ride > svg {
+  color: inherit;
+}
+
+.route-step-time {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.route-note-line {
+  display: flex;
+  flex-direction: column;
+  color: var(--muted);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+  font-weight: var(--font-weight-regular);
+}
+
+.route-legs button:focus-visible,
+.route-step-list button:focus-visible {
+  outline-offset: var(--focus-offset-inside);
+  scroll-margin: 0;
+}
+
+.route-legs > ol > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.route-leg-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.route-leg-row > .ui-button {
+  margin-top: 2px;
+}
+
+.route-leg-show {
+  flex: 1;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: var(--space-1) var(--space-2);
+  font-weight: var(--font-weight-bold);
+}
+
+.route-leg-pins {
+  display: inline-flex;
+  justify-content: space-between;
+  width: var(--space-8);
+  margin-top: 1px;
+}
+
+.route-pin {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border: 1.25px solid var(--art-ink);
+  border-radius: var(--radius-round);
+  background: var(--pin);
+  color: var(--art-ink);
+  font-size: var(--font-size-mark);
+  line-height: var(--line-height-mark);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+}
+
+.route-pin.pin-route-start {
+  --pin: var(--route-start);
+}
+
+.route-pin.pin-route-end {
+  --pin: var(--route-end);
+}
+
+.route-pin.pin-route-stop {
+  --pin: var(--route-stop);
+}
+
+.route-legs .route-leg-steps {
+  margin: 0 var(--space-6) var(--space-2) calc(var(--space-8) + var(--space-2));
+  color: var(--text);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+.route-leg-steps .route-step-time {
+  color: var(--muted);
+}
+
+.map-overlay svg.route-focus polyline {
+  fill: none;
+  stroke: var(--route-focus);
+  stroke-width: 14px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay .ride-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-overlay .ride-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--ride-mark-border);
+  border-radius: var(--radius-control);
+  translate: -50% -50%;
+  background: var(--ride-mark-bg);
+  color: var(--route-stop);
+  box-shadow: var(--art-outline);
+  pointer-events: auto;
+}
+
+.map-overlay .ride-mark:focus-visible {
+  z-index: 4;
+  outline: none;
+}
+
+.map-overlay .ride-mark[aria-pressed="true"]:not(:focus-visible) {
+  z-index: 1;
+}
+
+.map-overlay .ride-mark.ride-end {
+  box-shadow: var(--art-route-preview-ring);
+}
+
+.map-overlay .ride-mark[aria-pressed="true"] {
+  box-shadow: var(--art-route-preview-halo);
+}
+
+.map-overlay .ride-mark.ride-other {
+  opacity: 0.6;
+}
+
+.map-overlay .ride-faction {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  padding: 1px 2px;
+  border-radius: var(--radius-control);
+  background: var(--route-stop);
+  color: var(--route-chip);
+  font-size: var(--font-size-mark);
+  line-height: var(--line-height-mark);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+}
+
+.map-overlay .ride-preview .leg-line {
+  stroke: var(--route-preview);
+}
+
+.ride-popover .ride-scroll {
+  max-height: 14em;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+@container route-map (width < 1000px) {
+  .ride-popover .ride-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+.map-popover-body[data-clipped] :is(.ride-scroll, .route-falls) {
+  max-height: none;
+  overflow: visible;
+}
+
+.ride-popover p.muted {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+.ride-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  padding: 2px var(--space-1) 2px var(--space-2);
+}
+
+.ride-steps li > svg {
+  margin-top: 1px;
+}
+
+.route-new-legs .route-popover-settings {
+  flex-direction: column;
+  margin-top: 0;
+}
+
+.route-new-legs p {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.route-workspace .inside-box {
+  width: 180px;
+}

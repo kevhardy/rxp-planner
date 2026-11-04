@@ -1,0 +1,24 @@
+{
+  "name": "@rxp-planner/data-contract",
+  "version": "0.23.0",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "type": "module",
+  "description": "Portable finished-dataset contract, codecs, validation, and geometry",
+  "engines": {
+    "node": "^22.18.0 || >=24.3.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json"
+  }
+}

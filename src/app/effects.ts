@@ -1,0 +1,134 @@
+import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useSyncExternalStore, type RefObject } from "react";
+import type { AssetMap, Retains, Status } from "./async.ts";
+
+type Listener<E> = (event: E) => void;
+
+interface ListenerOptions {
+  enabled?: boolean;
+  passive?: boolean;
+}
+
+/** Calls the latest `listener`. Reads `target()` after each commit, so a ref's element can mount later. */
+export function useEventListener<K extends keyof WindowEventMap>(
+  target: () => Window | null | undefined,
+  type: K,
+  listener: Listener<WindowEventMap[K]>,
+  options?: ListenerOptions,
+): void;
+export function useEventListener<K extends keyof DocumentEventMap>(
+  target: () => Document | null | undefined,
+  type: K,
+  listener: Listener<DocumentEventMap[K]>,
+  options?: ListenerOptions,
+): void;
+export function useEventListener<K extends keyof HTMLElementEventMap>(
+  target: () => HTMLElement | null | undefined,
+  type: K,
+  listener: Listener<HTMLElementEventMap[K]>,
+  options?: ListenerOptions,
+): void;
+export function useEventListener(
+  target: () => EventTarget | null | undefined,
+  type: string,
+  listener: Listener<Event>,
+  options: ListenerOptions = {},
+): void {
+  const { enabled = true, passive } = options;
+  const onEvent = useEffectEvent(listener);
+  const bound = useRef<{ on: EventTarget; type: string; passive: boolean | undefined; remove: () => void } | null>(null);
+  useEffect(() => {
+    const on = (enabled && target()) || null;
+    const was = bound.current;
+    if (was?.on === on && was.type === type && was.passive === passive) return;
+    was?.remove();
+    bound.current = null;
+    if (!on) return;
+    const handle = (event: Event) => onEvent(event);
+    on.addEventListener(type, handle, passive === undefined ? {} : { passive });
+    bound.current = { on, type, passive, remove: () => on.removeEventListener(type, handle) };
+  });
+  useEffect(
+    () => () => {
+      bound.current?.remove();
+      bound.current = null;
+    },
+    [],
+  );
+}
+
+/** `focus` gives the control to focus each time `open` turns true. */
+export function useOutsidePress(
+  open: boolean,
+  inside: RefObject<Element | null>,
+  onOutside: () => void,
+  focus?: () => HTMLElement | null | undefined,
+): void {
+  const focusOpened = useEffectEvent(() => focus?.()?.focus());
+  useEffect(() => {
+    if (open) focusOpened();
+  }, [open]);
+  useEventListener(
+    () => document,
+    "pointerdown",
+    (e) => {
+      if (!(e.target instanceof Node) || !inside.current?.contains(e.target)) onOutside();
+    },
+    { enabled: open },
+  );
+}
+
+/** Retains `key` of `owner` while mounted; `null` retains nothing. */
+export function useRetain<K>(owner: Retains<K>, key: K | null): void {
+  useEffect(() => (key === null ? undefined : owner.retain(key)), [owner, key]);
+}
+
+/** Retains each of `keys` while mounted, and gives their states in order. Undefined until a key is first retained. */
+export function useAssets<K, V>(assets: AssetMap<K, V>, keys: readonly K[]): readonly (Status<V> | undefined)[] {
+  useEffect(() => {
+    const releases = keys.map((key) => assets.retain(key));
+    return () => {
+      for (const release of releases) release();
+    };
+  }, [assets, keys]);
+  const read = useMemo(() => {
+    let shown: readonly (Status<V> | undefined)[] = [];
+    return () => {
+      const states = keys.map((key) => assets.peek(key));
+      if (states.length !== shown.length || states.some((state, i) => state !== shown[i])) shown = states;
+      return shown;
+    };
+  }, [assets, keys]);
+  return useSyncExternalStore(assets.subscribe, read);
+}
+
+/** Calls the latest `fire` after `delay` ms. A new `delay` or `key` restarts the wait, and `null` cancels it. */
+export function useTimeout(fire: () => void, delay: number | null, key?: unknown): void {
+  const onFire = useEffectEvent(fire);
+  useEffect(() => {
+    if (delay === null) return;
+    const timer = setTimeout(() => onFire(), delay);
+    return () => clearTimeout(timer);
+  }, [delay, key]);
+}
+
+/** After each render, calls `update` before paint, then each frame until it returns false. */
+export function useEachFrame(update: () => boolean | void): void {
+  useLayoutEffect(() => {
+    let frame = 0;
+    const tick = () => {
+      if (update() !== false) frame = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => cancelAnimationFrame(frame);
+  });
+}
+
+/** After each commit, clears `pending` and passes its value to `perform`, so `perform` gets each value once. */
+export function usePendingAction<T>(pending: RefObject<T | null>, perform: (value: T) => void): void {
+  useEffect(() => {
+    const value = pending.current;
+    if (value === null) return;
+    pending.current = null;
+    perform(value);
+  });
+}

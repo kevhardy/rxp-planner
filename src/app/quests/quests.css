@@ -1,0 +1,88 @@
+.quest-draft {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+
+.quest-draft p {
+  margin: 0 0 var(--space-1);
+}
+
+.quest-draft .quest-details {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.quest-draft .quest-details-name {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-bold);
+}
+
+/* A fieldset defaults to its content's minimum width; letting it shrink
+   keeps a long location choice and step text inside the card. */
+.draft-part {
+  min-inline-size: 0;
+  margin-top: var(--space-2);
+}
+
+.draft-point {
+  max-width: 100%;
+  margin-bottom: var(--space-1);
+}
+
+.draft-part pre {
+  margin: 0;
+  overflow-x: auto;
+  color: var(--text);
+  white-space: pre;
+}
+
+.draft-part.off pre {
+  opacity: 0.4;
+}
+
+.draft-actions {
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+.quest-sources {
+  margin: 0 0 var(--space-1);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.quest-sources summary {
+  cursor: pointer;
+}
+
+.quest-sources ul {
+  margin: 2px 0 0;
+  padding-left: var(--space-3);
+  list-style: none;
+}
+
+.quest-sources dl {
+  margin: 2px 0 var(--space-1) var(--space-3);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
+}
+
+.quest-sources dt {
+  margin-top: 2px;
+  color: var(--text);
+}
+
+.quest-sources dd {
+  margin: 0 0 0 var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.draft-captured {
+  margin: 0 0 var(--space-1);
+  padding-left: var(--space-4);
+  color: var(--muted);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}

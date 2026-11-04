@@ -1,0 +1,292 @@
+import { checkExamples } from "../examples.ts";
+import rule from "./no-unknown-type-aliases.ts";
+
+checkExamples("no-unknown-type-aliases", rule, [
+  { name: "U01", code: "type RawEnvelope = unknown;", reports: [["RawEnvelope", 6]] },
+  { name: "U02", code: "type RawEnvelope = (unknown);", reports: [["RawEnvelope", 6]] },
+  {
+    name: "U03",
+    code: "type RawEnvelope = unknown; type Received = RawEnvelope;",
+    reports: [
+      ["RawEnvelope", 6],
+      ["Received", 34],
+    ],
+  },
+  { name: "U04", code: "type RawEnvelope = number | unknown;", reports: [["RawEnvelope", 6]] },
+  { name: "U05", code: "type RawEnvelope = unknown | unknown;", reports: [["RawEnvelope", 6]] },
+  { name: "U06", code: "type RawEnvelope = unknown & { score: number };" },
+  { name: "U07", code: "type RawEnvelope = { payload: unknown };" },
+  { name: "U08", code: "type RawEnvelope = unknown[]; type Pair = [unknown, unknown];" },
+  { name: "U09", code: "type RawEnvelope = () => unknown;" },
+  { name: "U10", code: "type Select<T> = T; type RawEnvelope = Select<unknown>;", reports: [["RawEnvelope", 26]] },
+  { name: "U11", code: "type Select<T = unknown> = T; type RawEnvelope = Select;", reports: [["RawEnvelope", 36]] },
+  { name: "U12", code: "type Select<T> = unknown; type RawEnvelope = Select;", reports: [["Select", 6]] },
+  { name: "U13", code: "type Select<T extends unknown> = T;" },
+  { name: "U14", code: "type Select<T> = { value: T }; type RawEnvelope = Select<unknown>;" },
+  { name: "U15", code: "type Select<A, B = A> = B; type RawEnvelope = Select<unknown>;", reports: [["RawEnvelope", 33]] },
+  {
+    name: "U16",
+    code: "type RawEnvelope = Later; type Later = unknown;",
+    reports: [
+      ["RawEnvelope", 6],
+      ["Later", 32],
+    ],
+  },
+  { name: "U17", code: "type RawEnvelope = Later; type Later = RawEnvelope;" },
+  { name: "U18", code: "type RawEnvelope = RawEnvelope | unknown;", reports: [["RawEnvelope", 6]] },
+  {
+    name: "U19",
+    code: "type RawEnvelope = unknown; function inside() { type RawEnvelope = string; type Received = RawEnvelope; }",
+    reports: [["RawEnvelope", 6]],
+  },
+  {
+    name: "U20",
+    code: "function first() { type RawEnvelope = unknown; } function second() { type Received = RawEnvelope; }",
+    reports: [["RawEnvelope", 25]],
+  },
+  { name: "U21", code: "type RawEnvelope = unknown; type Select<RawEnvelope> = RawEnvelope;", reports: [["RawEnvelope", 6]] },
+  {
+    name: "U22",
+    code: "type RawEnvelope = unknown; type Select<T> = T extends infer RawEnvelope ? RawEnvelope : RawEnvelope;",
+    reports: [["RawEnvelope", 6]],
+  },
+  {
+    name: "U23",
+    code: "type RawEnvelope = unknown; function inside() { interface RawEnvelope {} type Received = RawEnvelope; }",
+    reports: [["RawEnvelope", 6]],
+  },
+  { name: "U24", code: "import type { RawEnvelope } from 'owner'; type Received = RawEnvelope;" },
+  {
+    name: "U25",
+    code: "namespace Shelf { export type RawEnvelope = unknown; } type Received = Shelf.RawEnvelope;",
+    reports: [["RawEnvelope", 31]],
+  },
+  { name: "U26", code: "type RawEnvelope = any; type Received = object;" },
+  { name: "U27", code: "type Select<T> = T; type Received = Select<unknown, string>;", reports: [["Received", 26]] },
+  {
+    name: "U28",
+    code: "type RawEnvelope = unknown; function inside() { interface RawEnvelope {} interface RawEnvelope { score: number } type Received = RawEnvelope; }",
+    reports: [["RawEnvelope", 6]],
+  },
+  {
+    name: "U29",
+    code: "type RawEnvelope = unknown; function inside() { const holder = class RawEnvelope {}; type Received = RawEnvelope; }",
+    reports: [["RawEnvelope", 6]],
+  },
+  { name: "U30", code: "type Select<T = unknown> = T;" },
+  {
+    name: "U31",
+    code: "type RawEnvelope = unknown; const RawEnvelope = 8; type Received = RawEnvelope;",
+    reports: [
+      ["RawEnvelope", 6],
+      ["Received", 57],
+    ],
+  },
+  {
+    name: "U32",
+    code: "type RawEnvelope = unknown; type Projection<T> = { [RawEnvelope in keyof T]: RawEnvelope };",
+    reports: [["RawEnvelope", 6]],
+  },
+  { name: "U33", code: "export declare type RawEnvelope = unknown;", reports: [["RawEnvelope", 21]] },
+  { name: "U34", code: "type RawEnvelope = keyof unknown; type Received = Promise<unknown>;" },
+  { name: "U35", code: 'import Fog from "missing"; type Fog=unknown; type Use=Fog;', reports: [["Fog", 33]] },
+  { name: "U36", code: 'import * as Fog from "missing"; type Fog=unknown; type Use=Fog;', reports: [["Fog", 38]] },
+  { name: "U37", code: 'import type Fog from "missing"; type Fog=unknown; type Use=Fog;', reports: [["Fog", 38]] },
+  { name: "U38", code: 'import type * as Fog from "missing"; type Fog=unknown; type Use=Fog;', reports: [["Fog", 43]] },
+  { name: "U39", code: "type Outer<T>=Inner; type Inner=T; type X=Outer<unknown>;", reports: [["X", 41]] },
+  { name: "U40", code: "type Outer<T>=Inner<object>; type Inner<X>=T; type Y=Outer<unknown>;", reports: [["Y", 52]] },
+  {
+    name: "U41",
+    code: "type T=unknown; type Outer<T>=Inner; type Inner=T; type X=Outer<object>;",
+    reports: [
+      ["T", 6],
+      ["Outer", 22],
+      ["Inner", 43],
+    ],
+  },
+  {
+    name: "U42",
+    code: "type T=unknown; type Outer<T>=Inner<string>; type Inner<X>=T; type Y=Outer<object>;",
+    reports: [
+      ["T", 6],
+      ["Outer", 22],
+      ["Inner", 51],
+    ],
+  },
+  { name: "U43", code: 'import { Mist } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 37]] },
+  { name: "U44", code: 'import { Source as Mist } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 47]] },
+  { name: "U45", code: 'import type { Mist } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 42]] },
+  { name: "U46", code: 'import { type Mist } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 42]] },
+  { name: "U47", code: 'import Mist, { Spare } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 44]] },
+  { name: "U48", code: 'import Spare, { Mist } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 44]] },
+  { name: "U49", code: 'import Mist, { type Spare } from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 49]] },
+  { name: "U50", code: 'import Spare, * as Mist from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 45]] },
+  { name: "U51", code: 'import Mist, * as Spare from "absent"; type Mist=unknown; type Result=Mist;', reports: [["Mist", 45]] },
+  {
+    name: "U52",
+    code: 'import type Mist = require("absent"); type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 44],
+      ["Result", 63],
+    ],
+  },
+  {
+    name: "U53",
+    code: 'import Mist = require("absent"); type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 39],
+      ["Result", 58],
+    ],
+  },
+  {
+    name: "U54",
+    code: "import Mist = Library.Entry; type Mist=unknown; type Result=Mist;",
+    reports: [
+      ["Mist", 35],
+      ["Result", 54],
+    ],
+  },
+  {
+    name: "U55",
+    code: 'export { Mist } from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 37],
+      ["Result", 56],
+    ],
+  },
+  {
+    name: "U56",
+    code: 'export { Source as Mist } from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 47],
+      ["Result", 66],
+    ],
+  },
+  {
+    name: "U57",
+    code: 'export type { Mist } from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 42],
+      ["Result", 61],
+    ],
+  },
+  {
+    name: "U58",
+    code: 'export * as Mist from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 38],
+      ["Result", 57],
+    ],
+  },
+  {
+    name: "U59",
+    code: 'export type * as Mist from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 43],
+      ["Result", 62],
+    ],
+  },
+  {
+    name: "U60",
+    code: 'export * from "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 30],
+      ["Result", 49],
+    ],
+  },
+  {
+    name: "U61",
+    code: 'import "absent"; type Mist=unknown; type Result=Mist;',
+    reports: [
+      ["Mist", 23],
+      ["Result", 42],
+    ],
+  },
+  {
+    name: "U62",
+    code: "export { Mist }; type Mist=unknown; type Result=Mist;",
+    reports: [
+      ["Mist", 23],
+      ["Result", 42],
+    ],
+  },
+  { name: "U63", code: "type Start<T>=Middle; type Middle=End; type End=T; type Result=Start<unknown>;", reports: [["Result", 57]] },
+  {
+    name: "U64",
+    code: "type Start<T>=Middle; type Middle=Between; type Between=End; type End=T; type Result=Start<unknown>;",
+    reports: [["Result", 79]],
+  },
+  { name: "U65", code: "type Start<T>=Middle<string>; type Middle<T>=T; type Result=Start<unknown>;" },
+  { name: "U66", code: "type Start<T>=Middle; type Middle<X=T>=X; type Result=Start<unknown>;", reports: [["Result", 48]] },
+  { name: "U67", code: "type Start<T>=Middle<T>; type Middle<X>=X; type Result=Start<unknown>;", reports: [["Result", 49]] },
+  { name: "U68", code: "type Start<T>=Middle<T>; type Middle<T>=T; type Result=Start<unknown>;", reports: [["Result", 49]] },
+  {
+    name: "U69",
+    code: "type T=unknown; type Start<T>=Middle; type Middle=T<string>; type Result=Start<string>;",
+    reports: [
+      ["T", 6],
+      ["Start", 22],
+      ["Middle", 44],
+      ["Result", 67],
+    ],
+  },
+  { name: "U70", code: "type Start<T>=Middle; type Middle<T=string>=T; type Result=Start<unknown>;" },
+  { name: "U71", code: "type Start<T>=Middle; type Middle<T=T>=T; type Result=Start<unknown>;", reports: [["Result", 48]] },
+  { name: "U72", code: "type Start<T>=Middle<string>; type Middle<T,X=T>=X; type Result=Start<unknown>;" },
+  { name: "U73", code: "type Start<T>=Middle<string,T>; type Middle<T,X>=X; type Result=Start<unknown>;", reports: [["Result", 58]] },
+  { name: "U74", code: "type Start<T>=Middle; type Middle<X=T,T=string>=X; type Result=Start<unknown>;", reports: [["Result", 57]] },
+  {
+    name: "U75",
+    code: "type Start<T>=Middle<T,string>; type Middle<X,T>=End; type End=X; type Result=Start<unknown>;",
+    reports: [["Result", 72]],
+  },
+  {
+    name: "U76",
+    code: "type Start<T>=Middle; type Middle<X=T,T=string>=End<X>; type End<X>=X; type Result=Start<unknown>;",
+    reports: [["Result", 77]],
+  },
+  { name: "U77", code: "type Start<T>=Middle; type Middle<T>=T; type Result=Start<unknown>;" },
+  { name: "U78", code: "type Start<T>=Middle<T>; type Middle=string; type Result=Start<unknown>;" },
+  { name: "U79", code: "type Start<T>=Middle; type Middle=T<string>; type Result=Start<unknown>;" },
+  {
+    name: "U80",
+    code: "function box<T>() { type Start<T>=Middle; type Middle=T; type Result=Start<unknown>; }",
+    reports: [["Result", 63]],
+  },
+  { name: "U81", code: "type Start<T>=Middle; type Middle=Start<T>; type Result=Start<unknown>;" },
+  { name: "U82", code: "type Start<T>=Middle; type Middle=Start<T>|T; type Result=Start<unknown>;", reports: [["Result", 52]] },
+  { name: "U83", code: "type Start<T>=Middle<Start<T>>; type Middle<X>=X; type Result=Start<unknown>;" },
+  {
+    name: "U84",
+    code: "type Local=string; type Middle<X>=X; function box(){ type Local=unknown; type Start<T>=Middle<Local>; type Result=Start<unknown>; }",
+    reports: [
+      ["Local", 59],
+      ["Start", 79],
+      ["Result", 108],
+    ],
+  },
+  {
+    name: "U85",
+    code: "type End=unknown; type Start<T>=Middle; type Middle=End; function box(){ type End=string; type Result=Start<unknown>; }",
+    reports: [
+      ["End", 6],
+      ["Start", 24],
+      ["Middle", 46],
+      ["Result", 96],
+    ],
+  },
+  { name: "U86", code: "type T=unknown; type Start<T>=T<string>; type Result=Start<unknown>;", reports: [["T", 6]] },
+  { name: "U87", code: "type T=string; type Start<T>=Middle; type Middle<X=T>=X; type Result=Start<unknown>;", reports: [["Result", 63]] },
+  { name: "U88", code: "type Start<T>=Middle; type Middle<X=T,Y>=X; type Result=Start<unknown>;" },
+  { name: "U89", code: "type T=unknown; type Middle<T=T>=T; type Result=Middle;", reports: [["T", 6]] },
+  { name: "U90", code: "type Select<T>=T; type Bundle=Select<string>|Select<unknown>; ", reports: [["Bundle", 24]] },
+  { name: "U91", code: "type Wrap<T>=T; type Result=Wrap<Wrap<unknown>>;" },
+  {
+    name: "U92",
+    code: "type Relay<T>=T; type Carry<T>=Relay<T>; function box(){ type Relay=unknown; type Result=Carry<Relay>; }",
+    reports: [
+      ["Relay", 63],
+      ["Result", 83],
+    ],
+  },
+]);

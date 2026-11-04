@@ -1,0 +1,313 @@
+{
+  "schema": "restedxp-routing-artifact",
+  "version": 4,
+  "id": "routing-forever-1.60.1.70450-m0-02076a9b901c5e14",
+  "scope": {
+    "variant": "forever",
+    "build": "1.60.1.70450",
+    "map": 0
+  },
+  "frame": {
+    "origin": [23, 20],
+    "size": [15, 24],
+    "tilePixels": 512,
+    "cellsPerTile": 128,
+    "tileWorldUnits": 533.3333333333334
+  },
+  "tiles": [
+    {
+      "tile": [8, 21],
+      "state": "present"
+    },
+    {
+      "tile": [9, 21],
+      "state": "present"
+    },
+    {
+      "tile": [10, 21],
+      "state": "present"
+    },
+    {
+      "tile": [11, 21],
+      "state": "present"
+    },
+    {
+      "tile": [12, 21],
+      "state": "present"
+    },
+    {
+      "tile": [13, 21],
+      "state": "present"
+    },
+    {
+      "tile": [14, 21],
+      "state": "present"
+    },
+    {
+      "tile": [8, 22],
+      "state": "present"
+    },
+    {
+      "tile": [9, 22],
+      "state": "present"
+    },
+    {
+      "tile": [10, 22],
+      "state": "present"
+    },
+    {
+      "tile": [11, 22],
+      "state": "present"
+    },
+    {
+      "tile": [12, 22],
+      "state": "present"
+    },
+    {
+      "tile": [13, 22],
+      "state": "present"
+    },
+    {
+      "tile": [8, 23],
+      "state": "present"
+    },
+    {
+      "tile": [9, 23],
+      "state": "present"
+    },
+    {
+      "tile": [10, 23],
+      "state": "present"
+    },
+    {
+      "tile": [11, 23],
+      "state": "present"
+    },
+    {
+      "tile": [12, 23],
+      "state": "present"
+    },
+    {
+      "tile": [13, 23],
+      "state": "present"
+    }
+  ],
+  "zones": [1418, 1426, 1427, 1432],
+  "assets": [
+    {
+      "path": "coarse.bin",
+      "bytes": 247280,
+      "sha256": "94ae2b530bc115991460c5ab0784217cdfb8c27bfc361d523fe24547498181ab"
+    },
+    {
+      "path": "floors/10_21.bin",
+      "bytes": 85019,
+      "sha256": "63252abc66641c00c465c6d7c6b7cfd5eed6670d8c22163a317d2154795787b8"
+    },
+    {
+      "path": "floors/10_22.bin",
+      "bytes": 54015,
+      "sha256": "85b4a173c2eadd9b2433230a6a3d6f60f6b00699dfaa3e409c88a545108390ff"
+    },
+    {
+      "path": "floors/10_23.bin",
+      "bytes": 21569,
+      "sha256": "c42fd396fcf1554c3cb7d9362056f1492c1a33a1ffecae61e453076510f49903"
+    },
+    {
+      "path": "floors/11_21.bin",
+      "bytes": 75163,
+      "sha256": "8d3677cc1f1be4d8f74edcb2980968d15498f3b58450e501e57898caec6dc810"
+    },
+    {
+      "path": "floors/11_22.bin",
+      "bytes": 53773,
+      "sha256": "083df4341b6340897474d345809c02e50b8cc2968041657ee1db5e8715697d05"
+    },
+    {
+      "path": "floors/11_23.bin",
+      "bytes": 24423,
+      "sha256": "3f7afa149d7d03db1c2993dc92bd3515b5d737c1bb886c723c7c09f537980889"
+    },
+    {
+      "path": "floors/12_21.bin",
+      "bytes": 38537,
+      "sha256": "8eb80361e5bbaa7b26a8333c6ba19ecb28ce5bd6092f1159bbbd18b49e822430"
+    },
+    {
+      "path": "floors/12_22.bin",
+      "bytes": 63996,
+      "sha256": "9a7362e219edfa884e1de711b0da0f813b99b13c17f73a4a0af2f61674fa8b8c"
+    },
+    {
+      "path": "floors/12_23.bin",
+      "bytes": 18892,
+      "sha256": "d4264537e03645bb1795ab4de9df89b12d7b2287faaf1cfde5dd0ee5d5bb2a2f"
+    },
+    {
+      "path": "floors/13_21.bin",
+      "bytes": 54391,
+      "sha256": "e926692ad9c2cebab16dff44abacb1691980ce0ccfef54a09348bbe54fcbba9d"
+    },
+    {
+      "path": "floors/13_22.bin",
+      "bytes": 54038,
+      "sha256": "c6df8fc7c4f3babbdac951524d11a0a83b3caf335753207997ffb30bfd56e164"
+    },
+    {
+      "path": "floors/13_23.bin",
+      "bytes": 31515,
+      "sha256": "fb304ab4f27e33e316101b8b9568ee6c4b27bfc6922e102c22875b3f2ef238b0"
+    },
+    {
+      "path": "floors/14_21.bin",
+      "bytes": 49275,
+      "sha256": "2ff4d8244dd53af001f5fed0588f9ab3d46a30a835f326ed9985b165c6014a2d"
+    },
+    {
+      "path": "floors/8_21.bin",
+      "bytes": 46711,
+      "sha256": "647463c8966dc41169b92c290d2152363c8e5c8fcb46553334503b572b9bca7d"
+    },
+    {
+      "path": "floors/8_22.bin",
+      "bytes": 56053,
+      "sha256": "ae4ce3cec67b85e758b29e5e36a3fe85efc3d59505fb3d32af363c133c3b9980"
+    },
+    {
+      "path": "floors/8_23.bin",
+      "bytes": 44962,
+      "sha256": "2886593f6e4a746f15ac2268255dd1c46ec7e0deb547d10076ebaae828bf6cef"
+    },
+    {
+      "path": "floors/9_21.bin",
+      "bytes": 56882,
+      "sha256": "09942efbdca98db642ef581b9cdd060786f70041aed1086817dd93429636951a"
+    },
+    {
+      "path": "floors/9_22.bin",
+      "bytes": 72222,
+      "sha256": "c857fb796713dd7a586161d9fca27cecc87855b9c7e337cb603bdaded2259004"
+    },
+    {
+      "path": "floors/9_23.bin",
+      "bytes": 23771,
+      "sha256": "9e7f93ac6f3d8aff70b871bb59c69d717c5d6b1923e580e4e369cf22b364f83c"
+    },
+    {
+      "path": "tiles/10_21.bin",
+      "bytes": 35362,
+      "sha256": "4ee2838423f132215065f19f9065c9a4fd68e7e16d46d3cdd593950730fa909f"
+    },
+    {
+      "path": "tiles/10_22.bin",
+      "bytes": 35362,
+      "sha256": "f6de4513d8e2d8f2adc72462598c986e8fd5d3cc6b1f58e4e02757334f6e5384"
+    },
+    {
+      "path": "tiles/10_23.bin",
+      "bytes": 35362,
+      "sha256": "ea1f6a05d39d33966d8c794b156e12185ce1f5321c44980c1d6180d9544b7442"
+    },
+    {
+      "path": "tiles/11_21.bin",
+      "bytes": 35362,
+      "sha256": "3b8f83993f852b5c22dc0032091ad4e23abb9497a3c81d19aef01edc44b73d0f"
+    },
+    {
+      "path": "tiles/11_22.bin",
+      "bytes": 35362,
+      "sha256": "d41c7f9acd2b95b8efd4f3d8df877894e940fc0b7be72cf596952e7c0b4686b2"
+    },
+    {
+      "path": "tiles/11_23.bin",
+      "bytes": 35362,
+      "sha256": "f05a6330464a74e46f5f0a006a10765845967474c3c66b7fc88529542221a73a"
+    },
+    {
+      "path": "tiles/12_21.bin",
+      "bytes": 35362,
+      "sha256": "727016fb8da1ed4d555d486d2e9fc86ffcf6232c0e840cc07d044461b9110c8e"
+    },
+    {
+      "path": "tiles/12_22.bin",
+      "bytes": 35506,
+      "sha256": "fafd4e5f5df1b83ad51f07f794befeceb7535253ae2acec658671b75fba40d3b"
+    },
+    {
+      "path": "tiles/12_23.bin",
+      "bytes": 35362,
+      "sha256": "e90e6b46a7de7f9165b25477455dcbcb08446caac737377ae99b42cc7777c026"
+    },
+    {
+      "path": "tiles/13_21.bin",
+      "bytes": 35362,
+      "sha256": "c64976bc12128cc10c55b0748b7f9a80d476c6b5d91e101b2ccb4d21dcb03256"
+    },
+    {
+      "path": "tiles/13_22.bin",
+      "bytes": 35362,
+      "sha256": "c70d16ad95d8a2673306d5207cbb41d37dfcc3cd5b6e481678ccb7de9789561a"
+    },
+    {
+      "path": "tiles/13_23.bin",
+      "bytes": 35362,
+      "sha256": "9868545a9b4a6a7b41c882c3dc38dde8d664f3f715c0358464ebe5df6f19e3ef"
+    },
+    {
+      "path": "tiles/14_21.bin",
+      "bytes": 36250,
+      "sha256": "261aa3aca8f4e212e9c3032e9af4259f37cd2a310a9236256914cce6bcd4bf0a"
+    },
+    {
+      "path": "tiles/8_21.bin",
+      "bytes": 35506,
+      "sha256": "a241fea3b32b09bed56df421138654c21eba46bf7eee51d0dac0d38259a2a4ac"
+    },
+    {
+      "path": "tiles/8_22.bin",
+      "bytes": 35362,
+      "sha256": "0240d0a2f818080351946d9bb5fe48be8fa3d04f5864e248013dd018014e51ce"
+    },
+    {
+      "path": "tiles/8_23.bin",
+      "bytes": 35362,
+      "sha256": "225b01461f8827468ca10e46d474571d8479961cf2cd7e433132245d608e9b47"
+    },
+    {
+      "path": "tiles/9_21.bin",
+      "bytes": 35362,
+      "sha256": "5bbcbd9f912d30cc258b47ba643e86cc6e974b09ce67939a7ab8c70af7781507"
+    },
+    {
+      "path": "tiles/9_22.bin",
+      "bytes": 35362,
+      "sha256": "f2981b20d1aeaa6cfc86539e0df2b23f14a129a35d597deb9c3c51b356876f4b"
+    },
+    {
+      "path": "tiles/9_23.bin",
+      "bytes": 35362,
+      "sha256": "cddcbdac95e3cf643b83ea26cc622cc903f2743f4594d6f341e422d32f2b9dc7"
+    },
+    {
+      "path": "zones.bin",
+      "bytes": 4872,
+      "sha256": "02a24042d5baa2bc1596c68abc9fd6bd3ad49780b753b18d90336ef392ff6876"
+    }
+  ],
+  "floors": {
+    "dataset": {
+      "path": "data/forever.json.gz",
+      "sha256": "5098154262bdeb3efd52e198612400f51d8654a2f044c3131a2146627c982313"
+    },
+    "spawns": {
+      "path": "inputs/routing/spawns.csv",
+      "sha256": "a37c49ef254afd3af300db69c740b463021d73b4b3253f389ae82870d6e8630a"
+    },
+    "liquidTypes": {
+      "path": "inputs/routing/liquid-types.csv",
+      "sha256": "ebb29370ef7e939110609819b7beafa93528c0649e4cdcac19fa2aedd3a08bc4"
+    }
+  },
+  "floorClimb": 1.0666664
+}

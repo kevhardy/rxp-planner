@@ -1,0 +1,145 @@
+.coord-readout {
+  --readout-label: 6.5ch;
+  display: grid;
+  grid-template-columns: var(--readout-label) 7ch 6ch minmax(0, 18.5ch);
+  max-width: 100%;
+  gap: 0 var(--space-2);
+  margin: 0 0 0 auto;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-float);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    opacity var(--motion-state),
+    visibility var(--motion-state);
+}
+
+.route-workspace .coord-readout {
+  --readout-label: 12.5ch;
+}
+
+.coord-readout.idle {
+  visibility: hidden;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coord-readout {
+    transition: none;
+  }
+}
+
+.map-foot {
+  container: map-foot / inline-size;
+  position: absolute;
+  right: 12px;
+  bottom: calc(12px + var(--panel-cover, 0px));
+  left: 12px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.map-foot > * {
+  grid-column: 2;
+}
+
+.map-foot > .map-readout {
+  grid-column: 3;
+}
+
+.map-foot > .map-readout:only-child {
+  grid-column: 1 / -1;
+}
+
+/* A container query cannot restyle its own container, so the items span the
+   row's columns instead. */
+@container map-foot (width < 1000px) {
+  .map-foot > * {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .map-foot > .map-readout {
+    grid-row: 1;
+    justify-self: stretch;
+  }
+}
+
+.map-readout {
+  container: readout / inline-size;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.coord-readout > div {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.coord-readout dd {
+  display: grid;
+  grid-column: span 3;
+  grid-template-columns: subgrid;
+  margin: 0;
+}
+
+.coord-readout dd + dd {
+  grid-column: 2 / -1;
+}
+
+.coord-readout dt {
+  color: var(--muted);
+}
+
+.coord-readout dt,
+.coord-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.coord-x,
+.coord-y {
+  font-family: var(--font-mono);
+}
+
+.coord-x {
+  text-align: right;
+}
+
+.coord-readout dd[data-empty] .coord-x {
+  text-align: left;
+}
+
+.coord-readout [data-off-map] dd + dd {
+  visibility: hidden;
+}
+
+@container readout (width < 330px) {
+  .coord-readout {
+    grid-template-columns: 7ch 6ch minmax(0, 18.5ch);
+  }
+
+  .coord-readout dt,
+  .coord-readout dd + dd {
+    grid-column: 1 / -1;
+  }
+}
+
+.coord-readout.unlabeled {
+  grid-template-columns: 7ch 6ch minmax(0, 18.5ch);
+}
+
+.coord-readout.unlabeled dd + dd {
+  grid-column: 1 / -1;
+}

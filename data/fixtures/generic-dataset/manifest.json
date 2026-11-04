@@ -1,0 +1,109 @@
+{
+  "version": 2,
+  "id": "generic-demo",
+  "release": "1",
+  "locale": "enUS",
+  "producer": {
+    "name": "Independent",
+    "version": "one"
+  },
+  "sources": {
+    "Independent/one": {
+      "name": "Independent survey"
+    }
+  },
+  "quests": "quests.json",
+  "entities": "entities.json.gz",
+  "geometry": "geometry.json",
+  "terrain": "terrain.json",
+  "transports": "transports.json",
+  "tileBase": "world",
+  "icons": {
+    "quest-giver": {
+      "file": "art/map.webp",
+      "x": -24,
+      "y": -48,
+      "width": 192
+    },
+    "quest-turn-in": {
+      "file": "art/map.webp",
+      "x": -48,
+      "y": -48,
+      "width": 192
+    }
+  },
+  "assets": [
+    {
+      "path": "quests.json",
+      "format": "quests",
+      "bytes": 3344,
+      "sha256": "sha256:b6bfe3d99585ae15a749ce9267500d5126989a8cc0c17e847eaa89c7ac63c29f",
+      "encoding": "identity",
+      "version": 3
+    },
+    {
+      "path": "entities.json.gz",
+      "format": "entities",
+      "bytes": 174,
+      "sha256": "sha256:6cffe48ae9500581bc4295f941acd6ab2c1759b2c9b9dca173b846f33976616b",
+      "encoding": "gzip",
+      "version": 2
+    },
+    {
+      "path": "geometry.json",
+      "format": "geometry",
+      "bytes": 388,
+      "sha256": "sha256:3dc90904b934042b1c64596f3e7a67594f2677f424e7fcb74b5f2b5a163f30d6",
+      "encoding": "identity",
+      "version": 2
+    },
+    {
+      "path": "terrain.json",
+      "format": "terrain",
+      "bytes": 1156,
+      "sha256": "sha256:f2b934175d3b66f85148972272cf806614ff975555a822c318737634e948a863",
+      "encoding": "identity",
+      "version": 1
+    },
+    {
+      "path": "transports.json",
+      "format": "transports",
+      "bytes": 1654,
+      "sha256": "sha256:ecbde7974c9cabc97017d9a305adfbc85830aa2922c864fad52c23b13c8e85a8",
+      "encoding": "identity",
+      "version": 1
+    },
+    {
+      "path": "art/map.webp",
+      "format": "webp",
+      "bytes": 34,
+      "sha256": "sha256:86be52bdb7547413cafb3ed175a806a798c65de98b40849e0b974c47d187de65",
+      "encoding": "identity",
+      "version": 1
+    },
+    {
+      "path": "world/tiles/kalimdor/2/1/1.webp",
+      "format": "webp",
+      "bytes": 34,
+      "sha256": "sha256:86be52bdb7547413cafb3ed175a806a798c65de98b40849e0b974c47d187de65",
+      "encoding": "identity",
+      "version": 1
+    },
+    {
+      "path": "world/tiles/eastern-kingdoms/2/0/1.webp",
+      "format": "webp",
+      "bytes": 34,
+      "sha256": "sha256:86be52bdb7547413cafb3ed175a806a798c65de98b40849e0b974c47d187de65",
+      "encoding": "identity",
+      "version": 1
+    },
+    {
+      "path": "world/tiles/zephras-isle/2/0/1.webp",
+      "format": "webp",
+      "bytes": 34,
+      "sha256": "sha256:86be52bdb7547413cafb3ed175a806a798c65de98b40849e0b974c47d187de65",
+      "encoding": "identity",
+      "version": 1
+    }
+  ]
+}

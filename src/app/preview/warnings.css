@@ -1,0 +1,11 @@
+.warn-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.warn-fix {
+  margin-left: calc(var(--warnings-indent) + var(--warnings-place-width) + var(--space-3));
+  max-width: calc(100% - var(--warnings-indent) - var(--warnings-place-width) - var(--space-3) - var(--space-3));
+}

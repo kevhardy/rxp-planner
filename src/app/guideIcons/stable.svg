@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><defs>
+    <linearGradient id="stable-band" gradientUnits="userSpaceOnUse" x1="3" y1="12" x2="12.5" y2="3">
+      <stop offset="0" stop-color="#8c8f93"/>
+      <stop offset="0.5" stop-color="#b6b9bc"/>
+      <stop offset="1" stop-color="#e2e4e6"/>
+    </linearGradient>
+    <radialGradient id="stable-bevel" gradientUnits="userSpaceOnUse" cx="8" cy="8.6" r="6.3">
+      <stop offset="0.4" stop-color="#3a3c40" stop-opacity="0.42"/>
+      <stop offset="0.58" stop-color="#3a3c40" stop-opacity="0"/>
+      <stop offset="0.8" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#3a3c40" stop-opacity="0.3"/>
+    </radialGradient>
+    <radialGradient id="stable-calkin" cx="0.42" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g transform="rotate(-45 8 8)">
+    <path d="M2.45 11.9C2.05 10.4 2.05 8.2 2.45 6.4C3.15 3.3 5.3 1.6 8 1.6C10.9 1.6 13.1 3.5 13.45 6.4C13.65 8.5 13.45 10.4 13.05 11.9C12.8 13.3 11.9 14 10.85 14C9.75 14 8.9 13.2 8.95 12.2C9 11.4 9.5 10.8 9.7 10C9.95 9 10.1 8 10 7.1C9.85 6.2 9.1 5.75 8.25 5.75C7.3 5.75 6.65 6.3 6.45 7.05C6.2 8 5.6 9.1 5.6 10.1C5.6 11 5.95 11.5 5.95 12.1C5.95 12.8 5.1 13.1 4.15 13.1C3.15 13.1 2.6 12.7 2.45 11.9Z" fill="url(#stable-band)" stroke="#1d1408" stroke-width="1.1" stroke-linejoin="round" paint-order="stroke"/>
+    <path d="M2.45 11.9C2.05 10.4 2.05 8.2 2.45 6.4C3.15 3.3 5.3 1.6 8 1.6C10.9 1.6 13.1 3.5 13.45 6.4C13.65 8.5 13.45 10.4 13.05 11.9C12.8 13.3 11.9 14 10.85 14C9.75 14 8.9 13.2 8.95 12.2C9 11.4 9.5 10.8 9.7 10C9.95 9 10.1 8 10 7.1C9.85 6.2 9.1 5.75 8.25 5.75C7.3 5.75 6.65 6.3 6.45 7.05C6.2 8 5.6 9.1 5.6 10.1C5.6 11 5.95 11.5 5.95 12.1C5.95 12.8 5.1 13.1 4.15 13.1C3.15 13.1 2.6 12.7 2.45 11.9Z" fill="url(#stable-bevel)"/>
+    <circle cx="4" cy="11.6" r="1.6" fill="url(#stable-calkin)"/>
+    <circle cx="11.1" cy="11.9" r="1.7" fill="url(#stable-calkin)"/>
+    <g fill="#55585c">
+      <ellipse cx="3.85" cy="9" rx="0.3" ry="0.4"/>
+      <ellipse cx="4.35" cy="5.9" rx="0.3" ry="0.38" transform="rotate(30 4.35 5.9)"/>
+      <ellipse cx="6.4" cy="3.75" rx="0.32" ry="0.36" transform="rotate(60 6.4 3.75)"/>
+      <ellipse cx="9.9" cy="3.8" rx="0.32" ry="0.36" transform="rotate(-60 9.9 3.8)"/>
+      <ellipse cx="11.85" cy="6" rx="0.3" ry="0.38" transform="rotate(-30 11.85 6)"/>
+      <ellipse cx="11.95" cy="9.1" rx="0.3" ry="0.4"/>
+    </g>
+  </g></svg>

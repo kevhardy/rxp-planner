@@ -1,0 +1,63 @@
+{
+  "format": "restedxp-route",
+  "version": 3,
+  "stops": [
+    {
+      "instance": 0,
+      "x": -132.49,
+      "y": -8949.95,
+      "height": null
+    },
+    {
+      "instance": 1,
+      "x": 841.05,
+      "y": 8643.59,
+      "height": null
+    }
+  ],
+  "legs": [
+    {
+      "followTerrain": true,
+      "downhill": true,
+      "damagingFalls": true,
+      "fatalFalls": false,
+      "hazards": false,
+      "otherFaction": false,
+      "flightPaths": true,
+      "shipPaths": true
+    }
+  ],
+  "settings": {
+    "swimming": {
+      "enabled": true,
+      "speed": 4.7
+    },
+    "modes": [
+      {
+        "name": "Run",
+        "speed": 7,
+        "activation": 0
+      },
+      {
+        "name": "Mount",
+        "speed": 11.2,
+        "activation": 3
+      },
+      {
+        "name": "Epic mount",
+        "speed": 14,
+        "activation": 3
+      },
+      {
+        "name": "Ghost Wolf",
+        "speed": 9.8,
+        "activation": 3
+      },
+      {
+        "name": "Travel Form",
+        "speed": 9.8,
+        "activation": 0
+      }
+    ]
+  }
+}

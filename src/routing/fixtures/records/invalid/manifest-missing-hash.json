@@ -1,0 +1,53 @@
+{
+  "validator": "manifest",
+  "error": "manifest.assets[2].sha256: missing",
+  "input": {
+    "schema": "restedxp-routing-artifact",
+    "version": 4,
+    "id": "routing-forever-1.60.1.70124-m0-040383e35bb7a41b",
+    "scope": {
+      "variant": "forever",
+      "build": "1.60.1.70124",
+      "map": 0
+    },
+    "frame": {
+      "origin": [23, 20],
+      "size": [23, 42],
+      "tilePixels": 512,
+      "cellsPerTile": 128,
+      "tileWorldUnits": 533.3333333333334
+    },
+    "tiles": [
+      {
+        "tile": [9, 22],
+        "state": "present"
+      },
+      {
+        "tile": [10, 22],
+        "state": "missing"
+      }
+    ],
+    "zones": [1426, 1432],
+    "assets": [
+      {
+        "path": "coverage.json",
+        "bytes": 1037,
+        "sha256": "1862b80e87d98c8066203fddb106defaf49af99ffa3ab89f1ade9d2b49688fb0"
+      },
+      {
+        "path": "observations.json",
+        "bytes": 571,
+        "sha256": "d78420434d6f772395dfddb60033acf066dd7ff824e0d79a25c350b7ecbfe223"
+      },
+      {
+        "path": "tiles/9_22.bin",
+        "bytes": 35434
+      },
+      {
+        "path": "zones.bin",
+        "bytes": 264,
+        "sha256": "592ab581892171a1f7e37483fbf7111b20e3cb2f7f538f62ca670ac9d111fd83"
+      }
+    ]
+  }
+}

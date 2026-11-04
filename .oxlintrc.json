@@ -1,0 +1,528 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["import", "react", "promise", "typescript", "jsx-a11y", "oxc", "unicorn", "vitest"],
+  "jsPlugins": ["oxlint-plugin-rxpplanner"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true, "argsIgnorePattern": "^_" }],
+    "import/no-cycle": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error",
+    "react/set-state-in-effect": "error",
+    "typescript/no-floating-promises": ["error", { "ignoreVoid": false }],
+    "typescript/no-misused-promises": "error",
+    "promise/catch-or-return": ["error", { "allowThen": true }],
+    "promise/always-return": ["error", { "ignoreLastCallback": true }],
+    "promise/no-multiple-resolved": "error",
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "oxc/no-accumulating-spread": "error",
+    "rxpplanner/no-chained-type-assertions": "error",
+    "rxpplanner/no-array-filter-map": "error",
+    "rxpplanner/no-command-tables": "error",
+    "rxpplanner/no-conditional-empty-object-spread": "error",
+    "rxpplanner/no-event-target-assertions": "error",
+    "rxpplanner/no-object-parameters": "error",
+    "rxpplanner/no-inline-style": "error",
+    "rxpplanner/no-raw-control": "error",
+    "rxpplanner/no-reduce-accumulator-copy": "error",
+    "rxpplanner/no-reflect-apply": "error",
+    "rxpplanner/no-reflect-get": "error",
+    "rxpplanner/no-unknown-type-aliases": "error",
+    "rxpplanner/no-widen-then-assert": "error",
+    "rxpplanner/require-disable-reason": "error",
+    "unicorn/no-abusive-eslint-disable": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/switch-exhaustiveness-check": ["error", { "considerDefaultExhaustiveForUnions": true }],
+    "import/extensions": ["error", "always", { "ignorePackages": true }],
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/prefer-readonly": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "eslint/preserve-caught-error": "error",
+    "typescript/only-throw-error": "error",
+    "eslint/no-empty": "error",
+    "typescript/use-unknown-in-catch-callback-variable": "error",
+    "eslint/no-restricted-globals": [
+      "error",
+      {
+        "name": "localStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "name": "sessionStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "name": "indexedDB",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      }
+    ],
+    "eslint/no-restricted-properties": [
+      "error",
+      {
+        "object": "window",
+        "property": "localStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "object": "window",
+        "property": "sessionStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "object": "window",
+        "property": "indexedDB",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "object": "globalThis",
+        "property": "localStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "object": "globalThis",
+        "property": "sessionStorage",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      },
+      {
+        "object": "globalThis",
+        "property": "indexedDB",
+        "message": "Use src/storage or src/app/savedSetting.ts, which keep saved work safe."
+      }
+    ],
+    // Lint reads no JSON, so a color in an imported JSON file would pass no-raw-color.
+    "rxpplanner/no-raw-color": "error",
+    "rxpplanner/no-script-motion": "error",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "regex": "\\.json($|\\?)",
+            "message": "The app imports no JSON. A color is a token in src/app/theme/tokens.css, and data comes through src/data."
+          },
+          { "regex": "^(\\./|(\\.\\./)+)scripts(/|$)", "message": "The app cannot import scripts." },
+          { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." }
+        ]
+      }
+    ],
+    // React Compiler rules. The app does not use React Compiler, and without it these flag correct code, such as the latest-ref pattern.
+    "react/refs": "off",
+    "react/preserve-manual-memoization": "off",
+    "react/immutability": "off",
+    "react/globals": "off",
+    "react/purity": "off",
+    "react/incompatible-library": "off",
+    // It flags a synchronous try/catch around a parse inside JSX, which works.
+    "react/error-boundaries": "off",
+    "typescript/unbound-method": "off",
+    "typescript/restrict-template-expressions": "off",
+    // Validators match control characters to reject them.
+    "eslint/no-control-regex": "off",
+    "typescript/no-misused-spread": "off",
+    // Loops copy a collection before they change it.
+    "unicorn/no-useless-spread": "off",
+    // new Array(n).fill(value) sizes an array on purpose.
+    "unicorn/no-new-array": "off",
+    // Vitest's expect takes a message as its second argument.
+    "vitest/valid-expect": ["error", { "maxArgs": 2 }],
+    "vitest/no-standalone-expect": ["error", { "additionalTestBlockFunctions": ["afterEach"] }],
+    // These flag correct tests: table cases that assert by case, mocks typed by the function they replace, assertions in
+    // helpers, tests registered by environment, todo tests, and snapshots named by their test.
+    "vitest/no-conditional-expect": "off",
+    "vitest/require-mock-type-parameters": "off",
+    "vitest/expect-expect": "off",
+    "vitest/no-conditional-tests": "off",
+    "vitest/warn-todo": "off",
+    "vitest/prefer-snapshot-hint": "off"
+  },
+  "options": {
+    "reportUnusedDisableDirectives": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/**", "scripts/dataset/vite.ts"],
+      "rules": { "rxpplanner/no-string-of-caught-error": "error" }
+    },
+    {
+      "files": ["**/*.test.{ts,tsx}"],
+      "rules": {
+        "rxpplanner/no-chained-type-assertions": "off",
+        "rxpplanner/no-command-tables": "off",
+        "eslint/no-restricted-globals": "off",
+        "eslint/no-restricted-properties": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off"
+      }
+    },
+    {
+      "files": ["src/app/ui/**", "**/*.test.tsx"],
+      "rules": { "rxpplanner/no-raw-control": "off" }
+    },
+    {
+      // jsdom loads no CSS, so a test sets the clipping that it checks with an inline style.
+      "files": ["**/*.test.tsx"],
+      "rules": { "rxpplanner/no-inline-style": "off" }
+    },
+    {
+      "files": ["src/storage/**", "src/app/savedSetting.ts"],
+      "rules": { "eslint/no-restricted-globals": "off", "eslint/no-restricted-properties": "off" }
+    },
+    {
+      "files": ["src/rules/commands.ts"],
+      "rules": { "rxpplanner/no-command-tables": "off" }
+    },
+    {
+      // The JSON and tool-tree bans repeat here, because an override replaces the options of an earlier
+      // setting and does not merge them. Here a scripts path needs a "../", because an app folder may
+      // have the name scripts.
+      "files": ["src/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              { "regex": "^(\\.\\./)+scripts(/|$)", "message": "The app cannot import scripts." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)render(Planner|Map)|(^|/)testSetup|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              },
+              {
+                "regex": "\\.json($|\\?)",
+                "message": "The app imports no JSON. A color is a token in src/app/theme/tokens.css, and data comes through src/data."
+              },
+              {
+                "regex": "^(\\.\\.?/)+routing/frame(\\.[cm]?[jt]s)?$",
+                "importNames": ["nativeStop", "nativePlan"],
+                "message": "Stops are world positions. Pass the frames to src/routing, and it resolves them."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      // The app files that a worker loads. The bans of src/** repeat here for the same reason as above.
+      "files": [
+        "src/app/**/*.worker.ts",
+        "src/app/map/outline.ts",
+        "src/app/map/viewport.ts",
+        "src/app/routing/engine.ts",
+        "src/app/routing/layerPainter.ts",
+        "src/app/routing/pinned.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              { "regex": "^react(-dom)?(/|$)", "message": "A worker loads this file, and a worker has no use for React." },
+              { "regex": "^(\\.\\./)+scripts(/|$)", "message": "The app cannot import scripts." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)render(Planner|Map)|(^|/)testSetup|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              },
+              {
+                "regex": "\\.json($|\\?)",
+                "message": "The app imports no JSON. A color is a token in src/app/theme/tokens.css, and data comes through src/data."
+              },
+              {
+                "regex": "^(\\.\\.?/)+routing/frame(\\.[cm]?[jt]s)?$",
+                "importNames": ["nativeStop", "nativePlan"],
+                "message": "Stops are world positions. Pass the frames to src/routing, and it resolves them."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.test.*",
+        "src/**/testing.*",
+        "src/**/*Fixture.*",
+        "src/**/fixtures/**",
+        "src/app/renderPlanner.tsx",
+        "src/app/map/renderMap.tsx"
+      ],
+      "rules": { "eslint/no-restricted-imports": "off" }
+    },
+    {
+      "files": ["scripts/**", "packages/oxlint-plugin-rxpplanner/**"],
+      "rules": { "eslint/no-restricted-imports": "off", "rxpplanner/no-raw-color": "off" }
+    },
+    {
+      "files": ["vite.config.ts", "integration/vitest.release.config.ts", "integration/vitest.routing.config.ts"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "\\.json($|\\?)",
+                "message": "The app imports no JSON. A color is a token in src/app/theme/tokens.css, and data comes through src/data."
+              },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["stylelint.config.js"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "\\.json($|\\?)",
+                "message": "The app imports no JSON. A color is a token in src/app/theme/tokens.css, and data comes through src/data."
+              },
+              { "regex": "^(\\./|(\\.\\./)+)scripts(/|$)", "message": "The app cannot import scripts." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      // It comes after the test exemption, so a test in the data contract keeps this ban.
+      "files": ["packages/data-contract/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          { "patterns": [{ "regex": "(^|/)\\.\\.(/|$)", "message": "The data contract imports no file outside its folder." }] }
+        ]
+      }
+    },
+    {
+      "files": ["src/data/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(guide|rules|io|routing|agent|storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/data imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/guide/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(rules|io|routing|agent|storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/guide imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/rules/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(io|routing|agent|storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/rules imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/io/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(routing|agent|storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/io imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/routing/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(io|agent|storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/routing imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/agent/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/agent imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/storage/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(agent|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "src/storage imports only the modules before it. AGENTS.md gives the order."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." },
+              {
+                "regex": "((^|/)testing|Fixture|(^|/)releaseInputs|\\.test(-d)?)(\\.[^/]*)?$|(^|/)fixtures(/|$)",
+                "message": "Production code cannot import test support."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/{data,guide,rules,io,routing,agent,storage}/**/*.test.*",
+        "src/{data,guide,rules,io,routing,agent,storage}/**/*.test-d.*",
+        "src/{data,guide,rules,io,routing,agent,storage}/**/testing.*",
+        "src/{data,guide,rules,io,routing,agent,storage}/**/*Fixture.*",
+        "src/{data,guide,rules,io,routing,agent,storage}/**/fixtures/**",
+        "src/data/releaseInputs.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(\\.\\./)+(storage|app|scripts)(/|$)|^(\\.\\./)+main(\\.tsx)?$",
+                "message": "Test support may import any core module, but not src/storage, src/app, or scripts."
+              },
+              { "regex": "^react(-dom)?(/|$)", "message": "Only the app can import React." },
+              { "regex": "(^|/)oxlint-plugin-rxpplanner(/|$)", "message": "Only the lint config loads the lint plugin." }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      // A core module and the data contract hold data, and RXP's color names in guide text are words, not paint.
+      "files": ["src/{data,guide,rules,io,routing,agent,storage}/**", "packages/data-contract/**"],
+      "rules": { "rxpplanner/no-raw-color": "off" }
+    },
+    {
+      // Test text holds game IDs, such as `npc #783`, that read as hex colors.
+      "files": ["**/*.test.{ts,tsx}"],
+      "rules": { "rxpplanner/no-raw-color": "off" }
+    },
+    {
+      // A router layer's palette is pixel data, so its swatch color is built here.
+      "files": ["src/app/theme/colors.ts"],
+      "rules": { "rxpplanner/no-raw-color": "off" }
+    },
+    {
+      // Only Node scripts and tests read this text, and a terminal reader can use the class name.
+      "files": ["src/data/node.ts"],
+      "rules": { "rxpplanner/no-string-of-caught-error": "off" }
+    },
+    {
+      "files": ["src/io/fengari.d.ts"],
+      "rules": { "typescript/no-explicit-any": "off" }
+    },
+    {
+      // tsconfig.json leaves this file out, so the type-aware rules see error types in it.
+      "files": ["scripts/data-contract/consumer.ts"],
+      "rules": {
+        "typescript/no-redundant-type-constituents": "off",
+        "typescript/no-unnecessary-type-assertion": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off"
+      }
+    }
+  ]
+}
