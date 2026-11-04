@@ -122,7 +122,7 @@
      a second outline around a white fill. Two half-pixel shadows stay crisp,
      where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
-  --ring-guide-icon: brightness(0.88) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;

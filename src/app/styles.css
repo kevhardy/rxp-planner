@@ -1978,11 +1978,14 @@ label {
   background-repeat: no-repeat;
 }
 
+/* The vector art fills its 16-unit view box, where a game sprite has a
+   frame and padding. At 14/16 of the box, a vector icon matches the 1em
+   sprite beside 14px text in weight. */
 .guide-icon.vector {
   filter: var(--ring-guide-icon);
   background-image: var(--icon-url);
-  background-size: 100% 100%;
-  background-position: 0 0;
+  background-size: 87.5% 87.5%;
+  background-position: center;
 }
 
 .guide-icon:not(.vector, .missing) {
