@@ -40,8 +40,8 @@ export interface LayerWorker {
 export interface LayerPainter {
   image(key: string): string | undefined;
   want(wanted: readonly LayerTile[]): void;
-  subscribe(listener: () => void): () => void;
-  version(): number;
+  subscribe: (listener: () => void) => () => void;
+  version: () => number;
   release(): void;
 }
 

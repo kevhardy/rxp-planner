@@ -34,7 +34,7 @@ const DETOUR = 1.6;
 function stubGround(speed: number) {
   const calls: string[] = [];
   const ground: GroundLeg = async (from, to) => {
-    calls.push(`${from.point}>${to.point}`);
+    calls.push(`${from.point.join(",")}>${to.point.join(",")}`);
     const distance = Math.hypot(from.point[0] - to.point[0], from.point[1] - to.point[1]) * (TILE_WORLD_UNITS / TILE_PIXELS);
     return { result: { kind: "straight", points: [from.point, to.point], distance, activation: 0, seconds: (DETOUR * distance) / speed } };
   };
@@ -123,13 +123,13 @@ describe("routeTransport", () => {
       links,
       7,
       async (from, to) => {
-        searches.push(`${from.point}>${to.point}`);
+        searches.push(`${from.point.join(",")}>${to.point.join(",")}`);
         return { result: { kind: "straight", points: [from.point, to.point], distance: 1, activation: 0, seconds: 5 } };
       },
       Infinity,
       undefined,
       async (from, to) => {
-        bounds.push(`${from.point}>${to.point}`);
+        bounds.push(`${from.point.join(",")}>${to.point.join(",")}`);
         return to.point[0] === 1 ? lower : undefined;
       },
     );

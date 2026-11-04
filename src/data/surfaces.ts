@@ -16,7 +16,7 @@ export interface SurfaceMap {
   readonly ground: HeightMap;
   at(at: WorldPoint): Surface[];
   nearest(at: WorldPoint, height: number): Surface | undefined;
-  stackMask(): Uint8Array;
+  stackMask: () => Uint8Array;
 }
 
 export function fromSurfaces(interior: Interior, data: InteriorSurfaces): SurfaceMap {

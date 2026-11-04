@@ -130,13 +130,13 @@ const hitGrid = (g: unknown): g is ZoneHitGrid => {
   return (
     g.zoneIds[0] === 0 &&
     unique(g.zoneIds) &&
-    unique([...g.alphabet]) &&
+    unique(Array.from(g.alphabet)) &&
     g.zoneIds.length <= g.alphabet.length &&
     g.rows.length === g.height &&
     g.rows.every(
       (r) =>
         r.length === g.width &&
-        [...r].every((c) => {
+        Array.from(r).every((c) => {
           const index = g.alphabet.indexOf(c);
           return index >= 0 && index < g.zoneIds.length;
         }),
@@ -184,7 +184,7 @@ export function validateCompleteGameData(input: unknown): asserts input is GameD
     "complete game data coverage",
   );
   for (const row of input.quests) {
-    requireValid(fields(row, questFields), `quest ${row.id} fields`);
+    requireValid(fields(row, questFields), `quest ${String(row.id)} fields`);
     for (const facts of Object.values(row.byFaction ?? {})) {
       requireValid(
         Object.keys(facts).every((key) => key === "provenance" || Object.hasOwn(questFields, key)),
@@ -216,20 +216,23 @@ export function validateCompleteGameData(input: unknown): asserts input is GameD
         minLevel: optional(natural),
         maxLevel: optional(natural),
       }),
-      `zone ${unchecked(z, "id")}`,
+      `zone ${String(unchecked(z, "id"))}`,
     );
     const { minLevel, maxLevel, bounds, instance } = z;
     requireValid(
       (minLevel === undefined || maxLevel === undefined || minLevel <= maxLevel) && (bounds === undefined || bounds.instance === instance),
-      `zone ${unchecked(z, "id")}`,
+      `zone ${String(unchecked(z, "id"))}`,
     );
   }
   const zoneIds = new Set(input.zones.map((z) => (z as ZoneRecord).id));
   for (const c of input.continents) {
-    requireValid(fields(c, { instance: natural, uiMapId: positive, name, crop: rect, hitGrid }), `continent ${unchecked(c, "uiMapId")}`);
+    requireValid(
+      fields(c, { instance: natural, uiMapId: positive, name, crop: rect, hitGrid }),
+      `continent ${String(unchecked(c, "uiMapId"))}`,
+    );
     requireValid(
       c.hitGrid.zoneIds.every((id) => id === 0 || zoneIds.has(id)),
-      `continent ${unchecked(c, "uiMapId")} zone reference`,
+      `continent ${String(unchecked(c, "uiMapId"))} zone reference`,
     );
   }
   requireValid(idDictionary(text)(input.npcNames), "NPC names");

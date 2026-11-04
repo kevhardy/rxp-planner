@@ -31,11 +31,11 @@ export const PAGE_RECORDS = 256;
 export const SEARCH_RECORDS = 2048;
 
 export interface RecentRecords {
-  keep(key: string, result: LegResult): void;
+  keep: (key: string, result: LegResult) => void;
   keepUpdates(updates: readonly LegUpdate[]): void;
   /** The records between stops of `plan` on `frames` and ride stops. A plan with a stop off `frames` gives none of its stops. */
   atStops(plan: RoutePlan, frames: readonly NativeFrame[], rides?: Rides): [string, LegResult][];
-  merged(known?: ReadonlyMap<string, LegResult>): Map<string, LegResult>;
+  merged: (known?: ReadonlyMap<string, LegResult>) => Map<string, LegResult>;
 }
 
 export function recentRecords(limit: number): RecentRecords {
