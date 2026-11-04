@@ -45,7 +45,7 @@ const PAIRS: Pair[] = [
   ...on(OBJECTIVES, ["surface", "raised", "selection", "map-terrain"], 3),
   ...OBJECTIVES.map((objective): Pair => [objective, "objective-tint", 3, { objective: `var(--${objective})` }]),
   ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming"], ["map-terrain"], 3),
-  ...on(["map-label", "map-label-strong", "map-border"], ["map-backdrop"], 4.5),
+  ...on(["map-label", "map-label-strong", "map-border"], ["map-backdrop", "map-sea"], 4.5),
   ["map-character", "art-paper", 3],
   ...on(["stack-two", "stack-more"], ["map-interior"], 3),
   ...on(["warn", "danger", "ok"], ["surface", "press"], 4.5),

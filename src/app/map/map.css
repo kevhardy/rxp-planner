@@ -51,6 +51,12 @@
   touch-action: none;
 }
 
+/* The terrain canvas can end inside the viewport, so the sea paints the
+   viewport, not the stage. */
+.map-viewport:has(> .map-stage > .terrain-sea) {
+  background: var(--map-sea);
+}
+
 /* Laid out at the zoomed size, not scaled: Chrome snaps each tile to whole
    layout pixels, and a scale would magnify the error. */
 .map-stage {

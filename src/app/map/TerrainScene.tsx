@@ -36,6 +36,10 @@ const CULL_MARGIN_PX = 128;
 const LABEL_FONT_PX = 11;
 const ICON_AND_GAP_PX = 32;
 
+// A continent fills the map near level 1.5 and a zone near levels 4 to 6. From about level 3, the water that the tiles
+// bake in along each coast shows as dark blocks against a lighter backdrop.
+const SEA_LEVEL = 3;
+
 const FULL: Frame = { left: 0, top: 0, width: 100, height: 100 };
 
 const detail = (map: WorldMapData, pxPerPercent: number) => (pxPerPercent * 100) / canvasSize(map).width;
@@ -49,6 +53,7 @@ export function TerrainScene(props: { map: LoadedWorldMap; frame: Frame; pxPerPe
   if (zoom !== map.minZoom) tiles.push(...visibleTiles(map, zoom, frame));
   return (
     <>
+      {zoomLevel(map, detail(map, pxPerPercent)) >= SEA_LEVEL && <span className="terrain-sea" hidden />}
       {tiles.map((t) => {
         const path = worldMapTilePath(t.area, t.zoom, t.x, t.y);
         if (hidden?.has(path)) return null;

@@ -252,6 +252,8 @@
   --map-border: #fff4d6;
   --map-interior: #2a2622;
   --map-terrain: #2c3a2a;
+  /* The water that the terrain tiles bake in along each coast. */
+  --map-sea: #09150a;
   --map-transport: #9bd0ff;
   --map-character: #c8102e;
   --map-enemy: #ff7b6b;
