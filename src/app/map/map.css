@@ -1082,6 +1082,19 @@
   color: var(--text);
 }
 
+.legend-row[aria-pressed="false"] .legend-name,
+.legend-filter[aria-pressed="false"] .legend-name,
+.legend-step.off .legend-name {
+  color: var(--muted);
+}
+
+/* A filter's dimmed icon shows how the map draws its marks, whatever the
+   filter's state. */
+.legend-row[aria-pressed="false"] > .map-icon:not(.dim),
+.legend-step.off > .step-swatch {
+  opacity: 0.6;
+}
+
 .legend-row .map-icon {
   background-color: var(--art-ink);
   box-shadow: var(--ring-control);

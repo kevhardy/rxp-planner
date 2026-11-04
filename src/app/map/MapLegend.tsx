@@ -357,7 +357,7 @@ const STEP_SIDES = [
 
 function StepRow(props: { side: "previous" | "selected" | "upcoming" | "optional"; name: string; show?: StepShow }) {
   return (
-    <div className="legend-step">
+    <div className={`legend-step${props.show === "hidden" ? " off" : ""}`}>
       <span className={`step-swatch ${props.side}`} aria-hidden="true" />
       <span className="legend-name">{props.name}</span>
       {props.show && <span className="legend-state">{SHOW_NAMES[props.show]}</span>}
