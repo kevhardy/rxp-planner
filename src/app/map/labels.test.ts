@@ -73,19 +73,30 @@ describe("clearLabels", () => {
   const zone = { x: 100, y: 100, width: 120, height: 20 };
   const below = { x: 130, y: 104, width: 80, height: 14 };
 
-  it("moves a zone label that covers a landmark label the shortest way to 2 pixels clear, and leaves one that covers none", () => {
+  it("moves a zone label that covers a landmark label the shortest way to 4 pixels clear, and leaves one that covers none", () => {
     expect(clearLabels([zone, { ...zone, x: 400 }], [below])).toEqual([
-      { x: 0, y: -15 },
+      { x: 0, y: -17 },
       { x: 0, y: 0 },
     ]);
   });
   it("moves past a landmark label that blocks the shortest way", () => {
-    expect(clearLabels([zone], [below, { x: 100, y: 75, width: 80, height: 14 }])).toEqual([{ x: 0, y: 23 }]);
+    expect(clearLabels([zone], [below, { x: 100, y: 75, width: 80, height: 14 }])).toEqual([{ x: 0, y: 25 }]);
   });
   it("keeps a moved zone label off the other zone labels", () => {
     expect(clearLabels([zone, { ...zone, y: 70 }], [below])).toEqual([
-      { x: 0, y: 23 },
+      { x: 0, y: 25 },
       { x: 0, y: 0 },
     ]);
+  });
+  it("moves a name 12 pixels clear to the side, so that it does not read as one name with its neighbor", () => {
+    const icon = { x: 100, y: 100, width: 18, height: 18 };
+    const name = { x: 100, y: 100, width: 40, height: 14 };
+    const above = { x: 100, y: 72, width: 200, height: 14 };
+    const below = { x: 100, y: 128, width: 200, height: 14 };
+    expect(clearLabels([name], [icon, above, below])).toEqual([{ x: -41, y: 0 }]);
+  });
+  it("hides a zone label with no clear spot within 64 pixels, and moves a capital's as far as it takes", () => {
+    const block = { x: 100, y: 100, width: 200, height: 100 };
+    expect(clearLabels([zone, { ...zone, x: 101, mustShow: true }], [block])).toEqual([null, { x: 0, y: -64 }]);
   });
 });

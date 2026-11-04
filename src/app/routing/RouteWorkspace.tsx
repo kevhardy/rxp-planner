@@ -59,7 +59,7 @@ import { legReport, readRoute, writeRoute } from "../../routing/share.ts";
 import { legLines, lineView, nearestLine, projection, skippedTiles } from "./lines.ts";
 import { layerSearches, LayersMenu, RouterLayers, tileRects, type LayerChoices } from "./MapLayers.tsx";
 import { NewLegsMenu } from "./newLegs.tsx";
-import { RideLayer, RidePopover, type PlacedMark } from "./RideLayer.tsx";
+import { RideLayer, RidePopover, spread, type PlacedMark } from "./RideLayer.tsx";
 import { vesselPaths } from "./vesselRoutes.ts";
 import { rideMarks } from "./rideStops.ts";
 import { LegPopover, legToggles, RoutePopover, routeStatus, type MapFocus } from "./RouteResult.tsx";
@@ -271,6 +271,7 @@ export function RouteWorkspace(props: {
     const at = [...(plan?.stops ?? []), ...(pending ? [pending] : [])];
     return proj ? at.flatMap((stop) => proj.stopView(stop) ?? []) : [];
   }, [proj, plan, pending]);
+  const rideSpots = useCallback((pxPerPercent: number) => spread(marks, stopViews, pxPerPercent, aspect), [marks, stopViews, aspect]);
 
   const visible = (category: CategoryId) => LABELS.includes(category) && showsCategory(settings, category, profile);
   const scene = (frame: Frame, pxPerPercent: number) => (
@@ -309,6 +310,7 @@ export function RouteWorkspace(props: {
       onPick={() => {}}
       frame={frame}
       pxPerPercent={pxPerPercent}
+      icons={rideSpots}
     />
   );
 

@@ -29,12 +29,15 @@ import {
   type TerrainFeatures,
 } from "./terrain.ts";
 import { clearLabels, labelShows, pickLabels } from "./labels.ts";
+import type { ViewPoint } from "./points.ts";
 import { useMapView } from "./view.ts";
 import { canvasSize, mapCover } from "./viewport.ts";
 
 const CULL_MARGIN_PX = 128;
 const LABEL_FONT_PX = 11;
 const ICON_AND_GAP_PX = 32;
+// The largest icon a caller passes in `icons`: the ride mark in a wide map.
+const ICON_PX = 18;
 
 // A continent fills the map near level 1.5 and a zone near levels 4 to 6. From about level 3, the water that the tiles
 // bake in along each coast shows as dark blocks against a lighter backdrop.
@@ -106,8 +109,10 @@ export function TerrainMarkers(props: {
   onPick: (poi: WorldMapPoi) => void;
   frame: Frame;
   pxPerPercent: number;
+  /** Where the caller draws map icons that zone labels move clear of, at a given scale. */
+  icons?: (pxPerPercent: number) => readonly ViewPoint[];
 }) {
-  const { map, features, shows, frame, pxPerPercent } = props;
+  const { map, features, shows, frame, pxPerPercent, icons } = props;
   const { allFactions } = useMapSettings();
   const { faction } = useMapProfile();
   const k = detail(map, pxPerPercent);
@@ -150,10 +155,12 @@ export function TerrainMarkers(props: {
     [features.places, zonesOn, landmarksOn, level],
   );
   const [labels] = useState(() => new Map<PlacedPlace, HTMLElement>());
+  const iconsAt = useMemo(() => icons?.(pxPerPercent) ?? [], [icons, pxPerPercent]);
   useLayoutEffect(() => {
+    const aspect = canvasSize(map).width / canvasSize(map).height;
+    const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
     const box = (p: PlacedPlace) => ({
-      x: p.place.x * k,
-      y: p.place.y * k,
+      ...screen(p.at),
       width: labels.get(p)!.offsetWidth,
       height: labels.get(p)!.offsetHeight,
     });
@@ -175,8 +182,11 @@ export function TerrainMarkers(props: {
     const picked = pickLabels(zoneParts);
     const kept = zones.flatMap((p, i) => (picked[i]!.name ? [{ p, box: picked[i]!.levels ? box(p) : zoneParts[i]!.name }] : []));
     const moves = clearLabels(
-      kept.map((z) => z.box),
-      places.filter((p) => p.place.kind === "landmark").map(box),
+      kept.map((z) => ({ ...z.box, mustShow: z.p.place.kind === "capital" })),
+      [
+        ...places.filter((p) => p.place.kind === "landmark").map(box),
+        ...iconsAt.map((at) => ({ ...screen(at), width: ICON_PX, height: ICON_PX })),
+      ],
     );
     zones.forEach((p, i) => {
       const el = labels.get(p)!;
@@ -185,10 +195,12 @@ export function TerrainMarkers(props: {
       if (small) small.style.visibility = picked[i]!.levels ? "" : "hidden";
     });
     kept.forEach(({ p }, i) => {
-      const { x, y } = moves[i]!;
-      labels.get(p)!.style.translate = x || y ? `calc(${x}px - 50%) calc(${y}px - 50%)` : "";
+      const el = labels.get(p)!;
+      const move = moves[i];
+      if (!move) el.style.visibility = "hidden";
+      el.style.translate = move && (move.x || move.y) ? `calc(${move.x}px - 50%) calc(${move.y}px - 50%)` : "";
     });
-  }, [labels, places, k]);
+  }, [labels, places, map, pxPerPercent, iconsAt]);
   return (
     <>
       {shows("routes") && (
