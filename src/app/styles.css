@@ -1269,6 +1269,16 @@ label {
   text-align: center;
 }
 
+.step-row.selected .step-no {
+  justify-self: center;
+  min-width: 22px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--pop-ink);
+  color: var(--pop-fg);
+  font-weight: var(--font-weight-bold);
+}
+
 .step-list.simulated {
   --band-height: 44px;
   scroll-padding-top: var(--band-height);
@@ -1425,7 +1435,7 @@ label {
   flex-basis: 0;
   min-width: 2px;
   border-radius: var(--radius-control);
-  background: var(--text);
+  background: var(--accent);
 }
 
 .band-part.before {
@@ -2505,6 +2515,10 @@ legend {
   gap: var(--space-2);
   font-family: var(--font-mono);
   font-weight: var(--font-weight-bold);
+}
+
+.warnings-total.warn {
+  color: var(--pop-ink);
 }
 
 .warnings.popover {

@@ -211,6 +211,16 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(contrast(color(theme, token(stroke)), color(theme, bg))).toBeGreaterThanOrEqual(3);
   });
 
+  it("puts the selected step's number at 4.5:1 or more on its badge", () => {
+    const own = written(".step-row.selected .step-no", [styles]);
+    expect(contrast(color(theme, token(own.color)), color(theme, token(own.background)))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("puts the warnings count at 4.5:1 or more on the top bar", () => {
+    const [count, bar] = [written(".warnings-total.warn", [styles]).color, written(".topbar", [styles]).background];
+    expect(contrast(color(theme, token(count)), color(theme, token(bar)))).toBeGreaterThanOrEqual(4.5);
+  });
+
   it("draws the chosen leg's halo or its ink edge at 3:1 or more on any terrain", () => {
     const parts = [".leg-halo", ".leg-edge"].map((part) => color(theme, token(legStroke(".leg-chosen", part))));
     expect(onTerrain(parts)).toBeGreaterThanOrEqual(3);
