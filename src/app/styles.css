@@ -831,7 +831,11 @@ label {
    leaves the underline to the current mode. */
 .library-toggle[aria-expanded="true"] {
   border-color: var(--accent);
-  background: var(--selection);
+  box-shadow: var(--ring-pressed);
+}
+
+.library-toggle[aria-expanded="true"] svg {
+  color: var(--accent);
 }
 
 .topbar .popover {
