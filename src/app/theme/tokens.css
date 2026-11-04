@@ -156,6 +156,10 @@
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
+  --label: color-mix(in srgb, var(--text) 50%, var(--muted));
+  /* 70% keeps a placeholder lighter than --muted, and at 3:1 or more on an
+     input in both themes. */
+  --placeholder: color-mix(in srgb, var(--muted) 70%, var(--raised));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));

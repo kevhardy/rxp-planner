@@ -468,9 +468,16 @@ summary::-webkit-details-marker {
 
 .ui-field-label,
 .ui-field-hint {
-  color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+}
+
+.ui-field-label {
+  color: var(--label);
+}
+
+.ui-field-hint {
+  color: var(--muted);
 }
 
 .ui-field-error {
@@ -537,7 +544,8 @@ summary::-webkit-details-marker {
 }
 
 :is(.ui-input, .ui-textarea)::placeholder {
-  font-family: inherit;
+  color: var(--placeholder);
+  font-family: var(--font-sans);
 }
 
 :is(.ui-input, .ui-textarea):disabled::placeholder {

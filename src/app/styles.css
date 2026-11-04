@@ -2002,7 +2002,7 @@ label {
 }
 
 .form-label {
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-regular);
