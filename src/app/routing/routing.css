@@ -781,6 +781,19 @@
   pointer-events: auto;
 }
 
+@container map-overlay (width < 2400px) {
+  .map-overlay .ride-mark {
+    width: 14px;
+    height: 14px;
+    box-shadow: none;
+  }
+
+  .map-overlay .ride-mark svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
 .map-overlay .ride-mark:focus-visible {
   z-index: 4;
   outline: none;
