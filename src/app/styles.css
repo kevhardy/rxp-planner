@@ -2529,7 +2529,7 @@ legend {
 }
 
 .warnings.popover {
-  width: min(480px, 100vw - 16px);
+  width: min(600px, 100vw - 16px);
   max-height: calc(100vh - 76px);
   padding: 0;
 }
@@ -2539,13 +2539,18 @@ legend {
   flex-direction: column;
 }
 
+/* The indent lines each warning up with its kind's label, past the summary's padding, chevron, and gap. */
 .warnings {
-  --warnings-indent: 52px;
-  --warnings-place-width: 110px;
+  --warnings-indent: 44px;
+  --warnings-place-width: 100px;
 }
 
 .warnings .panel-head h2 {
   margin-right: 0;
+}
+
+.warnings .panel-head .count.warn {
+  color: var(--pop-ink);
 }
 
 .warnings-body {
@@ -2569,6 +2574,16 @@ legend {
   font-weight: var(--font-weight-bold);
 }
 
+.warn-guide + .warn-guide {
+  margin-top: var(--space-3);
+}
+
+.warn-kind + .warn-kind {
+  margin-top: var(--space-1);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--line);
+}
+
 .warn-kind > summary {
   padding-left: var(--space-6);
   color: var(--warn);
@@ -2582,9 +2597,10 @@ legend {
 
 .warn-item {
   display: flex;
+  align-items: baseline;
   gap: var(--space-3);
   width: 100%;
-  padding: var(--space-1) var(--space-3) var(--space-1) var(--warnings-indent);
+  padding: 2px var(--space-3) 2px var(--warnings-indent);
 }
 
 .warn-item[aria-disabled] {

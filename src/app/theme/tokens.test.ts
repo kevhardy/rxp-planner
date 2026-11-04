@@ -222,6 +222,10 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(contrast(color(theme, token(count)), color(theme, token(bar)))).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("colors the warnings count in the Warnings panel like the one in the top bar", () => {
+    expect(written(".warnings .panel-head .count.warn", [styles]).color).toBe(written(".warnings-total.warn", [styles]).color);
+  });
+
   it("draws the chosen leg's halo or its ink edge at 3:1 or more on any terrain", () => {
     const parts = [".leg-halo", ".leg-edge"].map((part) => color(theme, token(legStroke(".leg-chosen", part))));
     expect(onTerrain(parts)).toBeGreaterThanOrEqual(3);
