@@ -661,7 +661,7 @@
 }
 
 .map-zoom > .ui-button + .ui-button {
-  border-top-color: var(--line);
+  border-top-color: var(--raised-line);
 }
 
 .map-zoom > .ui-button:first-child {

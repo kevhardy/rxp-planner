@@ -352,7 +352,7 @@
 
 .character-card .state-log {
   padding-top: var(--space-1);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--raised-line);
 }
 
 .character-card summary {

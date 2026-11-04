@@ -212,14 +212,14 @@ progress {
   height: 6px;
   border: none;
   border-radius: var(--radius-round);
-  background: var(--line);
+  background: var(--raised-line);
   accent-color: var(--text);
   appearance: none;
 }
 
 progress::-webkit-progress-bar {
   border-radius: var(--radius-round);
-  background: var(--line);
+  background: var(--raised-line);
 }
 
 progress::-webkit-progress-value {
