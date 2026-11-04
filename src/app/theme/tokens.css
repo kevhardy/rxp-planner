@@ -202,6 +202,10 @@
   --token-class-border: color-mix(in srgb, var(--kind-train) 50%, var(--control-border));
   --token-mode-border: color-mix(in srgb, var(--kind-turnin) 50%, var(--control-border));
 
+  /* One step past --line, so a major tick reads apart from a minor one but
+     stays quieter than the coral bar of the current mode. */
+  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
+
   --chain-link-ink: color-mix(in srgb, var(--text) 45%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
   --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));

@@ -824,7 +824,7 @@ label {
 }
 
 .ruler-major {
-  stroke: var(--control-border);
+  stroke: var(--tick-major);
 }
 
 /* Library opens a pane, not a popover, so it is not a popover trigger and
