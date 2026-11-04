@@ -123,11 +123,8 @@
     "react/incompatible-library": "off",
     // It flags a synchronous try/catch around a parse inside JSX, which works.
     "react/error-boundaries": "off",
-    "typescript/unbound-method": "off",
-    "typescript/restrict-template-expressions": "off",
     // Validators match control characters to reject them.
     "eslint/no-control-regex": "off",
-    "typescript/no-misused-spread": "off",
     // Loops copy a collection before they change it.
     "unicorn/no-useless-spread": "off",
     // new Array(n).fill(value) sizes an array on purpose.
@@ -155,6 +152,8 @@
     {
       "files": ["**/*.test.{ts,tsx}"],
       "rules": {
+        // A test keeps a prototype method to call it from a spy, and hands a mocked method to expect.
+        "typescript/unbound-method": "off",
         "rxpplanner/no-chained-type-assertions": "off",
         "rxpplanner/no-command-tables": "off",
         "eslint/no-restricted-globals": "off",
