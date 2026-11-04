@@ -154,7 +154,7 @@ it("retries a whole selected artifact and keeps recovered edits and saves", asyn
   );
   const iconUrl = /url\("(.*)"\)/.exec(markerIcon!.style.getPropertyValue("--image"))![1]!;
   expect(new Uint8Array(await (await fetchBlob(iconUrl)).arrayBuffer())).toEqual(f.files.get("art/map.webp"));
-  expect([markerIcon!.style.getPropertyValue("--image-x"), markerIcon!.style.getPropertyValue("--image-y")]).toEqual(["-18px", "-36px"]);
+  expect([markerIcon!.style.getPropertyValue("--image-x"), markerIcon!.style.getPropertyValue("--image-y")]).toEqual(["-24", "-48"]);
   const previousTile = renderedTile.src;
   fireEvent.error(renderedTile);
   await user.click(within(screen.getByRole("alert")).getByRole("button", { name: "Retry" }));

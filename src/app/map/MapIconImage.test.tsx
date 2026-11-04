@@ -13,7 +13,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("draws the manifest's icon by key, scaled from 24 px, under a base containing parentheses, hidden from assistive technology", async () => {
+it("draws the manifest's icon by key in its 24 px units, sized by its prop or else by CSS, under a base containing parentheses, hidden from assistive technology", async () => {
   vi.stubGlobal("Blob", NodeBlob);
   vi.stubGlobal("crypto", webcrypto);
   const f = plannerRelease();
@@ -22,17 +22,19 @@ it("draws the manifest's icon by key, scaled from 24 px, under a base containing
     <DatasetContext.Provider value={{ data }}>
       <MapIconImage icon="quest-turn-in" size={20} />
       <MapIconImage icon="banker" size={20} />
+      <MapIconImage icon="banker" />
     </DatasetContext.Provider>,
   );
-  const [icon, missing] = container.querySelectorAll<HTMLElement>(".map-icon");
+  const [icon, missing, unsized] = container.querySelectorAll<HTMLElement>(".map-icon");
   expect(icon!.getAttribute("aria-hidden")).toBe("true");
   const vars = (el: HTMLElement) => Object.fromEntries([...el.style].map((name) => [name, el.style.getPropertyValue(name)]));
   expect(vars(icon!)).toEqual({
     "--size": "20px",
     "--image": 'url("/assets(copy)/art/map.webp")',
-    "--image-x": "-40px",
-    "--image-y": "-40px",
-    "--image-w": "160px",
+    "--image-x": "-48",
+    "--image-y": "-48",
+    "--image-w": "192",
   });
   expect(vars(missing!)).toEqual({ "--size": "20px" });
+  expect(vars(unsized!)).toEqual({});
 });

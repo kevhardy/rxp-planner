@@ -377,7 +377,7 @@ describe("map panel", () => {
     const icons = [...marker!.querySelectorAll<HTMLElement>(".map-icon")].map(
       (i) => `${i.style.getPropertyValue("--image-x")} ${i.style.getPropertyValue("--image-y")}`,
     );
-    expect(icons).toEqual(["-18px -36px", "-36px -36px"]);
+    expect(icons).toEqual(["-24 -48", "-48 -48"]);
     expect(route.compareDocumentPosition(marker!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
