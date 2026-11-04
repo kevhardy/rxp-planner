@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { FLIGHT_MASTER_REACH, FlightNodes } from "./flightNodes.ts";
+import { FLIGHT_MASTER_REACH_YARDS, FlightNodes } from "./flightNodes.ts";
 import { genericFile } from "./genericFixture.ts";
 
 describe("flight nodes", () => {
@@ -40,8 +40,8 @@ describe("flight nodes", () => {
     expect(new FlightNodes({ 1: record(20), 2: record(-10), 3: record(10) }).at(origin, "Horde")?.id).toBe(2);
   });
 
-  it("reaches a flight master at exactly FLIGHT_MASTER_REACH", () => {
-    expect(new FlightNodes({ 1: record(FLIGHT_MASTER_REACH) }).at(origin, "Horde")?.id).toBe(1);
+  it("reaches a flight master at exactly FLIGHT_MASTER_REACH_YARDS", () => {
+    expect(new FlightNodes({ 1: record(FLIGHT_MASTER_REACH_YARDS) }).at(origin, "Horde")?.id).toBe(1);
   });
 
   it("throws for a node that the dataset lacks", () => {

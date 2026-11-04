@@ -88,7 +88,7 @@ export interface SimData {
   /** The UI map that an RXP zone name or alias names, which `.zoneskip` compares. */
   uiMapNamed(token: string): UiMapId | undefined;
   /** The nearest known Spirit Healer on the death point's world map. */
-  spiritHealer?(from: WorldLocation): SimPosition | undefined;
+  nearestSpiritHealer?(from: WorldLocation): SimPosition | undefined;
   /** Where an NPC spawns for a quest's objectives, or with no quest for a grind. */
   spawns?(npcId: number, questId: number | undefined): readonly Spawn[];
   /** The NPCs whose records list their spawns, from which a grind with no named mob picks a local one. */
@@ -1984,7 +1984,7 @@ function walk(
       route.at = state.bind ?? route.at;
       landed = state.bind ?? landed;
     } else if (a.kind === "deathskip") {
-      const to = route.at ? data.spiritHealer?.(route.at) : undefined;
+      const to = route.at ? data.nearestSpiritHealer?.(route.at) : undefined;
       walked.push(to ? learn({ ...a, to }, { kind: "position", at: to }) : a);
       route.at = to ?? route.at;
       landed = to ?? landed;

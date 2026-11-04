@@ -1,8 +1,9 @@
 import type { InstanceId, WorldLocation, WorldPoint } from "../../data/index.ts";
 
-const R = 45;
-const LEVEL = 0.3;
-const CELL = 4;
+const SPAWN_REACH_YARDS = 45;
+const OUTLINE_LEVEL = 0.3;
+const GRID_YARDS = 4;
+const TOUCHING_YARDS = 2 * SPAWN_REACH_YARDS;
 
 export interface AreaRing {
   instance: InstanceId;
@@ -18,14 +19,14 @@ function clusters(spawns: readonly WorldLocation[]): WorldLocation[][] {
   const parent = unique.map((_, i) => i);
   const root = (i: number): number => (parent[i] === i ? i : (parent[i] = root(parent[i]!)));
   const bucketOf = (s: WorldLocation, dx = 0, dy = 0) =>
-    `${s.instance}:${Math.floor(s.x / (2 * R)) + dx}:${Math.floor(s.y / (2 * R)) + dy}`;
+    `${s.instance}:${Math.floor(s.x / TOUCHING_YARDS) + dx}:${Math.floor(s.y / TOUCHING_YARDS) + dy}`;
   const buckets = new Map<string, number[]>();
   unique.forEach((s, i) => {
     for (const dx of [-1, 0, 1])
       for (const dy of [-1, 0, 1])
         for (const j of buckets.get(bucketOf(s, dx, dy)) ?? []) {
           const o = unique[j]!;
-          if (Math.hypot(s.x - o.x, s.y - o.y) < 2 * R) parent[root(i)] = root(j);
+          if (Math.hypot(s.x - o.x, s.y - o.y) < TOUCHING_YARDS) parent[root(i)] = root(j);
         }
     const own = bucketOf(s);
     buckets.set(own, [...(buckets.get(own) ?? []), i]);
@@ -35,20 +36,24 @@ function clusters(spawns: readonly WorldLocation[]): WorldLocation[][] {
   return [...groups.values()];
 }
 
+function spawnShare(yardsSquared: number): number {
+  const reachSquared = SPAWN_REACH_YARDS ** 2;
+  return yardsSquared < reachSquared ? (1 - yardsSquared / reachSquared) ** 2 : 0;
+}
+
 function trace(spawns: readonly WorldPoint[]): WorldPoint[][] {
-  const pad = R + CELL;
+  const pad = SPAWN_REACH_YARDS + GRID_YARDS;
   const x0 = Math.min(...spawns.map((s) => s.x)) - pad;
   const y0 = Math.min(...spawns.map((s) => s.y)) - pad;
-  const nx = Math.ceil((Math.max(...spawns.map((s) => s.x)) + pad - x0) / CELL) + 1;
-  const ny = Math.ceil((Math.max(...spawns.map((s) => s.y)) + pad - y0) / CELL) + 1;
+  const nx = Math.ceil((Math.max(...spawns.map((s) => s.x)) + pad - x0) / GRID_YARDS) + 1;
+  const ny = Math.ceil((Math.max(...spawns.map((s) => s.y)) + pad - y0) / GRID_YARDS) + 1;
   const field = new Float64Array(nx * ny);
+  const reach = SPAWN_REACH_YARDS / GRID_YARDS;
   for (const s of spawns) {
-    const [ci, cj] = [(s.x - x0) / CELL, (s.y - y0) / CELL];
-    for (let j = Math.ceil(cj - R / CELL); j <= cj + R / CELL; j++)
-      for (let i = Math.ceil(ci - R / CELL); i <= ci + R / CELL; i++) {
-        const d2 = ((i - ci) ** 2 + (j - cj) ** 2) * CELL ** 2;
-        if (d2 < R * R) field[j * nx + i]! += (1 - d2 / (R * R)) ** 2;
-      }
+    const [ci, cj] = [(s.x - x0) / GRID_YARDS, (s.y - y0) / GRID_YARDS];
+    for (let j = Math.ceil(cj - reach); j <= cj + reach; j++)
+      for (let i = Math.ceil(ci - reach); i <= ci + reach; i++)
+        field[j * nx + i]! += spawnShare(((i - ci) ** 2 + (j - cj) ** 2) * GRID_YARDS ** 2);
   }
   const at = (i: number, j: number) => field[j * nx + i]!;
 
@@ -59,11 +64,11 @@ function trace(spawns: readonly WorldPoint[]): WorldPoint[][] {
     for (let i = 0; i < nx - 1; i++) {
       const v = [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)];
       const edges = [horizontal(i, j), vertical(i + 1, j), horizontal(i, j + 1), vertical(i, j)];
-      const inside = v.map((value) => value >= LEVEL);
+      const inside = v.map((value) => value >= OUTLINE_LEVEL);
       const count = inside.filter(Boolean).length;
       if (count === 0 || count === 4) continue;
       if (count === 2 && inside[0] === inside[2]) {
-        const joined = (v[0]! + v[1]! + v[2]! + v[3]!) / 4 >= LEVEL;
+        const joined = (v[0]! + v[1]! + v[2]! + v[3]!) / 4 >= OUTLINE_LEVEL;
         for (let k = 0; k < 4; k++) {
           if (inside[k] === joined) continue;
           const [before, after] = [edges[(k + 3) % 4]!, edges[k]!];
@@ -82,8 +87,8 @@ function trace(spawns: readonly WorldPoint[]): WorldPoint[][] {
     const [i, j] = [cell % nx, Math.floor(cell / nx)];
     const [i2, j2] = edge & 1 ? [i, j + 1] : [i + 1, j];
     const [a, b] = [at(i, j), at(i2, j2)];
-    const t = (LEVEL - a) / (b - a);
-    return { x: x0 + (i + (i2 - i) * t) * CELL, y: y0 + (j + (j2 - j) * t) * CELL };
+    const t = (OUTLINE_LEVEL - a) / (b - a);
+    return { x: x0 + (i + (i2 - i) * t) * GRID_YARDS, y: y0 + (j + (j2 - j) * t) * GRID_YARDS };
   };
   const rings: WorldPoint[][] = [];
   for (const first of next.keys()) {

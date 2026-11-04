@@ -93,8 +93,8 @@ export function simData(data: GameData, entities: EntityIndex, faction: Faction)
       if (!located.ok) return undefined;
       return data.continentByUiMapId(located.uiMapId) ? located.world : { ...located.world, uiMapId: located.uiMapId };
     },
-    spiritHealer(from) {
-      const at = data.spiritHealer(from);
+    nearestSpiritHealer(from) {
+      const at = data.nearestSpiritHealer(from);
       if (!at) return undefined;
       const uiMapId = data.locate(at)?.uiMapId;
       return { ...at, ...(uiMapId !== undefined && { uiMapId }) };

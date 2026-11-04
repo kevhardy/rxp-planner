@@ -173,7 +173,7 @@ describe("PlaybackRouting", () => {
         `#group G\n#name A\nstep\n.goto ${elwynn(from)}\n+Walk\nstep\n.goto ${elwynn(cave)}\n+Enter cave\nstep\n#softcore\n#completewith next\n.deathskip\nstep\n.vendor`,
       ),
     ];
-    const data = { ...base.data, spiritHealer: () => healer };
+    const data = { ...base.data, nearestSpiritHealer: () => healer };
     const playback = await new PlaybackRouting(router([from, cave], [20, 10], 10), { every: 0 }).play(
       { ...base, guides, data, simulation: simulateRoute(guides, 0, base.profile, data) },
       Infinity,
@@ -192,7 +192,7 @@ describe("PlaybackRouting", () => {
         `#group G\n#name A\nstep\n.goto ${elwynn(from)}\n+Walk\nstep\n.goto ${elwynn(cave)}\n+Enter cave\nstep\n#softcore\n#completewith next\n.deathskip\nstep\n.vendor`,
       ),
     ];
-    const data = { ...base.data, spiritHealer: () => ({ ...world(-179.17, -8944.17), uiMapId: 1429 }) };
+    const data = { ...base.data, nearestSpiritHealer: () => ({ ...world(-179.17, -8944.17), uiMapId: 1429 }) };
     const simulation = simulateRoute(guides, 0, base.profile, data, 0, undefined, { ignoreDeathskip: true });
     const playback = await new PlaybackRouting(router([from, cave], [20, 10], 10), { every: 0 }).play(
       { ...base, guides, data, simulation },

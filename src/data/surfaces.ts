@@ -3,7 +3,9 @@ import type { Interior } from "../../packages/data-contract/interiors.ts";
 import { pixelSurfaces, surfacePixelAt, type InteriorSurfaces } from "../../packages/data-contract/interiorSurfaces.ts";
 import type { HeightMap } from "./heightMap.ts";
 
+/** One walkable surface at a point. `rank` counts up from 0 at the ground, and `of` is how many surfaces the point has. */
 export interface Surface {
+  /** World yards. */
   height: number;
   place: string;
   rank: number;

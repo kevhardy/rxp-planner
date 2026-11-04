@@ -724,7 +724,7 @@ describe("priceRoute", () => {
 
   it("resurrects at the Spirit Healer in a softcore completewith step before the next walk", async () => {
     const healer = { ...loc(63, 70), uiMapId: 1426 };
-    const data = { ...simData({}, places), spiritHealer: () => healer };
+    const data = { ...simData({}, places), nearestSpiritHealer: () => healer };
     const docs = [
       guide(
         "step\n.goto Dun Morogh,1,1\n.home\nstep\n.goto Dun Morogh,2,2\n+Enter the cave\nstep\n#softcore\n#completewith next\n.deathskip\nstep\n.goto Dun Morogh,3,3\n+Talk to Durnan",
@@ -750,7 +750,7 @@ describe("priceRoute", () => {
   });
 
   it("ignores a death skip when the setting is on, and walks on from the cave", async () => {
-    const data = { ...simData({}, places), spiritHealer: () => ({ ...loc(63, 70), uiMapId: 1426 }) };
+    const data = { ...simData({}, places), nearestSpiritHealer: () => ({ ...loc(63, 70), uiMapId: 1426 }) };
     const docs = [
       guide(
         "step\n.goto Dun Morogh,1,1\nstep\n.goto Dun Morogh,2,2\n+Enter the cave\nstep\n#softcore\n#completewith next\n.deathskip\n.home\nstep\n.goto Dun Morogh,3,3\n+Talk to Durnan",
@@ -773,7 +773,7 @@ describe("priceRoute", () => {
     const data: SimData = {
       ...simData({}, {}),
       locateGoto: (args) => loc(Math.abs(Number(args[1])), Math.abs(Number(args[2]))),
-      spiritHealer: () => healer,
+      nearestSpiritHealer: () => healer,
     };
     const dwarf = createProfile({ race: "Dwarf", class: "WARRIOR", level: 1 });
     const play = async (choices: { ignoreDeathskip?: boolean }) => {
