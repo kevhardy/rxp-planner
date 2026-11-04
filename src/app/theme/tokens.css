@@ -1,41 +1,53 @@
 :root {
   color-scheme: light;
 
-  --bg: #ececec;
-  --surface: #f7f7f7;
-  --line: #d6d6d6;
-  --control-border: #7e7e7e;
-  --text: #1d1d1d;
-  --muted: #616161;
+  --bg: #d8dee6;
+  --surface: #f0f3f7;
+  --pane-head: #dfe6ef;
+  --raised: #fff;
+  --hover: #e5eaf0;
+  --line: #c3ccd7;
+  --control-border: #6d7a8b;
+  --text: #17202b;
+  --muted: #4c5868;
 
-  --selection: #e6e6e6;
-  --press: #e0e0e0;
+  /* A data URL cannot read a token, so it repeats this theme's
+     `--control-border`. */
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 
-  --primary-bg: #1d1d1d;
-  --primary-fg: #f7f7f7;
-  --primary-hover: #373737;
-  --primary-press: #000;
+  --selection: #d9e3ef;
+  --press: #d5e1ee;
+
+  --accent: #3f6690;
+  --pop: #d9473a;
+  --pop-ink: #b83226;
+  --pop-fg: #fff;
+
+  --primary-bg: var(--accent);
+  --primary-fg: #fff;
+  --primary-hover: #36597e;
+  --primary-press: #2c4a6a;
 
   --danger-hover: #c4382c;
   --danger-press: #8f1b12;
 
-  --disabled-bg: #e0e0e0;
-  --disabled-fg: #979797;
+  --disabled-bg: #dde3ea;
+  --disabled-fg: #8893a1;
 
   --warn: #8f5603;
   --danger: #b42318;
   --danger-fg: #fff;
   --ok: #13703a;
 
-  --kind-accept: #a16207;
-  --kind-turnin: #15803d;
-  --kind-complete: #c2410c;
+  --kind-accept: #9c5f07;
+  --kind-turnin: #147c3b;
+  --kind-complete: #bd3f0c;
   --kind-goto: #0369a1;
   --kind-target: #b5177a;
   --kind-train: #7042c8;
   --kind-vendor: #6d3c0c;
   --kind-command: #6b645b;
-  --kind-use: #0f766e;
+  --kind-use: #0e716a;
   --kind-equip: #2f55c7;
 
   /* Tuned to 4.5:1 on surface. `addon.guideTextColors` in Themes.lua sets
@@ -48,57 +60,68 @@
   --rxp-buy: #334c00;
   --rxp-pick: #a3218f;
 
-  --elevation-1: 0 0 0 1px rgb(29 29 29 / 0.16), 0 1px 2px rgb(29 29 29 / 0.14);
-  --elevation-2: 0 0 0 1px rgb(29 29 29 / 0.14), 0 10px 28px -6px rgb(29 29 29 / 0.3);
-  --scrim: rgb(29 29 29 / 0.45);
+  --elevation-1: 0 0 0 1px rgb(23 32 43 / 0.14), 0 1px 2px rgb(23 32 43 / 0.12);
+  --elevation-2: 0 0 0 1px rgb(23 32 43 / 0.12), 0 12px 30px -8px rgb(23 32 43 / 0.3);
+  --scrim: rgb(23 32 43 / 0.45);
 
-  --objective-1: #ef356b;
-  --objective-2: #009828;
-  --objective-3: #0085e2;
-  --objective-4: #009293;
-  --objective-5: #bb55e4;
-  --objective-6: #878700;
+  --objective-1: #ed346a;
+  --objective-2: #009527;
+  --objective-3: #0084e0;
+  --objective-4: #008f90;
+  --objective-5: #b753df;
+  --objective-6: #848400;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #131313;
-  --surface: #1a1a1a;
-  --line: #313131;
-  --control-border: #797979;
-  --text: #e8e8e8;
-  --muted: #9f9f9f;
+  --bg: #1a2028;
+  --surface: #222a34;
+  --pane-head: #283342;
+  --raised: #2c3644;
+  --hover: #29323d;
+  --line: #364252;
+  --control-border: #74839a;
+  --text: #e3e8ee;
+  --muted: #9eabbb;
 
-  --selection: #2b2b2b;
-  --press: #303030;
+  /* A data URL cannot read a token, so it repeats this theme's
+     `--control-border`. */
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%2374839a' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 
-  --primary-bg: #e8e8e8;
-  --primary-fg: #1a1a1a;
-  --primary-hover: #d1d1d1;
-  --primary-press: #bcbcbc;
+  --selection: #2a3a4e;
+  --press: #243246;
+
+  --accent: #7fa3c9;
+  --pop: #ff6b5a;
+  --pop-ink: #ff7d6e;
+  --pop-fg: #1a2028;
+
+  --primary-bg: #4a73a0;
+  --primary-hover: #4f78a4;
+  --primary-press: #3f668f;
 
   --danger-hover: #e86a55;
   --danger-press: #dc5f4c;
 
-  --disabled-bg: #272727;
-  --disabled-fg: #656565;
+  --disabled-bg: #28313c;
+  --disabled-fg: #5f6c7c;
 
   --warn: #e3a33b;
-  --danger: #f2735f;
-  --danger-fg: #1a1a1a;
+  --danger: #f38170;
+  --danger-fg: #1a2028;
   --ok: #4cc472;
 
   --kind-accept: #dcae2f;
   --kind-turnin: #4cc472;
   --kind-complete: #f0874a;
   --kind-goto: #4fb3e8;
-  --kind-target: #ee72bb;
-  --kind-train: #ae8ff2;
+  --kind-target: #ef7bbf;
+  --kind-train: #b091f2;
   --kind-vendor: #bc8253;
-  --kind-command: #a59e93;
+  --kind-command: #a8a297;
   --kind-use: #3fc7b0;
-  --kind-equip: #7c9cf5;
+  --kind-equip: #81a0f5;
 
   --rxp-enemy: #ff7b6b;
   --rxp-friendly: #5ccf7f;
@@ -107,9 +130,10 @@
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
 
-  --elevation-1: 0 0 0 1px rgb(0 0 0 / 0.6), 0 1px 2px rgb(0 0 0 / 0.5);
-  --elevation-2: 0 0 0 1px rgb(0 0 0 / 0.7), 0 12px 32px -6px rgb(0 0 0 / 0.7);
-  --scrim: rgb(0 0 0 / 0.6);
+  /* A light rim outlines a float on a dark page, where a shadow does not show. */
+  --elevation-1: 0 0 0 1px #3a4656, 0 1px 2px rgb(8 11 16 / 0.5);
+  --elevation-2: 0 0 0 1px #3a4656, 0 14px 34px -8px rgb(8 11 16 / 0.8);
+  --scrim: rgb(8 11 16 / 0.6);
 
   --objective-1: #ffa8b5;
   --objective-2: #4ee75f;
@@ -123,8 +147,8 @@
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
-  /* 80% clears 77%, the least share at which the border reaches 3:1 on its
-     tint and on the light selection. */
+  /* 80% is the least share at which the border reaches 3:1 on the light
+     page background. */
   --warn-border: color-mix(in srgb, var(--warn) 80%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 80%, var(--surface));
   --add-done-border: color-mix(in srgb, var(--ok) 80%, var(--surface));
@@ -145,16 +169,17 @@
 
   --map-step: color-mix(in srgb, var(--kind-goto) 80%, var(--text));
 
-  --ink-bar-start: inset 2px 0 0 var(--text);
-  --ink-bar-top: inset 0 2px 0 var(--text);
-  --ink-bar-bottom: inset 0 -2px 0 var(--text);
+  --ink-bar-start: inset 3px 0 0 var(--pop);
+  --ink-bar-top: inset 0 2px 0 var(--pop);
+  --ink-bar-bottom: inset 0 -2px 0 var(--pop);
+  --ink-bar-open: inset 0 -2px 0 var(--accent);
 
-  --focus-ring: 2px solid var(--text);
+  --focus-ring: 2px solid var(--pop);
   --focus-offset: 2px;
   --focus-offset-inside: -4px;
   --ring-focus-gap: inset 0 0 0 6px var(--surface);
   --ring-gap-end: inset -2px 0 var(--surface);
-  --ink-bar-start-inside: inset 8px 0 0 var(--text);
+  --ink-bar-start-inside: inset 8px 0 0 var(--pop);
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
@@ -165,10 +190,6 @@
   --bar-kill: var(--danger);
   --bar-interact: var(--muted);
   --bar-wait: var(--control-border);
-
-  /* A data URL cannot read a token, so it holds the light `--control-border`,
-     which is 3:1 on the surface, selection, and press of both themes. */
-  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e7e7e' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 }
 
 :root {
@@ -251,7 +272,7 @@
 }
 
 .ui-item[data-objective] {
-  --objective-tint: color-mix(in srgb, var(--objective) 14%, var(--surface));
+  --objective-tint: color-mix(in srgb, var(--objective) 10%, var(--surface));
   --ink-bar-objective: inset -3px 0 0 var(--objective);
 }
 

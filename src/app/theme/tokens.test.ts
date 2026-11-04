@@ -17,7 +17,10 @@ const on = (fgs: string[], bgs: string[], min: number) => fgs.flatMap((fg) => bg
 
 // WCAG AA: 4.5:1 for text and 3:1 for marks and control borders. Kind colors draw marks, and RXP colors draw body text.
 const PAIRS: Pair[] = [
-  ...on(["text", "muted"], ["bg", "surface", "selection", "press"], 4.5),
+  ...on(["text", "muted"], ["bg", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
+  ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
+  ...on(["pop", "accent"], ["surface", "selection"], 3),
+  ["pop-fg", "pop-ink", 4.5],
   ...on(
     KINDS.map((kind) => `kind-${kind}`),
     ["surface", "selection", "press"],
@@ -28,7 +31,7 @@ const PAIRS: Pair[] = [
     ["surface", "selection", "press"],
     4.5,
   ),
-  ...on(OBJECTIVES, ["bg", "surface", "selection", "map-terrain"], 3),
+  ...on(OBJECTIVES, ["surface", "raised", "selection", "map-terrain"], 3),
   ...OBJECTIVES.map((objective): Pair => [objective, "objective-tint", 3, { objective: `var(--${objective})` }]),
   ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming"], ["map-terrain"], 3),
   ["map-character", "art-paper", 3],
@@ -36,7 +39,7 @@ const PAIRS: Pair[] = [
   ...on(["warn", "danger", "ok"], ["surface", "press"], 4.5),
   ["warn", "warn-tint", 4.5],
   ["danger", "danger-tint", 4.5],
-  ...on(["control-border"], ["surface", "press"], 3),
+  ...on(["control-border"], ["surface", "pane-head", "raised", "hover", "selection", "press"], 3),
   ...on(["warn-border"], ["warn-tint", "surface", "bg", "selection"], 3),
   ...on(["danger-border"], ["danger-tint", "surface", "bg"], 3),
   ...on(["add-done-border"], ["add-done-bg", "surface", "bg"], 3),
@@ -185,6 +188,11 @@ function onTerrain(colors: Rgb[]): number {
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);
+  });
+
+  it("outlines a missing guide icon in --control-border", () => {
+    const border = tokens[theme].get("--control-border")!.replace("#", "%23");
+    expect(tokens[theme].get("--guide-icon-outline")).toContain(`stroke='${border}'`);
   });
 
   it.each(PINS)("puts the numeral of %s on its fill at 3:1 or more", (pin, inside) => {
