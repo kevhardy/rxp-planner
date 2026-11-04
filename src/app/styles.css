@@ -1927,6 +1927,7 @@ label {
 }
 
 .guide-icon.vector {
+  filter: var(--ring-guide-icon);
   background-image: var(--icon-url);
   background-size: 100% 100%;
   background-position: 0 0;
