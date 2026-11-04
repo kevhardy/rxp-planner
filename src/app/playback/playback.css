@@ -155,7 +155,6 @@
   display: flex;
   flex: none;
   flex-direction: column;
-  justify-content: space-between;
   gap: var(--space-1);
   width: 52px;
   padding: 2px 0;
@@ -396,9 +395,75 @@
   padding-bottom: var(--space-2);
 }
 
+/* `--played`, set on the track, is the played fraction, 0 to 1. The thumb's center travels from
+   half a thumb in from each end, so the fill ends there too. Each browser's
+   pseudo-elements get their own rules, because a browser drops a whole rule
+   that names a pseudo-element it does not know. */
 .playback-scrubber .ui-slider {
+  --thumb: 16px;
+  --fill-end: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--played));
   display: block;
   width: 100%;
+  appearance: none;
+  background: none;
+}
+
+.playback-scrubber .ui-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-round);
+  /* stylelint-disable-next-line function-disallowed-list -- split: played and still to play */
+  background: linear-gradient(90deg, var(--text) var(--fill-end), var(--control-border) var(--fill-end));
+}
+
+.playback-scrubber .ui-slider::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+}
+
+.playback-scrubber .ui-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: var(--radius-round);
+  background: var(--text);
+}
+
+.playback-scrubber .ui-slider::-webkit-slider-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc(-1 * var(--space-1) - 1px);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-round);
+  background: var(--text);
+  appearance: none;
+}
+
+.playback-scrubber .ui-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--thumb);
+  height: var(--thumb);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-round);
+  background: var(--text);
+}
+
+.playback-scrubber .ui-slider:disabled::-webkit-slider-runnable-track {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-track {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-progress {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-webkit-slider-thumb {
+  background: var(--disabled-fg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-thumb {
+  background: var(--disabled-fg);
 }
 
 .playback-marks {
@@ -412,7 +477,7 @@
 
 .playback-mark,
 .estimate-swatch {
-  border-top: 2px dashed var(--text);
+  border-top: 2px dashed var(--control-border);
 }
 
 .playback-mark {

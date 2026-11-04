@@ -437,7 +437,7 @@ function TimelineDock({ routing }: { routing: HostRouting | undefined }) {
         {formatClock(playhead)} <span className="muted">/ {formatClock(total)}</span>
       </span>
       <div className="playback-scrubber">
-        <div className="playback-track">
+        <div className="playback-track" style={{ "--played": total > 0 ? Math.min(1, playhead / total) : 0 }}>
           <Slider
             aria-label="Playhead"
             aria-valuetext={`${formatClock(playhead)} of ${formatClock(total)}`}
