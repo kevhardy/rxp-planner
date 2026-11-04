@@ -1527,6 +1527,10 @@ label {
   color: var(--text);
 }
 
+.step-does .row-text {
+  font-weight: var(--font-weight-medium);
+}
+
 .act-xp {
   color: var(--text);
   font-size: var(--font-size-small);

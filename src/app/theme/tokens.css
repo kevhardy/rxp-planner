@@ -319,6 +319,8 @@
   --line-height-pane-title: 20px;
   --line-height-title: 28px;
   --font-weight-regular: 400;
+  /* Renders as regular unless the 500 face of Plex Sans is loaded. */
+  --font-weight-medium: 500;
   --font-weight-bold: 600;
 
   --font-size-mark: 8px;
