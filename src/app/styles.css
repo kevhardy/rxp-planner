@@ -2582,7 +2582,7 @@ legend {
 }
 
 .warnings.popover {
-  width: min(600px, 100vw - 16px);
+  width: min(620px, 100vw - 16px);
   max-height: calc(100vh - 76px);
   padding: 0;
 }
@@ -2667,6 +2667,8 @@ legend {
 }
 
 .warn-message {
+  flex: 1;
+  min-width: 0;
   text-wrap: pretty;
 }
 
