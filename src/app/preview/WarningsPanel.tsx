@@ -192,7 +192,7 @@ export function WarningsPanel() {
                                 list.querySelectorAll<HTMLElement>(".warn-item")[ITEM_LIMIT]?.focus();
                               }}
                             >
-                              {items.length - shown.length} more
+                              {items.length - shown.length} more <Icon name="chevronDown" />
                             </Button>
                           </li>
                         )}
