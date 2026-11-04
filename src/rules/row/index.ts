@@ -28,7 +28,7 @@ export * from "./marks.ts";
  * guide text resolve too.
  */
 export interface RowNames {
-  name(type: EntityType, id: number): string | undefined;
+  name: (type: EntityType, id: number) => string | undefined;
   /** A `.complete` objective: its name, its kind (`item`, `monster`, ...) when known, and its count when known. */
   objective(questId: number, index: number): { name: string; type?: string; count?: number } | undefined;
   /** The zone name and the "x, y" point of `.goto` arguments, when the game data places them. */

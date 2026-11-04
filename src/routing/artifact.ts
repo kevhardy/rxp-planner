@@ -329,7 +329,7 @@ export interface RoutingArtifact {
   manifest: ArtifactManifest;
   read(path: string): Promise<Uint8Array<ArrayBuffer>>;
   /** A present tile. Throws for a missing or unlisted tile, or for bytes that differ from the manifest. */
-  tile(tile: Tile): Promise<HeightTile>;
+  tile: (tile: Tile) => Promise<HeightTile>;
 }
 
 export type ArtifactLoad = { ok: true; artifact: RoutingArtifact } | { ok: false; reason: string };

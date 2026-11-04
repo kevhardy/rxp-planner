@@ -387,9 +387,9 @@ export interface TileBounds {
 export interface Terrain {
   /** The frame of the artifact that the terrain reads. The search resolves plan stops with it. */
   readonly frame: NativeFrame;
-  bounds(points: readonly Point[], margin: number): TileBounds;
+  bounds: (points: readonly Point[], margin: number) => TileBounds;
   /** A tile that fails to load or verify gives `missing-coverage`, and a later region reads it again. */
-  region(points: readonly Point[], margin: number): Promise<TerrainRegion>;
+  region: (points: readonly Point[], margin: number) => Promise<TerrainRegion>;
   coarse?(): Promise<CoarseLayer | undefined>;
 }
 

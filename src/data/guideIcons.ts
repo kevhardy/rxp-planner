@@ -74,6 +74,6 @@ export const GUIDE_ICONS_PROPERTY = "--rxp-guide-icons";
 
 export interface GuideIconSheet {
   readonly state: "loading" | "ready" | "failed";
-  subscribe(listener: () => void): () => void;
+  subscribe: (listener: () => void) => () => void;
   retry(): void;
 }

@@ -90,7 +90,7 @@ export interface SimData {
   /** The nearest known Spirit Healer on the death point's world map. */
   spiritHealer?(from: WorldLocation): SimPosition | undefined;
   /** Where an NPC spawns for a quest's objectives, or with no quest for a grind. */
-  spawns?(npcId: number, questId: number | undefined): readonly Spawn[];
+  spawns?: (npcId: number, questId: number | undefined) => readonly Spawn[];
   /** The NPCs whose records list their spawns, from which a grind with no named mob picks a local one. */
   npcsWithSpawns?(): readonly number[];
   /** Fallback UI map for a position with no guide zone. */

@@ -128,11 +128,11 @@ async function startJourneys(
 function reporter(onLegs: JourneyOptions["onLegs"]) {
   let held: LegUpdate[] | undefined = [];
   return {
-    add(update: LegUpdate) {
+    add: (update: LegUpdate) => {
       if (held) held.push(update);
       else onLegs?.([update]);
     },
-    flush() {
+    flush: () => {
       if (held) onLegs?.(held);
       held = undefined;
     },
