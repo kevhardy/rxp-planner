@@ -169,17 +169,17 @@
 
   --map-step: color-mix(in srgb, var(--kind-goto) 80%, var(--text));
 
-  --ink-bar-start: inset 3px 0 0 var(--pop);
-  --ink-bar-top: inset 0 2px 0 var(--pop);
-  --ink-bar-bottom: inset 0 -2px 0 var(--pop);
-  --ink-bar-open: inset 0 -2px 0 var(--accent);
+  --ink-bar-start: inset 4px 0 0 -1px var(--pop);
+  --ink-bar-top: inset 0 3px 0 -1px var(--pop);
+  --ink-bar-bottom: inset 0 -3px 0 -1px var(--pop);
+  --ink-bar-open: inset 0 -3px 0 -1px var(--accent);
 
   --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --focus-offset-inside: -4px;
   --ring-focus-gap: inset 0 0 0 6px var(--surface);
   --ring-gap-end: inset -2px 0 var(--surface);
-  --ink-bar-start-inside: inset 8px 0 0 var(--pop);
+  --ink-bar-start-inside: inset 9px 0 0 -1px var(--pop);
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
@@ -273,7 +273,7 @@
 
 .ui-item[data-objective] {
   --objective-tint: color-mix(in srgb, var(--objective) 10%, var(--surface));
-  --ink-bar-objective: inset -3px 0 0 var(--objective);
+  --ink-bar-objective: inset -4px 0 0 -1px var(--objective);
 }
 
 .step-swatch {
