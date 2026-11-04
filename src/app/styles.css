@@ -332,6 +332,10 @@ label {
   line-height: var(--line-height-body);
 }
 
+.narrow-notice svg {
+  color: var(--warn);
+}
+
 .region-character {
   position: relative;
   flex: none;
