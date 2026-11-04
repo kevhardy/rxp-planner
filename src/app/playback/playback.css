@@ -156,11 +156,10 @@
   flex: none;
   flex-direction: column;
   gap: var(--space-1);
-  /* Holds a clock as long as "1:02:03", seven mono figures of 0.6em. */
+  /* Holds a clock as long as "1:02:03". */
   width: 56px;
   padding: 2px 0;
   color: var(--muted);
-  font-family: var(--font-mono);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
   text-align: right;
@@ -187,12 +186,17 @@
 
 .playback-title-text {
   display: -webkit-box;
+  font-weight: var(--font-weight-medium);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow-wrap: anywhere;
+}
+
+.playback-actions .row-text {
+  font-weight: var(--font-weight-regular);
 }
 
 .playback-kills-text {
@@ -233,7 +237,6 @@
   align-items: flex-end;
   gap: var(--space-1);
   color: var(--muted);
-  font-family: var(--font-mono);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
   white-space: nowrap;
@@ -324,7 +327,6 @@
 
 .character-xp {
   color: var(--muted);
-  font-family: var(--font-mono);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -561,7 +563,6 @@
 
 .playback-clock {
   grid-area: clock;
-  font-family: var(--font-mono);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
