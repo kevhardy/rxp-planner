@@ -574,6 +574,12 @@
   background: var(--map-step-upcoming-fill);
 }
 
+.pin.crowded,
+.pin.crowded:hover:not(:disabled) {
+  width: 9px;
+  height: 9px;
+}
+
 /* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
 .pin-upcoming {
   opacity: calc(0.5 + var(--fade, 1) * 0.5);
