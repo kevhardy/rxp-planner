@@ -5,6 +5,7 @@ import { describe, it } from "vitest";
 interface Example {
   name: string;
   code: string;
+  /** Each report is its exact source text and its one-based column on line 1. */
   reports?: Array<[text: string, column: number]>;
   tsx?: boolean;
 }
