@@ -8,6 +8,7 @@
   --surface: #ebf0f6;
   --pane-head: #d3dde9;
   --raised: #fff;
+  --field: var(--raised);
   --hover: #e3e9f1;
   --line: #c3ccd7;
   /* A divider inside a float on --raised. */
@@ -91,6 +92,9 @@
   --surface: #212933;
   --pane-head: #2a3340;
   --raised: #323d4b;
+  /* Darker than every surface it sits on, so a field reads as a well, even
+     in a float on --raised. */
+  --field: #1c232c;
   --hover: #29323d;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
@@ -178,10 +182,9 @@
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
-  /* 90% is the least share that keeps a placeholder at 4.5:1 on a dark
-     input, too close to --muted to tell it from a value, so placeholders are
-     also italic. */
-  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--raised));
+  /* 90% keeps a placeholder at 4.5:1 on a field in either theme, too close
+     to --muted to tell it from a value, so placeholders are also italic. */
+  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--field));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));

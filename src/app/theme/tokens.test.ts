@@ -18,7 +18,9 @@ const on = (fgs: string[], bgs: string[], min: number) => fgs.flatMap((fg) => bg
 // WCAG AA: 4.5:1 for text and 3:1 for marks and control borders. Kind colors draw marks, and RXP colors draw body text.
 const PAIRS: Pair[] = [
   ...on(["text", "muted"], ["topbar", "bg", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
-  ["placeholder", "raised", 4.5],
+  ["placeholder", "field", 4.5],
+  ["text", "field", 4.5],
+  ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
   ...on(["pop-ink"], ["surface", "pane-head", "selection"], 4.5),
   ...on(["pop", "accent"], ["surface", "selection"], 3),
