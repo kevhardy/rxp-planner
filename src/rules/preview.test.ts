@@ -528,14 +528,14 @@ describe("bundled Westfall guide", () => {
 
   it("shows a Human Warrior the Human steps", () => {
     const result = tally(humanWarrior);
-    expect(result).toMatchObject({ name: "13-15 Westfall", steps: 103, shown: 74 });
-    expect(result.reasons).toMatchObject({ "Skipped for Human": 1, "Only for Rogue": 3 });
+    expect(result).toMatchObject({ name: "13-15 Westfall", steps: 102, shown: 70 });
+    expect(result.reasons).toMatchObject({ "Skipped for Human": 2, "Only for Rogue": 3 });
     expect(result.reasons["Only for Human"]).toBeUndefined();
   });
 
   it("hides the Human and Warrior steps from a Gnome Mage", () => {
     const result = tally(gnomeMage);
-    expect(result).toMatchObject({ steps: 103, shown: 74 });
+    expect(result).toMatchObject({ steps: 102, shown: 70 });
     expect(result.reasons).toMatchObject({ "Only for Human": 7 });
     expect(result.reasons["Skipped for Human"]).toBeUndefined();
   });

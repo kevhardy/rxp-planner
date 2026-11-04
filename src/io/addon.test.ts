@@ -62,7 +62,7 @@ describe("exportAddon", () => {
   const all = bundledGuides;
 
   it("writes LF-only Lua that extractGuides reads back as the LF texts", () => {
-    expect(all).toHaveLength(83);
+    expect(all).toHaveLength(80);
     expect(all.some((text) => text.includes("\r\n"))).toBe(true);
     for (const texts of [all, tricky]) {
       const source = luaOf(texts);

@@ -194,7 +194,7 @@ describe("splitGuideText", () => {
   it("refuses guides with no blank line between them at the first tag either guide may own", () => {
     const input = bundledTexts().join("");
     expect(() => splitGuideText(input)).toThrow(
-      "Line 10159 (#xprate <1.5) can belong to the guide above it or to the next guide. Add a blank line where the guide above ends, or import the Lua file.",
+      "Line 10169 (#xprate <1.5) can belong to the guide above it or to the next guide. Add a blank line where the guide above ends, or import the Lua file.",
     );
   });
 

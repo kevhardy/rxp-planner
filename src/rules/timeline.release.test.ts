@@ -48,12 +48,12 @@ describe("starting flight paths", () => {
 
   it("flies the Windshaper guide's .fly Orgrimmar with no .fp before it", async () => {
     const result = await timeline("Windshaper", "9-13 Zephras Isle", 1);
-    const step = result.steps.find((s) => s.step === 350);
+    const step = result.steps.find((s) => s.step === 377);
     expect(step?.activities.map((a) => a.kind)).toEqual(["travel", "interact", "flight", "update"]);
     expect(result.warnings.filter((w) => w.message.startsWith(".fly Orgrimmar "))).toEqual([]);
     expect(
       result.steps
-        .find((s) => s.step === 347)!
+        .find((s) => s.step === 374)!
         .activities.filter((a) => (a.kind === "travel" || a.kind === "flight") && a.target.kind === "flight"),
     ).toEqual([]);
   });

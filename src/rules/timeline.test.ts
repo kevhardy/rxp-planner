@@ -787,8 +787,8 @@ describe("priceRoute", () => {
         next.activities[0]!.kind === "travel" && next.activities[0]!.from,
       ];
     };
-    expect(await play({})).toEqual([50, 30, "Talk to Durnan Furcutter", healer]);
-    expect(await play({ ignoreDeathskip: true })).toEqual([50, 0, "Talk to Durnan Furcutter", loc(30.489, 80.165)]);
+    expect(await play({})).toEqual([51, 30, "Talk to Durnan Furcutter", healer]);
+    expect(await play({ ignoreDeathskip: true })).toEqual([51, 0, "Talk to Durnan Furcutter", loc(300.5, 6509.17)]);
   });
 
   it("prices one simulation with the travel's ways, from where each leg starts", async () => {

@@ -18,26 +18,22 @@ const guides = files.flatMap((file) => extractGuides(readFileSync(join(dir, file
 const normalize = (text: string) => text.replace(/\r\n?/g, "\n");
 
 describe("bundled Forever guides", () => {
-  it("extracts all 83 RegisterGuide texts", () => {
-    expect(guides).toHaveLength(83);
+  it("extracts all 80 RegisterGuide texts", () => {
+    expect(guides).toHaveLength(80);
   });
 
-  it("extracts all steps in v4.11.26", () => {
+  it("extracts all steps in v4.11.30", () => {
     const steps = guides.reduce((n, g) => n + parseGuide(g.text).steps.length, 0);
-    expect(steps).toBe(8459);
+    expect(steps).toBe(8586);
   });
 
   it.each(guides.map((g) => [`${g.file}:${g.line}`, g.text] as const))("%s round-trips", (_, text) => {
     expect(serializeGuide(parseGuide(text))).toBe(text);
   });
 
-  it("reads a level range from every bundled #name but three", () => {
+  it("reads a level range from every bundled #name", () => {
     const metas = guides.map((g, i) => guideMeta({ id: `g${i}`, text: g.text, order: i }));
-    expect(metas.filter((m) => m.name && !m.range).map((m) => m.name)).toEqual([
-      "Skyborne Hunter Class Quests",
-      "Skyborne Druid Class Quests",
-      "Random Stuff",
-    ]);
+    expect(metas.filter((m) => m.name && !m.range).map((m) => m.name)).toEqual([]);
   });
 
   it("formats every line so it parses back to the same model", () => {
@@ -68,9 +64,8 @@ describe("bundled Forever guides", () => {
       check(doc.header, "header");
       for (const step of doc.steps) check(step.body, "step");
     }
-    // RXP's `.goto` handler in functions.lua ignores the sixth argument. `addon.ProcessGuideTable` in GuideWindow.lua
-    // expands #include in a step or a header; the planner preserves it but still
-    // warns that it is unsupported.
-    expect([...missing]).toEqual([".goto 1421/0,1609.1399,798.6667,50,0,0", "step #include", "header #include"]);
+    // `addon.ProcessGuideTable` in GuideWindow.lua expands #include in a step; the planner preserves it but still
+    // warns that it is unsupported. RXP's `.goto` handler in functions.lua ignores the sixth argument.
+    expect([...missing]).toEqual(["step #include", ".goto 1421/0,1609.1399,798.6667,50,0,0"]);
   });
 });
