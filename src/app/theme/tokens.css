@@ -19,9 +19,10 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* A vector guide icon is a pale fill in a thin dark outline, which a pale
-     page washes out. Two half-pixel shadows give it a crisp rim, where one
-     1px shadow blurs into a halo. */
-  --ring-guide-icon: drop-shadow(0 0 0.5px var(--text)) drop-shadow(0 0 0.5px var(--text));
+     page washes out. A half-pixel rim in the 3:1 border color holds its edge
+     at the weight of the line icons beside it, where a rim in --text reads
+     heavier. */
+  --ring-guide-icon: drop-shadow(0 0 0.5px var(--control-border));
 
   --selection: #d4e4f9;
   --press: #d7e1ed;
@@ -98,10 +99,11 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* A pale fill holds its own edge on a dark page, where any pale rim reads
-     as a second outline. Dimming keeps a white fill, such as the speech
-     bubble, quieter than the text beside it. */
-  --ring-guide-icon: brightness(0.92);
+  /* Dimming keeps a white fill, such as the speech bubble, quieter than the
+     text beside it. A rim in the darkest surface gives a dark icon, such as
+     the book, an edge, where a pale rim reads as a second outline. Two
+     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
+  --ring-guide-icon: brightness(0.8) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
 
   --selection: #233a54;
   --press: #1e2c3f;
