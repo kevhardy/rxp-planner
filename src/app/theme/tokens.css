@@ -212,7 +212,12 @@
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
-  --ring-pressed: inset 0 0 0 1px var(--accent);
+  /* A wash over the element's own fill, so a pressed toggle reads as on
+     against whatever surface it sits on. */
+  --pressed-wash: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* The second shadow is the wash: a spread wider than any control fills the
+     whole padding box. */
+  --ring-pressed: inset 0 0 0 1px var(--accent), inset 0 0 0 100vmax var(--pressed-wash);
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
 

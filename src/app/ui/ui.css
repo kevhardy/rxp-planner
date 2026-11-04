@@ -132,36 +132,33 @@
   background: var(--press) !important;
 }
 
-.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"] {
-  border-color: transparent !important;
-  border-end-start-radius: 0 !important;
-  border-end-end-radius: 0 !important;
-  box-shadow: var(--ink-bar-open) !important;
-  color: var(--text) !important;
-}
-
-.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"]:where(
-    :not(:active)
+/* A pressed toggle and an open trigger share one look, apart from the
+   selection fill and coral bar of the current mode. Accent text falls under
+   4.5:1 on the dark top bar, so only the icon takes the accent. The inset ring
+   doubles the border, which a secondary toggle already draws in
+   --control-border when off. */
+.ui-button:is([aria-pressed="true"], [data-popover][aria-expanded="true"]):not(
+    :disabled,
+    [aria-disabled="true"],
+    [data-icon-shows-pressed]
   ) {
-  background: var(--selection) !important;
-}
-
-.ui-button[aria-expanded="true"]:where([data-popover]):active {
-  background: var(--press) !important;
-}
-
-/* A pressed toggle has no fill, so it reads as on without the selection fill
-   of the current mode. Accent text falls under 4.5:1 on the dark top bar, so
-   only the icon takes the accent. The inset ring doubles the border, which a
-   secondary toggle already draws in --control-border when off. */
-.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) {
   border-color: var(--accent) !important;
   box-shadow: var(--ring-pressed) !important;
   color: var(--text) !important;
 }
 
-.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) svg {
+.ui-button:is([aria-pressed="true"], [data-popover][aria-expanded="true"]):not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed])
+  svg {
   color: var(--accent);
+}
+
+/* The accent fill would hide the accent ring and icon. */
+.ui-button[data-variant="primary"][data-popover][aria-expanded="true"]:where(:not(:active)) {
+  background: var(--raised) !important;
+}
+
+.ui-button[aria-expanded="true"]:where([data-popover]):active {
+  background: var(--press) !important;
 }
 
 .ui-button[data-variant="danger"] {

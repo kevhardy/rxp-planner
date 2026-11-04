@@ -550,29 +550,22 @@ describe("top bar", () => {
     expect(document.activeElement).toBe(button);
   });
 
-  it("shows the open-trigger look on Preview as and Warnings while the popover each one opened is open", async () => {
+  it("draws the open Library, Preview as, and Warnings as pressed toggles, apart from the current mode", async () => {
     await twoGuides();
     const { user } = await mount();
+    const look = (button: HTMLElement) => [
+      button.getAttribute("aria-expanded") ?? button.getAttribute("aria-pressed"),
+      cascade(button, "border-color")?.value,
+      cascade(button, "box-shadow")?.value,
+    ];
     const looks = [];
-    for (const name of [/^Preview as /, /^Warnings/]) {
+    for (const name of [/^Preview as /, /^Warnings/, /^Library$/]) {
       const trigger = screen.getByRole("button", { name });
       await user.click(trigger);
-      looks.push([trigger.getAttribute("aria-expanded"), cascade(trigger, "background")?.value, cascade(trigger, "box-shadow")?.value]);
+      looks.push(look(trigger));
     }
-    expect(looks).toEqual(Array(2).fill(["true", "var(--selection)", "var(--ink-bar-open)"]));
-  });
-
-  it("draws the open Library as a pressed toggle with no underline, which only the current mode carries", async () => {
-    await twoGuides();
-    const { user } = await mount();
-    const library = screen.getByRole("button", { name: "Library" });
-    await user.click(library);
-    expect([
-      library.getAttribute("aria-expanded"),
-      cascade(library, "background")?.value,
-      cascade(library, "border-color")?.value,
-      cascade(library, "box-shadow")?.value,
-    ]).toEqual(["true", "none", "var(--accent)", "var(--ring-pressed)"]);
+    expect(looks).toEqual(Array(3).fill(["true", "var(--accent)", "var(--ring-pressed)"]));
+    expect(look(screen.getByRole("button", { name: "Edit" }))).not.toEqual(looks[0]);
   });
 
   it("closes the Preview as popover on the first Escape and the library drawer on the second", async () => {

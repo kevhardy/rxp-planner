@@ -827,8 +827,8 @@ label {
   stroke: var(--control-border);
 }
 
-/* Library opens a pane, not a popover, so it reads as a pressed toggle and
-   leaves the underline to the current mode. */
+/* Library opens a pane, not a popover, so it is not a popover trigger and
+   takes the pressed look here. */
 .library-toggle[aria-expanded="true"] {
   border-color: var(--accent);
   box-shadow: var(--ring-pressed);
