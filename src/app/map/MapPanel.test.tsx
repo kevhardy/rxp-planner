@@ -1252,7 +1252,7 @@ describe("terrain", () => {
         if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 600 });
         if (this.matches(".map-legend")) return DOMRect.fromRect({ y: 60, width: 280, height: 448 });
         if (this.matches(".legend-body")) return DOMRect.fromRect({ y: 100, width: 280, height: 400 });
-        if (this.matches(".legend-heading")) return DOMRect.fromRect({ y: 100, width: 280, height: 600 - 100 - 8 });
+        if (this.matches(".legend-step")) return DOMRect.fromRect({ y: 100, width: 280, height: 600 - 100 - 8 });
         return DOMRect.fromRect({ y: 100, width: 280, height: 600 - 100 - 7 });
       });
       const scrollHeight = vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
@@ -1320,6 +1320,43 @@ describe("terrain", () => {
       act(() => resized.forEach((fit) => fit()));
       expect(body.style.maxHeight).toBe("492px");
       expect(body.hasAttribute("data-clipped")).toBe(false);
+    });
+
+    it("ends a clipped body above a heading whose first row does not fit", async () => {
+      const resized: (() => void)[] = [];
+      vi.stubGlobal(
+        "ResizeObserver",
+        class {
+          private readonly callback: () => void;
+          constructor(callback: () => void) {
+            this.callback = callback;
+          }
+          observe() {
+            resized.push(this.callback);
+          }
+          disconnect() {}
+        },
+      );
+      onTestFinished(() => {
+        vi.unstubAllGlobals();
+      });
+      await mountGuide({ map: { legendOpen: true } });
+      const body = legend().querySelector<HTMLElement>(".legend-body")!;
+      const lines = [...body.querySelectorAll(".legend-heading, .legend-row, .legend-step, .legend-filter")];
+      const quests = lines.indexOf(screen.getByRole("heading", { name: "Quests" }).parentElement!);
+      vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+        if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 108 + 30 * (quests + 1) + 10 });
+        if (this.matches(".map-legend")) return DOMRect.fromRect({ y: 60, width: 280, height: 448 });
+        if (this === body) return DOMRect.fromRect({ y: 100, width: 280, height: 400 });
+        const line = lines.indexOf(this);
+        if (line >= 0) return DOMRect.fromRect({ y: 100 + 30 * line, width: 280, height: 30 });
+        return DOMRect.fromRect({ y: 100, width: 280, height: 0 });
+      });
+      vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
+      vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
+
+      act(() => resized.forEach((fit) => fit()));
+      expect(body.style.maxHeight).toBe(`${30 * quests}px`);
     });
   });
 });
