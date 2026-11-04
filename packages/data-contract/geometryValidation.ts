@@ -56,7 +56,7 @@ export function validateWorldMapData(input: unknown): asserts input is WorldMapD
         a.cropLeft < a.width &&
         a.originCol < 64 &&
         a.originRow < 64,
-      `area ${a.key}`,
+      `area ${String(a.key)}`,
     );
     requireValid(Object.keys(a.tiles).length === input.nativeZoom - input.minZoom + 1, `area ${a.key} zoom coverage`);
     for (let zoom = input.minZoom; zoom <= input.nativeZoom; zoom++) {
@@ -97,7 +97,7 @@ export function validateWorldMapData(input: unknown): asserts input is WorldMapD
         labelMinZoom: optional(finite),
         labelLayer: optional(name),
       }),
-      `category ${c.key}`,
+      `category ${String(c.key)}`,
     );
   const position = { area: oneOf(...WORLD_MAP_AREAS), x: finite, y: finite };
   const side = oneOf(0, 1, 2);
