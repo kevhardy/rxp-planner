@@ -39,7 +39,7 @@
   inset: 0;
   overflow: hidden;
   container-type: size;
-  background: var(--art-backdrop);
+  background: var(--map-backdrop);
   cursor: crosshair;
   touch-action: none;
 }

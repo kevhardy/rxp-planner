@@ -10,6 +10,7 @@
   --control-border: #6d7a8b;
   --text: #17202b;
   --muted: #4c5868;
+  --map-backdrop: #2e3844;
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -88,6 +89,7 @@
   --control-border: #74839a;
   --text: #e3e8ee;
   --muted: #aab6c5;
+  --map-backdrop: #11161c;
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -204,7 +206,6 @@
 }
 
 :root {
-  --art-backdrop: #07080a;
   --art-ink: #0b0f17;
   --art-paper: #fff;
   --map-label: #f3ecd8;
