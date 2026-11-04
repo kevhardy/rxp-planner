@@ -143,9 +143,12 @@
 }
 
 .ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) {
-  border-color: var(--text) !important;
-  background: var(--press) !important;
+  border-color: var(--accent) !important;
   color: var(--text) !important;
+}
+
+.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]):where(:not(:active)) {
+  background: var(--selection) !important;
 }
 
 .ui-button[data-variant="danger"] {
