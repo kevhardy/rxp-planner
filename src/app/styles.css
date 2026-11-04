@@ -2658,4 +2658,10 @@ legend {
 
 .warn-more {
   margin-left: calc(var(--warnings-indent) - var(--space-2));
+  text-decoration: underline var(--accent);
+  text-underline-offset: 3px;
+}
+
+.warn-more svg {
+  color: var(--accent);
 }
