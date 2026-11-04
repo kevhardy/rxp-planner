@@ -36,7 +36,7 @@
   display: grid;
   place-content: center;
   margin: 0;
-  background: var(--bg);
+  background: var(--map-empty);
   text-align: center;
   text-wrap: balance;
 }

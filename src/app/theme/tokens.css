@@ -17,6 +17,9 @@
   --text: #17202b;
   --muted: #4c5868;
   --map-backdrop: #2e3844;
+  /* Halfway to --surface, so an empty map does not draw the eye as the
+     darkest block on the page. */
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -106,6 +109,7 @@
   --text: #e3e8ee;
   --muted: #aab6c5;
   --map-backdrop: #11161c;
+  --map-empty: var(--bg);
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */

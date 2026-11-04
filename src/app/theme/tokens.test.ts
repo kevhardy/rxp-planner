@@ -19,6 +19,7 @@ const on = (fgs: string[], bgs: string[], min: number) => fgs.flatMap((fg) => bg
 const PAIRS: Pair[] = [
   ...on(["text", "muted"], ["topbar", "bg", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
   ["placeholder", "field", 4.5],
+  ...on(["text", "muted"], ["map-empty"], 4.5),
   ["text", "field", 4.5],
   ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
