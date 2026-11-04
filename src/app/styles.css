@@ -2606,6 +2606,12 @@ legend {
   --warnings-place-width: 100px;
 }
 
+/* On a raised card, the --pane-head of a docked pane reads as a sunken band. */
+.warnings .panel-head {
+  border-bottom-color: var(--raised-line);
+  background: var(--raised);
+}
+
 .warnings .panel-head h2 {
   margin-right: 0;
 }
