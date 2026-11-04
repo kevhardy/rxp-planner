@@ -5,6 +5,7 @@
 ::placeholder {
   color: var(--muted);
   font-family: var(--font-sans);
+  font-style: italic;
   opacity: 1;
 }
 
@@ -973,6 +974,8 @@ label {
 
 /* A disabled main half has no fill, so the live half drops its fill to match. */
 .split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
+  /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The border keeps the pair one button beside its disabled half. The chevron keeps its live color. */
+  border-color: var(--disabled-fg);
   background: none;
 }
 
@@ -1522,6 +1525,10 @@ label {
 .step-does .row-text,
 .step-notes .row-text {
   color: var(--text);
+}
+
+.step-does .row-text {
+  font-weight: var(--font-weight-medium);
 }
 
 .act-xp {
@@ -2231,8 +2238,8 @@ legend {
   gap: var(--space-1);
   min-width: 0;
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .outline-summary > .guide-icon {
@@ -2609,7 +2616,7 @@ legend {
 .warn-guide + .warn-guide {
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--raised-line);
 }
 
 .warn-kind + .warn-kind {
