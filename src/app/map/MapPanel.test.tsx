@@ -791,6 +791,27 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
+    it("groups the zone labels, zone borders, and landmark labels under Map labels, which shows or hides all three", async () => {
+      const { user } = await mountGuide();
+      const labels = within(legend()).getByRole("group", { name: "Map labels" });
+      expect(
+        within(labels)
+          .getAllByRole("button")
+          .map((b) => b.getAttribute("aria-label") ?? b.textContent),
+      ).toEqual(["Map labels", "Zone and capital labels, 1 in view", "Zone borders", "Landmark labels, 0 in view"]);
+      const eye = within(labels).getByRole("button", { name: "Map labels" });
+      expect(isPressed(eye)).toBe("mixed");
+      await user.click(eye);
+      expect([row("Zone and capital labels"), row("Zone borders"), row("Landmark labels")].map(isPressed)).toEqual([
+        "true",
+        "true",
+        "true",
+      ]);
+      await user.click(eye);
+      expect(isPressed(eye)).toBe("false");
+      expect((await saved()).categories).toMatchObject({ zones: false, "zone-borders": false, landmarks: false });
+    });
+
     it("sets previous steps to Shown from the Step display popover, and the Previous row names the choice", async () => {
       const { user } = await mount("#group T\n#name Two\nstep\n.goto Elwynn Forest,10,50\nstep\n.goto Elwynn Forest,20,50\n");
       const stepRows = () =>

@@ -1134,7 +1134,9 @@
 
 .legend-state {
   color: var(--muted);
+  font-size: var(--font-size-caption);
   font-style: italic;
+  line-height: var(--line-height-caption);
 }
 
 .legend-filter {
