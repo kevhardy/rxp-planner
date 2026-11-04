@@ -276,7 +276,8 @@ const SWATCHES: Partial<Record<CategoryId, string>> = {
   routes: "route-swatch",
 };
 
-const LEGEND_ROWS = ".legend-heading, .legend-row, .legend-step, .legend-filter, .legend-body > button";
+// A heading is no cut point, so a cut body never ends on a heading with no row under it.
+const LEGEND_ROWS = ".legend-row, .legend-step, .legend-filter, .legend-body > button";
 
 function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
   let available = 0;

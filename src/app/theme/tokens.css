@@ -117,7 +117,9 @@
   --control-border: #7e8da4;
   --text: #e3e8ee;
   --muted: #aab6c5;
-  --map-backdrop: #11161c;
+  /* A muted steel sea, so the world map does not read as a hole in the page.
+     Map labels keep 4.5:1 on it. */
+  --map-backdrop: #1b2633;
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
