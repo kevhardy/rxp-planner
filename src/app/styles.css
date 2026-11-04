@@ -974,6 +974,8 @@ label {
 
 /* A disabled main half has no fill, so the live half drops its fill to match. */
 .split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
+  /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The border keeps the pair one button beside its disabled half. The chevron keeps its live color. */
+  border-color: var(--disabled-fg);
   background: none;
 }
 
