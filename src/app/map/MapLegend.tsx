@@ -316,7 +316,7 @@ function LegendRow(props: {
       disabled={props.disabled}
       onClick={props.onToggle}
     >
-      <MapIconImage icon={props.icon} size={18} {...(props.iconClass && { className: props.iconClass })} />
+      <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
       <span className="legend-name">{name}</span>
       {count !== undefined && <span className="legend-count">{count}</span>}
       <Icon name={props.on ? "eye" : "eyeOff"} />
@@ -373,7 +373,7 @@ function LegendFilter(props: { name: string; icon?: string; description: string;
         disabled={props.disabled}
         onClick={props.onToggle}
       >
-        {props.icon && <MapIconImage icon={props.icon} size={18} className="dim" />}
+        {props.icon && <MapIconImage icon={props.icon} size={16} className="dim" />}
         <span className="legend-name">{props.name}</span>
         <Icon name={props.on ? "eye" : "eyeOff"} />
       </ItemButton>

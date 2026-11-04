@@ -238,7 +238,7 @@ function WarningItem(props: { route: RouteView; guide: number; warning: Warning;
             </span>
           )}
         </span>{" "}
-        <span>
+        <span className="warn-message">
           <GuideText parts={props.text} links="plain" />
         </span>
       </ItemButton>
