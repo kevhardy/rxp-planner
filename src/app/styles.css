@@ -1309,7 +1309,7 @@ label {
   width: 24px;
   height: 24px;
   border: 0;
-  color: var(--text);
+  color: var(--muted);
   font-size: var(--font-size-micro);
   line-height: var(--line-height-micro);
   font-weight: var(--font-weight-bold);
@@ -1324,7 +1324,7 @@ label {
 
 .sim-ring circle {
   fill: none;
-  stroke-width: 3;
+  stroke-width: 2.5;
 }
 
 /* Below 1.5px, antialiasing at 1x pales the track under 3:1. */

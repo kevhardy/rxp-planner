@@ -671,8 +671,8 @@ function XpRing(props: { step: Step; before: SimState; snapshot: StepSnapshot; n
           onClick={(e) => e.stopPropagation()}
         >
           <svg className="sim-arcs" viewBox="0 0 24 24">
-            <circle className="track" cx="12" cy="12" r="10.5" />
-            {xp.dinged && <circle className="fill" cx="12" cy="12" r="7.5" />}
+            <circle className="track" cx="12" cy="12" r="9" />
+            {xp.dinged && <circle className="fill" cx="12" cy="12" r="7" />}
             {arcs.map(
               ([kind, from, length]) =>
                 length > 0 && (
@@ -681,7 +681,7 @@ function XpRing(props: { step: Step; before: SimState; snapshot: StepSnapshot; n
                     className={kind}
                     cx="12"
                     cy="12"
-                    r="10.5"
+                    r="9"
                     pathLength={100}
                     strokeDasharray={`${length * 100} 100`}
                     strokeDashoffset={-from * 100}
