@@ -250,6 +250,12 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(distance(chosen!, focused!)).toBeGreaterThanOrEqual(0.08);
   });
 
+  // The ring sits inside a selected row, so in the bar's color its top and bottom edges read as more selection.
+  it("keeps the focus ring apart from the selection bar", () => {
+    const [ring, bar] = ["--focus-ring", "--ink-bar-start"].map((name) => paints(theme, tokens.light.get(name)!)[0]!);
+    expect(distance(ring!, bar!)).toBeGreaterThanOrEqual(0.08);
+  });
+
   // CSS Color 4 takes an OKLab distance of 0.02 as just noticeable, and four times that keeps two marks apart.
   it.each(
     OBJECTIVES.flatMap((objective, i) =>
