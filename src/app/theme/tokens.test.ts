@@ -42,6 +42,7 @@ const PAIRS: Pair[] = [
     ["surface", "selection", "press"],
     4.5,
   ),
+  ...on(["rxp-buy-swatch"], ["surface", "hover", "press"], 3),
   ...on(OBJECTIVES, ["surface", "raised", "selection", "map-terrain"], 3),
   ...OBJECTIVES.map((objective): Pair => [objective, "objective-tint", 3, { objective: `var(--${objective})` }]),
   ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming"], ["map-terrain"], 3),
@@ -316,14 +317,15 @@ it("paints the colored text and the swatch with the RXP token", () => {
   expect(painted).toEqual({ ".rxp-swatch-color background": "var(--rxp)", ".rxp-colored color": "var(--rxp)" });
 });
 
-it("maps each RXP text color to its token in the colored text and the swatch", () => {
+it("maps each RXP text color to its token in the colored text and the swatch, with a brighter Buy swatch", () => {
   const mapped: Record<string, string> = {};
   styles.walkRules(/\[data-color=/, (rule) => rule.walkDecls("--rxp", (decl) => void (mapped[rule.selector] = decl.value)));
-  expect(mapped).toEqual(
-    Object.fromEntries(
+  expect(mapped).toEqual({
+    ...Object.fromEntries(
       RXP_COLORS.map(({ color }) => [`:is(.rxp-colored, .rxp-swatch-color)[data-color="${color}"]`, `var(--rxp-${color.toLowerCase()})`]),
     ),
-  );
+    '.rxp-swatch-color[data-color="BUY"]': "var(--rxp-buy-swatch)",
+  });
 });
 
 describe("the map's pins", () => {

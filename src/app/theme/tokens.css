@@ -76,6 +76,8 @@
   --rxp-warn: #825800;
   --rxp-buy: #334c00;
   --rxp-pick: #a3218f;
+  /* Text needs the dark BUY above, which reads as black in an 8px dot. */
+  --rxp-buy-swatch: #5a8a00;
 
   --elevation-1: 0 0 0 1px rgb(23 32 43 / 0.14), 0 1px 2px rgb(23 32 43 / 0.12);
   --elevation-2: 0 0 0 1px rgb(23 32 43 / 0.12), 0 12px 30px -8px rgb(23 32 43 / 0.3);
@@ -167,6 +169,7 @@
   --rxp-warn: #e5b53c;
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
+  --rxp-buy-swatch: var(--rxp-buy);
 
   /* A light rim outlines a float on a dark page, where a shadow does not show. */
   --elevation-1: 0 0 0 1px #46536a, 0 1px 2px rgb(8 11 16 / 0.5);
