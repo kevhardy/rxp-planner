@@ -1944,6 +1944,10 @@ label {
   color: var(--rxp);
 }
 
+.rxp-colored a {
+  color: inherit;
+}
+
 .rxp-chip {
   /* Not an inline block, which lets Chromium place the caret inside the non-editable label. */
   display: inline;
