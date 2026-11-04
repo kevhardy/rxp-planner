@@ -1591,8 +1591,8 @@ label {
 .step-footer {
   margin-top: 1px;
   color: var(--label);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .foot-text {
@@ -1635,9 +1635,9 @@ label {
 .step-note,
 .step-skip {
   overflow: hidden;
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1659,10 +1659,6 @@ label {
   padding: 0 var(--space-1);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
-}
-
-.step-skip {
-  color: var(--muted);
 }
 
 .header-row .step-skip {
