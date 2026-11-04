@@ -1,5 +1,5 @@
 import {
-  FLIGHT_MASTER_REACH,
+  FLIGHT_MASTER_REACH_YARDS,
   nearest,
   npcSpawns,
   within,
@@ -546,7 +546,7 @@ async function price(act: Act, keyframe: SimState, fold: SimState, clock: Clock,
       if (!flight) {
         const why =
           target.from === undefined
-            ? `with no ${clock.profile.faction} flight master within ${FLIGHT_MASTER_REACH} yd`
+            ? `with no ${clock.profile.faction} flight master within ${FLIGHT_MASTER_REACH_YARDS} yd`
             : known
               ? `with no known flight to ${node.name}`
               : `before .fp ${node.name}`;

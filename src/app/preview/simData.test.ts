@@ -33,19 +33,19 @@ describe("simData", () => {
       terrain: { ...worldMap, pois: [poi(0, 900, -6200), poi(1, 700, -6200), poi(0, 600, -6200), poi(0, 700, -6200, "innkeeper")] },
     });
     const sim = simData(game, entities, "Alliance");
-    expect(sim.spiritHealer?.({ instance: 0, x: 700, y: -6200 })).toEqual({
+    expect(sim.nearestSpiritHealer?.({ instance: 0, x: 700, y: -6200 })).toEqual({
       instance: 0,
       x: expect.closeTo(600, 6),
       y: expect.closeTo(-6200, 6),
       uiMapId: 1426,
     });
-    expect(sim.spiritHealer?.({ instance: 1, x: 700, y: -6200 })).toMatchObject({
+    expect(sim.nearestSpiritHealer?.({ instance: 1, x: 700, y: -6200 })).toMatchObject({
       instance: 1,
       x: expect.closeTo(700, 6),
       y: expect.closeTo(-6200, 6),
     });
-    expect(sim.spiritHealer?.({ instance: 33, x: 700, y: -6200 })).toBeUndefined();
-    expect(sim.spiritHealer?.({ instance: 0, x: -Infinity, y: -Infinity })).toBeUndefined();
+    expect(sim.nearestSpiritHealer?.({ instance: 33, x: 700, y: -6200 })).toBeUndefined();
+    expect(sim.nearestSpiritHealer?.({ instance: 0, x: -Infinity, y: -Infinity })).toBeUndefined();
   });
 
   it("gives the first of two graveyards at the same distance", () => {
@@ -61,7 +61,7 @@ describe("simData", () => {
       y: center.y,
     });
     const healer = (...dxs: number[]) =>
-      new GameData(plannerFile(), { ...plannerContext, terrain: { ...worldMap, pois: dxs.map(poi) } }).spiritHealer({
+      new GameData(plannerFile(), { ...plannerContext, terrain: { ...worldMap, pois: dxs.map(poi) } }).nearestSpiritHealer({
         instance: 0,
         x: 0,
         y: -6200,

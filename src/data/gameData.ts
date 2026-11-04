@@ -229,7 +229,7 @@ export class GameData {
     return { ...map, ...terrainGeometry(this.#dataset.terrain) };
   }
 
-  spiritHealer(from: WorldLocation): WorldLocation | undefined {
+  nearestSpiritHealer(from: WorldLocation): WorldLocation | undefined {
     const terrain = this.#dataset.terrain;
     const graveyards = (terrain.pois ?? []).flatMap((poi) => {
       if (poi.category !== "graveyard") return [];

@@ -20,7 +20,7 @@ export interface FlightMatch {
  */
 const RXP_NAMES: Readonly<Record<number, string>> = { 49: "Nighthaven, Moonglade", 69: "Nighthaven, Moonglade" };
 
-export const FLIGHT_MASTER_REACH = 60;
+export const FLIGHT_MASTER_REACH_YARDS = 60;
 
 export class FlightNodes {
   readonly #nodes: readonly FlightNode[];
@@ -60,7 +60,7 @@ export class FlightNodes {
 
   at(at: WorldLocation, faction: Faction): FlightNode | undefined {
     return this.#nodes
-      .filter((node) => (!node.faction || node.faction === faction) && within(node.at, at, FLIGHT_MASTER_REACH))
+      .filter((node) => (!node.faction || node.faction === faction) && within(node.at, at, FLIGHT_MASTER_REACH_YARDS))
       .reduce<FlightNode | undefined>((best, node) => (!best || yards(node.at, at) < yards(best.at, at) ? node : best), undefined);
   }
 }
