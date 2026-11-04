@@ -282,7 +282,9 @@ label {
   width: 13px;
   height: 13px;
   margin: 1.5px;
-  stroke-width: 1.75;
+  /* Drawn 1.75px wide through the 13/16 scale, the weight of the 16px
+     interface icons such as the trash can. */
+  stroke-width: 2.15;
 }
 .mk-cast {
   --kind: var(--kind-train);
