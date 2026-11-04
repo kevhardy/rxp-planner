@@ -269,7 +269,9 @@
   background: var(--bar-wait);
 }
 
-.step-bar.bar-travel.estimate {
+.step-bar.bar-travel.estimate,
+.playback-mark,
+.estimate-swatch {
   /* stylelint-disable-next-line function-disallowed-list -- hatch: estimate */
   background: repeating-linear-gradient(-45deg, var(--bar-travel) 0 3px, transparent 3px 5px);
 }
@@ -392,7 +394,6 @@
 
 .playback-track {
   position: relative;
-  padding-bottom: var(--space-2);
 }
 
 /* `--played`, set on the track, is the played fraction, 0 to 1. The thumb's center travels from
@@ -466,25 +467,23 @@
   background: var(--disabled-fg);
 }
 
+/* The marks sit 2px under the 6px track, which is centered in the slider. */
 .playback-marks {
   position: absolute;
+  top: calc(var(--control-small) / 2 + 3px + 2px);
   right: 0;
-  bottom: 0;
   left: 0;
-  height: 3px;
+  height: 6px;
   pointer-events: none;
-}
-
-.playback-mark,
-.estimate-swatch {
-  border-top: 2px dashed var(--control-border);
 }
 
 .playback-mark {
   position: absolute;
   left: var(--at-x);
-  width: var(--size-w);
+  box-sizing: border-box;
+  width: max(3px, var(--size-w));
   height: 100%;
+  border-top: 2px solid var(--bar-travel);
 }
 
 .playback-guide-mark {
@@ -591,7 +590,10 @@
 
 .estimate-swatch {
   flex: none;
+  box-sizing: border-box;
   width: 14px;
+  height: 6px;
+  border-top: 2px solid var(--bar-travel);
 }
 
 .character-marker {
