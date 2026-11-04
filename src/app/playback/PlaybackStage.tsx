@@ -163,6 +163,7 @@ export function PlaybackStage() {
         {map?.controls}
         <Button
           variant="ghost"
+          size={28}
           pressed={follow.on}
           onClick={() => {
             const at = here.current;
