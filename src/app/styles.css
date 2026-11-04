@@ -1616,7 +1616,7 @@ label {
   padding: 0 var(--space-2);
   border-radius: var(--radius-control);
   background: var(--primary-bg);
-  color: var(--surface);
+  color: var(--primary-fg);
   font-size: var(--font-size-micro);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-micro);

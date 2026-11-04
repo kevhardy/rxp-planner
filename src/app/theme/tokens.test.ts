@@ -217,6 +217,11 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(contrast(color(theme, token(own.color)), color(theme, token(own.background)))).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("puts the level badge's text at 4.5:1 or more on its fill", () => {
+    const own = written(".level-mark", [styles]);
+    expect(contrast(color(theme, token(own.color)), color(theme, token(own.background)))).toBeGreaterThanOrEqual(4.5);
+  });
+
   it("puts the warnings count at 4.5:1 or more on the top bar", () => {
     const [count, bar] = [written(".warnings-total.warn", [styles]).color, written(".topbar", [styles]).background];
     expect(contrast(color(theme, token(count)), color(theme, token(bar)))).toBeGreaterThanOrEqual(4.5);
