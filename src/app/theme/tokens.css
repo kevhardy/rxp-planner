@@ -111,7 +111,7 @@
   --text: #e3e8ee;
   --muted: #aab6c5;
   --map-backdrop: #11161c;
-  --map-empty: var(--bg);
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
