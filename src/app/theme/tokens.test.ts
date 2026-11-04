@@ -223,7 +223,7 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   });
 
   it("colors the warnings count in the Warnings panel like the one in the top bar", () => {
-    expect(written(".warnings .panel-head .count.warn", [styles]).color).toBe(written(".warnings-total.warn", [styles]).color);
+    expect(written(".count.warn", [styles]).color).toBe(written(".warnings-total.warn", [styles]).color);
   });
 
   it("draws the chosen leg's halo or its ink edge at 3:1 or more on any terrain", () => {

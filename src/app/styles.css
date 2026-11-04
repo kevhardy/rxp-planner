@@ -124,7 +124,7 @@ a {
 }
 
 .count.warn {
-  color: var(--warn);
+  color: var(--pop-ink);
 }
 
 .count:empty {
@@ -2553,10 +2553,6 @@ legend {
 
 .warnings .panel-head h2 {
   margin-right: 0;
-}
-
-.warnings .panel-head .count.warn {
-  color: var(--pop-ink);
 }
 
 .warnings-body {
