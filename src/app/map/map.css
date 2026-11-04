@@ -102,7 +102,11 @@
   white-space: nowrap;
 }
 
+/* Place names draw over unmarked markers. Selected pins, marked points, and
+   hovered or focused marks come later in the overlay at z-index 1 or more, so
+   they still draw over the names. */
 .map-overlay .place {
+  z-index: 1;
   top: var(--at-y);
   left: var(--at-x);
   translate: -50% -50%;
