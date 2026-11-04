@@ -174,7 +174,7 @@
   --ink-bar-bottom: inset 0 -2px 0 var(--pop);
   --ink-bar-open: inset 0 -2px 0 var(--accent);
 
-  --focus-ring: 2px solid var(--pop);
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --focus-offset-inside: -4px;
   --ring-focus-gap: inset 0 0 0 6px var(--surface);
