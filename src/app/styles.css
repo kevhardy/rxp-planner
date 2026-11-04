@@ -2594,7 +2594,7 @@ legend {
 }
 
 .warnings-body {
-  padding: var(--space-1) var(--space-2) var(--space-3);
+  padding: var(--space-1) var(--space-2) var(--space-4);
 }
 
 .warnings summary {
@@ -2655,6 +2655,10 @@ legend {
 .warn-place,
 .warn-place > .muted {
   color: var(--label);
+}
+
+.warn-message {
+  text-wrap: pretty;
 }
 
 .warn-place {
