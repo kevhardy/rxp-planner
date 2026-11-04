@@ -18,6 +18,7 @@ import { usePendingAction } from "./effects.ts";
 import { DraftScope, useDraft } from "./fields.tsx";
 import { CopyTextButton, GuideSource } from "./GuideSource.tsx";
 import { GuideText } from "./GuideText.tsx";
+import { Icon } from "./icons.tsx";
 import { EDITOR_TABS, useEditorPanel, useLayout, useLayoutStore, type DockTab, type EditorNavigation } from "./layout.ts";
 import { AddLineMenu, LineEditor, LineTitle } from "./LineFields.tsx";
 import { objectiveColor, stepObjectives, type StepObjective } from "./map/points.ts";
@@ -161,7 +162,7 @@ export function OpenEditorButton() {
   };
   return (
     <Button id={OPEN_EDITOR_ID} variant="ghost" onClick={open}>
-      Open editor
+      <Icon name="pen" /> Open editor
     </Button>
   );
 }
