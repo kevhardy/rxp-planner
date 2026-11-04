@@ -125,6 +125,8 @@
 .chain-card-zone {
   overflow: hidden;
   color: var(--muted);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
