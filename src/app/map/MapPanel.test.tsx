@@ -819,14 +819,17 @@ describe("terrain", () => {
       expect(reached).toEqual(["Step display", "Guide points"]);
     });
 
-    it("shows a group eye's on state on its icon only, as the eyes of its rows do", async () => {
+    it("shows the on state of a group eye and a row eye on the icon only, with no fill", async () => {
       await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,10,50\n");
       const eye = within(legend()).getByRole("button", { name: "Guide points" });
+      const rowEye = row("Objective spawns");
       expect([
         eye.getAttribute("aria-pressed"),
+        rowEye.getAttribute("aria-pressed"),
         cascade(eye, "background")?.value,
         cascade(eye.querySelector("svg")!, "background")?.value,
-      ]).toEqual(["true", "none", "var(--press)"]);
+        cascade(rowEye.querySelector("svg:last-child")!, "background")?.value,
+      ]).toEqual(["true", "true", "none", undefined, undefined]);
     });
 
     it("closes the Step display popover from its close button and returns focus to the button", async () => {

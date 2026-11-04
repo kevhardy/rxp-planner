@@ -190,6 +190,7 @@ export function MapLegend(props: {
                 {questRow("quest-turn-in", "Turn-ins", "quest-turn-in", questCounts?.turnIns)}
                 <LegendFilter
                   name="All quests"
+                  icon="quest-giver"
                   description="Also show gray and not yet available quests, dimmed"
                   on={settings.allQuests}
                   disabled={!quests}
@@ -362,10 +363,17 @@ function StackRow(props: { kind: "two" | "more"; name: string }) {
   );
 }
 
-function LegendFilter(props: { name: string; description: string; on: boolean; disabled?: boolean; onToggle: () => void }) {
+/** `icon` draws the map icon, dimmed as the filter shows it, in the swatch column of rows with marks. */
+function LegendFilter(props: { name: string; icon?: string; description: string; on: boolean; disabled?: boolean; onToggle: () => void }) {
   return (
     <Described text={props.description}>
-      <ItemButton className="legend-filter" pressed={props.on} disabled={props.disabled} onClick={props.onToggle}>
+      <ItemButton
+        className={props.icon ? "legend-row" : "legend-filter"}
+        pressed={props.on}
+        disabled={props.disabled}
+        onClick={props.onToggle}
+      >
+        {props.icon && <MapIconImage icon={props.icon} size={18} className="dim" />}
         <span className="legend-name">{props.name}</span>
         <Icon name={props.on ? "eye" : "eyeOff"} />
       </ItemButton>
