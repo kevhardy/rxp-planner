@@ -163,6 +163,18 @@ function luminance(rgb: Rgb): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+/** CIE L*, from 0 for black to 100 for white. */
+function lightness(rgb: Rgb): number {
+  const y = luminance(rgb);
+  return y > 216 / 24389 ? 116 * Math.cbrt(y) - 16 : (y * 24389) / 27;
+}
+
+// The surface bands, lightest first. A light field is --raised, so it is no band of its own.
+const LADDER: Record<Theme, string[]> = {
+  light: ["raised", "topbar", "surface", "hover", "pane-head", "bg"],
+  dark: ["raised", "topbar", "pane-head", "hover", "surface", "field", "bg"],
+};
+
 function distance(a: Rgb, b: Rgb): number {
   const oklab = (rgb: Rgb) => {
     const [r, g, bl] = linear(rgb);
@@ -204,6 +216,11 @@ function onTerrain(colors: Rgb[]): number {
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);
+  });
+
+  // A CIELAB difference near 1 is just noticeable, so 1.5 keeps two neighboring bands apart.
+  it.each(LADDER[theme].slice(1).map((band, i) => [LADDER[theme][i]!, band]))("puts --%s 1.5 L* or more above --%s", (upper, lower) => {
+    expect(lightness(color(theme, upper)) - lightness(color(theme, lower))).toBeGreaterThanOrEqual(1.5);
   });
 
   it("outlines a missing guide icon in --control-border", () => {
@@ -367,6 +384,12 @@ describe("contrast", () => {
   it("matches the WCAG ratio of a known pair", () => {
     // #767676 is the lightest gray that reaches 4.5:1 on white, at 4.54:1.
     expect(contrast([118, 118, 118], [255, 255, 255])).toBeCloseTo(4.54, 2);
+  });
+});
+
+describe("lightness", () => {
+  it("puts black at 0, white at 100, and #777 at the middle", () => {
+    expect([0, 255, 119].map((v) => lightness([v, v, v]))).toEqual([0, expect.closeTo(100, 3), expect.closeTo(50, 0)]);
   });
 });
 
