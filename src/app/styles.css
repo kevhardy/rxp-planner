@@ -1881,7 +1881,7 @@ label {
   flex-basis: 100%;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--space-1);
+  gap: var(--space-1);
   margin-top: var(--space-1);
   margin-left: calc(-1 * var(--space-1));
 }
@@ -2682,6 +2682,12 @@ legend {
 
 .warnings-body {
   padding: var(--space-1) var(--space-2) var(--space-4);
+}
+
+/* The gap keeps the edge apart from the card's rim. */
+.warnings-body[data-clipped] {
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--raised-line);
 }
 
 .warnings summary {
