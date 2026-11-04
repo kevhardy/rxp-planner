@@ -16,7 +16,9 @@
   --control-border: #6d7a8b;
   --text: #17202b;
   --muted: #4c5868;
-  --map-backdrop: #2e3844;
+  /* A mid steel sea, so the map is not the darkest block on a light page.
+     Map labels keep 4.5:1 on it. */
+  --map-backdrop: #5b6b7d;
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
