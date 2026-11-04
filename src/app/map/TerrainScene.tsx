@@ -28,7 +28,7 @@ import {
   type PlacedPoi,
   type TerrainFeatures,
 } from "./terrain.ts";
-import { clearLabels, labelShows } from "./labels.ts";
+import { clearLabels, labelShows, pickLabels } from "./labels.ts";
 import { useMapView } from "./view.ts";
 import { canvasSize, mapCover } from "./viewport.ts";
 
@@ -152,9 +152,34 @@ export function TerrainMarkers(props: {
       width: labels.get(p)!.offsetWidth,
       height: labels.get(p)!.offsetHeight,
     });
+    const parts = (p: PlacedPlace) => {
+      const whole = box(p);
+      const rank = p.place.kind === "capital" ? 0 : 1;
+      const small = labels.get(p)!.querySelector("small");
+      if (!small) return { rank, name: whole };
+      const top = whole.y - whole.height / 2;
+      const nameHeight = whole.height - small.offsetHeight;
+      return {
+        rank,
+        name: { ...whole, y: top + nameHeight / 2, height: nameHeight },
+        levels: { x: whole.x, y: top + nameHeight + small.offsetHeight / 2, width: small.offsetWidth, height: small.offsetHeight },
+      };
+    };
     const zones = places.filter((p) => p.place.kind !== "landmark");
-    const moves = clearLabels(zones.map(box), places.filter((p) => p.place.kind === "landmark").map(box));
+    const zoneParts = zones.map(parts);
+    const picked = pickLabels(zoneParts);
+    const kept = zones.flatMap((p, i) => (picked[i]!.name ? [{ p, box: picked[i]!.levels ? box(p) : zoneParts[i]!.name }] : []));
+    const moves = clearLabels(
+      kept.map((z) => z.box),
+      places.filter((p) => p.place.kind === "landmark").map(box),
+    );
     zones.forEach((p, i) => {
+      const el = labels.get(p)!;
+      el.style.visibility = picked[i]!.name ? "" : "hidden";
+      const small = el.querySelector("small");
+      if (small) small.style.visibility = picked[i]!.levels ? "" : "hidden";
+    });
+    kept.forEach(({ p }, i) => {
       const { x, y } = moves[i]!;
       labels.get(p)!.style.translate = x || y ? `calc(${x}px - 50%) calc(${y}px - 50%)` : "";
     });

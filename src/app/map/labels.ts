@@ -21,6 +21,35 @@ export function clearLabels(movable: readonly LabelBox[], fixed: readonly LabelB
   });
 }
 
+export interface PlaceLabelBoxes {
+  /** A lower rank claims its space first. */
+  rank: number;
+  name: LabelBox;
+  levels?: LabelBox;
+}
+
+/**
+ * Draws every name, by rank, then every level range, each only where it covers no part already drawn. Within a rank, a
+ * name that covers fewer other names goes first, so that one crowded name does not hide several that fit.
+ */
+export function pickLabels(labels: readonly PlaceLabelBoxes[]): { name: boolean; levels: boolean }[] {
+  const crowd = labels.map((a) => labels.filter((b) => b !== a && covers(a.name, b.name)).length);
+  const order = labels.map((_, i) => i).sort((a, b) => labels[a]!.rank - labels[b]!.rank || crowd[a]! - crowd[b]!);
+  const drawn: LabelBox[] = [];
+  const claim = (box: LabelBox) => {
+    if (drawn.some((d) => covers(box, d))) return false;
+    drawn.push(box);
+    return true;
+  };
+  const picked = labels.map(() => ({ name: false, levels: false }));
+  for (const i of order) picked[i]!.name = claim(labels[i]!.name);
+  for (const i of order) {
+    const levels = labels[i]!.levels;
+    picked[i]!.levels = picked[i]!.name && levels !== undefined && claim(levels);
+  }
+  return picked;
+}
+
 const covers = (a: LabelBox, b: LabelBox) =>
   Math.abs(a.x - b.x) < (a.width + b.width) / 2 && Math.abs(a.y - b.y) < (a.height + b.height) / 2;
 
