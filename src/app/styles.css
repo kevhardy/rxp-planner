@@ -1044,6 +1044,10 @@ label {
   background: var(--selection);
 }
 
+.lib-row.current {
+  box-shadow: var(--ink-bar-start);
+}
+
 .lib-toggle,
 .lib-guide {
   display: flex;
@@ -2161,8 +2165,8 @@ label {
   margin-bottom: var(--space-2);
   padding: 0;
   color: var(--text);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
   font-weight: var(--font-weight-bold);
 }
 
@@ -2342,9 +2346,10 @@ legend {
   opacity: 1;
 }
 
+/* The start margin leaves room for the button's padding and border, so its text sits on the rows' 16px text edge. */
 .outline-add {
   display: block;
-  margin: var(--space-2) var(--space-3) 0;
+  margin: var(--space-2) var(--space-3) 0 calc(var(--space-4) - var(--space-2) - 1px);
 }
 
 .outline-gap .popover,
@@ -2594,7 +2599,7 @@ legend {
 }
 
 .warnings.popover {
-  width: min(600px, 100vw - 16px);
+  width: min(620px, 100vw - 16px);
   max-height: calc(100vh - 76px);
   padding: 0;
 }
@@ -2685,6 +2690,8 @@ legend {
 }
 
 .warn-message {
+  flex: 1;
+  min-width: 0;
   text-wrap: pretty;
 }
 

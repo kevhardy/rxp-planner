@@ -455,6 +455,11 @@
   stroke: var(--step-upcoming);
 }
 
+.map-overlay svg .casing {
+  stroke: var(--art-shade);
+  stroke-width: 4.5px;
+}
+
 .pin {
   display: grid;
   place-items: center;
@@ -559,6 +564,11 @@
 .pin-upcoming:hover:not(:disabled) {
   background: var(--step-upcoming);
   color: var(--art-ink);
+}
+
+/* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
+.pin-upcoming {
+  opacity: calc(0.5 + var(--fade, 1) * 0.5);
 }
 
 .pin-start,
@@ -938,9 +948,8 @@
 }
 
 .map-legend[open] > summary {
+  border-bottom: 1px solid var(--raised-line);
   border-radius: var(--radius-float) var(--radius-float) 0 0;
-  background: var(--selection);
-  box-shadow: var(--ink-bar-open);
 }
 
 .map-legend summary > svg {
@@ -1058,6 +1067,11 @@
   box-shadow: var(--ring-control);
 }
 
+/* Ship, zeppelin, and tram art is dark at its edge and would sink into a dark card. */
+.legend-group[data-layer="transport"] .map-icon:not(.route-swatch) {
+  outline: 1px solid var(--layer-swatch-border);
+}
+
 .legend-row .spawn-swatch {
   border-radius: var(--radius-control);
   /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
@@ -1108,11 +1122,13 @@
 
 .legend-count {
   color: var(--label);
-}
-
-.legend-count {
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+}
+
+.legend-state {
+  color: var(--muted);
+  font-style: italic;
 }
 
 .legend-filter {

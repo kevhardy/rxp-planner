@@ -213,7 +213,13 @@ export function MapLegend(props: {
             );
           if (ids.length === 1) return row(ids[0]!, layer.name);
           return (
-            <LegendGroup key={layer.id} name={layer.name} pressed={pressed} onToggle={() => store.setCategories(ids, on < ids.length)}>
+            <LegendGroup
+              key={layer.id}
+              layer={layer.id}
+              name={layer.name}
+              pressed={pressed}
+              onToggle={() => store.setCategories(ids, on < ids.length)}
+            >
               {ids.map((id) => categories.has(id) && row(id, categories.get(id)!.name))}
             </LegendGroup>
           );
@@ -270,6 +276,7 @@ function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available
 function LegendGroup(
   props: {
     name: string;
+    layer?: string;
     disabled?: boolean;
     action?: ReactNode;
     children: ReactNode;
@@ -277,7 +284,7 @@ function LegendGroup(
 ) {
   const id = useId();
   return (
-    <div role="group" aria-labelledby={id} className="legend-group">
+    <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
         <h3 id={id}>{props.name}</h3>
         {props.action}
@@ -336,7 +343,7 @@ function StepRow(props: { side: "previous" | "selected" | "upcoming" | "optional
     <div className="legend-step">
       <span className={`step-swatch ${props.side}`} aria-hidden="true" />
       <span className="legend-name">{props.name}</span>
-      {props.show && <span className="legend-count">{SHOW_NAMES[props.show]}</span>}
+      {props.show && <span className="legend-state">{SHOW_NAMES[props.show]}</span>}
       {props.show === "hidden" ? <Icon name="eyeOff" className="off" /> : <Icon name="eye" />}
     </div>
   );

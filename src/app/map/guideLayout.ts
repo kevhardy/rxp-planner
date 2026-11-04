@@ -141,7 +141,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
       if (stops.length > 0) last = look && stops.at(-1);
       if (!look) continue;
       const into = look.side === "selected" ? shapes : faintShapes;
-      const route = { className: `route ${look.side}`, fade: look.fade };
+      const route = { className: `route ${look.side}`, fade: look.fade, cased: true };
       if (loop && stops.length > 2) {
         if (from) into.push({ key: `link${i}`, points: [from, stops[0]!], closed: false, ...route });
         into.push({ key: `loop${i}`, points: stops, closed: true, ...route });

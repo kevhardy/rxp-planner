@@ -301,7 +301,7 @@ describe("map panel", () => {
         Number(p.style.getPropertyValue("--fade")),
       ]);
     const routes = () =>
-      [...mapArea().querySelectorAll("polyline.route")].map((l) => [
+      [...mapArea().querySelectorAll("polyline.route:not(.casing)")].map((l) => [
         l.getAttribute("class"),
         l.getAttribute("points"),
         Number(l.getAttribute("opacity")),
