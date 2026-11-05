@@ -27,6 +27,9 @@ const PAIRS: Pair[] = [
   ["raised-line", "raised", 1.5],
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],
+  ["map-legend-shown", "raised", 4.5],
+  // A shown legend row reads apart from a hidden one by its name's lightness alone.
+  ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],
   ...on(["float-edge"], ["raised", "bg", "guide-strip", "surface"], 1.3),
   ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),

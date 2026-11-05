@@ -1302,9 +1302,10 @@
   color: var(--muted);
 }
 
-.legend-row[aria-pressed="true"] svg,
-.legend-filter[aria-pressed="true"] svg {
-  color: var(--text);
+.legend-row[aria-pressed="true"] :is(.legend-name, svg),
+.legend-filter[aria-pressed="true"] :is(.legend-name, svg),
+.legend-step:not(.off) :is(.legend-name, svg) {
+  color: var(--map-legend-shown);
 }
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
@@ -1425,7 +1426,6 @@
   box-sizing: content-box;
   margin-right: -2px;
   padding: 2px;
-  color: var(--text);
 }
 
 .legend-step svg.off {
