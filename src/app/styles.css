@@ -302,6 +302,14 @@ label {
   background: none;
   color: var(--muted);
 }
+.mk-note > svg {
+  width: 20px;
+  height: 20px;
+  margin: -2px;
+  /* Drawn 1.5px wide through the 20/16 scale, so the lines keep the
+     stroke of the other shapes and span about the person's 11px. */
+  stroke-width: 1.2;
+}
 
 .app {
   --head-height: 41px;
@@ -1550,7 +1558,7 @@ label {
   overflow-wrap: anywhere;
 }
 
-.row-text .guide-icon {
+:is(.row-text, .playback-title-text) .guide-icon {
   vertical-align: -2px;
 }
 
@@ -2053,6 +2061,10 @@ label {
 
 .guide-icon.vector.vivid {
   filter: var(--ring-guide-icon-vivid);
+}
+
+.guide-icon.vector.deep {
+  filter: var(--ring-guide-icon-deep);
 }
 
 .guide-icon:not(.vector, .missing) {

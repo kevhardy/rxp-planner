@@ -176,7 +176,7 @@
 .playback-head {
   display: flex;
   align-items: baseline;
-  gap: var(--space-1);
+  gap: var(--space-2);
   min-width: 0;
 }
 
@@ -231,11 +231,9 @@
 }
 
 .playback-length {
-  display: flex;
+  position: relative;
   flex: none;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-1);
+  text-align: right;
   /* Two more ch hold the estimate mark, so a row with it keeps the same width. */
   min-width: calc((var(--length-chars) + 2) * 1ch);
   font-size: var(--font-size-body);
@@ -243,7 +241,12 @@
   white-space: nowrap;
 }
 
+/* The bars hang below the length, so the head is only as tall as the title
+   and the first action starts right under it. */
 .step-bars {
+  position: absolute;
+  top: 100%;
+  right: 0;
   display: flex;
   width: 40px;
   height: 3px;

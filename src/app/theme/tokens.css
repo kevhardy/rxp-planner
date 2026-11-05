@@ -40,6 +40,10 @@
   --ring-guide-icon: none;
   --ring-guide-icon-pale: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   --ring-guide-icon-vivid: var(--ring-guide-icon-pale);
+  /* Brightening lightens a deep icon's dark fills, such as the book and
+     the flag, so the icon weighs less on a light page and more on a dark
+     page. The colors stay full, where a lower opacity reads as disabled. */
+  --ring-guide-icon-deep: brightness(1.3);
   --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
@@ -145,16 +149,17 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* Dimming keeps a white fill, such as the speech bubble, quieter than the
-     text beside it. The same dimming turns yellow and red marks brown, so
-     colored icons keep their full color. A mid-tone rim gives a dark icon,
-     such as the book or a dark spell sprite, an edge on the dark surface,
-     where a pale rim reads as a second outline around a white fill. Two
-     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
+  /* Inverting a speech bubble turns its white fill dark and its dark
+     outline light, so it reads as an outline, as on a light page. Short of
+     a full invert, the outline stays below --text. A mid-tone rim gives a
+     dark icon, such as the book or a dark spell sprite, an edge on the dark
+     surface. Two half-pixel shadows stay crisp, where one 1px shadow blurs
+     into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  --ring-guide-icon-pale: brightness(0.8) var(--ring-guide-icon);
+  --ring-guide-icon-pale: invert(0.9);
   --ring-guide-icon-vivid: var(--ring-guide-icon);
+  --ring-guide-icon-deep: brightness(1.3) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
