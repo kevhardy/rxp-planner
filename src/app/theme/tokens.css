@@ -227,9 +227,12 @@
   --ring-guide-icon-pale: brightness(1.15) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
-     color, so a strong lift brings out its shape, and the contrast step
-     keeps its lifted fills apart, such as a book's cover and its panel. */
-  --ring-guide-icon-deep: brightness(2.1) contrast(1.1) var(--ring-guide-icon);
+     color, so a lift brings out its shape, and the contrast step keeps its
+     lifted fills apart, such as a book's cover and its panel. At 1.6 the
+     book's panel keeps the brown of its art, and the shape still stands off
+     the page. A greater lift clips the red channel first, so the flag turns
+     pink and the book tan. */
+  --ring-guide-icon-deep: brightness(1.6) contrast(1.1) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
