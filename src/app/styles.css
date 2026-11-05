@@ -2869,7 +2869,7 @@ legend {
   align-items: baseline;
   gap: var(--space-3);
   width: 100%;
-  padding: calc(var(--space-1) + 2px) var(--space-3) calc(var(--space-1) + 2px) var(--warnings-indent);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--warnings-indent);
 }
 
 .warn-item[aria-disabled] {
