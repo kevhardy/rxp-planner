@@ -20,6 +20,8 @@ const PAIRS: Pair[] = [
   ...on(["text", "muted"], ["topbar", "bg", "guide-strip", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
   // The guide name on the strip reads as well as the secondary text of the other bands.
   ["guide-strip-muted", "guide-strip", 5.5],
+  // A step's notes and footer.
+  ...on(["label"], ["surface", "hover", "selection", "press"], 4.5),
   ["placeholder", "field", 4.5],
   ...on(["text", "muted"], ["map-empty", "chain-card"], 4.5),
   ["text", "field", 4.5],
