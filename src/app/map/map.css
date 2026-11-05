@@ -636,15 +636,16 @@
 .pin {
   display: grid;
   place-items: center;
-  width: 16px;
+  min-width: 16px;
   height: 16px;
+  padding: 0 2px;
   border: 1.5px solid var(--art-ink);
   border-radius: var(--radius-round);
   translate: -50% -50%;
   background: var(--pin);
   color: var(--art-ink);
-  font-size: var(--font-size-mark);
-  line-height: var(--line-height-mark);
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-micro);
   font-weight: var(--font-weight-bold);
   font-family: var(--font-sans);
   opacity: var(--fade, 1);
@@ -820,7 +821,9 @@
 .pin-both:hover:not(:disabled) {
   display: flex;
   width: auto;
+  min-width: 0;
   height: auto;
+  padding: 0;
   border: 0;
   border-radius: var(--radius-round);
   background: none;
@@ -830,7 +833,9 @@
 .pin-objective,
 .pin-objective:hover:not(:disabled) {
   width: 12px;
+  min-width: 0;
   height: 12px;
+  padding: 0;
   border: 2px solid var(--art-ink);
   border-radius: var(--radius-control);
   rotate: 45deg;

@@ -7,7 +7,6 @@ import { ROOT, sourceFiles } from "./testing.ts";
 const ALLOWED: Record<string, string> = {};
 
 const MARKS: Record<string, string> = {
-  "src/app/map/map.css .pin": "A map pin is 16px and holds the step number.",
   "src/app/styles.css .sim-mark.killsLater": "The kills-later mark on the XP ring is 10px and holds a !.",
   "src/app/routing/routing.css .route-pin": "A route pin is 15px and holds the step number.",
   "src/app/routing/routing.css .map-overlay .ride-faction": "The faction badge on a ride's 12px icon holds one letter.",
