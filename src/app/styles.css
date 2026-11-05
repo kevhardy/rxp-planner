@@ -421,6 +421,10 @@ label {
   container-type: inline-size;
 }
 
+.editor-dock > .panel-head {
+  border-radius: var(--radius-float) var(--radius-float) 0 0;
+}
+
 .region-map {
   display: flex;
   flex-direction: column;
