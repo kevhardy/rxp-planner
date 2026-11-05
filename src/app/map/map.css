@@ -1314,6 +1314,7 @@
 .legend-filter[aria-pressed="true"] .legend-name,
 .legend-step:not(.off) .legend-name {
   color: var(--map-legend-shown);
+  font-weight: var(--font-weight-medium);
 }
 
 .legend-row[aria-pressed="true"] svg,
@@ -1379,6 +1380,21 @@
 
 .group-mark.poi-services::before {
   background: var(--map-legend-services-rim);
+}
+
+/* The ring reaches 4.5px past the box, so the mark spans 12px, as wide as the
+   dots of the other headings. */
+.group-mark.guide {
+  translate: 3.5px 3.5px;
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-round);
+  box-shadow: var(--art-selected-ring);
+}
+
+.group-mark.guide::before,
+.group-mark.guide::after {
+  content: none;
 }
 
 .legend-row .spawn-swatch {
