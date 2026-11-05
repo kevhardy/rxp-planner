@@ -2608,12 +2608,13 @@ legend {
 }
 
 /* Three to a row on the lines of the fields below, because the longest label,
-   "Not in Season of Mastery", wraps in one field. The negative margin takes
-   back the 2px that each Checkbox pads above and below its line, so the step
-   form's sections stay apart and "Add filter" still fits in the dock. */
+   "Not in Season of Mastery", wraps in one field. The negative top margin
+   takes back the 2px that each Checkbox pads above its line, so "Add filter"
+   still fits in the dock. The bottom margin puts Values as far below the last
+   check as Condition sits below the last value field. */
 .tag-checks {
   row-gap: 0;
-  margin-block: -2px;
+  margin-block: -2px var(--space-1);
 }
 
 .tag-checks > * {
