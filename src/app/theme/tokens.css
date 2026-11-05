@@ -366,7 +366,7 @@
   --skipped-tiles-line: color-mix(in srgb, var(--route-pending) 70%, transparent);
   --layer-swatch-border: color-mix(in srgb, var(--art-paper) 40%, transparent);
   --transport-line: color-mix(in srgb, var(--map-transport) 55%, transparent);
-  --map-transport-casing: color-mix(in srgb, var(--art-ink) 35%, transparent);
+  --map-transport-casing: color-mix(in srgb, var(--art-ink) 75%, transparent);
 
   --zone-border-line: color-mix(in srgb, var(--map-border) 75%, transparent);
   --zone-border-halo: color-mix(in srgb, var(--art-ink) 40%, transparent);

@@ -235,7 +235,9 @@ export function TerrainMarkers(props: {
           {features.routes.map((r, i) => (
             <g key={i}>
               <polyline className="transport-casing" points={r.points} />
+              <path className="transport-casing transport-end" d={r.ends} />
               <polyline className={`route-${r.vessel}`} points={r.points} />
+              <path className="transport-end" d={r.ends} />
             </g>
           ))}
         </svg>

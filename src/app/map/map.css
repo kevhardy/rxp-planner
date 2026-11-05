@@ -471,6 +471,20 @@
   stroke-dasharray: none;
 }
 
+/* A round dot at each end, so a route reads as one that stops at a dock. */
+.map-overlay svg.routes .transport-end {
+  fill: none;
+  stroke: var(--map-transport);
+  stroke-width: 4px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay svg.routes .transport-end.transport-casing {
+  stroke: var(--map-transport-casing);
+  stroke-width: 6px;
+}
+
 .map-overlay svg {
   position: absolute;
   inset: 0;

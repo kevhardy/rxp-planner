@@ -119,7 +119,8 @@ export interface PlacedPlace {
 export interface TerrainFeatures {
   pois: PlacedPoi[];
   places: PlacedPlace[];
-  routes: { path: number; vessel: string; points: string }[];
+  /** `points` is an SVG polyline's points, and `ends` an SVG path of a dot at each end. */
+  routes: { path: number; vessel: string; points: string; ends: string }[];
 }
 
 export function placeFeatures(map: WorldMapData & Pick<LoadedWorldMap, "icons">): TerrainFeatures {
@@ -131,13 +132,15 @@ export function placeFeatures(map: WorldMapData & Pick<LoadedWorldMap, "icons">)
       return category && layer ? [{ poi, layer, category, icon: iconOf(category, map.icons), at: canvasToView(map, poi) }] : [];
     }),
     places: map.places.map((place) => ({ place, at: canvasToView(map, place) })),
-    routes: map.routes.map((route) => ({
-      path: route.path,
-      vessel: route.vessel,
-      points: route.points
-        .map(([x, y]) => canvasToView(map, { x, y }))
-        .map((p) => `${p.x},${p.y}`)
-        .join(" "),
-    })),
+    routes: map.routes.map((route) => {
+      const points = route.points.map(([x, y]) => canvasToView(map, { x, y }));
+      const ends = [points[0]!, points.at(-1)!];
+      return {
+        path: route.path,
+        vessel: route.vessel,
+        points: points.map((p) => `${p.x},${p.y}`).join(" "),
+        ends: ends.map((p) => `M${p.x} ${p.y}h0`).join(""),
+      };
+    }),
   };
 }
