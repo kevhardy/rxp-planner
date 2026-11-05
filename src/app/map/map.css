@@ -172,8 +172,8 @@
 }
 
 .map-overlay .place-landmark {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
 }
 
@@ -181,8 +181,8 @@
   display: block;
   width: fit-content;
   margin-inline: auto;
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
 }
 
@@ -350,9 +350,9 @@
   left: 100%;
   translate: 4px -50%;
   color: var(--map-label);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
   text-shadow: var(--art-label-halo);
 }
 
