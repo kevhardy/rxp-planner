@@ -257,9 +257,14 @@ it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or ta
   expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
 });
 
-// The dark strip sits within 1.1:1 of a guide card's --surface fill, so the card's edge and the arrows carry the chain.
-it.each(["chain-edge", "chain-link-ink"])("draws the dark --%s at 3:1 or more on --guide-strip", (ink) => {
-  expect(contrast(color("dark", ink), color("dark", "guide-strip"))).toBeGreaterThanOrEqual(3);
+it("draws the dark --chain-link-ink at 3:1 or more on --guide-strip", () => {
+  expect(contrast(color("dark", "chain-link-ink"), color("dark", "guide-strip"))).toBeGreaterThanOrEqual(3);
+});
+
+// A guide card other than the current one has no edge, so its fill alone draws its shape on the strip. A fill reads at
+// a smaller step than a 1px line, so 1.29:1, just under the 1.3:1 of --float-edge, is enough.
+it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more on --guide-strip", (theme) => {
+  expect(contrast(color(theme, "chain-card"), color(theme, "guide-strip"))).toBeGreaterThanOrEqual(1.29);
 });
 
 // 20 L* keeps the ring quieter than the step title beside it.

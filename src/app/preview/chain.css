@@ -90,6 +90,10 @@
   background: var(--chain-card);
 }
 
+.chain-card:not([aria-current], :has(> [aria-current])) {
+  border-color: transparent;
+}
+
 .chain-card:hover {
   border-color: var(--chain-link-ink);
 }
