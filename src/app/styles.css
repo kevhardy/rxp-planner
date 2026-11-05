@@ -305,13 +305,11 @@ label {
 .mk-checkpoint {
   --kind: var(--warn);
 }
-/* A sheet of paper in the speech bubbles' fill and outline, so the note
-   reads as one of the guide icons. The sheet draws its lines on whole pixels
-   at 16px, so they stay sharp. */
+/* The sheet draws its lines on whole pixels at 16px, so they stay sharp. */
 .mk-note {
   border-radius: 0;
   background: url("./guideIcons/note.svg") center / 100% 100% no-repeat;
-  filter: var(--ring-guide-icon-pale);
+  filter: var(--ring-guide-icon);
 }
 
 .app {
