@@ -10,6 +10,9 @@
   --guide-strip: var(--bg);
   --raised: #fff;
   --field: var(--raised);
+  /* The least share of --muted, with a small margin, that keeps 4.5:1 on
+     --field, so a placeholder reads as a hint and not as a value. */
+  --placeholder: color-mix(in srgb, var(--muted) 84%, var(--field));
   --hover: #e3e9f1;
   --line: #c3ccd7;
   /* A divider inside a float on --raised. */
@@ -159,6 +162,7 @@
   /* Darker than every surface it sits on, so a field reads as a well, even
      in a float on --raised. */
   --field: #1b222b;
+  --placeholder: color-mix(in srgb, var(--muted) 74%, var(--field));
   --hover: #29323b;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
@@ -295,8 +299,6 @@
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
   --raised-label: var(--label);
-  /* 90% keeps a placeholder at 4.5:1 on a field in either theme. */
-  --placeholder: color-mix(in srgb, var(--muted) 90%, var(--field));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));

@@ -11,9 +11,9 @@ const STEP_CONDITION = "Who sees the step: faction, race, class, mode, or a mini
 const STEP_FLAGS = ["optional", "sticky", "loop", "hardcore", "softcore", "som", "era", "ssf", "ah"];
 
 const STEP_VALUES: { name: string; placeholder?: string; list?: string }[] = [
-  { name: "label", placeholder: "name" },
-  { name: "completewith", placeholder: "next or label", list: "labels-next" },
-  { name: "requires", placeholder: "label", list: "labels" },
+  { name: "label", placeholder: "such as Gnolls" },
+  { name: "completewith", placeholder: "such as next", list: "labels-next" },
+  { name: "requires", placeholder: "such as Gnolls", list: "labels" },
   { name: "level", placeholder: "such as 20" },
   { name: "xprate", placeholder: "such as <1.5" },
   { name: "season", placeholder: "such as 0,1" },
