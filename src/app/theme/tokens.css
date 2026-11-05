@@ -31,15 +31,18 @@
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* With no rim, a vector icon's pale fill reads as a filled shape lighter
      than the page, as in dark mode. A dark rim around the icon's own dark
-     outline thickens it into a frame and dulls the yellow quest marks. The
-     palest fills still fade into the page, so they take a steel edge. The
-     blur thins the shadow, so its color sits halfway to --text to reach
-     about 3:1 on --surface and --selection. Two half-pixel shadows stay
-     crisp, where one 1px shadow blurs into a halo. */
+     outline thickens it into a frame and dulls the yellow quest marks, so
+     the yellow marks take a steel edge. The blur thins the shadow, so its
+     color sits halfway to --text to reach about 3:1 on --surface and
+     --selection. Two half-pixel shadows stay crisp, where one 1px shadow
+     blurs into a halo. A speech bubble's outline draws about 1px wide, so
+     four unblurred rims in --text bring it to the 1.75px of the interface
+     icons, such as the trash can. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
   --ring-guide-icon: none;
-  --ring-guide-icon-pale: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  --ring-guide-icon-vivid: var(--ring-guide-icon-pale);
+  --ring-guide-icon-pale: drop-shadow(0.35px 0 0 var(--text)) drop-shadow(-0.35px 0 0 var(--text)) drop-shadow(0 0.35px 0 var(--text))
+    drop-shadow(0 -0.35px 0 var(--text));
+  --ring-guide-icon-vivid: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   /* Brightening lightens a deep icon's dark fills, such as the book and
      the flag, so the icon weighs less on a light page and more on a dark
      page. The colors stay full, where a lower opacity reads as disabled. */

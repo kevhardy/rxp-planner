@@ -250,6 +250,11 @@ label {
   margin-inline-end: 0;
 }
 
+/* The weight of the 16px interface icons, such as the trash can. */
+.mk > svg {
+  stroke-width: 1.75;
+}
+
 .mk.tex {
   border-radius: 0;
   background: none;
@@ -305,9 +310,9 @@ label {
   width: 20px;
   height: 20px;
   margin: -2px;
-  /* Drawn 1.5px wide through the 20/16 scale, so the lines keep the
+  /* Drawn 1.75px wide through the 20/16 scale, so the lines keep the
      stroke of the other shapes and span about the person's 11px. */
-  stroke-width: 1.2;
+  stroke-width: 1.4;
 }
 
 .app {
@@ -2062,6 +2067,12 @@ label {
   filter: var(--ring-guide-icon-vivid);
 }
 
+/* The quest marks are narrow, so at full size they match the weight of the
+   other step marks. */
+.mk .guide-icon.vector.vivid {
+  background-size: 100% 100%;
+}
+
 .guide-icon.vector.deep {
   filter: var(--ring-guide-icon-deep);
 }
@@ -2748,8 +2759,37 @@ legend {
   padding: var(--space-1) var(--space-2) var(--space-4);
 }
 
+/* A styled scrollbar stays in view where the platform would hide an overlay
+   one until the list scrolls. */
+.warnings-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.warnings-body::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .warnings-body {
+    scrollbar-color: var(--control-border) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+/* The taller first layer pushes the end of the fade below the list, so the
+   last row fades only part way and does not read as disabled. The second
+   layer is the opaque top of the same gradient, over the scrollbar, so the
+   scrollbar does not fade. */
 .warnings-body[data-clipped] {
-  mask-image: var(--mask-fade-end);
+  mask-image: var(--mask-fade-end), var(--mask-fade-end);
+  mask-position:
+    top left,
+    top right;
+  mask-repeat: no-repeat;
+  mask-size:
+    100% calc(100% + var(--space-2)),
+    8px 200%;
 }
 
 .warnings summary {
@@ -2792,7 +2832,7 @@ legend {
 }
 
 .warn-kind.data-note > summary {
-  color: var(--label);
+  color: var(--raised-label);
 }
 
 .warn-kind ul {

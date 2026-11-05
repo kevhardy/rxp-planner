@@ -401,6 +401,8 @@
   margin-left: 0;
   /* `hidden` would let Tab scroll the header away. */
   overflow: clip;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-workspace .route-strip > .map-top-bound {
@@ -509,8 +511,8 @@
   border-radius: var(--radius-float);
   background: var(--raised);
   box-shadow: var(--elevation-2);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-chip {
@@ -758,8 +760,8 @@
 .route-legs .route-leg-steps {
   margin: 0 var(--space-6) var(--space-2) calc(var(--space-8) + var(--space-2));
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-leg-steps .route-step-time {

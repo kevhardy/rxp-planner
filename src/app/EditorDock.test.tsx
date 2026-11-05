@@ -353,11 +353,16 @@ step
     await user.type(field(extra(), "Count"), "5{Enter}");
     expect(text(store)).toContain("    -- grind here @sim extra=25 mob=299\n");
 
-    await user.click(within(adding()).getByRole("button", { name: "Add" }));
-    expect(screen.getByRole("alert").textContent).toBe("Count: Enter a whole number of zero or more.");
+    const add = () => within(adding()).getByRole("button", { name: "Add" });
+    expect(add()).toHaveProperty("disabled", true);
     await user.type(field(adding(), "Count"), "3");
+    expect(add()).toHaveProperty("disabled", true);
+    await user.type(field(adding(), "Mob"), "young");
+    expect(add()).toHaveProperty("disabled", true);
+    await user.clear(field(adding(), "Mob"));
     await user.type(field(adding(), "Mob"), "6");
-    await user.click(within(adding()).getByRole("button", { name: "Add" }));
+    expect(add()).toHaveProperty("disabled", false);
+    await user.click(add());
     expect(text(store)).toBe(guide.replace("extra=2 ", "extra=25 ") + "    -- @sim extra=3 mob=6\n");
     expect(field(added(), "Count")).toHaveProperty("value", "3");
     expect(field(adding(), "Count")).toHaveProperty("value", "");
