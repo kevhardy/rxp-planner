@@ -2105,7 +2105,9 @@ label {
   align-items: baseline;
 }
 
-.form-label {
+.form-label,
+.sim-settings legend,
+.line-title {
   color: var(--label);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
@@ -2211,10 +2213,6 @@ label {
 .sim-settings legend {
   margin-bottom: var(--space-2);
   padding: 0;
-  color: var(--text);
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
-  font-weight: var(--font-weight-bold);
 }
 
 .sim-settings p {
@@ -2458,9 +2456,6 @@ legend {
   align-items: baseline;
   gap: var(--space-2);
   margin: 0;
-  color: inherit;
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
 }
 
 .line-title .mk {
