@@ -186,7 +186,6 @@
 
 .playback-title-text {
   display: -webkit-box;
-  font-weight: var(--font-weight-medium);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -195,8 +194,18 @@
   overflow-wrap: anywhere;
 }
 
-.playback-actions .row-text {
+/* As in the step list, a title that wraps turns regular after its first line. */
+.playback-title-text::first-line {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Both classes, so the rule outranks the step list's title rule. */
+.playback-actions.step-does .row-text::first-line {
   font-weight: var(--font-weight-regular);
+}
+
+.playback-head + .playback-actions {
+  margin-top: 2px;
 }
 
 .playback-kills-text {

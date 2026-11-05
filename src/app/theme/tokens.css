@@ -38,19 +38,15 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* With no rim, a vector icon's pale fill reads as a filled shape lighter
-     than the page, as in dark mode. A dark rim around the icon's own dark
-     outline thickens it into a frame and dulls the yellow quest marks, so
-     the yellow marks take a steel edge. The blur thins the shadow, so its
-     color sits halfway to --text to reach about 3:1 on --surface and
-     --selection. Two half-pixel shadows stay crisp, where one 1px shadow
-     blurs into a halo. A speech bubble's outline draws about 1px wide, so
-     four unblurred rims in --text bring it to the 1.75px of the interface
-     icons, such as the trash can. */
+  /* The outline color of the art in `guideIcons/`, in both themes. */
+  --guide-icon-ink: #1d1408;
+  /* A dark rim around the icon's own dark outline thickens it into a frame
+     and dulls the yellow quest marks, so the yellow marks take a steel edge.
+     The blur thins the shadow, so its color sits halfway to --text to reach
+     about 3:1 on --surface and --selection. Two half-pixel shadows stay
+     crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
   --ring-guide-icon: none;
-  --ring-guide-icon-pale: drop-shadow(0.35px 0 0 var(--text)) drop-shadow(-0.35px 0 0 var(--text)) drop-shadow(0 0.35px 0 var(--text))
-    drop-shadow(0 -0.35px 0 var(--text));
   --ring-guide-icon-vivid: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   /* Brightening lightens a deep icon's dark fills, such as the book and
      the flag, so the icon weighs less on a light page and more on a dark
@@ -175,19 +171,11 @@
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
-  /* Inverting a speech bubble turns its white fill dark and its dark
-     outline light, so it reads as an outline, as on a light page. The
-     inverted blue-grey fill turns brown, so grayscale keeps it neutral, and
-     dimming sinks the fill toward the page. The inverted outline is thinner
-     than a text stem, so four unblurred half-pixel rims in --label bring it
-     to the weight and color of the text beside it. A mid-tone rim gives a
-     dark icon, such as the book or a dark spell sprite, an edge on the dark
-     surface. Two half-pixel shadows stay crisp, where one 1px shadow blurs
-     into a halo. */
+  /* A mid-tone rim gives the icon art's dark outline, and a dark icon such
+     as the book or a dark spell sprite, an edge on the dark surface. Two
+     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  --ring-guide-icon-pale: invert(1) grayscale(1) brightness(0.75) drop-shadow(0.5px 0 0 var(--label)) drop-shadow(-0.5px 0 0 var(--label))
-    drop-shadow(0 0.5px 0 var(--label)) drop-shadow(0 -0.5px 0 var(--label));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
      color, so a strong lift brings out its shape, and the contrast step
