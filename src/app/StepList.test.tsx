@@ -100,7 +100,7 @@ describe("step row", () => {
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Kill Young Wolves"]]);
 
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
     ]);
     expect(description(row.querySelector(".foot-tag")!)).toBe("Stays on screen until done");
@@ -134,7 +134,7 @@ describe("step row", () => {
   it("puts settings last in who and when, and marks a footer of only settings", () => {
     mount("#group G\n#name Settings\nstep << Warrior\n    .disablecheckbox\n    #sticky\nstep\n    .disablecheckbox\n");
     expect(footer(document.getElementById("step-0")!)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
       ["foot-item foot-setting", ", ·Hide checkbox"],
     ]);
@@ -226,7 +226,7 @@ step
     expect(row.querySelector(".where-part .ui-mono")!.textContent).toBe("40.0, 50.0");
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Mage note"]]);
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Mage only"],
+      ["foot-item foot-condition", "Mage only"],
       ["foot-item foot-tag", ", ·Optional"],
     ]);
     expect(description(row.querySelector(".step-no")!)).toBe("Skipped: Only for Mage");

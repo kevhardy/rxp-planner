@@ -1619,21 +1619,12 @@ label {
   color: var(--text);
 }
 
-.foot-warn {
-  color: var(--warn);
-}
-
 .foot-tag {
   color: var(--foot-tag);
 }
 
-/* On the selected row's `--selection` background, the plain warn and tag
-   colors fall below WCAG AA contrast in both themes. The warn color mixes in
-   the text color, and the tag uses the text color. */
-.step-row.selected .foot-warn {
-  color: var(--warn-on-selection);
-}
-
+/* On the selected row's `--selection` background, the plain tag color
+   falls below WCAG AA contrast in both themes. */
 .step-row.selected .foot-tag {
   color: var(--text);
 }

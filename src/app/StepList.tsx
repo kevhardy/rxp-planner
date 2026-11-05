@@ -618,7 +618,7 @@ function StepFooter({ items }: { items: readonly FooterItem[] }) {
         {items.map((item, i) => (
           <Skippable
             key={`${item.kind}-${item.line}`}
-            className={`foot-item foot-${item.kind}${item.tone ? ` foot-${item.tone}` : ""}`}
+            className={`foot-item foot-${item.kind}`}
             item={item}
             description={item.hint}
             content={

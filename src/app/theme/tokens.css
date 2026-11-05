@@ -175,18 +175,20 @@
   --disabled-bg: #28313c;
   --disabled-fg: #707d8e;
 
-  --warn: #e3a33b;
+  /* One gold for warnings, RXP's WARN text, and the accept mark, since golds
+     a few degrees apart read as near misses. */
+  --warn: #e2ae3c;
   --danger: #f38170;
   --danger-fg: #1a2028;
   --ok: #4cc472;
 
-  --kind-accept: #dcae2f;
+  --kind-accept: var(--warn);
   --kind-turnin: #4cc472;
   --kind-complete: #f0874a;
   --kind-goto: #4fb3e8;
-  --kind-target: #ef7bbf;
+  --kind-target: #d39cc0;
   --kind-train: #b091f2;
-  --kind-vendor: #bc8253;
+  --kind-vendor: #a87c62;
   --kind-command: #a8a297;
   --kind-use: #3fc7b0;
   --kind-equip: #81a0f5;
@@ -194,7 +196,7 @@
   --rxp-enemy: #ff7b6b;
   --rxp-friendly: #5ccf7f;
   --rxp-loot: #79abff;
-  --rxp-warn: #e5b53c;
+  --rxp-warn: var(--warn);
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
   --rxp-buy-swatch: var(--rxp-buy);
@@ -222,7 +224,6 @@
   --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
   --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
-  --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
