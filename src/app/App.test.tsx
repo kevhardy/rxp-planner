@@ -550,13 +550,14 @@ describe("top bar", () => {
     expect(document.activeElement).toBe(button);
   });
 
-  it("draws the open Library, Preview as, and Warnings as pressed toggles, apart from the current mode", async () => {
+  it("draws open Preview as and Warnings as pressed toggles, and the open Library as a quieter wash", async () => {
     await twoGuides();
     const { user } = await mount();
     const look = (button: HTMLElement) => [
       button.getAttribute("aria-expanded") ?? button.getAttribute("aria-pressed"),
       cascade(button, "border-color")?.value,
       cascade(button, "box-shadow")?.value,
+      cascade(button, "background")?.value,
     ];
     const looks = [];
     for (const name of [/^Preview as /, /^Warnings/, /^Library$/]) {
@@ -564,8 +565,10 @@ describe("top bar", () => {
       await user.click(trigger);
       looks.push(look(trigger));
     }
-    expect(looks).toEqual(Array(3).fill(["true", "var(--accent)", "var(--ring-pressed)"]));
-    expect(look(screen.getByRole("button", { name: "Edit" }))).not.toEqual(looks[0]);
+    const pressed = ["true", "var(--accent)", "var(--ring-pressed)"];
+    expect(looks.slice(0, 2).map((l) => l.slice(0, 3))).toEqual([pressed, pressed]);
+    expect(looks[2]).toEqual(["true", "1px solid transparent", undefined, "var(--pressed-wash)"]);
+    expect(look(screen.getByRole("button", { name: "Edit" })).slice(0, 3)).not.toEqual(pressed);
   });
 
   it("closes the Preview as popover on the first Escape and the library drawer on the second", async () => {

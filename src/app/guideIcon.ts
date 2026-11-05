@@ -86,6 +86,7 @@ const VECTOR_TONES: ReadonlyMap<string, "pale" | "vivid" | "deep"> = new Map([
   [destroy, "deep"],
   [goto, "deep"],
   [train, "deep"],
+  [vendor, "deep"],
 ]);
 
 const vectorsByCatalog = new WeakMap<GuideIconCatalog, Map<GuideIconEntry, string>>();

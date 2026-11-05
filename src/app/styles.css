@@ -3,9 +3,8 @@
 }
 
 ::placeholder {
-  color: var(--muted);
+  color: var(--placeholder);
   font-family: var(--font-sans);
-  font-style: italic;
   opacity: 1;
 }
 
@@ -842,18 +841,18 @@ label {
 }
 
 /* Library opens a pane, not a popover, so it is not a popover trigger and
-   takes the pressed look here. */
+   takes its open look here. It has the wash with no ring, so it reads
+   quieter than the current mode beside it. */
 .library-toggle[aria-expanded="true"] {
-  border-color: var(--accent);
-  box-shadow: var(--ring-pressed);
+  background: var(--pressed-wash);
 }
 
 .library-toggle[aria-expanded="true"] svg {
   color: var(--accent);
 }
 
-/* While the Library pane is open, the mode keeps only its coral bar, so the
-   open Library toggle is the one strong cue in the top bar. */
+/* While the Library pane is open, the mode keeps only its coral bar, so its
+   selection fill does not add a second cue beside the Library wash. */
 .topbar:has(.library-toggle[aria-expanded="true"]) .ui-segmented {
   --segment-pressed-fill: var(--raised);
 }
@@ -2153,14 +2152,13 @@ label {
   font-weight: var(--font-weight-bold);
 }
 
+/* Centering the label's line on the first caption line puts the two
+   baselines within half a pixel. Baseline alignment would push the fields
+   down by the difference instead. -2px is half of the 4px by which the body
+   line is taller than the caption line. */
 .form-label:has(+ .tag-values) {
   align-self: start;
-}
-
-.form-label:has(+ .tag-values)::before {
-  content: "";
-  display: block;
-  height: calc(var(--line-height-caption) + var(--space-1) + (var(--control-field) - var(--line-height-body)) / 2);
+  margin-top: -2px;
 }
 
 .condition {

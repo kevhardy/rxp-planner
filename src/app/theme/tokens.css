@@ -135,6 +135,10 @@
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
   --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
+  /* --label falls from 9:1 on the dark page to under 6:1 on the dark
+     --raised, so a label on a float such as the Character card takes more
+     --text. */
+  --raised-label: color-mix(in srgb, var(--text) 75%, var(--muted));
   --control-border: #8797ae;
   --text: #e3e8ee;
   --muted: #aab6c5;
@@ -150,16 +154,20 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* Inverting a speech bubble turns its white fill dark and its dark
-     outline light, so it reads as an outline, as on a light page. Short of
-     a full invert, the outline stays below --text. A mid-tone rim gives a
+     outline light, so it reads as an outline, as on a light page. The
+     inverted blue-grey fill turns brown, so grayscale keeps it neutral, and
+     dimming sinks the fill toward the page. The inverted outline is thinner
+     than a text stem, so four unblurred half-pixel rims in --label bring it
+     to the weight and color of the text beside it. A mid-tone rim gives a
      dark icon, such as the book or a dark spell sprite, an edge on the dark
      surface. Two half-pixel shadows stay crisp, where one 1px shadow blurs
      into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  --ring-guide-icon-pale: invert(0.9);
+  --ring-guide-icon-pale: invert(1) grayscale(1) brightness(0.75) drop-shadow(0.5px 0 0 var(--label)) drop-shadow(-0.5px 0 0 var(--label))
+    drop-shadow(0 0.5px 0 var(--label)) drop-shadow(0 -0.5px 0 var(--label));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
-  --ring-guide-icon-deep: brightness(1.3) var(--ring-guide-icon);
+  --ring-guide-icon-deep: brightness(1.6) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
@@ -245,8 +253,8 @@
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
-  /* 90% keeps a placeholder at 4.5:1 on a field in either theme, too close
-     to --muted to tell it from a value, so placeholders are also italic. */
+  --raised-label: var(--label);
+  /* 90% keeps a placeholder at 4.5:1 on a field in either theme. */
   --placeholder: color-mix(in srgb, var(--muted) 90%, var(--field));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
