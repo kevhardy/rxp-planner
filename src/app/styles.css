@@ -286,7 +286,7 @@ label {
 .mk-target {
   border-radius: 0;
   background: url("./guideIcons/target.svg") center / 100% 100% no-repeat;
-  filter: var(--ring-guide-icon);
+  filter: var(--ring-guide-icon-target);
 }
 .mk-cast {
   --kind: var(--kind-train);
@@ -1601,8 +1601,8 @@ label {
 /* Prose lines wrap, so a narrow gap runs a step's notes into one block. */
 .step-notes {
   gap: var(--space-1);
-  font-size: var(--font-size-detail);
-  line-height: var(--line-height-detail);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
 }
 
 .step-does .row-text,

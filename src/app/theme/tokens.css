@@ -73,6 +73,7 @@
      the flag, so the icon weighs less on a light page and more on a dark
      page. The colors stay full, where a lower opacity reads as disabled. */
   --ring-guide-icon-deep: brightness(1.3);
+  --ring-guide-icon-target: var(--ring-guide-icon);
   --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
@@ -220,6 +221,9 @@
      the page. A greater lift clips the red channel first, so the flag turns
      pink and the book tan. */
   --ring-guide-icon-deep: brightness(1.6) contrast(1.1) var(--ring-guide-icon);
+  /* The target person's plum base sits near --surface. 1.12 is the least
+     lift that puts it at 3:1, and its light top still holds the plum hue. */
+  --ring-guide-icon-target: brightness(1.12) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
