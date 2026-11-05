@@ -13,6 +13,7 @@ import { Card } from "../ui/Card.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { ItemButton } from "../ui/ItemButton.tsx";
 import { Mono } from "../ui/Text.tsx";
+import { wholeRowsHeight } from "../ui/wholeRows.ts";
 import { isCurrent, jumpTo, useRoute } from "./route.ts";
 import { markDoneParts, placeParts, prerequisiteFixes, warningParts, type RouteView } from "../../rules/index.ts";
 import { KIND_LABELS, KIND_ORDER, routeWarnings } from "./warnings.ts";
@@ -32,16 +33,6 @@ interface GuideWarnings {
 const ITEM_LIMIT = 10;
 
 const ROWS = ".warn-guide > summary, .warn-kind > summary, .warn-kind li";
-// The top padding of a warning row, so the strip under the last whole row
-// shows none of the next row's text.
-const STRIP = 6;
-
-/** The tallest height up to `room` that ends `STRIP` below a whole row. */
-function wholeRowsHeight(body: HTMLElement, room: number): number {
-  const top = body.getBoundingClientRect().top - body.scrollTop;
-  const ends = [...body.querySelectorAll(ROWS)].map((row) => row.getBoundingClientRect().bottom - top);
-  return Math.max(0, ...ends.filter((end) => end + STRIP <= room)) + STRIP;
-}
 
 /** Kinds that mean the quest data is incomplete, not that the guide is wrong. */
 const DATA_NOTES: ReadonlySet<WarningKind> = new Set(["unknownQuest", "noQuestXp", "noKillTarget", "noKillCount"]);
@@ -95,8 +86,7 @@ export function WarningsPanel() {
     const mark = () => el.toggleAttribute("data-clipped", el.scrollHeight - el.scrollTop - el.clientHeight > 1);
     const fit = () => {
       el.style.maxHeight = "";
-      const room = el.clientHeight;
-      if (el.scrollHeight - room > 1) el.style.maxHeight = `${wholeRowsHeight(el, room)}px`;
+      if (el.scrollHeight - el.clientHeight > 1) el.style.maxHeight = `${wholeRowsHeight(el, ROWS, el.getBoundingClientRect().height)}px`;
       mark();
     };
     const observer = new ResizeObserver(fit);

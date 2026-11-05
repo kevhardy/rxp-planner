@@ -861,7 +861,11 @@ describe("warnings", () => {
     expect([body.hasAttribute("data-clipped"), clipped(300), clipped(280)]).toEqual([true, false, true]);
   });
 
-  it("ends a clipped list 6px below its last whole row", async () => {
+  it("ends a clipped list its bottom border below its last whole row", async () => {
+    const style = window.getComputedStyle;
+    vi.spyOn(window, "getComputedStyle").mockImplementation((el) =>
+      el.classList.contains("warnings-body") ? ({ borderBottomWidth: "6px" } as CSSStyleDeclaration) : style(el),
+    );
     vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
       const rows = [...document.querySelectorAll(".warn-guide > summary, .warn-kind > summary, .warn-kind li")];
       const i = rows.indexOf(this);
@@ -869,7 +873,7 @@ describe("warnings", () => {
     });
     const { body } = await overflowingPanel();
 
-    // The rows end 84, 164, and 244 below the body's top, and only 164 leaves room for the strip in 200.
+    // The rows end 84, 164, and 244 below the body's top, and only 164 leaves room for the border in 200.
     expect([body.style.maxHeight, body.hasAttribute("data-clipped")]).toEqual(["170px", true]);
   });
 

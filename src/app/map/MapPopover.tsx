@@ -3,7 +3,7 @@ import { useEventListener } from "../effects.ts";
 import { IconButton } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
 import { Heading } from "../ui/Text.tsx";
-import { wholeRowsHeight } from "./wholeRows.ts";
+import { wholeRowsHeight } from "../ui/wholeRows.ts";
 
 const Clipped = createContext(false);
 
@@ -45,7 +45,7 @@ export function MapPopover(props: {
     if (overflows) {
       el.setAttribute("data-clipped", "");
       const box = el.getBoundingClientRect();
-      el.style.maxHeight = `${wholeRowsHeight(el, POPOVER_ROWS, box.top, box.height)}px`;
+      el.style.maxHeight = `${wholeRowsHeight(el, POPOVER_ROWS, box.height)}px`;
     }
     setClipped(overflows);
     // Growing the body to measure it pulls a body scrolled to its end back up.
