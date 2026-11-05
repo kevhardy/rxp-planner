@@ -335,7 +335,7 @@
 .character-stats {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0 var(--space-3);
+  gap: var(--space-1) var(--space-3);
   margin: 0;
 }
 
@@ -355,7 +355,7 @@
 }
 
 .character-card .state-log {
-  padding-top: var(--space-1);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--raised-line);
 }
 
