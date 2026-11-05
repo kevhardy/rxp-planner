@@ -278,17 +278,18 @@ label {
 .mk-equip {
   --kind: var(--kind-equip);
 }
+/* A filled silhouette with the guide icons' outline and ring, so the person
+   reads as one of the guide icons beside it. */
 .mk-target {
   background: none;
   color: var(--kind-target);
+  filter: var(--ring-guide-icon);
 }
 .mk-target > svg {
-  width: 13px;
-  height: 13px;
-  margin: 1.5px;
-  /* Drawn 1.75px wide through the 13/16 scale, the weight of the 16px
-     interface icons such as the trash can. */
-  stroke-width: 2.15;
+  fill: currentColor;
+  stroke: var(--guide-icon-ink);
+  stroke-width: 1.05;
+  paint-order: stroke;
 }
 .mk-cast {
   --kind: var(--kind-train);
