@@ -378,6 +378,22 @@ step
     expect(text(store)).toBe(guide.replace("extra=2 ", "extra=25 ") + "    -- @sim extra=3 mob=6\n");
   });
 
+  it("says what extra kills do only while the step has none", async () => {
+    const { user } = mountSim();
+    const kills = () => screen.getByRole("group", { name: "Extra kills" });
+    const hint = "Add mobs killed beyond quest goals, so the simulation counts their XP.";
+    expect(within(kills()).queryByText(hint)).toBeNull();
+
+    await user.click(within(screen.getByRole("group", { name: "Extra kills, line 3" })).getByRole("button", { name: "Remove" }));
+    expect(within(kills()).getByText(hint).className).toBe("muted");
+
+    const adding = within(kills()).getByRole("group", { name: "New extra kills" });
+    await user.type(field(adding, "Count"), "3");
+    await user.type(field(adding, "Mob"), "6");
+    await user.click(within(adding).getByRole("button", { name: "Add" }));
+    expect(within(kills()).queryByText(hint)).toBeNull();
+  });
+
   it("leaves a mob= that a .complete line shares with its extra kills to Raw", async () => {
     const shared = "    .complete 33,1,3 --meat @sim extra=2 mob=299\n";
     const { store, user } = mountSim(false, guide.replace("    .complete 33,1,3\n", shared));

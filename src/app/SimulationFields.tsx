@@ -209,6 +209,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
       })}
       <div className="sim-kills" role="group" aria-label="Extra kills">
         <span className="form-label">Extra kills</span>
+        {extras.length === 0 && <span className="muted">Add mobs killed beyond quest goals, so the simulation counts their XP.</span>}
         {extras.map((e) => {
           const line = e.at.line;
           const owner = line === undefined ? sectionOwner(doc, step) : doc.steps[step]!.body[line]!;
