@@ -87,7 +87,11 @@
   padding: 0 var(--space-2);
   border: 1px solid var(--chain-edge);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--chain-card);
+}
+
+.chain-card:hover {
+  border-color: var(--chain-link-ink);
 }
 
 .chain-card.inactive {

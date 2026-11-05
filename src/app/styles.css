@@ -2161,10 +2161,12 @@ label {
   margin-inline-end: var(--space-4);
 }
 
+/* 9px between rows is the most that leaves 12px below "Add filter" in the
+   dock at a 960px-tall window. */
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
-  gap: var(--space-3) var(--space-4);
+  gap: calc(var(--space-2) + 1px) var(--space-4);
   align-items: baseline;
 }
 
