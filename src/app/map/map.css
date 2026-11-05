@@ -1033,6 +1033,7 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
+  color: var(--label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -1120,11 +1121,6 @@
 .legend-row .map-icon {
   background-color: var(--art-ink);
   box-shadow: var(--ring-control);
-}
-
-/* Ship, zeppelin, and tram art is dark at its edge and would sink into a dark card. */
-.legend-group[data-layer="transport"] .map-icon:not(.route-swatch) {
-  outline: 1px solid var(--layer-swatch-border);
 }
 
 .legend-row .spawn-swatch {
