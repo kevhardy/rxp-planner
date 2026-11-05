@@ -105,6 +105,8 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
   const data = useGameData();
   const [count, setCount] = useDraft("staged extra count");
   const [mob, setMob] = useDraft("staged extra mob");
+  const [countTyped] = useDraft("new extra count");
+  const [mobTyped] = useDraft("new extra mob");
   const stage = (set: (state: DraftState) => void, text: string) => (set(text ? { draft: text, error: null } : NO_DRAFT), null);
   const [error, setError] = useState<string | null>(null);
   const simulation = filter?.simulation;
@@ -120,12 +122,13 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
 
   const extras = directives.filter((d): d is Extract<SimDirective, { key: "extra" }> => d.key === "extra");
 
-  const add = () => {
-    const kills = wholeNumber(count.draft?.trim() ?? "");
-    const npc = wholeNumber(mob.draft?.trim() ?? "");
-    if (kills === undefined) return setError(`Count: ${COUNT_ERROR}`);
-    if (!npc) return setError("Mob: choose an NPC.");
-    const line = extraKillsLine(kills, npc, bodyIndent(doc));
+  // Typed text counts before it commits, so Add turns on while the caret is
+  // still in Mob. A disabled button takes no focus, so a click on it would
+  // not commit the field.
+  const extraKills = wholeNumber((countTyped.draft ?? count.draft ?? "").trim());
+  const extraMob = wholeNumber((mobTyped.draft ?? mob.draft ?? "").trim());
+  const newLine = extraKills !== undefined && extraMob ? extraKillsLine(extraKills, extraMob, bodyIndent(doc)) : undefined;
+  const add = (line: BodyLine) => {
     setCount(NO_DRAFT);
     setMob(NO_DRAFT);
     const failed = commit((d) => insertLine(d, { step, index: d.steps[step]!.body.length }, line));
@@ -257,7 +260,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
             description="The NPC killed."
             onCommit={(id) => stage(setMob, id === undefined ? "" : String(id))}
           />
-          <Button variant="secondary" size={28} onClick={add}>
+          <Button variant="secondary" size={28} disabled={!newLine} onClick={() => newLine && add(newLine)}>
             Add
           </Button>
         </div>
