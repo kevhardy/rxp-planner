@@ -8,7 +8,8 @@ const PATHS = {
   eyeMixed: (
     <>
       <path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" />
-      <path d="M1.5 8h13M6 8a2 2 0 0 0 4 0" />
+      {/* A dash as wide as the shown pupil, and heavier than the outline, reads as a pupil state. A thin dash reads as a minus sign. */}
+      <path d="M6.25 8h3.5" strokeWidth={2.75} />
     </>
   ),
   eyeOff: (
