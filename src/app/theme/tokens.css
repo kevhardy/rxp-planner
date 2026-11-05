@@ -58,7 +58,7 @@
      below the step title in weight. */
   --level-track: #b6bfca;
   --level-before: var(--control-border);
-  --level-earned: var(--text);
+  --level-earned: var(--accent);
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -181,10 +181,10 @@
   --press: #1e2c3f;
 
   /* On a dark page a ring in --text reads as a bright circle beside the
-     title, so no part of the ring is lighter than --control-border. */
-  --level-track: #75859b;
-  --level-before: var(--level-track);
-  --level-earned: var(--control-border);
+     title, so the arcs stay well below --text, and the track sits dark
+     enough under the earned arc for 3:1. */
+  --level-track: #44526a;
+  --level-before: #75859b;
 
   --accent: #82a6cd;
   --pop: #ff6b5a;

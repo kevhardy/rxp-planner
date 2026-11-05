@@ -79,6 +79,7 @@ const PAIRS: Pair[] = [
   ["danger-fg", "danger-hover", 4.5],
   ["danger-fg", "danger-press", 4.5],
   ["primary-fg", "primary-press", 4.5],
+  ["level-earned", "level-track", 3],
 ];
 
 const parse = (file: string) => postcss.parse(readFileSync(join(import.meta.dirname, file), "utf8"));
@@ -237,9 +238,10 @@ it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or ta
   expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
 });
 
-it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s no lighter than --control-border", (part) => {
+// 20 L* keeps the ring quieter than the step title beside it.
+it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s 20 L* or more below --text", (part) => {
   const stroke = written(`.sim-ring ${part}`, [styles]).stroke;
-  expect(lightness(color("dark", token(stroke)))).toBeLessThanOrEqual(lightness(color("dark", "control-border")));
+  expect(lightness(color("dark", "text")) - lightness(color("dark", token(stroke)))).toBeGreaterThanOrEqual(20);
 });
 
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
