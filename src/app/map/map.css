@@ -186,9 +186,16 @@
 }
 
 /* A city holds many plain points, so they draw a step smaller than the
-   guide's own marks. */
+   guide's own marks. Vendor, trainer, and supply sprites are simple shapes
+   that still read at 16px. Transport, service, and instance sprites are
+   detailed art that turns to a dark speck below 18px. */
 .map-overlay .poi:not(.marked, :focus-visible) .poi-icon,
 .map-overlay .poi-row:not(:focus-visible) .poi-icon:not(.marked) {
+  --size: 18px;
+}
+
+.map-overlay .poi:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked, :focus-visible) .poi-icon,
+.map-overlay .poi-row:not(:focus-visible) .poi-icon:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked) {
   --size: 16px;
 }
 

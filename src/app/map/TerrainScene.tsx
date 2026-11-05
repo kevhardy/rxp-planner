@@ -419,7 +419,7 @@ const MarkerRow = memo(function MarkerRow(props: {
         }}
       >
         {icons.slice(0, ROW_ICONS).map((p, i) => (
-          <MapIconImage key={i} icon={p.icon} className={`poi-icon${p.marked ? " marked" : ""}`} />
+          <MapIconImage key={i} icon={p.icon} className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}`} />
         ))}
         {icons.length > ROW_ICONS && (
           <span className="poi-more" aria-hidden="true">
