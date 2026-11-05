@@ -1214,7 +1214,7 @@
    lie below, with no scrollbar. */
 .legend-body[data-clipped] {
   background:
-    var(--more-chevron) center bottom 2px / 12px no-repeat border-box,
+    var(--more-chevron) center bottom 1px / 14px no-repeat border-box,
     var(--more-fade) bottom / 100% var(--space-4) no-repeat border-box;
 }
 
@@ -1406,10 +1406,7 @@
   color: var(--raised-label);
 }
 
-/* The state word ends closer to the eye than a count does, so it reads as
-   the eye's word and stays out of the counts' right edge. */
 .legend-state {
-  margin-right: calc(var(--space-1) - var(--space-2));
   color: var(--muted);
 }
 
