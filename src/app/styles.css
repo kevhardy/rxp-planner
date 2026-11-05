@@ -1066,6 +1066,10 @@ label {
   box-shadow: var(--ink-bar-start);
 }
 
+:is(.lib-group + .lib-group:not(.lib-builtins), .lib-builtin-group + .lib-builtin-group) > .lib-group-head {
+  margin-top: var(--space-2);
+}
+
 .lib-toggle,
 .lib-guide {
   display: flex;
