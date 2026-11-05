@@ -323,7 +323,16 @@ describe("route card looks", () => {
     expect([
       card.classList.contains("inactive"),
       ...([[], ["hover"], ["active"]] satisfies State[][]).map((states) => looks(card, states)),
-    ]).toEqual([true, ["var(--surface)", "var(--warn)"], ["var(--hover)", "var(--warn)"], ["var(--press)", "var(--warn)"]]);
+    ]).toEqual([true, ["var(--chain-card)", "var(--warn)"], ["var(--hover)", "var(--warn)"], ["var(--press)", "var(--warn)"]]);
+  });
+
+  it("firms a plain card's edge to the arrows' ink on hover", () => {
+    mount(["#name A\n#group G\n#next B\nstep\n    .accept 1\n", "#name B\n#group G\nstep\n    .accept 2\n"], "A");
+    const card = guideCards()[1]!;
+    expect([looks(card, []), looks(card, ["hover"])]).toEqual([
+      ["var(--chain-card)", "1px solid var(--chain-edge)"],
+      ["var(--hover)", "var(--chain-link-ink)"],
+    ]);
   });
 
   it("keeps a hidden start card's status border under the current look", () => {

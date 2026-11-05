@@ -157,6 +157,7 @@
   --guide-strip: color-mix(in srgb, var(--field) 50%, var(--surface));
   /* A guide card's --surface fill all but matches the strip, so its edge
      alone outlines the card. */
+  --chain-card: var(--surface);
   --chain-edge: color-mix(in srgb, var(--text) 28%, var(--line));
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
@@ -321,7 +322,10 @@
 
   --chain-link-ink: color-mix(in srgb, var(--text) 36%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
-  --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));
+  /* Halfway from --surface to the strip, with a soft edge, so a guide card
+     reads as a step of the route and not as a field. */
+  --chain-card: color-mix(in srgb, var(--surface) 50%, var(--guide-strip));
+  --chain-edge: color-mix(in srgb, var(--text) 12%, var(--line));
 
   --ink-bar-start: inset 4px 0 0 -1px var(--pop);
   --ink-bar-top: inset 0 3px 0 -1px var(--pop);
