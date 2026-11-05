@@ -211,12 +211,14 @@
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  /* The note sheet's light fold is the brightest pixel of the pale icons.
-     This dims the fold to the contrast of --muted on the dark page, so the
-     icons sit below the step text. It also puts the bubble fill at about the
-     same share of --muted's contrast as in the light theme. The dark outline
-     and the rim keep the bubble's shape. */
-  --ring-guide-icon-pale: brightness(0.8) var(--ring-guide-icon);
+  /* A pale icon's grey fill sits near the dark page, so this lifts it. The
+     note sheet's fold is the brightest pixel of the pale icons, and the lift
+     puts it at the contrast of --muted on --surface, so the icons sit below
+     the step text. A greater lift would need a fold too dark to read apart
+     from the sheet in the light theme. The mid-tone rim is as light as the
+     bubble's tail and hides it at 1x, so an edge in the page color draws the
+     tail and the outline. */
+  --ring-guide-icon-pale: brightness(1.15) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
      color, so a strong lift brings out its shape, and the contrast step

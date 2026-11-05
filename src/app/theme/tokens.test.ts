@@ -267,6 +267,25 @@ it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more
   expect(contrast(color(theme, "chain-card"), color(theme, "guide-strip"))).toBeGreaterThanOrEqual(1.29);
 });
 
+describe("the dark pale guide icons", () => {
+  const note = readFileSync(join(import.meta.dirname, "../guideIcons/note.svg"), "utf8");
+  const fold = paint("dark", "fold", /<path d="M9 3L13 7H9Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  const sheetTop = paint("dark", "sheet", /<stop offset="0" stop-color="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  const lift = Number(/^brightness\(([\d.]+)\)/.exec(tokens.dark.get("--ring-guide-icon-pale")!)![1]);
+
+  // CSS brightness() scales each encoded sRGB channel.
+  it("lifts the note's fold no higher than --muted's contrast on --surface", () => {
+    const lifted = fold.map((c) => Math.min(255, Math.round(c * lift))) as Rgb;
+    const surface = color("dark", "surface");
+    expect(contrast(lifted, surface)).toBeLessThanOrEqual(contrast(color("dark", "muted"), surface));
+  });
+
+  // 3 L*, the step that keeps two dark bands apart, keeps the fold apart from the sheet.
+  it("keeps the note's fold 3 L* or more lighter than the top of its sheet", () => {
+    expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
+  });
+});
+
 // 20 L* keeps the ring quieter than the step title beside it.
 it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s 20 L* or more below --text", (part) => {
   const stroke = written(`.sim-ring ${part}`, [styles]).stroke;
