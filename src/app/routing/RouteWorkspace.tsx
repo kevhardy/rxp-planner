@@ -41,6 +41,7 @@ import { Dialog } from "../Dialog.tsx";
 import { usePendingAction, useRetain, useTimeout } from "../effects.ts";
 import { Icon } from "../icons.tsx";
 import { Button, DisclosureIcon } from "../ui/Button.tsx";
+import { Checkbox } from "../ui/Checkbox.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { Select } from "../ui/Field.tsx";
 import { MapCanvas, type Frame, type MapMenu, type MapMenuGroup, type MapMenuItem, type Pin } from "../map/MapCanvas.tsx";
@@ -857,11 +858,12 @@ export function RouteWorkspace(props: {
           <SlopeField value={maxSlope} onChange={changeSlope} />
           <NewLegsMenu leg={newLegs} onChange={changeNewLegs} />
           {zones.length > 0 && (
-            <Described text="Show the routing zone edges">
-              <Button variant="ghost" size={28} pressed={borders} onClick={() => setBorders(!borders)}>
-                Zone borders
-              </Button>
-            </Described>
+            <Checkbox
+              label="Zone borders"
+              description="Show the routing zone edges"
+              checked={borders}
+              onChange={(e) => setBorders(e.target.checked)}
+            />
           )}
           <LayersMenu choices={layers} searches={searches} hasInteriors={!!map.interiors} onChange={changeLayers} />
           <span className="status" role="status">
