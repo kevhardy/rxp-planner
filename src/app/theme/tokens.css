@@ -297,7 +297,7 @@
      stays quieter than the coral bar of the current mode. */
   --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
 
-  --chain-link-ink: color-mix(in srgb, var(--text) 45%, var(--line));
+  --chain-link-ink: color-mix(in srgb, var(--text) 36%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
   --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));
 
@@ -488,6 +488,10 @@
   /* Caption text that wraps, where 16px packs the lines too tight. */
   --line-height-note: 18px;
   --line-height-body: 20px;
+  /* Secondary lines that a user reads for a long session: a step's places,
+     the editor's line summaries, and its field labels. */
+  --font-size-detail: 14px;
+  --line-height-detail: 18px;
   --line-height-pane-title: 20px;
   --line-height-title: 28px;
   --font-weight-regular: 400;

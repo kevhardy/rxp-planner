@@ -860,11 +860,26 @@ label {
   color: var(--accent);
 }
 
-/* While the Library pane is open, the mode keeps only its coral bar, so its
-   selection fill does not add a second cue beside the Library wash. */
+/* While the Library pane is open, Library is the one active item in the bar.
+   The mode keeps only its bold label, with no fill and no coral bar. */
 .topbar:has(.library-toggle[aria-expanded="true"]) .ui-segmented {
   --segment-pressed-fill: var(--raised);
 }
+
+/* stylelint-disable declaration-no-important -- ui.css draws the pressed segment's coral bar and square corner with !important. */
+.topbar:has(.library-toggle[aria-expanded="true"]) .ui-segment[aria-pressed="true"] {
+  border-block-end-color: var(--control-border) !important;
+  box-shadow: none !important;
+}
+
+.topbar:has(.library-toggle[aria-expanded="true"]) .ui-segment[aria-pressed="true"]:first-child {
+  border-end-start-radius: var(--radius-control) !important;
+}
+
+.topbar:has(.library-toggle[aria-expanded="true"]) .ui-segment[aria-pressed="true"]:last-child {
+  border-end-end-radius: var(--radius-control) !important;
+}
+/* stylelint-enable declaration-no-important */
 
 /* The top bar's controls end 6.5px above the ruler band. 4px more leaves a
    4px gap below the guide strip's top edge, so a float's edge clears it. */
@@ -1628,8 +1643,8 @@ label {
   flex-direction: column;
   gap: 1px;
   color: var(--muted);
-  font-size: var(--font-size-note);
-  line-height: var(--line-height-note);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
 }
 
 /* Mono runs wider and heavier than the place name before it. Tabular
@@ -2189,13 +2204,18 @@ label {
   font-weight: var(--font-weight-bold);
 }
 
-/* Centering the label's line on the first caption line puts the two
+.editor-dock .ui-field-label {
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
+}
+
+/* Centering the label's line on the first field label's line puts the two
    baselines within half a pixel. Baseline alignment would push the fields
-   down by the difference instead. -2px is half of the 4px by which the body
-   line is taller than the caption line. */
+   down by the difference instead. -1px is half of the 2px by which the body
+   line is taller than the detail line. */
 .form-label:has(+ .tag-values) {
   align-self: start;
-  margin-top: -2px;
+  margin-top: -1px;
 }
 
 .condition {
@@ -2336,11 +2356,11 @@ label {
   margin-left: 0;
 }
 
-/* Lines up with the inputs below the field labels: one --line-height-small
-   label line and the --space-1 gap of a stacked field. */
+/* Lines up with the inputs below the field labels: one 18px
+   --line-height-detail label line and the --space-1 gap of a stacked field. */
 .sim-kill-fields > :not(.ui-field) {
   justify-self: start;
-  margin-top: calc(var(--space-4) + var(--space-1));
+  margin-top: calc(var(--space-4) + var(--space-1) + 2px);
 }
 
 fieldset {
@@ -2398,8 +2418,8 @@ legend {
   gap: var(--space-1);
   min-width: 0;
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
 }
 
 .outline-summary > .guide-icon {
