@@ -292,6 +292,15 @@ it("draws each stop of the book's page edge at 3:1 or more on the cover's light 
   expect(stops("train-fore").map((page) => contrast(page, cover) >= 3)).toEqual([true, true]);
 });
 
+// At 16px the coin sits on the bag's shaded side, so the coin's top, its darkest stop, needs the 3:1 of a graphic's part
+// to read apart from the shade.
+it("draws the coin's darkest stop at 3:1 or more on the coin bag's shaded stop", () => {
+  const bag = readFileSync(join(import.meta.dirname, "../guideIcons/vendor.svg"), "utf8");
+  const stop = (id: string, offset: string) =>
+    paint("light", id, new RegExp(`id="${id}".*?<stop offset="${offset}" stop-color="(#[\\da-f]{6})"`).exec(bag)![1]!, {});
+  expect(contrast(stop("vendor-coin", "0"), stop("vendor-body", ".6"))).toBeGreaterThanOrEqual(3);
+});
+
 // CSS brightness() scales the encoded sRGB channels.
 it("lifts the dark target person's plum base to 3:1 or more on --surface", () => {
   const target = readFileSync(join(import.meta.dirname, "../guideIcons/target.svg"), "utf8");
