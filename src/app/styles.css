@@ -1487,6 +1487,10 @@ label {
   color: var(--muted);
 }
 
+.level-band .ui-mono {
+  font-family: var(--font-sans);
+}
+
 .band-bar {
   display: flex;
   gap: 2px;

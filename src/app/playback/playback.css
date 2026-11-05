@@ -377,6 +377,10 @@
   margin-left: auto;
 }
 
+.character-count .ui-mono {
+  font-family: var(--font-sans);
+}
+
 .playback-dock {
   display: grid;
   grid-template:
