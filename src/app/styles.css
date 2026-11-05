@@ -1611,9 +1611,7 @@ label {
   color: var(--text);
 }
 
-/* A title that wraps turns regular after its first line, so a long title
-   does not read as a dense block. */
-.step-does .row-text::first-line {
+.step-does .row-text {
   font-weight: var(--font-weight-medium);
 }
 
