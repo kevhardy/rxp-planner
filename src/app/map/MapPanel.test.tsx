@@ -1229,7 +1229,7 @@ describe("terrain", () => {
       await waitFor(async () => expect((await saved()).legendOpen).toBe(true));
     });
 
-    it("ends the open body and the panel's padding above the strip's bottom, and marks the body while its rows scroll", async () => {
+    it("ends the open body above the strip's bottom, and marks the body only while rows sit below its end", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1260,6 +1260,13 @@ describe("terrain", () => {
       const body = legend().querySelector<HTMLElement>(".legend-body")!;
       act(() => resized.forEach((fit) => fit()));
       expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
+      expect(body.hasAttribute("data-clipped")).toBe(true);
+
+      body.scrollTop = 800 - 492;
+      fireEvent.scroll(body);
+      expect(body.hasAttribute("data-clipped")).toBe(false);
+      body.scrollTop = 0;
+      fireEvent.scroll(body);
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
       scrollHeight.mockReturnValue(492);

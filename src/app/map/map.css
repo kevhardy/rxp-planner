@@ -1029,10 +1029,6 @@
   line-height: var(--line-height-body);
 }
 
-.map-legend[open] {
-  padding-bottom: var(--space-2);
-}
-
 .map-legend:not([open]) {
   flex-basis: auto;
   min-width: 0;
@@ -1070,12 +1066,15 @@
   display: grid;
 }
 
+/* The bottom padding scrolls with the rows, so a clipped list fades out at
+   the legend's edge, and the last row still clears the edge at the end. */
 .legend-body {
+  padding-bottom: var(--space-2);
   overflow: auto;
 }
 
 .legend-body[data-clipped] {
-  border-bottom: 1px solid var(--raised-line);
+  mask-image: var(--mask-fade-end);
 }
 
 .legend-body :focus-visible {
