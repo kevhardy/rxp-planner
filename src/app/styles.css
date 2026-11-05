@@ -421,6 +421,10 @@ label {
   container-type: inline-size;
 }
 
+.editor-dock > .panel-head {
+  border-radius: var(--radius-float) var(--radius-float) 0 0;
+}
+
 .region-map {
   display: flex;
   flex-direction: column;
@@ -1604,9 +1608,9 @@ label {
   margin-top: calc(var(--space-1) + 2px);
 }
 
-/* Prose lines wrap, so a 1px gap runs a step's notes into one block. */
+/* Prose lines wrap, so a narrow gap runs a step's notes into one block. */
 .step-notes {
-  gap: 2px;
+  gap: var(--space-1);
   font-size: var(--font-size-detail);
   line-height: var(--line-height-detail);
 }

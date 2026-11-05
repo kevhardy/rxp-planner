@@ -144,8 +144,8 @@
   border-radius: var(--radius-control);
   background: var(--route-label-bg);
   color: var(--route-label);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -176,8 +176,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade-soft);
   color: var(--route-pending);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   pointer-events: none;
 }

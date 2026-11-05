@@ -409,8 +409,8 @@
   border-radius: var(--radius-round);
   background: var(--art-ink);
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
   font-family: var(--font-sans);
 }
@@ -644,8 +644,8 @@
   translate: -50% -50%;
   background: var(--pin);
   color: var(--art-ink);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
   font-family: var(--font-sans);
   opacity: var(--fade, 1);
@@ -695,8 +695,8 @@
   border-radius: var(--radius-round);
   background: var(--raised);
   box-shadow: var(--elevation-1);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   pointer-events: none;
 }
