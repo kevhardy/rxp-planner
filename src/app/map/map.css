@@ -1244,10 +1244,6 @@
   line-height: var(--line-height-body);
 }
 
-.legend-group + .legend-group > .legend-heading {
-  margin-top: var(--space-4);
-}
-
 .step-display .popover:not([hidden]) {
   display: grid;
   gap: var(--space-3);
