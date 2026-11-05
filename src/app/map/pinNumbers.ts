@@ -3,7 +3,7 @@ import type { ViewPoint } from "./points.ts";
 
 // A numbered pin in map.css is a round-ended bar about 16px tall. It grows
 // past 16px wide by 2px of padding and a 1px rim on each side of its text,
-// and a character of the 11px tabular numerals is about 7px wide.
+// and a character of the 12px tabular numerals is about 7px wide.
 const PIN_SIZE = 16;
 const PIN_EDGES = 6;
 const DIGIT_WIDTH = 7;

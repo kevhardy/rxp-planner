@@ -791,6 +791,8 @@
 }
 
 .playback-stage .map-overlay .poi-name {
+  font-size: var(--font-size-map-label);
+  line-height: var(--line-height-map-label);
   text-shadow: var(--art-label-outline);
 }
 
