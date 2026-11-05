@@ -2761,7 +2761,7 @@ legend {
   flex-direction: column;
 }
 
-/* The indent lines each warning up with its kind's label, past the summary's padding, chevron, and gap.
+/* The indent lines each warning up with its kind's mark, past the summary's padding, chevron, and gap.
    The place width holds "Step 999, line 999", so every message starts at one edge. */
 .warnings {
   --warnings-indent: 44px;
@@ -2845,14 +2845,19 @@ legend {
 .warn-kind > summary {
   margin-bottom: var(--space-1);
   padding-left: var(--space-6);
-  color: var(--warn);
+  color: var(--overlay-heading);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
 }
 
-.warn-kind.data-note > summary {
-  color: var(--overlay-heading);
+.warn-kind-mark {
+  flex: none;
+  color: var(--warn);
+}
+
+.warn-kind-mark.data-note {
+  color: var(--muted);
 }
 
 .warn-kind ul {

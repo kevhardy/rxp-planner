@@ -930,6 +930,20 @@ describe("warnings", () => {
     ]);
   });
 
+  it("marks a guide problem with the warning mark and a quest data gap with the info mark", async () => {
+    const { user } = await mount(["#name A\n#group G\nstep\n    .turnin 7\n    .accept 999999\n"], "A");
+    const panel = await warnings(user);
+    await within(panel).findAllByRole("button", { name: /^Step / });
+    const kinds = [...panel.querySelectorAll(".warn-kind > summary")].map((summary) => [
+      summary.textContent,
+      summary.querySelector(".warn-kind-mark")!.classList.contains("data-note") ? "info" : "warning",
+    ]);
+    expect(kinds).toEqual([
+      ["Completed before accepted 1", "warning"],
+      ["Unknown quest data 1", "info"],
+    ]);
+  });
+
   it("shows 0 with no warnings", async () => {
     await mount(["#name A\n#group G\nstep\n    >> Talk\n"], "A");
     await screen.findByRole("button", { name: "Warnings, 0" });
