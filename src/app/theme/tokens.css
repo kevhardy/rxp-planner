@@ -170,8 +170,8 @@
      on --surface. */
   --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
   /* On the dark --raised, --muted reads as more than one step below a shown
-     name. */
-  --map-legend-hidden: var(--raised-label);
+     name, and --raised-label reads too close to it. */
+  --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --overlay-heading: var(--text);
   /* A data URL cannot read a token, so it repeats this theme's `--text`. */
