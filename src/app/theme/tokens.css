@@ -199,7 +199,9 @@
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   --art-label-rim-diagonal: var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
-  --art-label-outline-halo: var(--art-label-halo);
+  /* The wider blurs of --art-label-halo read as a soft dark band outside the
+     crisp rim on world names. */
+  --art-label-outline-halo: 0 0 1px var(--art-ink);
   --art-label-outline:
     1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
     -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
