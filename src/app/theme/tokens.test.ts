@@ -17,7 +17,7 @@ const on = (fgs: string[], bgs: string[], min: number) => fgs.flatMap((fg) => bg
 
 // WCAG AA: 4.5:1 for text and 3:1 for marks and control borders. Kind colors draw marks, and RXP colors draw body text.
 const PAIRS: Pair[] = [
-  ...on(["text", "muted"], ["topbar", "bg", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
+  ...on(["text", "muted"], ["topbar", "bg", "guide-strip", "surface", "pane-head", "raised", "hover", "selection", "press"], 4.5),
   ["placeholder", "field", 4.5],
   ...on(["text", "muted"], ["map-empty"], 4.5),
   ["text", "field", 4.5],
@@ -28,7 +28,7 @@ const PAIRS: Pair[] = [
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],
   ["overlay-heading", "raised", 6],
-  ...on(["float-edge"], ["raised", "bg", "surface"], 1.3),
+  ...on(["float-edge"], ["raised", "bg", "guide-strip", "surface"], 1.3),
   ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),
   ["pop-ink", "pressed-wash", 4.5, { ground: "var(--topbar)" }],
   ...on(["pop", "accent"], ["surface", "selection"], 3),
@@ -238,6 +238,11 @@ function onTerrain(colors: Rgb[]): number {
 // In dark mode a fill below its bar reads as a hole, so the current segment or tab sits above the bars it lands on.
 it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or tab 1.5 L* or more above --%s", (bar) => {
   expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
+});
+
+// The dark strip sits within 1.1:1 of a guide card's --surface fill, so the card's edge and the arrows carry the chain.
+it.each(["chain-edge", "chain-link-ink"])("draws the dark --%s at 3:1 or more on --guide-strip", (ink) => {
+  expect(contrast(color("dark", ink), color("dark", "guide-strip"))).toBeGreaterThanOrEqual(3);
 });
 
 // 20 L* keeps the ring quieter than the step title beside it.
