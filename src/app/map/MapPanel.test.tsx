@@ -1262,7 +1262,6 @@ describe("terrain", () => {
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
       const body = legend().querySelector<HTMLElement>(".legend-body")!;
       act(() => resized.forEach((fit) => fit()));
-      expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
       body.scrollTop = 800 - 492;
@@ -1274,10 +1273,11 @@ describe("terrain", () => {
 
       scrollHeight.mockReturnValue(492);
       act(() => resized.forEach((fit) => fit()));
+      expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
       expect(body.hasAttribute("data-clipped")).toBe(false);
     });
 
-    it("ends an overflowing body where no whole row is in the 12 px fade and the cut row hides 12 px, and keeps a body that fits at its full height", async () => {
+    it("ends an overflowing body on its last whole row, and keeps a body that fits at its full height", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1310,19 +1310,18 @@ describe("terrain", () => {
       const scrollHeight = vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
 
-      // Row 15 ends at 481 px, 11 px above the 492 px of room, so the body cuts it 12 px short.
+      // Row 15 ends at 481 px, and row 16 at 511 px, past the 492 px of room.
       act(() => resized.forEach((fit) => fit()));
-      expect(body.style.maxHeight).toBe("469px");
+      expect(body.style.maxHeight).toBe("481px");
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
-      // Room 5 px past row 1's end cuts row 1. Room 12 px past it shows all of row 1. Room 20 px past it would leave
-      // row 2 10 px short, under the 12 px that a cut hides, so the body cuts row 2 12 px short.
-      const ends = [5, 12, 20].map((past) => {
+      // Row 1 ends at 61 px, and row 2 at 91 px.
+      const ends = [5, 29, 30].map((past) => {
         stripHeight = 108 + 61 + past;
         act(() => resized.forEach((fit) => fit()));
         return body.style.maxHeight;
       });
-      expect(ends).toEqual(["49px", "73px", "79px"]);
+      expect(ends).toEqual(["61px", "61px", "91px"]);
 
       stripHeight = 600;
       scrollHeight.mockReturnValue(400);
@@ -1331,7 +1330,7 @@ describe("terrain", () => {
       expect(body.hasAttribute("data-clipped")).toBe(false);
     });
 
-    it("cuts a heading at the body's end 12 px short, as it cuts a row", async () => {
+    it("ends the body on a whole heading, as on a whole row", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1365,8 +1364,7 @@ describe("terrain", () => {
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
 
       act(() => resized.forEach((fit) => fit()));
-      // The Quests heading ends 10 px above the room's end, so a heading in full would sit in the fade.
-      expect(body.style.maxHeight).toBe(`${30 * (quests + 1) - 12}px`);
+      expect(body.style.maxHeight).toBe(`${30 * (quests + 1)}px`);
     });
   });
 });

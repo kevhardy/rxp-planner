@@ -1199,21 +1199,19 @@
   display: grid;
 }
 
-/* The bottom padding scrolls with the rows, so the last row still clears the
-   legend's edge at the end. */
+/* A scroller draws no rows in its border, so the bottom border keeps the
+   last row clear of the legend's edge, and the fade below the last whole row
+   covers no text. */
 .legend-body {
-  padding-bottom: var(--space-2);
   overflow: auto;
+  border-bottom: var(--space-3) solid transparent;
+  border-radius: 0 0 var(--radius-float) var(--radius-float);
   scrollbar-width: thin;
   scrollbar-color: var(--control-border) transparent;
 }
 
-/* The mask runs half its fade past the edge, so the fade reaches only
-   `FADE` in MapLegend.tsx into the legend, over the row that the edge cuts. */
 .legend-body[data-clipped] {
-  mask-image: var(--mask-fade-end);
-  mask-size: 100% calc(100% + var(--space-3));
-  mask-repeat: no-repeat;
+  background: var(--map-legend-fade) bottom / 100% var(--space-3) no-repeat border-box;
 }
 
 .legend-body :focus-visible {

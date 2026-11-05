@@ -351,6 +351,7 @@
   --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
   --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
   --map-step-near-text: var(--map-label);
+  --map-legend-fade: linear-gradient(transparent, var(--raised-line));
   --font-size-map-step: 12px;
   --line-height-map-step: 1;
   --font-size-map-label: 12px;
