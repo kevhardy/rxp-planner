@@ -257,6 +257,9 @@
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
 
+  /* A mask reads only alpha, so the opaque stop needs no theme color. */
+  --mask-fade-end: linear-gradient(to bottom, #000 calc(100% - var(--space-6)), transparent);
+
   --bar-travel: var(--kind-goto);
   --bar-kill: var(--danger);
   --bar-interact: var(--muted);

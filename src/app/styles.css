@@ -2684,10 +2684,8 @@ legend {
   padding: var(--space-1) var(--space-2) var(--space-4);
 }
 
-/* The gap keeps the edge apart from the card's rim. */
 .warnings-body[data-clipped] {
-  margin-bottom: var(--space-2);
-  border-bottom: 1px solid var(--raised-line);
+  mask-image: var(--mask-fade-end);
 }
 
 .warnings summary {

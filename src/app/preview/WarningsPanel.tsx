@@ -80,10 +80,15 @@ export function WarningsPanel() {
   useEffect(() => {
     const el = body.current;
     if (!open || !el || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => el.toggleAttribute("data-clipped", el.scrollHeight > el.clientHeight));
+    const mark = () => el.toggleAttribute("data-clipped", el.scrollHeight - el.scrollTop - el.clientHeight > 1);
+    const observer = new ResizeObserver(mark);
     observer.observe(el);
     for (const child of el.children) observer.observe(child);
-    return () => observer.disconnect();
+    el.addEventListener("scroll", mark, { passive: true });
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("scroll", mark);
+    };
   }, [open, groups]);
 
   useOutsidePress(open, wrap, () => setOpen(false));
