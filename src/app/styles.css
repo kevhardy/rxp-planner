@@ -1953,9 +1953,16 @@ label {
   padding-inline: var(--space-1);
 }
 
-/* One row of the colors and Clear takes 422px. A narrower form tightens the
-   row to 398px, and a form narrower than that sets the colors three to a row
-   in even columns. */
+/* One row of the colors and Clear takes 442px, or 422px with the closer gap
+   of a form narrower than 450px. A narrower form tightens the row to 398px,
+   and a form narrower than that sets the colors three to a row in even
+   columns. */
+@container (width >= 450px) {
+  .rxp-colors {
+    gap: var(--space-2);
+  }
+}
+
 @container (width < 430px) {
   .rxp-colors {
     gap: 2px;
