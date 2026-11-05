@@ -576,13 +576,13 @@ describe("terrain", () => {
       await user.selectOptions(mapShown(), "t0");
       expect(mapArea().querySelectorAll(".place-capital")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-instances, .poi-transport, .place-zone")).toHaveLength(3);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(within(mapArea()).getByRole("button", { name: "Selected step 1, line 1: .goto Elwynn Forest 48.94, 40.16" })).toBeTruthy();
 
       await user.selectOptions(mapShown(), "t1429");
       expect(mapArea().querySelectorAll(".poi-instances")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-transport")).toHaveLength(0);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-name")).toHaveLength(1);
       expect(await loadSetting("map")).toEqual(settings);
     } finally {
@@ -1229,7 +1229,7 @@ describe("terrain", () => {
       await waitFor(async () => expect((await saved()).legendOpen).toBe(true));
     });
 
-    it("ends the open body and the panel's padding above the strip's bottom, and marks the body while its rows scroll", async () => {
+    it("ends the open body above the strip's bottom, and marks the body only while rows sit below its end", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1260,6 +1260,13 @@ describe("terrain", () => {
       const body = legend().querySelector<HTMLElement>(".legend-body")!;
       act(() => resized.forEach((fit) => fit()));
       expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
+      expect(body.hasAttribute("data-clipped")).toBe(true);
+
+      body.scrollTop = 800 - 492;
+      fireEvent.scroll(body);
+      expect(body.hasAttribute("data-clipped")).toBe(false);
+      body.scrollTop = 0;
+      fireEvent.scroll(body);
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
       scrollHeight.mockReturnValue(492);

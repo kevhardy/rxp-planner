@@ -78,9 +78,8 @@ export function MapLegend(props: {
     const panelPadding = panel.getBoundingClientRect().bottom - box.bottom;
     const room = Math.max(0, strip.getBoundingClientRect().bottom - box.top - panelPadding);
     el.style.maxHeight = `${room}px`;
-    const clipped = el.scrollHeight > el.clientHeight;
-    el.toggleAttribute("data-clipped", clipped);
-    if (clipped) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, box.top, room)}px`;
+    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, box.top, room)}px`;
+    markRowsBelow(el);
   };
   useLayoutEffect(fit);
   useEffect(() => {
@@ -119,7 +118,7 @@ export function MapLegend(props: {
       <summary>
         Legend <Icon name="chevronDown" size={12} />
       </summary>
-      <div ref={body} className="legend-body">
+      <div ref={body} className="legend-body" onScroll={(e) => markRowsBelow(e.currentTarget)}>
         {LAYERS.map((layer) => {
           const ids = layerCategories(layer.id);
           const on = ids.filter(shows).length;
@@ -275,6 +274,9 @@ const SWATCHES: Partial<Record<CategoryId, string>> = {
   landmarks: "label-swatch landmark",
   routes: "route-swatch",
 };
+
+const markRowsBelow = (body: HTMLElement) =>
+  body.toggleAttribute("data-clipped", body.scrollTop + body.clientHeight < body.scrollHeight - 1);
 
 // A heading is no cut point, so a cut body never ends on a heading with no row under it.
 const LEGEND_ROWS = ".legend-row, .legend-step, .legend-filter, .legend-body > button";

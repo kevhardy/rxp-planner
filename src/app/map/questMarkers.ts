@@ -117,6 +117,9 @@ export interface QuestShow {
   turnIns: boolean;
 }
 
+export const shownMarkers = (placed: readonly PlacedMarker[], show: QuestShow): PlacedMarker[] =>
+  placed.filter(({ marker }) => (show.available && marker.available.length > 0) || (show.turnIns && marker.turnIns.length > 0));
+
 export interface QuestRow {
   id: number;
   name: string;

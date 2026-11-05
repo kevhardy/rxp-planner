@@ -35,7 +35,7 @@ import type { LoadedWorldMap } from "../../data/index.ts";
 import { MapLegend } from "./MapLegend.tsx";
 import { showsCategory, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
 import { movedArgs, questSpots, type AddCommand, type Placed, type QuestSpot, type ViewPoint } from "./points.ts";
-import { questMarkers, type PlacedMarker, type QuestAction, type QuestMarker } from "./questMarkers.ts";
+import { questMarkers, shownMarkers, type PlacedMarker, type QuestAction, type QuestMarker } from "./questMarkers.ts";
 import { QuestCard, QuestMarkers } from "./QuestMarkers.tsx";
 import { followedMap, guideLayout, projectAreas, type StepPoint } from "./guideLayout.ts";
 import { terrainSurface, type Surface } from "./surfaces.ts";
@@ -420,6 +420,8 @@ export function useGuideMap(
       {extras.scene?.({ map, surface, pxPerPercent, interiors }, frame)}
     </>
   );
+  const shownPlaced = placed && (showQuests.available || showQuests.turnIns) ? placed : null;
+  const questIcons = shownPlaced && lockNames ? shownMarkers(shownPlaced, showQuests).map((p) => p.at) : [];
   const terrainOverlay = (frame: Frame, pxPerPercent: number) => (
     <TerrainMarkers
       map={map}
@@ -429,6 +431,7 @@ export function useGuideMap(
       onPick={pickPoi}
       frame={frame}
       pxPerPercent={pxPerPercent}
+      quests={questIcons}
     />
   );
   const options = (
@@ -449,7 +452,6 @@ export function useGuideMap(
       </optgroup>
     </>
   );
-  const shownPlaced = placed && (showQuests.available || showQuests.turnIns) ? placed : null;
   const questLayer =
     shownPlaced &&
     lockNames &&

@@ -57,6 +57,16 @@ export function pickLabels(labels: readonly PlaceLabelBoxes[]): { name: boolean;
   return picked;
 }
 
+// The gap that map.css leaves between a point's icon and its name.
+const NAME_GAP = 4;
+
+/** The side of its icon where a point's name draws: the end, unless an obstacle covers it there and not at the start. */
+export function nameSide(icon: LabelBox, name: Omit<LabelBox, "x" | "y">, obstacles: readonly LabelBox[]): "start" | "end" {
+  const at = (side: -1 | 1): LabelBox => ({ ...name, x: icon.x + side * (icon.width / 2 + NAME_GAP + name.width / 2), y: icon.y });
+  const clear = (box: LabelBox) => !obstacles.some((o) => covers(box, o));
+  return clear(at(1)) || !clear(at(-1)) ? "end" : "start";
+}
+
 const covers = (a: LabelBox, b: LabelBox) =>
   Math.abs(a.x - b.x) < (a.width + b.width) / 2 && Math.abs(a.y - b.y) < (a.height + b.height) / 2;
 

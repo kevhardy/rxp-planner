@@ -147,12 +147,17 @@
   color: var(--map-label-strong);
 }
 
-/* Below this drawn width, both continents fit in about two screens, and full-size zone names run into each other. */
+/* Below this drawn width, both continents fit in about two screens, and full-size zone names run into each other.
+   Regular stems choke under the label's rim at these sizes, so the names keep a medium weight. */
 @container map-overlay (width < 2400px) {
   .map-overlay .place-zone {
     font-size: var(--font-size-caption);
     line-height: var(--line-height-caption);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .map-overlay .place small {
+    font-weight: var(--font-weight-medium);
   }
 }
 
@@ -196,18 +201,60 @@
   box-shadow: var(--art-icon-halo);
 }
 
-/* A city holds many plain points, so they draw a step smaller than the
-   guide's own marks. Vendor, trainer, and supply sprites are simple shapes
-   that still read at 16px. Transport, service, and instance sprites are
-   detailed art that turns to a dark speck below 18px. */
+/* Points other than the guide's own marks draw a step smaller. Transport,
+   service, and instance sprites are detailed art that turns to a dark speck
+   below 18px. */
 .map-overlay .poi:not(.marked, :focus-visible) .poi-icon,
 .map-overlay .poi-row:not(:focus-visible) .poi-icon:not(.marked) {
   --size: 18px;
 }
 
-.map-overlay .poi:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked, :focus-visible) .poi-icon,
-.map-overlay .poi-row:not(:focus-visible) .poi-icon:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked) {
-  --size: 16px;
+.map-overlay .poi-vendors {
+  --dot: var(--map-dot-vendors);
+}
+
+.map-overlay .poi-trainers {
+  --dot: var(--map-dot-trainers);
+}
+
+.map-overlay .poi-supplies {
+  --dot: var(--map-dot-supplies);
+}
+
+.map-overlay .poi-services {
+  --dot: var(--map-dot-services);
+}
+
+.map-overlay .poi.plain:hover {
+  z-index: 3;
+}
+
+/* Most plain sprites, such as the repair anvil, read as grey blocks at a
+   city's density, so they draw as dots. From this drawn width, a city's
+   points sit about 24px apart, and the sprites return. */
+@container map-overlay (width < 16000px) {
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
+    --size: 7px;
+    position: relative;
+    background: var(--dot);
+    box-shadow: var(--art-dot-rim);
+  }
+
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+  }
+
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
+    margin-left: 2px;
+  }
+
+  .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
+    translate: -3.5px -50%;
+  }
 }
 
 .map-overlay .poi .poi-icon {
@@ -260,6 +307,12 @@
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-micro);
   text-shadow: var(--art-label-halo);
+}
+
+.map-overlay .poi-name[data-start] {
+  left: auto;
+  right: 100%;
+  translate: -4px -50%;
 }
 
 .map-overlay .poi-group {
@@ -362,9 +415,18 @@
   color: var(--muted);
 }
 
+/* A thin dashed line on an ink casing reads as a route, where a bare line
+   across the map reads as a seam between tiles. */
 .map-overlay svg.routes polyline {
   stroke: var(--transport-line);
+  stroke-width: 1px;
   stroke-dasharray: 6px 4px;
+}
+
+.map-overlay svg.routes .transport-casing {
+  stroke: var(--map-transport-casing);
+  stroke-width: 3px;
+  stroke-dasharray: none;
 }
 
 .map-overlay svg {
@@ -967,10 +1029,6 @@
   line-height: var(--line-height-body);
 }
 
-.map-legend[open] {
-  padding-bottom: var(--space-2);
-}
-
 .map-legend:not([open]) {
   flex-basis: auto;
   min-width: 0;
@@ -1008,12 +1066,15 @@
   display: grid;
 }
 
+/* The bottom padding scrolls with the rows, so a clipped list fades out at
+   the legend's edge, and the last row still clears the edge at the end. */
 .legend-body {
+  padding-bottom: var(--space-2);
   overflow: auto;
 }
 
 .legend-body[data-clipped] {
-  border-bottom: 1px solid var(--raised-line);
+  mask-image: var(--mask-fade-end);
 }
 
 .legend-body :focus-visible {
