@@ -220,7 +220,7 @@
 }
 
 /* A plain point's group shows by its shape as well as its color. The legend
-   draws the same dot beside the group's heading. Each shape is drawn in a
+   draws the dot before the group's heading. Each shape is drawn in a
    14px box around a 10px dot. The circle, square, and diamond each cover
    about 80px². The triangle covers about 72px², because its points draw the
    eye more than a rounder shape of the same area.
@@ -1224,20 +1224,21 @@
 }
 
 .legend-heading {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-1);
   min-height: var(--control-small);
   margin-top: var(--space-3);
-  padding: 0 var(--space-2) 0 var(--space-3);
+  padding: 0 var(--space-2) 0 var(--legend-label-start);
 }
 
 .legend-heading h3 {
   flex: 1;
   margin: 0;
   color: var(--overlay-heading);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
 }
 
 .legend-group + .legend-group > .legend-heading {
@@ -1326,12 +1327,14 @@
   box-shadow: var(--ring-control);
 }
 
+/* Sits in the column of the row icons below, so the heading text lines up
+   with the row names. */
 .group-mark {
-  position: relative;
-  display: inline-block;
+  position: absolute;
+  top: calc(50% - 5px);
+  left: calc(var(--space-3) + var(--legend-mark) / 2 - 5px);
   width: 10px;
   height: 10px;
-  margin-left: var(--space-2);
 }
 
 .group-mark::before,
