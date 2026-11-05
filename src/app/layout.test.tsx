@@ -403,11 +403,11 @@ describe("editor panel", () => {
   it("keeps a field's draft that the close cannot apply, and shows it when the editor opens again", async () => {
     await openGuide();
     const user = await mount();
-    const field = () => screen.getByRole("textbox", { name: ">> text" });
+    const field = () => screen.getByRole("textbox", { name: ">> Text" });
     await user.clear(field());
     await user.type(field(), "Hello -- there");
     await user.click(screen.getByRole("button", { name: "Close editor" }));
-    expect(screen.queryByRole("textbox", { name: ">> text" })).toBeNull();
+    expect(screen.queryByRole("textbox", { name: ">> Text" })).toBeNull();
 
     await user.click(screen.getByRole("button", { name: "Open editor" }));
     expect(shownText(field())).toBe("Hello -- there");

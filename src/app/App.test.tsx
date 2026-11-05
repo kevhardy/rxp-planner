@@ -135,11 +135,11 @@ describe("editor", () => {
     const { user } = await mount();
 
     const line = await showLine(user, 4);
-    const questId = within(line).getByLabelText("questId");
+    const questId = within(line).getByLabelText("Quest ID");
     expect(questId).toHaveProperty("value", "5261");
     await user.clear(questId);
     await user.type(questId, "5262{Enter}");
-    const text = within(line).getByLabelText(">> text");
+    const text = within(line).getByLabelText(">> Text");
     selectText(text, "Accept ".length, "Accept Eagan Peltskinner".length);
     await user.click(within(line).getByRole("button", { name: "Friendly" }));
     await user.keyboard("{Enter}");
@@ -164,10 +164,10 @@ describe("editor", () => {
       await importGuide(user, "#group T\n#name One\nstep\n.accept 1 >> First\n");
       await user.click(screen.getByRole("tab", { name: "Lines" }));
       const line = () => screen.getByRole("group", { name: "Line 1, Accept quest" });
-      const questId = () => within(line()).getByLabelText("questId");
+      const questId = () => within(line()).getByLabelText("Quest ID");
       await user.clear(questId());
       await user.type(questId(), "10{Enter}");
-      const text = within(line()).getByLabelText(">> text");
+      const text = within(line()).getByLabelText(">> Text");
       selectText(text, "First".length);
       await user.keyboard("!");
       await user.keyboard("{Control>}z{/Control}");
@@ -292,7 +292,7 @@ describe("editor", () => {
     });
     const first = await mount();
     const saveFailed = () => within(screen.getByRole("banner")).queryByRole("alert")?.textContent;
-    const text = () => within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> text");
+    const text = () => within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> Text");
 
     selectText(text(), "Hello".length);
     await first.user.keyboard("abc{Enter}");
@@ -740,7 +740,7 @@ describe("built-in guides", () => {
   it("copies a built-in on the first edit and keeps typing in the same field", async () => {
     await saveLibrary([], [], { guideId: "rxp:test.lua#1", step: 0, line: null });
     const { user } = await mount(builtins);
-    const text = within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> text");
+    const text = within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> Text");
     selectText(text, "Hello".length);
     await user.keyboard("abc{Enter}def{Enter}");
 

@@ -1314,7 +1314,6 @@
 .legend-filter[aria-pressed="true"] .legend-name,
 .legend-step:not(.off) .legend-name {
   color: var(--map-legend-shown);
-  font-weight: var(--font-weight-medium);
 }
 
 .legend-row[aria-pressed="true"] svg,

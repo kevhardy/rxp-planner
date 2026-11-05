@@ -77,7 +77,7 @@ it("retries a whole selected artifact and keeps recovered edits and saves", asyn
   await user.click(screen.getByRole("button", { name: "Warnings" }));
   const warnings = within(screen.getByRole("region", { name: "Warnings" }));
   await user.keyboard("{Escape}");
-  const questId = () => screen.getByRole("combobox", { name: "questId" });
+  const questId = () => screen.getByRole("combobox", { name: "Quest ID" });
   expect(screen.getAllByText("Loading game data…")).toHaveLength(2);
   expect(warnings.getByText("Loading quest data…")).toBeTruthy();
   await showLine(user, 2);
@@ -139,7 +139,7 @@ it("retries a whole selected artifact and keeps recovered edits and saves", asyn
   await user.keyboard("{ArrowDown}");
   expect(screen.queryByText("Loading quest data…")).toBeNull();
   expect(screen.queryByText("Quest data unavailable. Enter an ID.")).toBeNull();
-  expect(within(screen.getByRole("listbox", { name: "questId" })).getByRole("option", { name: /Southsea Freebooters/ })).toBeTruthy();
+  expect(within(screen.getByRole("listbox", { name: "Quest ID" })).getByRole("option", { name: /Southsea Freebooters/ })).toBeTruthy();
   const search = () => screen.getByRole("searchbox", { name: "Search quests, NPCs, items, and places" });
   await user.click(screen.getByRole("button", { name: "Search" }));
   await user.type(search(), "booty");

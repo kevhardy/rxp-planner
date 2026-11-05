@@ -88,7 +88,7 @@ async function tabThroughColors(user: ReturnType<typeof userEvent.setup>) {
 describe("entity argument search", () => {
   it("finds a quest and puts its ID in the draft without committing", async () => {
     const { store, user } = mount(guide(".accept 1"));
-    const input = within(card(1)).getByRole("combobox", { name: "questId" });
+    const input = within(card(1)).getByRole("combobox", { name: "Quest ID" });
     await user.clear(input);
     await user.type(input, "kobold");
     expect(options()[0]).toBe("Kobold Camp Cleanup #7");
@@ -103,16 +103,16 @@ describe("entity argument search", () => {
 
   it("ranks exact names by ID, keeps duplicate names apart, and shows spell ranks", async () => {
     const { user } = mount(guide(".cast 1", ".accept 1"));
-    await user.clear(within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!);
-    await user.type(within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!, "fire");
+    await user.clear(within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!);
+    await user.type(within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!, "fire");
     expect(options()).toEqual(["Fire Blast Rank 1 #2136", "Fireball Rank 1 #133", "Fireball Rank 2 #143", "Fireball Rank 3 #145"]);
-    await user.type(within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!, "ball");
+    await user.type(within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!, "ball");
     expect(options()).toEqual(["Fireball Rank 1 #133", "Fireball Rank 2 #143", "Fireball Rank 3 #145"]);
-    await user.clear(within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!);
-    await user.type(within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!, "143");
+    await user.clear(within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!);
+    await user.type(within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!, "143");
     expect(options()[0]).toBe("Fireball Rank 2 #143");
 
-    const quest = within(await showLine(user, 2)).getByRole("combobox", { name: "questId" });
+    const quest = within(await showLine(user, 2)).getByRole("combobox", { name: "Quest ID" });
     await user.clear(quest);
     await user.type(quest, "wolves");
     expect(options()).toEqual(["Wolves Across the Border #33", "Wolves Across the Border #34"]);
@@ -133,17 +133,17 @@ describe("entity argument search", () => {
       expect(input).toHaveProperty("value", expected);
       await user.keyboard("{Enter}");
     };
-    await choose(1, "questId", 0, "-kobold", "-7");
-    await choose(2, "npc", 1, "Old::eagan", "Old::196");
-    await choose(2, "npc", 2, "+eag", "+196");
-    await choose(3, "itemId", 0, "silk:p", "4306:p");
-    await choose(4, "itemId", 0, "6948/linen", "6948/2589");
+    await choose(1, "Quest ID", 0, "-kobold", "-7");
+    await choose(2, "NPC", 1, "Old::eagan", "Old::196");
+    await choose(2, "NPC", 2, "+eag", "+196");
+    await choose(3, "Item ID", 0, "silk:p", "4306:p");
+    await choose(4, "Item ID", 0, "6948/linen", "6948/2589");
     expect(text(store)).toBe(guide(".turnin -7", ".target +196;Old::196;+196", ".use 4306:p", ".collect 6948/2589,3,33"));
   });
 
   it("keeps a lone gossip option and shows an error for an NPC that RXP would read as one", async () => {
     const { store, user } = mount(guide(".skipgossip 3"));
-    const input = within(card(1)).getByRole("combobox", { name: "npcId" });
+    const input = within(card(1)).getByRole("combobox", { name: "NPC ID" });
     await user.type(input, "{ArrowDown}");
     expect(screen.queryByRole("listbox")).toBeNull();
 
@@ -157,7 +157,7 @@ describe("entity argument search", () => {
 
   it("closes the list on Escape, then drops the draft, and a click chooses without committing", async () => {
     const { store, user } = mount(guide(".accept 1"));
-    const input = within(card(1)).getByRole("combobox", { name: "questId" });
+    const input = within(card(1)).getByRole("combobox", { name: "Quest ID" });
     await user.clear(input);
     await user.type(input, "wolves");
     expect(input.getAttribute("aria-expanded")).toBe("true");
@@ -180,7 +180,7 @@ describe("entity argument search", () => {
 
   it("follows the caret to the part it is in, by keyboard or pointer, and drops a stale choice", async () => {
     const { store, user } = mount(guide(".collect 99,3"));
-    const input = within(card(1)).getByRole<HTMLInputElement>("combobox", { name: "itemId" });
+    const input = within(card(1)).getByRole<HTMLInputElement>("combobox", { name: "Item ID" });
     await user.clear(input);
     await user.type(input, "silk/lin");
     expect(options()).toEqual(["Linen Cloth #2589"]);
@@ -205,7 +205,7 @@ describe("entity argument search", () => {
 
   it("does not choose an option for the caret's old place when Enter follows a move at once", async () => {
     const { user } = mount(guide(".collect 99,3"));
-    const input = within(card(1)).getByRole<HTMLInputElement>("combobox", { name: "itemId" });
+    const input = within(card(1)).getByRole<HTMLInputElement>("combobox", { name: "Item ID" });
     await user.clear(input);
     await user.type(input, "silk/lin{ArrowDown}");
     input.setSelectionRange(0, 0);
@@ -216,7 +216,7 @@ describe("entity argument search", () => {
 
   it("shows the search's status in a status region", async () => {
     const { user } = mount(guide(".use 1"), { entities: null });
-    const input = within(card(1)).getAllByRole("combobox", { name: "itemId" })[0]!;
+    const input = within(card(1)).getAllByRole("combobox", { name: "Item ID" })[0]!;
     await user.clear(input);
     await user.type(input, "zz");
     expect(screen.getByRole("status").textContent).toBe("Loading names…");
@@ -287,7 +287,7 @@ describe("quest names", () => {
 
   it("searches and inserts the game data's names, never the index's", async () => {
     const { store, user } = mount(guide(".accept 1 >>Go"), { entities: stale, data });
-    const input = within(card(1)).getByRole("combobox", { name: "questId" });
+    const input = within(card(1)).getByRole("combobox", { name: "Quest ID" });
     const search = async (query: string) => {
       await user.clear(input);
       await user.type(input, query);
@@ -300,7 +300,7 @@ describe("quest names", () => {
     expect(within(card(1)).getByRole("link").textContent).toBe("quest #990002");
     await search("1");
 
-    const field = within(card(1)).getByRole("textbox", { name: ">> text" });
+    const field = within(card(1)).getByRole("textbox", { name: ">> Text" });
     selectText(field, shownText(field).length);
     await user.keyboard(" ");
     await user.click(within(card(1)).getByRole("button", { name: "Insert reference" }));
@@ -353,7 +353,7 @@ describe("suggestion list placement", () => {
     });
     const frame = () => act(() => new Promise((resolve) => requestAnimationFrame(resolve)));
     const { user } = mount(guide(".cast 1"));
-    const field = within(card(1)).getAllByRole("combobox", { name: "spellId" })[0]!;
+    const field = within(card(1)).getAllByRole("combobox", { name: "Spell ID" })[0]!;
     await user.clear(field);
     await user.type(field, "fire");
     const list = screen.getByRole("listbox");
@@ -393,7 +393,7 @@ describe("Insert reference", () => {
     expect(text(store)).toBe(original);
     await user.click(within(picker()).getByRole("button", { name: "Close" }));
 
-    const input = within(await showLine(user, 1)).getByRole("combobox", { name: "questId" });
+    const input = within(await showLine(user, 1)).getByRole("combobox", { name: "Quest ID" });
     await user.clear(input);
     await user.type(input, "999999");
     expect(screen.getByRole("status").textContent).toBe("Quest data unavailable. Enter an ID.");
@@ -442,7 +442,7 @@ describe("Insert reference", () => {
     ["Object", "silver", "Silverleaf (object #1617)"],
   ])("inserts a %s into a command's >> text", async (type, query, inserted) => {
     const { store, user } = mount(guide(".goto Elwynn Forest,49.1,38.3 >>Go"));
-    const input = within(card(1)).getByRole("textbox", { name: ">> text" });
+    const input = within(card(1)).getByRole("textbox", { name: ">> Text" });
     selectText(input, "Go".length);
     await user.keyboard(" to ");
     await user.click(within(card(1)).getByRole("button", { name: "Insert reference" }));
