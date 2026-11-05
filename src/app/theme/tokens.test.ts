@@ -7,7 +7,7 @@ import { RXP_COLORS } from "../../guide/index.ts";
 type Theme = "light" | "dark";
 type Rgb = [number, number, number];
 
-const KINDS = ["accept", "turnin", "complete", "goto", "target", "train", "vendor", "command", "use", "equip"];
+const KINDS = ["accept", "turnin", "complete", "goto", "train", "vendor", "command", "use", "equip"];
 const RXP = RXP_COLORS.map(({ color }) => color.toLowerCase());
 const OBJECTIVES = [1, 2, 3, 4, 5, 6].map((n) => `objective-${n}`);
 

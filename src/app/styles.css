@@ -283,18 +283,15 @@ label {
 .mk-equip {
   --kind: var(--kind-equip);
 }
-/* A filled silhouette with the guide icons' outline and ring, so the person
-   reads as one of the guide icons beside it. */
+/* An inline shape cannot fill with the gradient in a file, so the person's
+   file draws it and the shape stays hidden. */
 .mk-target {
-  background: none;
-  color: var(--kind-target);
+  border-radius: 0;
+  background: url("./guideIcons/target.svg") center / 100% 100% no-repeat;
   filter: var(--ring-guide-icon);
 }
 .mk-target > svg {
-  fill: currentColor;
-  stroke: var(--guide-icon-ink);
-  stroke-width: 1.05;
-  paint-order: stroke;
+  display: none;
 }
 .mk-cast {
   --kind: var(--kind-train);
