@@ -1595,7 +1595,9 @@ label {
   color: var(--text);
 }
 
-.step-does .row-text {
+/* Only a step's first action line takes the heavier weight, so a step of
+   several quest lines does not read as one heavy block. */
+.step-main > .step-does > :first-child > .row-text {
   font-weight: var(--font-weight-medium);
 }
 

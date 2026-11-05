@@ -106,6 +106,12 @@ describe("step row", () => {
     expect(description(row.querySelector(".foot-tag")!)).toBe("Stays on screen until done");
   });
 
+  it("draws a step's first action line at medium weight and the later ones at the regular weight", () => {
+    mount();
+    const texts = [...document.getElementById("step-0")!.querySelectorAll(".step-does .row-text")];
+    expect(texts.map((t) => cascade(t, "font-weight")?.value)).toEqual(["var(--font-weight-medium)", undefined, undefined]);
+  });
+
   it("binds each arrow of a coordinate chain to the point after it, so a wrap starts the line with the arrow", () => {
     mount();
     expect(document.querySelector("#step-0 .where-part")!.textContent).toBe("Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7");
