@@ -125,8 +125,8 @@
   border-bottom: 1px solid var(--line);
   background: var(--surface);
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 /* A sticky band can cover its own focused step. The band's height changes as
