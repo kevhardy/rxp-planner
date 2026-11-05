@@ -604,17 +604,13 @@
   background: var(--map-step-upcoming-fill);
 }
 
-.pin.crowded,
-.pin.crowded:hover:not(:disabled) {
-  width: 9px;
-  min-width: 0;
-  height: 9px;
-  padding: 0;
-}
-
 /* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
 .pin-upcoming {
   opacity: calc(0.5 + var(--fade, 1) * 0.5);
+}
+
+.pin.near {
+  opacity: 0.5;
 }
 
 .pin-start,
