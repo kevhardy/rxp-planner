@@ -2785,10 +2785,10 @@ legend {
   }
 }
 
-/* The taller first layer pushes the end of the fade below the list, so the
-   last row fades only part way and does not read as disabled. The second
-   layer is the opaque top of the same gradient, over the scrollbar, so the
-   scrollbar does not fade. */
+/* The list ends `STRIP` in WarningsPanel.tsx below a whole row. The taller
+   first layer starts the fade under the text of that row, so the fade
+   covers only the space below it. The second layer is the opaque top of the
+   same gradient, over the scrollbar, so the scrollbar does not fade. */
 .warnings-body[data-clipped] {
   mask-image: var(--mask-fade-end), var(--mask-fade-end);
   mask-position:
@@ -2796,7 +2796,7 @@ legend {
     top right;
   mask-repeat: no-repeat;
   mask-size:
-    100% calc(100% + var(--space-2)),
+    100% calc(100% + var(--space-3)),
     8px 200%;
 }
 

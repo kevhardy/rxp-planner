@@ -31,6 +31,18 @@ interface GuideWarnings {
 
 const ITEM_LIMIT = 10;
 
+const ROWS = ".warn-guide > summary, .warn-kind > summary, .warn-kind li";
+// The top padding of a warning row, so the strip under the last whole row
+// shows none of the next row's text.
+const STRIP = 6;
+
+/** The tallest height up to `room` that ends `STRIP` below a whole row. */
+function wholeRowsHeight(body: HTMLElement, room: number): number {
+  const top = body.getBoundingClientRect().top - body.scrollTop;
+  const ends = [...body.querySelectorAll(ROWS)].map((row) => row.getBoundingClientRect().bottom - top);
+  return Math.max(0, ...ends.filter((end) => end + STRIP <= room)) + STRIP;
+}
+
 /** Kinds that mean the quest data is incomplete, not that the guide is wrong. */
 const DATA_NOTES: ReadonlySet<WarningKind> = new Set(["unknownQuest", "noQuestXp", "noKillTarget", "noKillCount"]);
 
@@ -81,13 +93,21 @@ export function WarningsPanel() {
     const el = body.current;
     if (!open || !el || typeof ResizeObserver === "undefined") return;
     const mark = () => el.toggleAttribute("data-clipped", el.scrollHeight - el.scrollTop - el.clientHeight > 1);
-    const observer = new ResizeObserver(mark);
+    const fit = () => {
+      el.style.maxHeight = "";
+      const room = el.clientHeight;
+      if (el.scrollHeight - room > 1) el.style.maxHeight = `${wholeRowsHeight(el, room)}px`;
+      mark();
+    };
+    const observer = new ResizeObserver(fit);
     observer.observe(el);
     for (const child of el.children) observer.observe(child);
     el.addEventListener("scroll", mark, { passive: true });
+    window.addEventListener("resize", fit);
     return () => {
       observer.disconnect();
       el.removeEventListener("scroll", mark);
+      window.removeEventListener("resize", fit);
     };
   }, [open, groups]);
 
