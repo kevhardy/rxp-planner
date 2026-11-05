@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
-import type { WorldLocation } from "../../data/index.ts";
+import type { InstanceId, WorldLocation } from "../../data/index.ts";
 import { worldMap } from "../../data/terrainFixture.ts";
 import { at, testFrame } from "../../routing/fixtures/region.ts";
 import { nativeToWorld, worldToNative, type NativeFrame, type Point } from "../../routing/frame.ts";
 import type { JourneyLeg } from "../../routing/journey.ts";
 import { createPlan, DEFAULT_LEG, type MovementMode, type RoutePlan } from "../../routing/plan.ts";
+import type { TileCoverage } from "../../routing/artifact.ts";
 import type { TerrainRoute } from "../../routing/search.ts";
-import { insetBeside, legLines, projection } from "./lines.ts";
+import { insetBeside, legLines, projection, tileCornerViews, type Projection } from "./lines.ts";
 
 const run: MovementMode = { name: "Run", speed: 7, activation: 0 };
 
@@ -235,4 +236,27 @@ describe("inset beside a panel", () => {
     ];
     expect(insetBeside(inset, whole, map, box, 40, [wide])).toEqual(inset);
   });
+});
+
+it("takes the corners of the present tiles of every routing map", () => {
+  const frame: NativeFrame["frame"] = { tilePixels: 512, cellsPerTile: 128, tileWorldUnits: 1, origin: [0, 0], size: [4, 4] };
+  const manifest = (map: InstanceId, tiles: TileCoverage[]) => ({ manifest: { scope: { variant: "v", build: "b", map }, frame, tiles } });
+  const maps = [
+    manifest(0, [
+      { tile: [1, 2], state: "present" },
+      { tile: [3, 3], state: "missing" },
+    ]),
+    manifest(1, [{ tile: [0, 0], state: "present" }]),
+  ];
+  const proj: Projection = {
+    toView: ([x, y], m) => ({ x, y: y + Number(m) * 100000 }),
+    stopView: () => undefined,
+    toStop: () => undefined,
+  };
+  expect(tileCornerViews(maps, proj)).toEqual([
+    { x: 512, y: 1024 },
+    { x: 1023, y: 1535 },
+    { x: 0, y: 100000 },
+    { x: 511, y: 100511 },
+  ]);
 });

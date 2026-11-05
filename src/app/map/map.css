@@ -87,6 +87,12 @@
   container: map-overlay / inline-size;
 }
 
+/* Unzoomed, the stage can be narrower than the viewport, so a label at the
+   canvas edge runs onto the bare viewport instead of being cut. */
+.map-viewport:not(:has(> .map-stage.zoomed)) > .map-overlay {
+  overflow: visible;
+}
+
 /* Limit layer reuse to pans because promoted layers at fractional positions soften settled markers and labels. */
 .map-viewport.panning .map-overlay {
   will-change: transform;

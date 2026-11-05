@@ -56,7 +56,7 @@ import { summarizeJourney } from "../../routing/result.ts";
 import { CoordinateDialog } from "./CoordinateDialog.tsx";
 import { CoordinateReadout, type ReadoutPoint } from "./CoordinateReadout.tsx";
 import { legReport, readRoute, writeRoute } from "../../routing/share.ts";
-import { legLines, lineView, nearestLine, projection, skippedTiles } from "./lines.ts";
+import { legLines, lineView, nearestLine, projection, skippedTiles, tileCornerViews } from "./lines.ts";
 import { layerSearches, LayersMenu, RouterLayers, tileRects, type LayerChoices } from "./MapLayers.tsx";
 import { NewLegsMenu } from "./newLegs.tsx";
 import { RideLayer, RidePopover, spread, type PlacedMark } from "./RideLayer.tsx";
@@ -611,19 +611,7 @@ export function RouteWorkspace(props: {
         ]
       : [{ label: "Set start…", run: () => enter("Set the start", (p) => editor.setPending(p)) }];
 
-  const fitView = fitRequest(
-    fitted.length
-      ? fitted.flatMap((stop) => proj.stopView(stop) ?? [])
-      : engine.manifest.tiles
-          .filter((t) => t.state === "present")
-          .flatMap(({ tile: [x, y] }) => {
-            const size = engine.manifest.frame.tilePixels;
-            return [
-              proj.toView([x * size, y * size], firstMap) ?? [],
-              proj.toView([(x + 1) * size - 1, (y + 1) * size - 1], firstMap) ?? [],
-            ].flat();
-          }),
-  );
+  const fitView = fitRequest(fitted.length ? fitted.flatMap((stop) => proj.stopView(stop) ?? []) : tileCornerViews(engine.maps, proj));
   const skipped = skippedTiles(
     selectedLeg === null ? undefined : shown?.legs[selectedLeg],
     proj,
