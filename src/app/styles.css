@@ -2153,14 +2153,13 @@ label {
   font-weight: var(--font-weight-bold);
 }
 
+/* Centering the label's line on the first caption line puts the two
+   baselines within half a pixel. Baseline alignment would push the fields
+   down by the difference instead. -2px is half of the 4px by which the body
+   line is taller than the caption line. */
 .form-label:has(+ .tag-values) {
   align-self: start;
-}
-
-.form-label:has(+ .tag-values)::before {
-  content: "";
-  display: block;
-  height: calc(var(--line-height-caption) + var(--space-1) + (var(--control-field) - var(--line-height-body)) / 2);
+  margin-top: -2px;
 }
 
 .condition {
