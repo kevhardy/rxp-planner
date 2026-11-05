@@ -1951,7 +1951,8 @@ label {
     display: grid;
     grid-template-columns: repeat(3, max-content);
     justify-items: start;
-    row-gap: 0;
+    row-gap: var(--space-1);
+    margin-bottom: var(--space-1);
   }
 }
 
