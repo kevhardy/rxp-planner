@@ -576,9 +576,9 @@
 }
 
 .playback-routing {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  display: grid;
+  grid-template-rows: subgrid;
+  align-items: center;
   min-width: 0;
   max-width: 240px;
   color: var(--label);
@@ -698,6 +698,11 @@
 .playback-settings {
   display: inline-flex;
   grid-area: settings;
+}
+
+/* min-height, because the button primitive pins its height with !important. */
+.playback-settings > .ui-button {
+  min-height: var(--control-field);
 }
 
 .playback-settings .popover:not([hidden]) {
