@@ -165,7 +165,7 @@ describe("EditorDock tabs", () => {
     const field = (card: HTMLElement, n: number) =>
       n === 3
         ? within(card).getByRole("combobox", { name: "Line text" })
-        : within(card).getByRole("textbox", { name: n === 1 ? ">> text" : "Text" });
+        : within(card).getByRole("textbox", { name: n === 1 ? ">> Text" : "Text" });
     const drafts = ["Hello -- there", "Note -- there", "step"];
     const shown = [
       'RXP would read ".accept 1 >> Hello -- there" differently',
@@ -203,13 +203,13 @@ describe("EditorDock command forms", () => {
       "Grind to an XP threshold, or with `skipStep`, skip the step once it is reached.",
     );
     expect(within(xp).getByText("1,200 XP into level 8")).toBeTruthy();
-    const level = within(xp).getByRole("textbox", { name: "level" });
+    const level = within(xp).getByRole("textbox", { name: "Level" });
     await user.clear(level);
     await user.type(level, "<9.5{Enter}");
     expect(within(xp).getByText("50% into level 9, reversed")).toBeTruthy();
     const maxlevel = await showLine(user, 2);
-    expect(within(maxlevel).getByRole("textbox", { name: "ref" })).toHaveProperty("value", "Later");
-    await user.type(within(maxlevel).getByRole("textbox", { name: "level" }), "{Backspace}5{Enter}");
+    expect(within(maxlevel).getByRole("textbox", { name: "Ref" })).toHaveProperty("value", "Later");
+    await user.type(within(maxlevel).getByRole("textbox", { name: "Level" }), "{Backspace}5{Enter}");
     expect(record()).toBe(text.replace(".xp 8+1200,1,Later", ".xp <9.5,1,Later").replace(".maxlevel 14", ".maxlevel 15"));
 
     await user.click(screen.getByRole("button", { name: "Add line" }));
@@ -224,19 +224,21 @@ describe("EditorDock command forms", () => {
     await user.click(screen.getByRole("button", { name: "Insert" }));
     const buy = screen.getByRole("group", { name: /^Line 3,/ });
     expect(buy.getAttribute("aria-label")).toBe("Line 3, Buy items");
-    expect(document.activeElement).toBe(within(buy).getByRole("combobox", { name: "itemId" }));
+    expect(document.activeElement).toBe(within(buy).getByRole("combobox", { name: "Item ID" }));
     await user.keyboard("6948{Enter}");
     expect(record()).toContain(".maxlevel 15,Later\n.buy 6948\n");
     act(() => store.undo());
     expect(record()).toContain(".maxlevel 15,Later\n.buy\n");
   });
 
-  it("shows a repeating argument once more, optional arguments one at a time, and every argument of a form command", async () => {
+  it("shows a repeating argument once more, optional arguments one at a time, and every argument of a form command, in sentence case", async () => {
     const lines = [
-      [".skipgossip 5,1", ["npcId?", "option", "option"]],
-      [".collect 6948", ["itemId", "count?"]],
-      [".aura 133", ["spellId", "check?"]],
-      [".xp 5", ["level", "skipStep?", "ref?"]],
+      [".skipgossip 5,1", ["NPC ID?", "Option", "Option"]],
+      [".collect 6948", ["Item ID", "Count?"]],
+      [".aura 133", ["Spell ID", "Check?"]],
+      [".xp 5", ["Level", "Skip step?", "Ref?"]],
+      [".goto Elwynn Forest,48.9,40.1", ["Zone", "X", "Y", "Radius?"]],
+      [".fly Stormwind,Ironforge", ["Destination?", "Arg 2"]],
     ] as const;
     const { user } = mount(`#group G\n#name A\nstep\n${lines.map(([line]) => line).join("\n")}\n`);
     const fields = async (n: number) =>
@@ -455,7 +457,7 @@ describe("EditorDock raw text guard", () => {
       await user.click(screen.getByRole("tab", { name: "Raw" }));
       await user.type(raw(), "\n.xp 2");
       await user.click(screen.getByRole("tab", { name: "Lines" }));
-      const x = () => screen.getByRole("textbox", { name: "x" }) as HTMLInputElement;
+      const x = () => screen.getByRole("textbox", { name: "X" }) as HTMLInputElement;
       await user.clear(x());
       await user.type(x(), "55");
       if (commit === "Enter") await user.keyboard("{Enter}");
@@ -522,11 +524,11 @@ describe("EditorDock markup", () => {
     expect([...noteText.querySelectorAll(".rxp-colored")].map((el) => el.textContent)).toEqual(["Boars", "[Boar Meat]"]);
     const destroy = await showLine(user, 2);
     expect(shows(destroy)).toBe("Shows as: Discard [Hearthstone]");
-    expect(within(destroy).getByRole("combobox", { name: "itemId" })).toHaveProperty("value", "6948");
-    expect(shownText(within(destroy).getByRole("textbox", { name: ">> text" }))).toBe(DESTROY.slice(".destroy 6948 >> ".length));
+    expect(within(destroy).getByRole("combobox", { name: "Item ID" })).toHaveProperty("value", "6948");
+    expect(shownText(within(destroy).getByRole("textbox", { name: ">> Text" }))).toBe(DESTROY.slice(".destroy 6948 >> ".length));
     const accept = await showLine(user, 3);
     expect(shows(accept)).toBe("Shows as: Hello");
-    expect(shownText(within(accept).getByRole("textbox", { name: ">> text" }))).toBe("|cFFfa9602Hello|r");
+    expect(shownText(within(accept).getByRole("textbox", { name: ">> Text" }))).toBe("|cFFfa9602Hello|r");
 
     await user.click(screen.getByRole("tab", { name: "Step settings" }));
     await user.click(within(screen.getByRole("group", { name: "Tags" })).getByRole("checkbox", { name: "Sticky" }));
@@ -559,7 +561,7 @@ describe("EditorDock entity links", () => {
 
     const turnin = await showLine(user, 1);
     expect(links(turnin)).toEqual([["Wolves Across the Border", "https://www.wowhead.com/forever/quest=33"]]);
-    const quest = within(turnin).getByRole("combobox", { name: "questId" });
+    const quest = within(turnin).getByRole("combobox", { name: "Quest ID" });
     expect(quest).toHaveProperty("value", "-33");
     await user.clear(quest);
     await user.type(quest, "-34");
@@ -571,7 +573,7 @@ describe("EditorDock entity links", () => {
     const text = "#group G\n#name A\nstep\n.macro Roar,134400 >>/cast |T132121:0|tRoar\n";
     const { store, user } = mount(text);
     const card = await showLine(user, 1);
-    const icon = within(card).getByRole("textbox", { name: "icon" });
+    const icon = within(card).getByRole("textbox", { name: "Icon" });
     await user.click(within(card).getByRole("button", { name: "Choose icon" }));
     const dialog = screen.getByRole("dialog", { name: "Choose icon" });
     await user.click(within(dialog).getByRole("checkbox", { name: "In this guide" }));
@@ -698,7 +700,7 @@ describe("EditorDock outline", () => {
     await insertAt(user, "Add line");
     expect(record(store)).toBe(`${STEP}.accept\n`);
     expect(store.getState().selection).toEqual({ step: 0, line: 4 });
-    expect(document.activeElement).toBe(within(shownGroup()).getByRole("combobox", { name: "questId" }));
+    expect(document.activeElement).toBe(within(shownGroup()).getByRole("combobox", { name: "Quest ID" }));
 
     await insertAt(user, "Insert a line before line 3");
     expect(record(store)).toBe(
@@ -716,7 +718,7 @@ describe("EditorDock outline", () => {
     await user.selectOptions(screen.getByRole("combobox", { name: "New line type" }), "buy");
     await user.click(screen.getByRole("button", { name: "Insert" }));
     await user.keyboard("6948{Enter}");
-    const count = within(shownGroup()).getByRole("textbox", { name: "count" });
+    const count = within(shownGroup()).getByRole("textbox", { name: "Count" });
     await user.type(count, "2{Enter}");
     expect(record(store)).toBe(`${STEP}.buy 6948,2\n`);
     expect(document.activeElement).toBe(count);
@@ -823,18 +825,18 @@ describe("EditorDock drafts", () => {
   it("keeps a rejected draft when an edit of another field on its line is undone", async () => {
     const { store, user } = mount("#group T\n#name One\nstep\n.accept 1 >> First\n");
     const line = () => screen.getByRole("group", { name: "Line 1, Accept quest" });
-    const text = () => within(line()).getByLabelText(">> text");
+    const text = () => within(line()).getByLabelText(">> Text");
     await user.clear(text());
     await user.type(text(), "Rejected -- draft{Enter}");
     expect(within(line()).getByRole("alert").textContent).toMatch(/RXP would read/);
 
-    await user.clear(within(line()).getByLabelText("questId"));
-    await user.type(within(line()).getByLabelText("questId"), "10{Enter}");
-    expect(within(line()).getByLabelText("questId")).toHaveProperty("value", "10");
+    await user.clear(within(line()).getByLabelText("Quest ID"));
+    await user.type(within(line()).getByLabelText("Quest ID"), "10{Enter}");
+    expect(within(line()).getByLabelText("Quest ID")).toHaveProperty("value", "10");
     expect(shownText(text())).toBe("Rejected -- draft");
 
     act(() => store.undo());
-    expect(within(line()).getByLabelText("questId")).toHaveProperty("value", "1");
+    expect(within(line()).getByLabelText("Quest ID")).toHaveProperty("value", "1");
     expect(shownText(text())).toBe("Rejected -- draft");
     expect(within(line()).getByRole("alert").textContent).toMatch(/RXP would read/);
   });
@@ -1095,13 +1097,13 @@ describe("EditorDock beside the step list", () => {
       await typeRaw(user, "step\n.accept 88");
       writeDraft(lineOwner(store), "questId", { draft: "88", error: null });
       await user.click(screen.getByRole("tab", { name: "Lines" }));
-      selectText(screen.getByLabelText(">> text"), "Hello".length);
+      selectText(screen.getByLabelText(">> Text"), "Hello".length);
       await user.keyboard("X{Enter}");
 
       const message = "Opened your copy in “G (custom)”. Make the change there.";
       expect(store.getState().current!.id).toBe(copy);
       expect(screen.getByText(message).getAttribute("role")).toBe("status");
-      expect(shownText(screen.getByLabelText(">> text"))).toBe("Copy");
+      expect(shownText(screen.getByLabelText(">> Text"))).toBe("Copy");
       expect(readDraft(lineOwner(store), "questId").draft).toBe("77");
       await user.click(screen.getByRole("tab", { name: "Raw" }));
       expect(screen.getByLabelText("Raw text of step 1")).toHaveProperty("value", "step\n.accept 77");
@@ -1110,7 +1112,7 @@ describe("EditorDock beside the step list", () => {
       expect(screen.getByLabelText("Raw text of step 1")).toHaveProperty("value", "step\n.accept 88");
       expect(readDraft(lineOwner(store), "questId").draft).toBe("88");
       await user.click(screen.getByRole("tab", { name: "Lines" }));
-      expect(shownText(screen.getByLabelText(">> text"))).toBe("HelloX");
+      expect(shownText(screen.getByLabelText(">> Text"))).toBe("HelloX");
       expect(screen.getByRole("alert").textContent).toBe(message);
 
       await user.click(screen.getByRole("button", { name: "Close editor" }));
@@ -1188,8 +1190,8 @@ describe("EditorDock beside the step list", () => {
       await copyWithDraft(user);
       await user.click(screen.getByRole("button", { name: "Apply" }));
       await user.click(screen.getByRole("tab", { name: "Lines" }));
-      await user.clear(screen.getByLabelText("questId"));
-      await user.type(screen.getByLabelText("questId"), "88{Enter}");
+      await user.clear(screen.getByLabelText("Quest ID"));
+      await user.type(screen.getByLabelText("Quest ID"), "88{Enter}");
 
       act(() => [0, 1, 2].forEach(() => store.undo()));
       expect(store.getState().current!.id).toBe("rxp:a");

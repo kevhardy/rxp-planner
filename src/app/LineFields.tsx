@@ -92,6 +92,16 @@ const ARG_DESCRIPTIONS: Partial<Record<string, string>> = {
   icon: "The icon's FileDataID. Choose icon lists the guide icons.",
 };
 
+const ACRONYMS: ReadonlySet<string> = new Set(["id", "npc", "url"]);
+
+function argLabel(name: string): string {
+  const label = name
+    .split(/(?=[A-Z])/)
+    .map((word) => (ACRONYMS.has(word.toLowerCase()) ? word.toUpperCase() : word.toLowerCase()))
+    .join(" ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 export function LineTitle(props: { title: string; syntax: string }) {
   const { showGuideSyntax } = useLayout();
   return (
@@ -318,7 +328,7 @@ function CommandForm(props: { line: CommandLine; replace: (update: (l: BodyLine)
     return (
       <DraftField
         key={i}
-        label={arg ? arg.name : `arg ${i + 1}`}
+        label={arg ? argLabel(arg.name) : `Arg ${i + 1}`}
         placeholder={arg?.optional ? "optional" : undefined}
         draftName={argDraft(i)}
         description={searchable ? `${description ? `${description} ` : ""}Search by name or ID.` : description}
@@ -352,7 +362,7 @@ function CommandForm(props: { line: CommandLine; replace: (update: (l: BodyLine)
       <div className="command-form">
         {fields(indexes.filter((i) => !advanced.includes(i)))}
         <RxpTextField
-          label=">> text"
+          label=">> Text"
           draftName=">> text"
           description={ARG_DESCRIPTIONS.text}
           value={line.text ?? ""}
