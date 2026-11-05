@@ -2855,7 +2855,7 @@ legend {
 }
 
 .warn-kind.data-note > summary {
-  color: var(--map-legend-heading);
+  color: var(--overlay-heading);
 }
 
 .warn-kind ul {

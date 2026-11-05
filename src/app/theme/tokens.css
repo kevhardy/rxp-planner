@@ -30,7 +30,7 @@
   --map-legend-hidden: var(--muted);
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
-  --map-legend-heading: var(--raised-label);
+  --overlay-heading: var(--raised-label);
   /* The chevron icon in --muted, under a list that scrolls on. A data URL
      cannot read a token, so it repeats this theme's `--muted`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234c5868' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
@@ -168,7 +168,7 @@
      name. */
   --map-legend-hidden: var(--raised-label);
   /* --raised-label on the dark --raised reads too close to the rows below it. */
-  --map-legend-heading: var(--text);
+  --overlay-heading: var(--text);
   /* A data URL cannot read a token, so it repeats this theme's `--muted`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23aab6c5' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
 
@@ -324,7 +324,6 @@
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
 
   /* A mask reads only alpha, so the opaque stop needs no theme color. */
-  --mask-fade-end: linear-gradient(to bottom, #000 calc(100% - var(--space-6)), transparent);
 
   --bar-travel: var(--kind-goto);
   --bar-kill: var(--danger);
