@@ -396,7 +396,7 @@
 }
 
 .map-overlay .poi-row .poi-icon + .poi-icon {
-  margin-left: calc(-1 * var(--space-1));
+  margin-left: 2px;
 }
 
 .map-overlay .poi-row .poi-name {
