@@ -84,9 +84,9 @@ a {
   right: -2px;
   bottom: -2px;
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
   text-shadow: var(--art-text-halo);
 }
 
@@ -1688,16 +1688,14 @@ label {
   border-radius: var(--radius-control);
   background: var(--primary-bg);
   color: var(--primary-fg);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
 }
 
 .step-side .level-mark {
   margin: 0;
   padding: 0 var(--space-1);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
 }
 
 .header-row .step-no {
@@ -2022,8 +2020,8 @@ label {
   border-radius: var(--radius-control);
   background: var(--bg);
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   vertical-align: 1px;
   cursor: default;
   user-select: all;
