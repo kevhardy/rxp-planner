@@ -1,6 +1,6 @@
 import { useContext, useCallback, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { Interior } from "../../../packages/data-contract/interiors.ts";
-import type { Continent, GameData, MapLocation, WorldMapPoi, Zone } from "../../data/index.ts";
+import type { Continent, GameData, MapLocation, WorldLocation, WorldMapPoi, Zone } from "../../data/index.ts";
 import { insertionState, type Profile, type SimState } from "../../rules/index.ts";
 import { insertIndex, type PointProblem, type StepPoints } from "../../rules/points.ts";
 import { insertQuest } from "../../rules/questInsertion.ts";
@@ -150,6 +150,8 @@ export interface MapExtras {
   interior?: Interior | undefined;
   foot?: ReactNode;
   panel?: ReactNode;
+  /** Where the character stands still, which the guide's quest marks clear. */
+  stand?: WorldLocation | undefined;
 }
 
 export interface SearchActions {
@@ -536,6 +538,7 @@ export function useGuideMap(
           menu={(at) => (edit ? addMenu(laid.describe(at), (command) => addPoint(surface.locate(at), command)) : undefined)}
           {...view.canvas(surface)}
           onUserMove={extras.onUserMove}
+          stand={extras.stand && surface.projectOutline(extras.stand)}
         />
         <div ref={view.mapTop} className="map-top">
           {extras.panel}

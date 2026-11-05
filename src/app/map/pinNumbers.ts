@@ -28,6 +28,8 @@ const MAX_SHIFT = 24;
 // In Playback, map.css draws a selected step's pin as a badge this far right
 // of and above its point, which clears its own mark's ring by `MARK_CLEAR`.
 const BADGE_OFFSET = 19;
+// The character marker in playback.css is a 16px disc with a 2px outline.
+const CHARACTER_REACH = 10;
 const RINGED: ReadonlySet<Pin["kind"]> = new Set(["start", "end", "both"]);
 
 /** The length of the straight part between the pin's two round ends. */
@@ -36,9 +38,10 @@ const barOf = (text: string) => Math.max(0, PIN_EDGES + text.length * DIGIT_WIDT
 /**
  * What a ranked pin prints at this scale. `null` draws no pin, because a chip
  * or a mark of the selected step already covers its place. `at` is where the
- * chip draws when it moves off its point to clear another mark. `badge` is
- * how far, in pixels, a selected step's badge moves to take the corner of a
- * ringed mark whose ring it would cover.
+ * chip draws when it moves off its point to clear another mark, or where a
+ * ringed mark draws to clear the character. `badge` is how far, in pixels, a
+ * selected step's badge moves to take the corner of a ringed mark whose ring
+ * it would cover.
  */
 export type PinLook = { text: string; near: boolean; at?: ViewPoint; badge?: { x: number; y: number } } | null;
 
@@ -64,6 +67,20 @@ const gap = (a: Spot, b: Spot) => Math.hypot(Math.max(0, Math.abs(a.x - b.x) - (
 const overlaps = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE;
 const crowds = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE + CLEAR;
 
+/**
+ * Where a ringed mark draws so that its ring clears the character at `stand` by `MARK_CLEAR`: straight away from the
+ * character, or to its upper left when the mark sits under it. The step's badge takes the upper right, and the
+ * character's level chip the space below. Undefined when the ring already clears.
+ */
+function besideCharacter(mark: Spot, stand: Spot): Spot | undefined {
+  const reach = PIN_SIZE / 2 + MARK_EDGE + MARK_CLEAR + CHARACTER_REACH;
+  const [dx, dy] = [mark.x - stand.x, mark.y - stand.y];
+  const d = Math.hypot(dx, dy);
+  if (d >= reach) return undefined;
+  const [ux, uy] = d > PIN_SIZE / 2 ? [dx / d, dy / d] : [-Math.SQRT1_2, -Math.SQRT1_2];
+  return { ...mark, x: stand.x + ux * reach, y: stand.y + uy * reach };
+}
+
 /** Each move a chip can make, shortest first. */
 const SHIFTS = Array.from({ length: (2 * MAX_SHIFT + 1) ** 2 }, (_, i) => ({
   x: (i % (2 * MAX_SHIFT + 1)) - MAX_SHIFT,
@@ -88,15 +105,27 @@ function take(chip: Chip, step: number) {
  * nearest free place, nearest steps first, or draws nothing when no place
  * within `MAX_SHIFT` is free.
  *
- * A ranked pin's text is its step number.
+ * A ranked pin's text is its step number. `stand` is where the character
+ * stands still, in Playback. A ringed mark under it moves beside it.
  */
-export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: number): Map<string, PinLook> {
-  const spot = (p: Pin): Spot => ({ x: p.at.x * pxPerPercent, y: (p.at.y * pxPerPercent) / aspect, bar: p.text ? barOf(p.text) : 0 });
-  const marks = pins.flatMap((p) => (p.rank ? [] : [spot(p)]));
+export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: number, stand?: ViewPoint): Map<string, PinLook> {
+  const toView = (s: Spot): ViewPoint => ({ x: s.x / pxPerPercent, y: (s.y * aspect) / pxPerPercent });
+  const toPx = (at: ViewPoint, bar = 0): Spot => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect, bar });
+  const spot = (p: Pin) => toPx(p.at, p.text ? barOf(p.text) : 0);
+  const character = stand && toPx(stand);
+  const looks = new Map<string, PinLook>();
+  const besides = new Map<string, Spot>();
+  for (const p of pins) {
+    const beside = character && RINGED.has(p.kind) ? besideCharacter(spot(p), character) : undefined;
+    if (!beside) continue;
+    besides.set(p.key, beside);
+    looks.set(p.key, { text: "", near: false, at: toView(beside) });
+  }
+  const markSpot = (p: Pin) => besides.get(p.key) ?? spot(p);
+  const marks = pins.flatMap((p) => (p.rank ? [] : [markSpot(p)]));
   const ranked = pins.filter((p) => p.text && p.rank).sort((a, b) => a.rank! - b.rank!);
   const chips: Chip[] = [];
   const under: { pin: Pin; at: Spot }[] = [];
-  const looks = new Map<string, PinLook>();
   for (const pin of ranked) {
     const at = spot(pin);
     const chip = chips.find((c) => c.kind === pin.kind && crowds(drawn(c), at));
@@ -136,10 +165,10 @@ export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: num
     placed.push({ ...own, x: own.x + shift.x, y: own.y + shift.y });
     const near = marks.some((m) => Math.hypot(m.x - chip.x, m.y - chip.y) <= NEAR);
     const moved = shift.x !== 0 || shift.y !== 0;
-    const at = { x: (own.x + shift.x) / pxPerPercent, y: ((own.y + shift.y) * aspect) / pxPerPercent };
+    const at = toView({ ...own, x: own.x + shift.x, y: own.y + shift.y });
     looks.set(chip.key, { text: chipText(chip), near, ...(moved && { at }) });
   }
-  const rings = pins.flatMap((p) => (RINGED.has(p.kind) ? [spot(p)] : []));
+  const rings = pins.flatMap((p) => (RINGED.has(p.kind) ? [markSpot(p)] : []));
   for (const pin of pins) {
     if (pin.rank !== 0 || !pin.text) continue;
     const own = spot(pin);

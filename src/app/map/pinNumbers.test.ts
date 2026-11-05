@@ -136,3 +136,19 @@ it("moves a selected step's badge onto the corner of a ringed mark whose ring it
   });
   expect(looks([selected, { key: "far", at: { x: 0, y: 60 }, kind: "start", label: "far" }])).toEqual({});
 });
+
+it("moves a ringed mark beside the standing character, so the character's marker does not cover it", () => {
+  const quest: Pin = { key: "quest", at: { x: 0, y: 0 }, kind: "start", label: "quest" };
+  const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
+  // The mark's ring reaches 14 px, the space 4 px, and the character's marker 10 px, so the mark's center goes 28 px off.
+  // On the character, it takes the upper left, and the badge keeps the upper right, 39 px off the moved ring.
+  expect(Object.fromEntries(pinLooks([selected, quest], 1, 1, { x: 0, y: 0 }))).toEqual({
+    quest: { text: "", near: false, at: { x: -28 * Math.SQRT1_2, y: -28 * Math.SQRT1_2 } },
+  });
+  // Off to one side, it moves straight away from the character.
+  expect(Object.fromEntries(pinLooks([{ ...quest, at: { x: 0, y: 20 } }], 1, 1, { x: 0, y: 0 }))).toEqual({
+    quest: { text: "", near: false, at: { x: 0, y: 28 } },
+  });
+  expect(Object.fromEntries(pinLooks([{ ...quest, at: { x: 0, y: 28 } }], 1, 1, { x: 0, y: 0 }))).toEqual({});
+  expect(looks([quest])).toEqual({});
+});

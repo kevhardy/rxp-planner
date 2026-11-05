@@ -160,6 +160,8 @@ export function MapCanvas(props: {
   view?: ViewRequest | undefined;
   cover?: () => Inset;
   onUserMove?: ((move: UserMove) => void) | undefined;
+  /** Where the character stands still, which the guide's quest marks clear. */
+  stand?: ViewPoint | undefined;
 }) {
   const { mapView, aspect, pins, shapes } = props;
   const snapshot = useSyncExternalStore(mapView.subscribe, mapView.getSnapshot);
@@ -218,7 +220,7 @@ export function MapCanvas(props: {
     return <Line key={key} className={className} opacity={s.fade} points={polyline(s.points)} />;
   };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
-  const looks = pinLooks(pins, pxPerPercent, aspect);
+  const looks = pinLooks(pins, pxPerPercent, aspect, props.stand);
   const drawn = pins.filter((p) => looks.get(p.key) !== null);
   const [paths, shared] = useMemo(
     () => [props.spawns.filter((s) => s.colors.length === 1), props.spawns.filter((s) => s.colors.length > 1)],
