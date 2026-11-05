@@ -1964,7 +1964,7 @@ label {
     grid-template-columns: repeat(3, max-content);
     justify-items: start;
     row-gap: var(--space-1);
-    margin-bottom: var(--space-1);
+    margin-bottom: var(--space-3);
   }
 }
 

@@ -280,6 +280,18 @@ it("draws the note's fold 3 L* or more lighter than the top of its sheet", () =>
   expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
 });
 
+// At 16px the book's page edge is about one pixel wide, so it needs the 3:1 of a graphic's part to read apart from
+// the cover. The cover's light stop sits beside the page edge.
+it("draws each stop of the book's page edge at 3:1 or more on the cover's light stop", () => {
+  const book = readFileSync(join(import.meta.dirname, "../guideIcons/train.svg"), "utf8");
+  const stops = (id: string) =>
+    [...new RegExp(`id="${id}"[^>]*>(.*?)</linearGradient>`).exec(book)![1]!.matchAll(/stop-color="(#[\da-f]{6})"/g)].map(([, hex]) =>
+      paint("light", id, hex!, {}),
+    );
+  const cover = stops("train-cover")[0]!;
+  expect(stops("train-fore").map((page) => contrast(page, cover) >= 3)).toEqual([true, true]);
+});
+
 // CSS brightness() scales the encoded sRGB channels.
 it("lifts the dark target person's plum base to 3:1 or more on --surface", () => {
   const target = readFileSync(join(import.meta.dirname, "../guideIcons/target.svg"), "utf8");
