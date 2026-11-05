@@ -492,6 +492,12 @@ describe("top bar", () => {
     ]);
   });
 
+  it("gives Import guide in the library the field height of the buttons beside fields", async () => {
+    await mount();
+    const library = screen.getByRole("navigation", { name: "Library" });
+    expect(cascade(within(library).getByRole("button", { name: "Import guide" }), "height")?.value).toBe("var(--control-field)");
+  });
+
   it.each(["{Enter}", " ", "{ArrowDown}"])("opens the guide actions menu with %s, and Escape closes it to the arrow", async (key) => {
     const { user } = await mount();
     const more = screen.getByRole("button", { name: "More guide actions" });
