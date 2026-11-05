@@ -45,6 +45,7 @@
      dot and a softer rim. */
   --map-legend-services: color-mix(in srgb, var(--map-dot-services) 80%, var(--control-border));
   --map-legend-services-rim: var(--control-border);
+  --map-legend-step-outline: var(--control-border);
   /* The chevron under a list that scrolls on, in --text at 70%. A data URL
      cannot read a token, so it repeats this theme's `--text`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317202b' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
@@ -194,6 +195,10 @@
   --map-legend-heading: var(--map-legend-shown);
   --map-legend-services: var(--map-dot-services);
   --map-legend-services-rim: var(--art-ink);
+  /* On the map, a dark step pin reads by its ink rim on lit terrain. The
+     dark --raised is too close to the ink, so a light ring stands in for
+     the terrain. */
+  --map-legend-step-outline: var(--text);
   /* A data URL cannot read a token, so it repeats this theme's `--text`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23e3e8ee' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 
@@ -295,6 +300,8 @@
      page background. */
   --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
+  /* Half of --hover, so a hovered row still reads over the stripe. */
+  --warn-stripe: color-mix(in srgb, var(--hover) 50%, var(--raised));
   --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);

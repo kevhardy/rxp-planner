@@ -1476,6 +1476,10 @@
   background: var(--map-step-upcoming-fill);
 }
 
+.step-swatch:is(.previous, .upcoming) {
+  outline-color: var(--map-legend-step-outline);
+}
+
 .stack-swatch {
   flex: none;
   width: 12px;
