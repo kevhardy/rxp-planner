@@ -2215,6 +2215,17 @@ label {
   padding: 0;
 }
 
+.sim-settings > .tag-values {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 128px;
+  justify-content: start;
+}
+
+.sim-settings > .tag-values > * {
+  grid-column: auto;
+}
+
 .sim-settings p {
   margin: var(--space-2) 0 0;
   font-size: var(--font-size-body);
