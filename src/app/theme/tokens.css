@@ -263,8 +263,6 @@
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
   --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));
 
-  --map-step: color-mix(in srgb, var(--kind-goto) 80%, var(--text));
-
   --ink-bar-start: inset 4px 0 0 -1px var(--pop);
   --ink-bar-top: inset 0 3px 0 -1px var(--pop);
   --ink-bar-bottom: inset 0 -3px 0 -1px var(--pop);
@@ -318,6 +316,15 @@
   --map-character: #c8102e;
   --map-enemy: #ff7b6b;
   --map-enemy-dead: #a59e93;
+  /* The map's art keeps one look in both themes, so the selected step and the
+     objective colors on it take the dark theme's values. */
+  --map-step: #6dbee9;
+  --map-objective-1: #ffa8b5;
+  --map-objective-2: #4ee75f;
+  --map-objective-3: #95c9ff;
+  --map-objective-4: #2decd6;
+  --map-objective-5: #e4a9ff;
+  --map-objective-6: #cccd00;
   --map-step-upcoming: #4cc472;
   /* A numbered pin of a step before or after the selected one. A dark fill
      and a solid ink rim keep it apart from green terrain and quieter than the

@@ -391,10 +391,7 @@ describe("map panel", () => {
     expect(areas()).toEqual([O1, O3, O2]);
     for (const path of mapArea().querySelectorAll(".areas path")) expect(path.getAttribute("d")).toMatch(/^(M[^MZ]+Z)+$/);
     expect(spawnDots()).toEqual([]);
-    expect(markers.map((m) => m.style.getPropertyValue("--fill"))).toEqual([
-      "conic-gradient(var(--objective-1) 0% 50%, var(--objective-3) 50% 100%)",
-      "var(--objective-2)",
-    ]);
+    expect(markers.map((m) => m.style.getPropertyValue("--fill"))).toEqual([`conic-gradient(${O1} 0% 50%, ${O3} 50% 100%)`, O2]);
 
     await user.click(markers[0]!);
     await user.click(screen.getByRole("menuitem", { name: "Add .goto" }));

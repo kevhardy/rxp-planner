@@ -286,7 +286,11 @@ describe("outline rows", () => {
 
   it("colors each objective row as its spawns, and shows one objective's spawns and fades the others while its row has the pointer or focus", async () => {
     const { user } = await mount(GUIDE);
-    expect([1, 2, 3].map((n) => rowOf(n).style.getPropertyValue("--objective"))).toEqual([O1, O2, O3]);
+    expect([1, 2, 3].map((n) => rowOf(n).style.getPropertyValue("--objective"))).toEqual([
+      "var(--objective-1)",
+      "var(--objective-2)",
+      "var(--objective-3)",
+    ]);
     const markerFades = () =>
       within(mapArea())
         .getAllByRole("button", { name: /locations \(/ })

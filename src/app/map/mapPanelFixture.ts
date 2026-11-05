@@ -67,7 +67,7 @@ export const clientAt = (uiMapId: number, x: number, y: number) => {
 
 export const mapShown = () => screen.getByRole<HTMLSelectElement>("combobox", { name: "Map shown" });
 export const mapArea = () => screen.getByRole("group", { name: /^Map of / });
-export const [O1, O2, O3] = ["var(--objective-1)", "var(--objective-2)", "var(--objective-3)"] as const;
+export const [O1, O2, O3] = ["var(--map-objective-1)", "var(--map-objective-2)", "var(--map-objective-3)"] as const;
 export const spawnDots = () =>
   [...mapArea().querySelectorAll<HTMLElement | SVGElement>(".spawns g, .spawn")].flatMap((d) => {
     const segments = d instanceof SVGElement ? d.querySelector("path:not(.edge)")!.getAttribute("d")!.split("M").length - 1 : 1;

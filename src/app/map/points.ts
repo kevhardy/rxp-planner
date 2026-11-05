@@ -63,7 +63,11 @@ export interface StepObjective {
 
 const OBJECTIVE_COLORS = 6;
 
-export const objectiveColor = (color: number): string => `var(--objective-${(color % OBJECTIVE_COLORS) + 1})`;
+const objectiveSlot = (color: number) => (color % OBJECTIVE_COLORS) + 1;
+
+export const objectiveColor = (color: number): string => `var(--objective-${objectiveSlot(color)})`;
+
+export const mapObjectiveColor = (color: number): string => `var(--map-objective-${objectiveSlot(color)})`;
 
 export function stepObjectives(data: GameData, step: Step, faction: Faction): Map<number, StepObjective> {
   const byLine = new Map<number, StepObjective>();
