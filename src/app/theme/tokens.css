@@ -98,7 +98,7 @@
   --kind-turnin: #147c3b;
   --kind-complete: #bd3f0c;
   --kind-goto: #0369a1;
-  --kind-target: #9d6b8c;
+  --kind-target: #8a5a7a;
   --kind-train: #7042c8;
   --kind-vendor: #6d3c0c;
   --kind-command: #6b645b;
@@ -229,7 +229,7 @@
   --danger-press: #dc5f4c;
 
   --disabled-bg: #28313c;
-  --disabled-fg: #707d8e;
+  --disabled-fg: #808c9d;
 
   /* One gold for warnings, RXP's WARN text, and the accept mark, since golds
      a few degrees apart read as near misses. */
@@ -272,9 +272,6 @@
 }
 
 :root {
-  /* Not --hover, which on the light top bar is close to --pressed-wash, so a
-     disabled button would read as a toggle that is on. */
-  --disabled-button-bg: var(--surface);
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));

@@ -178,7 +178,7 @@
 .ui-button:is(:disabled, [aria-disabled="true"]),
 .ui-button:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
   border-color: var(--disabled-fg) !important;
-  background: var(--disabled-button-bg) !important;
+  background: transparent !important;
   box-shadow: none !important;
   color: var(--disabled-fg) !important;
   font-weight: var(--font-weight-regular) !important;
