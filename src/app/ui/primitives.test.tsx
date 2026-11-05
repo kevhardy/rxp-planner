@@ -319,7 +319,7 @@ describe("each primitive", () => {
     ["Quiet on segment", "rest", "border-end-start-radius", "var(--radius-control)"],
     ["Quiet on segment", "rest", "border-end-end-radius", "var(--radius-control)"],
     ["Quiet on segment", "rest", "box-shadow", "none"],
-    ["Quiet on segment", "rest", "font-weight", "var(--font-weight-bold)"],
+    ["Quiet on segment", "rest", "font-weight", "var(--font-weight-regular)"],
 
     ["Menu item", "hover", "background", "var(--hover)"],
     ["Menu item", "focus", "background", "var(--hover)"],

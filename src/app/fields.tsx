@@ -400,7 +400,7 @@ export function ConditionEditor(props: {
           value={condition?.text ?? ""}
           onCommit={commitText}
           description={props.description}
-          placeholder="none"
+          placeholder="such as Dwarf/Gnome"
           hideLabel
           mono
         />
