@@ -23,6 +23,8 @@
   /* On the pale sea, a solid diagonal rim thickens each stem into a black
      stencil, so the corners of --art-label-outline draw softer. */
   --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 42%, transparent);
+  /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
+  --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
@@ -166,6 +168,7 @@
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
   --art-label-rim-diagonal: var(--art-ink);
+  --art-label-outline-halo: var(--art-label-halo);
   /* On the dark --raised, --muted reads as more than one step below a shown
      name, and --raised-label reads too close to it. */
   --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
@@ -448,7 +451,7 @@
   --art-label-outline:
     1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
     -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
-    var(--art-label-halo);
+    var(--art-label-outline-halo);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }
