@@ -1566,6 +1566,21 @@ label {
   vertical-align: -2px;
 }
 
+/* As in an inventory mark, the art draws at 19/16 of the box so its dark
+   frame falls outside, and the outline gives the art a light edge. */
+:is(.row-text, .playback-title-text) .guide-icon.framed {
+  --crop-w: calc(var(--box-w) * 19 / 16);
+  --crop-h: calc(var(--box-h) * 19 / 16);
+  background-image: var(--guide-icon-outline), var(--rxp-guide-icons, none);
+  background-size:
+    100% 100%,
+    calc(var(--crop-w) * var(--sheet-w)) calc(var(--crop-h) * var(--sheet-h));
+  background-position:
+    0 0,
+    calc(var(--crop-w) * var(--cell-x) - var(--box-w) * 3 / 32) calc(var(--crop-h) * var(--cell-y) - var(--box-h) * 3 / 32);
+  box-shadow: none;
+}
+
 .step-does {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);

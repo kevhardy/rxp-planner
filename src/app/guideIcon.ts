@@ -126,7 +126,8 @@ const length = (pixels: number) => (pixels === 0 ? "1em" : `${pixels}px`);
  * The class and CSS variables of an icon drawn at `size`, where 0 is the text
  * height. `icon` is a catalog icon, or a key, which draws its vector redraw
  * even when the catalog has no row for it. `drawn` is false when no icon
- * shows, and the outline shows in its place.
+ * shows, and the outline shows in its place. A game icon from
+ * `interface/icons/` takes the class `framed`, since its art has a dark frame.
  */
 export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | GuideIconKey | undefined, size: Size): IconLook {
   const box: IconVars = { "--icon-w": length(size.width), "--icon-h": length(size.height) };
@@ -148,7 +149,7 @@ export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | Guide
     "--cell-x": String(-cell.x / cell.width),
     "--cell-y": String(-cell.y / cell.height),
   };
-  return { className: "guide-icon", vars, drawn: true };
+  return { className: entry.path.startsWith("interface/icons/") ? "guide-icon framed" : "guide-icon", vars, drawn: true };
 }
 
 /**

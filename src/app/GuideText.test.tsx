@@ -55,7 +55,7 @@ it("shows each texture as a named icon at its size, cropped from the sheet, and 
   const declarations = ({ style }: HTMLElement) => Object.fromEntries([...style].map((name) => [name, style.getPropertyValue(name)]));
   expect([knife!.getAttribute("aria-label"), knife!.className, declarations(knife!)]).toEqual([
     "inv knife 1h skybornec60 b 01",
-    "guide-icon",
+    "guide-icon framed",
     {
       "--icon-w": "20px",
       "--icon-h": "20px",

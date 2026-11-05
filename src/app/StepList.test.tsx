@@ -131,7 +131,7 @@ describe("step row", () => {
     expect(marks).toEqual([
       ["mk mk-accept tex", "guide-icon vector vivid", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
       ["mk mk-equip", "svg"],
-      ["mk mk-hs item", "guide-icon", "-1.09375"],
+      ["mk mk-hs item", "guide-icon framed", "-1.09375"],
       ["mk mk-deathskip tex", "guide-icon vector deep", 'url("/src/app/guideIcons/deathskip.svg?no-inline")'],
     ]);
   });
