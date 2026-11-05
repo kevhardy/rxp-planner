@@ -411,6 +411,9 @@
 
   --font-size-mark: 8px;
   --line-height-mark: 1;
+  /* A step's number, centered on the first line of its title. */
+  --font-size-step-no: var(--font-size-caption);
+  --line-height-step-no: var(--line-height-body);
 
   --space-1: 4px;
   --space-2: 8px;

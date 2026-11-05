@@ -1307,8 +1307,8 @@ label {
   grid-column: 1;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-step-no);
+  line-height: var(--line-height-step-no);
   text-align: center;
 }
 
@@ -1666,6 +1666,11 @@ label {
   padding: 0 var(--space-1);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+}
+
+.header-row .step-no {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .header-row .step-skip {
