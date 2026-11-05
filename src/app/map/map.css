@@ -1209,7 +1209,7 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
-  color: var(--label);
+  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -1281,9 +1281,9 @@
   color: var(--text);
 }
 
-.legend-row[aria-pressed="false"] .legend-name,
+.legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
-.legend-step.off .legend-name {
+.legend-step.off :is(.legend-name, .legend-state) {
   color: var(--muted);
 }
 
@@ -1370,14 +1370,9 @@
   white-space: normal;
 }
 
-.legend-count {
-  color: var(--label);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
-}
-
+.legend-count,
 .legend-state {
-  color: var(--label);
+  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
