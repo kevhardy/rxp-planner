@@ -28,6 +28,13 @@
   --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
   /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
   --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
+  /* A rim of --art-ink on each side and --art-label-rim-diagonal at each
+     corner, so a label reads against the rim at any sea color. A full 1px
+     rim thickens the letters on the pale sea, so the light rim is 0.75px. */
+  --art-label-outline:
+    0.75px 0 var(--art-ink), -0.75px 0 var(--art-ink), 0 0.75px var(--art-ink), 0 -0.75px var(--art-ink),
+    0.75px 0.75px var(--art-label-rim-diagonal), -0.75px -0.75px var(--art-label-rim-diagonal),
+    0.75px -0.75px var(--art-label-rim-diagonal), -0.75px 0.75px var(--art-label-rim-diagonal), var(--art-label-outline-halo);
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. A faint tint of the sea reads as a map with
      no guide, not as a blank pane, and stays lighter than --pane-head. */
@@ -190,6 +197,10 @@
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   --art-label-rim-diagonal: var(--art-ink);
   --art-label-outline-halo: var(--art-label-halo);
+  --art-label-outline:
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
+    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
+    var(--art-label-outline-halo);
   /* The dark --accent reads dim beside the names of shown rows. */
   --map-legend-eye-shown: color-mix(in srgb, var(--accent) 70%, var(--text));
   /* --raised-label on the dark --raised reads too close to the rows below it. */
@@ -477,13 +488,6 @@
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
-  /* A solid 1px rim of --art-ink on each side and --art-label-rim-diagonal
-     at each corner, so a label reads against the rim at any sea color, with
-     the soft halo outside it. */
-  --art-label-outline:
-    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
-    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
-    var(--art-label-outline-halo);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }
