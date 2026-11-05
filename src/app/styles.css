@@ -2875,6 +2875,7 @@ legend {
 }
 
 .warnings summary .count {
+  color: var(--muted);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -2900,10 +2901,6 @@ legend {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-medium);
-}
-
-.warn-kind > summary .count {
-  color: var(--muted);
 }
 
 .warn-kind-mark {
