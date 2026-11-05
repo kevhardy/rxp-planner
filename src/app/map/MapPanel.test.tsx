@@ -335,6 +335,24 @@ describe("map panel", () => {
       ]);
     });
 
+    it("draws an upcoming route no wider than the selected step's route, so the selected step leads", async () => {
+      const style = document.head.appendChild(document.createElement("style"));
+      style.textContent = mapStyles;
+      onTestFinished(() => style.remove());
+      await mountWith({ map: { previousSteps: "shown", upcomingSteps: "shown" }, step: 2 }, guide);
+      const widths = Object.fromEntries(
+        [...mapArea().querySelectorAll("polyline.route")].map((l) => [l.getAttribute("class"), getComputedStyle(l).strokeWidth]),
+      );
+      expect(widths).toEqual({
+        "route previous casing": "4.5px",
+        "route previous": "2.5px",
+        "route selected casing": "4.5px",
+        "route selected": "2.5px",
+        "route upcoming casing": "4.5px",
+        "route upcoming": "2.5px",
+      });
+    });
+
     it("sets each side hidden, dimmed, or shown from the legend", async () => {
       const { user } = await mountWith({ step: 2 }, guide);
       expect((await show("Previous", "Hidden")).getAttribute("aria-pressed")).toBe("true");
