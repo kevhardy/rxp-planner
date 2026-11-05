@@ -12,7 +12,6 @@ import { Button, DisclosureIcon } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { ItemButton } from "../ui/ItemButton.tsx";
-import { Mono } from "../ui/Text.tsx";
 import { wholeRowsHeight } from "../ui/wholeRows.ts";
 import { isCurrent, jumpTo, useRoute } from "./route.ts";
 import { markDoneParts, placeParts, prerequisiteFixes, warningParts, type RouteView } from "../../rules/index.ts";
@@ -155,7 +154,7 @@ export function WarningsPanel() {
       <Card as="section" layer id={panelId} className="warnings popover" aria-label="Warnings" hidden={!open}>
         <div className="panel-head">
           <h2>Warnings</h2>
-          <span className={`count${total > 0 ? " warn" : ""}`}>{groups && <Mono>{total}</Mono>}</span>
+          <span className={`count${total > 0 ? " warn" : ""}`}>{groups && total}</span>
         </div>
         <div ref={body} className="panel-body warnings-body" data-tip-bounds>
           {message ? (
@@ -167,10 +166,7 @@ export function WarningsPanel() {
               <details key={group.guide} className="warn-guide" open>
                 <summary>
                   <DisclosureIcon />
-                  {route.names[group.guide]}{" "}
-                  <span className="count">
-                    <Mono>{group.total}</Mono>
-                  </span>
+                  {route.names[group.guide]} <span className="count">{group.total}</span>
                 </summary>
                 {group.kinds.map(({ kind, items }) => {
                   const key = `${group.guide}:${kind}`;
@@ -185,10 +181,7 @@ export function WarningsPanel() {
                           size={14}
                           className={dataNote ? "warn-kind-mark data-note" : "warn-kind-mark"}
                         />
-                        {KIND_LABELS[kind]}{" "}
-                        <span className="count">
-                          <Mono>{items.length}</Mono>
-                        </span>
+                        {KIND_LABELS[kind]} <span className="count">{items.length}</span>
                       </summary>
                       <ul>
                         {shown.map((item, i) => (

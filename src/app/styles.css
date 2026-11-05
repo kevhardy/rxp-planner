@@ -2860,6 +2860,11 @@ legend {
   font-weight: var(--font-weight-bold);
 }
 
+.warnings summary .count {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
 .warn-guide + .warn-guide {
   margin-top: var(--space-3);
   padding-top: var(--space-3);
