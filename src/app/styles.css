@@ -1666,10 +1666,6 @@ label {
   grid-column: 2;
 }
 
-.foot-condition {
-  color: var(--text);
-}
-
 .foot-tag {
   color: var(--foot-tag);
 }
