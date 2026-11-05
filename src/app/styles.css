@@ -1004,11 +1004,18 @@ label {
   margin-left: -1px;
 }
 
-/* A disabled main half has no fill, so the live half drops its fill to match. */
+/* The live half takes the fill and border of a disabled main half, so the
+   pair reads as one button. Its rest fill is the hover fill, so a hover shows
+   the press fill. */
 .split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
   /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The border keeps the pair one button beside its disabled half. The chevron keeps its live color. */
   border-color: var(--disabled-fg);
-  background: none;
+  background: var(--disabled-button-bg);
+}
+
+.split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more:hover {
+  /* stylelint-disable-next-line declaration-no-important -- The secondary hover fill in ui.css is !important. */
+  background: var(--press) !important;
 }
 
 .split-menu {
