@@ -310,7 +310,7 @@ function LegendGroup(
   props: {
     name: string;
     layer?: string;
-    /** Draws the shape of the layer's plain points beside the name. */
+    /** Draws the shape of the layer's plain points before the name. */
     mark?: boolean;
     disabled?: boolean;
     action?: ReactNode;
@@ -322,8 +322,8 @@ function LegendGroup(
     <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
         <h3 id={id}>
-          {props.name}
           {props.mark && <span className={`group-mark poi-${props.layer}`} aria-hidden="true" />}
+          {props.name}
         </h3>
         {props.action}
         {props.onToggle && (
