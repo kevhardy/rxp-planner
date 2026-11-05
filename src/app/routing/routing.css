@@ -797,6 +797,12 @@
   pointer-events: auto;
 }
 
+/* The default stroke breaks up on the teal at the small size, where the glyph
+   fills the mark inside its border. */
+.map-overlay .ride-mark svg {
+  stroke-width: 2;
+}
+
 @container map-overlay (width < 2400px) {
   .map-overlay .ride-mark {
     width: 14px;
@@ -805,8 +811,8 @@
   }
 
   .map-overlay .ride-mark svg {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
   }
 }
 

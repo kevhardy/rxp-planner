@@ -175,10 +175,16 @@ export function WarningsPanel() {
                 {group.kinds.map(({ kind, items }) => {
                   const key = `${group.guide}:${kind}`;
                   const shown = expanded.has(key) ? items : items.slice(0, ITEM_LIMIT);
+                  const dataNote = DATA_NOTES.has(kind);
                   return (
-                    <details key={kind} className={DATA_NOTES.has(kind) ? "warn-kind data-note" : "warn-kind"} open>
+                    <details key={kind} className="warn-kind" open>
                       <summary>
                         <DisclosureIcon />
+                        <Icon
+                          name={dataNote ? "info" : "warning"}
+                          size={14}
+                          className={dataNote ? "warn-kind-mark data-note" : "warn-kind-mark"}
+                        />
                         {KIND_LABELS[kind]}{" "}
                         <span className="count">
                           <Mono>{items.length}</Mono>

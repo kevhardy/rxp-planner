@@ -74,6 +74,8 @@ const PAIRS: Pair[] = [
   ...on(["stack-two", "stack-more"], ["map-interior"], 3),
   ...on(["warn", "danger", "ok"], ["surface", "press"], 4.5),
   ["warn", "warn-tint", 4.5],
+  // The warning mark of a kind in the Warnings list.
+  ["warn", "raised", 3],
   ["danger", "danger-tint", 4.5],
   ...on(["control-border"], ["topbar", "surface", "pane-head", "raised", "hover", "selection", "press"], 3),
   ...on(["warn-border"], ["warn-tint", "surface", "bg", "selection"], 3),
