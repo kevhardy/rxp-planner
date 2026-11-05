@@ -283,18 +283,15 @@ label {
 .mk-equip {
   --kind: var(--kind-equip);
 }
-/* A filled silhouette with the guide icons' outline and ring, so the person
-   reads as one of the guide icons beside it. */
+/* An inline shape cannot fill with the gradient in a file, so the person's
+   file draws it and the shape stays hidden. */
 .mk-target {
-  background: none;
-  color: var(--kind-target);
+  border-radius: 0;
+  background: url("./guideIcons/target.svg") center / 100% 100% no-repeat;
   filter: var(--ring-guide-icon);
 }
 .mk-target > svg {
-  fill: currentColor;
-  stroke: var(--guide-icon-ink);
-  stroke-width: 1.05;
-  paint-order: stroke;
+  display: none;
 }
 .mk-cast {
   --kind: var(--kind-train);
@@ -308,13 +305,11 @@ label {
 .mk-checkpoint {
   --kind: var(--warn);
 }
-/* A sheet of paper in the speech bubbles' fill and outline, so the note
-   reads as one of the guide icons. The sheet draws its lines on whole pixels
-   at 16px, so they stay sharp. */
+/* The sheet draws its lines on whole pixels at 16px, so they stay sharp. */
 .mk-note {
   border-radius: 0;
   background: url("./guideIcons/note.svg") center / 100% 100% no-repeat;
-  filter: var(--ring-guide-icon-pale);
+  filter: var(--ring-guide-icon);
 }
 
 .app {
@@ -2103,10 +2098,6 @@ label {
   background-image: var(--icon-url);
   background-size: 100% 100%;
   background-position: center;
-}
-
-.guide-icon.vector.pale {
-  filter: var(--ring-guide-icon-pale);
 }
 
 .guide-icon.vector.vivid {

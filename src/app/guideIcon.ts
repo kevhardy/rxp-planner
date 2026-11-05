@@ -69,14 +69,10 @@ const VECTOR_ICONS: ReadonlyMap<GuideIconKey, string> = new Map([
   [textureKey("interface/cursor/crosshair/interact")!, interact],
 ]);
 
-// Yellow fills fade into a light page, so light mode edges them. A pale
-// icon's grey fill sits near the dark page, so dark mode lifts it. A deep
+// Yellow fills fade into a light page, so light mode edges them. A deep
 // icon's dark fills weigh at least twice as much on a light page as on a dark
 // one, so both themes lift them toward the other icons.
-const VECTOR_TONES: ReadonlyMap<string, "pale" | "vivid" | "deep"> = new Map([
-  [talk, "pale"],
-  [gossip, "pale"],
-  [emote, "pale"],
+const VECTOR_TONES: ReadonlyMap<string, "vivid" | "deep"> = new Map([
   [accept, "vivid"],
   [turnin, "vivid"],
   [abandon, "deep"],

@@ -7,7 +7,7 @@ import { RXP_COLORS } from "../../guide/index.ts";
 type Theme = "light" | "dark";
 type Rgb = [number, number, number];
 
-const KINDS = ["accept", "turnin", "complete", "goto", "target", "train", "vendor", "command", "use", "equip"];
+const KINDS = ["accept", "turnin", "complete", "goto", "train", "vendor", "command", "use", "equip"];
 const RXP = RXP_COLORS.map(({ color }) => color.toLowerCase());
 const OBJECTIVES = [1, 2, 3, 4, 5, 6].map((n) => `objective-${n}`);
 
@@ -269,23 +269,13 @@ it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more
   expect(contrast(color(theme, "chain-card"), color(theme, "guide-strip"))).toBeGreaterThanOrEqual(1.29);
 });
 
-describe("the dark pale guide icons", () => {
+// The fold has no outline of its own, so lightness alone parts it from the sheet. 3 L*, the step that keeps two dark
+// bands apart, keeps it readable.
+it("draws the note's fold 3 L* or more lighter than the top of its sheet", () => {
   const note = readFileSync(join(import.meta.dirname, "../guideIcons/note.svg"), "utf8");
-  const fold = paint("dark", "fold", /<path d="M8.5 2.5L12.5 6.5H8.5Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
-  const sheetTop = paint("dark", "sheet", /<stop offset="0" stop-color="(#[\da-f]{6})"/.exec(note)![1]!, {});
-  const lift = Number(/^brightness\(([\d.]+)\)/.exec(tokens.dark.get("--ring-guide-icon-pale")!)![1]);
-
-  // CSS brightness() scales each encoded sRGB channel.
-  it("lifts the note's fold no higher than --muted's contrast on --surface", () => {
-    const lifted = fold.map((c) => Math.min(255, Math.round(c * lift))) as Rgb;
-    const surface = color("dark", "surface");
-    expect(contrast(lifted, surface)).toBeLessThanOrEqual(contrast(color("dark", "muted"), surface));
-  });
-
-  // 3 L*, the step that keeps two dark bands apart, keeps the fold apart from the sheet.
-  it("keeps the note's fold 3 L* or more lighter than the top of its sheet", () => {
-    expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
-  });
+  const fold = paint("light", "fold", /<path d="M8.5 2.5L12.5 6.5H8.5Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  const sheetTop = paint("light", "sheet", /<stop offset="0" stop-color="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
 });
 
 it("puts the light empty map between --pane-head and --surface", () => {

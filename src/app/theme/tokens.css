@@ -68,7 +68,6 @@
      crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
   --ring-guide-icon: none;
-  --ring-guide-icon-pale: var(--ring-guide-icon);
   --ring-guide-icon-vivid: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   /* Brightening lightens a deep icon's dark fills, such as the book and
      the flag, so the icon weighs less on a light page and more on a dark
@@ -116,7 +115,6 @@
   --kind-turnin: #147c3b;
   --kind-complete: #bd3f0c;
   --kind-goto: #0369a1;
-  --kind-target: #9b5084;
   --kind-train: #7042c8;
   --kind-vendor: #6d3c0c;
   --kind-command: #6b645b;
@@ -214,14 +212,6 @@
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  /* A pale icon's grey fill sits near the dark page, so this lifts it. The
-     note sheet's fold is the brightest pixel of the pale icons, and the lift
-     puts it at the contrast of --muted on --surface, so the icons sit below
-     the step text. A greater lift would need a fold too dark to read apart
-     from the sheet in the light theme. The mid-tone rim is as light as the
-     bubble's tail and hides it at 1x, so an edge in the page color draws the
-     tail and the outline. */
-  --ring-guide-icon-pale: brightness(1.15) drop-shadow(0 0 0.5px var(--bg)) drop-shadow(0 0 0.5px var(--bg));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
      color, so a lift brings out its shape, and the contrast step keeps its
@@ -275,7 +265,6 @@
   --kind-turnin: #4cc472;
   --kind-complete: #f0874a;
   --kind-goto: #4fb3e8;
-  --kind-target: #c8a5bc;
   --kind-train: #b091f2;
   --kind-vendor: #a87c62;
   --kind-command: #a8a297;
