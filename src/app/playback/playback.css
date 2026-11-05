@@ -240,9 +240,21 @@
   text-align: right;
   /* Two more ch hold the estimate mark, so a row with it keeps the same width. */
   min-width: calc((var(--length-chars) + 2) * 1ch);
+  color: var(--text);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   white-space: nowrap;
+}
+
+.playback-length > :first-child {
+  position: relative;
+}
+
+/* The mark hangs left of the clock, so every clock's digits share one column. */
+.playback-length .estimate-mark {
+  position: absolute;
+  right: 100%;
+  padding-inline-end: var(--space-1);
 }
 
 /* The bars hang below the length, so the head is only as tall as the title
