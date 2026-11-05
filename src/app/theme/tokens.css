@@ -48,6 +48,7 @@
      crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
   --ring-guide-icon: none;
+  --ring-guide-icon-pale: var(--ring-guide-icon);
   --ring-guide-icon-vivid: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   /* Brightening lightens a deep icon's dark fills, such as the book and
      the flag, so the icon weighs less on a light page and more on a dark
@@ -184,6 +185,10 @@
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  /* The grey fill of the speech bubbles and the note sheet reads as a smudge
+     on the dark page. The lift brings its brightest pixels to the contrast
+     of the quest marks, where a lighter rim would frame every icon. */
+  --ring-guide-icon-pale: brightness(1.25) var(--ring-guide-icon);
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
      color, so a strong lift brings out its shape, and the contrast step

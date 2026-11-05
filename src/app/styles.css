@@ -308,7 +308,7 @@ label {
   border-radius: 0;
   background: url("./guideIcons/note.svg") center / 100% 100% no-repeat;
   color: var(--guide-icon-ink);
-  filter: var(--ring-guide-icon);
+  filter: var(--ring-guide-icon-pale);
 }
 /* At 12/16, the lines fit inside the paper with a margin. Drawn 1.2px wide
    through that scale, so they read as text lines and not as a frame. */
@@ -2083,6 +2083,10 @@ label {
   background-image: var(--icon-url);
   background-size: 100% 100%;
   background-position: center;
+}
+
+.guide-icon.vector.pale {
+  filter: var(--ring-guide-icon-pale);
 }
 
 .guide-icon.vector.vivid {

@@ -84,7 +84,7 @@ it("draws a texture's vector icon by its path, or by its FileDataID through the 
     .map((img) => [img.getAttribute("aria-label"), img.className, img.style.getPropertyValue("--icon-url")]);
   expect(icons).toEqual([
     ["Icon Interface\\Cursor\\Crosshair\\Interact", "guide-icon vector", 'url("/src/app/guideIcons/interact.svg?no-inline")'],
-    ["chatbubble 64grey", "guide-icon vector", 'url("/src/app/guideIcons/talk.svg?no-inline")'],
+    ["chatbubble 64grey", "guide-icon vector pale", 'url("/src/app/guideIcons/talk.svg?no-inline")'],
     ["Icon 308474", "guide-icon missing", ""],
     ["Icon Interface\\GossipFrame\\AvailableQuestIcon", "guide-icon vector vivid", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
   ]);
