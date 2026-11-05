@@ -188,6 +188,10 @@
   --placeholder: color-mix(in srgb, var(--muted) 74%, var(--field));
   --hover: #29323b;
   --line: #364252;
+  --tick-minor: var(--line);
+  /* One step past --line, so a major tick reads apart from a minor one but
+     stays quieter than the coral bar of the current mode. */
+  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
   --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
@@ -343,9 +347,11 @@
   --token-class-border: color-mix(in srgb, var(--kind-train) 50%, var(--control-border));
   --token-mode-border: color-mix(in srgb, var(--kind-turnin) 50%, var(--control-border));
 
-  /* One step past --line, so a major tick reads apart from a minor one but
-     stays quieter than the coral bar of the current mode. */
-  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
+  /* On the light top bar, ticks at --line and a step past it read as a
+     second dense pattern beside the strip's arrows, so both ticks sit a step
+     nearer the bar. A major tick still reads apart from a minor one. */
+  --tick-minor: color-mix(in srgb, var(--line) 75%, var(--topbar));
+  --tick-major: color-mix(in srgb, var(--text) 8%, var(--line));
 
   --chain-link-ink: color-mix(in srgb, var(--text) 36%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));

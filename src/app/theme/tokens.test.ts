@@ -276,6 +276,12 @@ it("puts the light --guide-strip 5 L* or more below --pane-head", () => {
   expect(lightness(color("light", "pane-head")) - lightness(color("light", "guide-strip"))).toBeGreaterThanOrEqual(5);
 });
 
+// At --line, 1.48:1, and darker, the ticks read as a second pattern beside the strip's arrows.
+it("keeps the light ruler ticks under 1.4:1 and 1.8:1 on --topbar, the major tick darker", () => {
+  const [minor, major] = ["tick-minor", "tick-major"].map((tick) => contrast(color("light", tick), color("light", "topbar")));
+  expect([minor! < 1.4, major! < 1.8, major! > minor!]).toEqual([true, true, true]);
+});
+
 // The fold has no outline of its own, so lightness alone parts it from the sheet. 3 L*, the step that keeps two dark
 // bands apart, keeps it readable.
 it("draws the note's fold 3 L* or more lighter than the top of its sheet", () => {

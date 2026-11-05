@@ -834,7 +834,7 @@ label {
 }
 
 .ruler-minor {
-  stroke: var(--line);
+  stroke: var(--tick-minor);
 }
 
 .ruler-major {
