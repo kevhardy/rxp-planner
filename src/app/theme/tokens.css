@@ -135,6 +135,10 @@
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
   --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
+  /* --label falls from 9:1 on the dark page to under 6:1 on the dark
+     --raised, so a label on a float such as the Character card takes more
+     --text. */
+  --raised-label: color-mix(in srgb, var(--text) 75%, var(--muted));
   --control-border: #8797ae;
   --text: #e3e8ee;
   --muted: #aab6c5;
@@ -249,6 +253,7 @@
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
   --label: color-mix(in srgb, var(--text) 50%, var(--muted));
+  --raised-label: var(--label);
   /* 90% keeps a placeholder at 4.5:1 on a field in either theme. */
   --placeholder: color-mix(in srgb, var(--muted) 90%, var(--field));
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
