@@ -189,7 +189,10 @@
   --ring-guide-icon-pale: invert(1) grayscale(1) brightness(0.75) drop-shadow(0.5px 0 0 var(--label)) drop-shadow(-0.5px 0 0 var(--label))
     drop-shadow(0 0.5px 0 var(--label)) drop-shadow(0 -0.5px 0 var(--label));
   --ring-guide-icon-vivid: var(--ring-guide-icon);
-  --ring-guide-icon-deep: brightness(1.6) var(--ring-guide-icon);
+  /* On the dark page, a deep icon's dark fills and outline sit near the page
+     color, so a strong lift brings out its shape, and the contrast step
+     keeps its lifted fills apart, such as a book's cover and its panel. */
+  --ring-guide-icon-deep: brightness(2.1) contrast(1.1) var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
