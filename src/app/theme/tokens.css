@@ -517,8 +517,8 @@
   --line-height-small: 16px;
   --line-height-caption: 16px;
   --line-height-body: 20px;
-  /* Secondary lines that a user reads for a long session: a step's notes and
-     places, the editor's line summaries, and its field labels. */
+  /* Secondary lines that a user reads for a long session: a step's places,
+     the editor's line summaries, and its field labels. */
   --font-size-detail: 14px;
   --line-height-detail: 18px;
   --line-height-pane-title: 20px;
