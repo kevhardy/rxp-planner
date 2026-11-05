@@ -76,6 +76,7 @@ const PAIRS: Pair[] = [
   ["warn", "warn-tint", 4.5],
   // The warning mark of a kind in the Warnings list.
   ["warn", "raised", 3],
+  ...on(["text", "muted"], ["warn-stripe"], 4.5),
   ["danger", "danger-tint", 4.5],
   ...on(["control-border"], ["topbar", "surface", "pane-head", "raised", "hover", "selection", "press"], 3),
   ...on(["warn-border"], ["warn-tint", "surface", "bg", "selection"], 3),

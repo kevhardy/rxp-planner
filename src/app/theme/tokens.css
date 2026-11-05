@@ -295,6 +295,8 @@
      page background. */
   --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
+  /* Half of --hover, so a hovered row still reads over the stripe. */
+  --warn-stripe: color-mix(in srgb, var(--hover) 50%, var(--raised));
   --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
