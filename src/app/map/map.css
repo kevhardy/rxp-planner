@@ -749,6 +749,11 @@
   translate: calc(-50% + 5px) calc(-50% - 14px);
 }
 
+/* A badge sits on its mark, so the mark's own coral ring is enough. */
+.playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint):not(.dot) {
+  box-shadow: none;
+}
+
 .playback-stage .map-overlay .poi.named {
   z-index: 1;
 }
