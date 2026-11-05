@@ -1886,6 +1886,17 @@ label {
   margin-left: calc(-1 * var(--space-1));
 }
 
+/* One row of the colors and Clear takes 422px, so a narrower form sets them
+   three to a row in even columns. */
+@container (width < 430px) {
+  .rxp-colors {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-items: start;
+    row-gap: 0;
+  }
+}
+
 .rxp-swatch {
   gap: var(--space-1);
   padding-inline: var(--space-1);
