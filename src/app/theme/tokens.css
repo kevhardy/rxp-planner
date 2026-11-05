@@ -28,6 +28,8 @@
   --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
   /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
   --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
+  /* A third, 3px blur thickens place names on the pale map into a dark band. */
+  --art-label-halo: 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
   /* A rim of --art-ink on each side and --art-label-rim-diagonal at each
      corner, so a label reads against the rim at any sea color. A full 1px
      rim thickens the letters on the pale sea, so the light rim is 0.75px. */
@@ -196,6 +198,7 @@
   --map-backdrop: #1b2633;
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   --art-label-rim-diagonal: var(--art-ink);
+  --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
   --art-label-outline-halo: var(--art-label-halo);
   --art-label-outline:
     1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
@@ -487,7 +490,6 @@
   --art-selected-ring: 0 0 0 1px var(--art-ink), 0 0 0 3px var(--art-pop), 0 0 0 4.5px var(--art-ink);
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
-  --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }
