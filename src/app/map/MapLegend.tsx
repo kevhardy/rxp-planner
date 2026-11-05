@@ -103,8 +103,8 @@ export function MapLegend(props: {
       <LegendRow
         key={id}
         name={name}
-        icon={categories.has(id) && !dot ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
-        iconClass={dot ? `dot-swatch poi-${CATEGORIES[id]}` : SWATCHES[id]}
+        icon={dot ? null : categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
+        iconClass={SWATCHES[id]}
         count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
         on={shows(id)}
         onToggle={() => store.setCategories([id], !shows(id))}
@@ -234,6 +234,7 @@ export function MapLegend(props: {
               key={layer.id}
               layer={layer.id}
               name={layer.name}
+              mark={ids.some((id) => drawsAsDot(layer.id, id))}
               pressed={pressed}
               onToggle={() => store.setCategories(ids, on < ids.length)}
             >
@@ -309,6 +310,8 @@ function LegendGroup(
   props: {
     name: string;
     layer?: string;
+    /** Draws the shape of the layer's plain points beside the name. */
+    mark?: boolean;
     disabled?: boolean;
     action?: ReactNode;
     children: ReactNode;
@@ -318,7 +321,10 @@ function LegendGroup(
   return (
     <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
-        <h3 id={id}>{props.name}</h3>
+        <h3 id={id}>
+          {props.name}
+          {props.mark && <span className={`group-mark poi-${props.layer}`} aria-hidden="true" />}
+        </h3>
         {props.action}
         {props.onToggle && (
           <IconButton
@@ -337,9 +343,10 @@ function LegendGroup(
   );
 }
 
+/** `icon` null leaves the mark column empty, for a plain point whose group heading draws its shape. */
 function LegendRow(props: {
   name: string;
-  icon: string | undefined;
+  icon: string | null | undefined;
   iconClass?: string | undefined;
   count: number | undefined;
   on: boolean;
@@ -355,7 +362,11 @@ function LegendRow(props: {
       disabled={props.disabled}
       onClick={props.onToggle}
     >
-      <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
+      {props.icon === null ? (
+        <span />
+      ) : (
+        <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
+      )}
       <span className="legend-name">{name}</span>
       {count !== undefined && <span className="legend-count">{count}</span>}
       <Icon name={props.on ? "eye" : "eyeOff"} />

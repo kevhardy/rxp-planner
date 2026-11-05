@@ -219,11 +219,11 @@
   --size: 18px;
 }
 
-/* A plain point's group shows by its shape as well as its color. The map and
-   the legend draw the same dot. Each shape is drawn in a 14px box around a
-   10px dot. The circle, square, and diamond each cover about 80px². The
-   triangle covers about 72px², because its points draw the eye more than a
-   rounder shape of the same area.
+/* A plain point's group shows by its shape as well as its color. The legend
+   draws the same shape beside the group's heading. Each shape is drawn in a
+   14px box around a 10px dot. The circle, square, and diamond each cover
+   about 80px². The triangle covers about 72px², because its points draw the
+   eye more than a rounder shape of the same area.
 
    The rim is an ink copy of the shape, scaled around the center of the
    shape's inscribed circle by 1 + 1.1px / that circle's radius. So each
@@ -1325,27 +1325,20 @@
   box-shadow: var(--ring-control);
 }
 
-.legend-row .dot-swatch {
+.group-mark {
   position: relative;
+  display: inline-block;
   width: 10px;
   height: 10px;
-  background: none;
-  box-shadow: none;
+  margin-left: var(--space-2);
 }
 
-.legend-row .dot-swatch::before,
-.legend-row .dot-swatch::after {
+.group-mark::after {
   content: "";
   position: absolute;
   inset: -2px;
-  background: var(--dot);
+  background: currentcolor;
   clip-path: var(--dot-shape);
-}
-
-.legend-row .dot-swatch::before {
-  background: var(--art-ink);
-  scale: var(--dot-rim-scale);
-  transform-origin: var(--dot-middle, center);
 }
 
 .legend-row .spawn-swatch {

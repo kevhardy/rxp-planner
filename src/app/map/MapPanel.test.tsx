@@ -788,11 +788,13 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
-    it("draws a plain point's row with the dot of the point's group, and other rows with their sprite", async () => {
+    it("draws the shape of a plain point's group beside the group's heading, and other rows with their sprite", async () => {
       await mountGuide();
-      const swatch = (name: string) => row(name).querySelector(".map-icon")!.className;
-      expect(swatch("Innkeepers")).toBe("map-icon dot-swatch poi-services");
-      expect(swatch("Ships")).toBe("map-icon");
+      const heading = screen.getByRole("heading", { name: "Services" });
+      expect(heading.querySelector(".group-mark")!.className).toBe("group-mark poi-services");
+      expect(row("Innkeepers").querySelector(".map-icon")).toBeNull();
+      expect(row("Ships").querySelector(".map-icon")!.className).toBe("map-icon");
+      expect(screen.getByRole("heading", { name: "Transport" }).querySelector(".group-mark")).toBeNull();
     });
 
     it("lists the groups drawn as plain shapes right after the guide's own marks", async () => {
