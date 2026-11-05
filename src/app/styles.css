@@ -1643,8 +1643,8 @@ label {
   flex-direction: column;
   gap: 1px;
   color: var(--muted);
-  font-size: var(--font-size-note);
-  line-height: var(--line-height-note);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
 }
 
 /* Mono runs wider and heavier than the place name before it. Tabular
@@ -2204,13 +2204,18 @@ label {
   font-weight: var(--font-weight-bold);
 }
 
-/* Centering the label's line on the first caption line puts the two
+.editor-dock .ui-field-label {
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
+}
+
+/* Centering the label's line on the first field label's line puts the two
    baselines within half a pixel. Baseline alignment would push the fields
-   down by the difference instead. -2px is half of the 4px by which the body
-   line is taller than the caption line. */
+   down by the difference instead. -1px is half of the 2px by which the body
+   line is taller than the detail line. */
 .form-label:has(+ .tag-values) {
   align-self: start;
-  margin-top: -2px;
+  margin-top: -1px;
 }
 
 .condition {
@@ -2351,11 +2356,11 @@ label {
   margin-left: 0;
 }
 
-/* Lines up with the inputs below the field labels: one --line-height-small
-   label line and the --space-1 gap of a stacked field. */
+/* Lines up with the inputs below the field labels: one 18px
+   --line-height-detail label line and the --space-1 gap of a stacked field. */
 .sim-kill-fields > :not(.ui-field) {
   justify-self: start;
-  margin-top: calc(var(--space-4) + var(--space-1));
+  margin-top: calc(var(--space-4) + var(--space-1) + 2px);
 }
 
 fieldset {
@@ -2413,8 +2418,8 @@ legend {
   gap: var(--space-1);
   min-width: 0;
   color: var(--muted);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
 }
 
 .outline-summary > .guide-icon {
