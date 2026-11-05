@@ -1333,7 +1333,7 @@
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
-.legend-step.off .legend-name {
+.legend-step.off :is(.legend-name, .legend-state) {
   color: var(--map-legend-hidden);
 }
 
@@ -1449,14 +1449,7 @@
 .legend-state {
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
-}
-
-.legend-count {
   color: var(--raised-label);
-}
-
-.legend-state {
-  color: var(--muted);
 }
 
 .legend-filter {
