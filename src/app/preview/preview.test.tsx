@@ -807,6 +807,55 @@ describe("warnings", () => {
     "#name B\n#group G\nstep\n    .complete 33,1\nstep\n    .turnin 33\n",
   ];
 
+  it("marks the list clipped only while rows sit below its scrolled view", async () => {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        readonly callback: () => void;
+        constructor(callback: () => void) {
+          this.callback = callback;
+        }
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      },
+    );
+    onTestFinished(() => void vi.unstubAllGlobals());
+    const user = userEvent.setup();
+    let scrollTop = 0;
+    const inBody = (el: HTMLElement, value: number) => (el.classList.contains("warnings-body") ? value : 0);
+    vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return inBody(this, 500);
+    });
+    vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return inBody(this, 200);
+    });
+    vi.spyOn(Element.prototype, "scrollTop", "get").mockImplementation(function (this: Element) {
+      return inBody(this as HTMLElement, scrollTop);
+    });
+    const stores = createStores({
+      guides: [{ id: "a", text: "#name A\n#group G\nstep\n    .turnin 7\n", order: 0 }],
+      session: { guideId: "a", step: null, line: null },
+    });
+    render(
+      <StoresContext.Provider value={stores}>
+        <GameDataContext.Provider value={data}>
+          <WarningsPanel />
+        </GameDataContext.Provider>
+      </StoresContext.Provider>,
+    );
+    await user.click(await screen.findByRole("button", { name: "Warnings, 1" }));
+    const body = screen.getByRole("region", { name: "Warnings" }).querySelector(".warnings-body")!;
+    const clipped = (top: number) => {
+      scrollTop = top;
+      fireEvent.scroll(body);
+      return body.hasAttribute("data-clipped");
+    };
+
+    expect([body.hasAttribute("data-clipped"), clipped(300), clipped(280)]).toEqual([true, false, true]);
+  });
+
   it("shows the count on a top bar button that opens the panel, and closes on Escape, on focus leaving, and on a press outside", async () => {
     const { user } = await mount(routeOfThree, "A");
     const button = await within(screen.getByRole("banner")).findByRole("button", { name: "Warnings, 3" });

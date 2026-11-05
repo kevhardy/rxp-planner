@@ -124,7 +124,7 @@ describe("step row", () => {
       return [mark.className, shown.className, shown.style.getPropertyValue("--icon-url") || shown.style.getPropertyValue("--cell-y")];
     });
     expect(marks).toEqual([
-      ["mk mk-accept tex", "guide-icon vector", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
+      ["mk mk-accept tex", "guide-icon vector vivid", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
       ["mk mk-equip", "svg"],
       ["mk mk-hs item", "guide-icon", "-1.09375"],
       ["mk mk-deathskip tex", "guide-icon vector", 'url("/src/app/guideIcons/deathskip.svg?no-inline")'],

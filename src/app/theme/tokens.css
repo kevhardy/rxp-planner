@@ -27,13 +27,21 @@
      `--control-border`. */
   --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* With no rim, a vector icon's pale fill reads as a filled shape lighter
-     than the page, as in dark mode. A rim around the icon's own dark outline
-     thickens it into a frame and dulls the yellow quest marks. */
+     than the page, as in dark mode. A dark rim around the icon's own dark
+     outline thickens it into a frame and dulls the yellow quest marks. The
+     palest fills still fade into the page, so they take a steel edge. The
+     blur thins the shadow, so its color sits halfway to --text to reach
+     about 3:1 on --surface and --selection. Two half-pixel shadows stay
+     crisp, where one 1px shadow blurs into a halo. */
+  --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
   --ring-guide-icon: none;
-  --ring-guide-icon-pale: none;
+  --ring-guide-icon-pale: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon-vivid: var(--ring-guide-icon-pale);
   --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
+  /* The current segment or tab, on a bar that a selected row never sits on. */
+  --selection-on-bar: var(--selection);
   --press: #d7e1ed;
 
   /* The progress arc carries the level, so a pale track keeps the ring
@@ -138,9 +146,14 @@
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
   --ring-guide-icon-pale: brightness(0.8) var(--ring-guide-icon);
+  --ring-guide-icon-vivid: var(--ring-guide-icon);
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
+  /* --selection's hue, lifted above --topbar and --raised, so the current
+     segment or tab sits above its bar and not below it. The coral bar under
+     it needs 3:1, which caps how light it goes. */
+  --selection-on-bar: #2f4a68;
   --press: #1e2c3f;
 
   --level-track: var(--control-border);
@@ -256,6 +269,9 @@
   --ring-pressed: inset 0 0 0 1px var(--accent), inset 0 0 0 100vmax var(--pressed-wash);
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+
+  /* A mask reads only alpha, so the opaque stop needs no theme color. */
+  --mask-fade-end: linear-gradient(to bottom, #000 calc(100% - var(--space-6)), transparent);
 
   --bar-travel: var(--kind-goto);
   --bar-kill: var(--danger);

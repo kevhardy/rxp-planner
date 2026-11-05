@@ -33,7 +33,7 @@ it("draws a kind's vector icon without a catalog row, and the shape of a kind wi
   const icon = accept!.firstElementChild as HTMLElement;
   expect([accept!.className, icon.className, icon.style.getPropertyValue("--icon-url")]).toEqual([
     "mk mk-accept tex",
-    "guide-icon vector",
+    "guide-icon vector vivid",
     'url("/src/app/guideIcons/accept.svg?no-inline")',
   ]);
   expect([equip!.className, equip!.firstElementChild!.tagName]).toEqual(["mk mk-equip", "svg"]);
