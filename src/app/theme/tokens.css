@@ -7,10 +7,13 @@
   --bg: #cbd5e1;
   --surface: #ebf0f6;
   --pane-head: #d3dde9;
-  --guide-strip: var(--bg);
+  /* --bg sits under 3 L* below --pane-head, so the strip and the pane heads
+     read as one band. 4% --text is about the most that keeps --muted at
+     4.5:1 on the strip. */
+  --guide-strip: color-mix(in srgb, var(--text) 4%, var(--bg));
   /* --muted falls under 5:1 on the light strip, the darkest band, so the
      strip's secondary text takes some --text. */
-  --guide-strip-muted: color-mix(in srgb, var(--text) 20%, var(--muted));
+  --guide-strip-muted: color-mix(in srgb, var(--text) 30%, var(--muted));
   --raised: #fff;
   --field: var(--raised);
   /* The least share of --muted, with a small margin, that keeps 4.5:1 on
@@ -185,6 +188,10 @@
   --placeholder: color-mix(in srgb, var(--muted) 74%, var(--field));
   --hover: #29323b;
   --line: #364252;
+  --tick-minor: var(--line);
+  /* One step past --line, so a major tick reads apart from a minor one but
+     stays quieter than the coral bar of the current mode. */
+  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
   --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
@@ -340,9 +347,11 @@
   --token-class-border: color-mix(in srgb, var(--kind-train) 50%, var(--control-border));
   --token-mode-border: color-mix(in srgb, var(--kind-turnin) 50%, var(--control-border));
 
-  /* One step past --line, so a major tick reads apart from a minor one but
-     stays quieter than the coral bar of the current mode. */
-  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
+  /* On the light top bar, ticks at --line and a step past it read as a
+     second dense pattern beside the strip's arrows, so both ticks sit a step
+     nearer the bar. A major tick still reads apart from a minor one. */
+  --tick-minor: color-mix(in srgb, var(--line) 75%, var(--topbar));
+  --tick-major: color-mix(in srgb, var(--text) 8%, var(--line));
 
   --chain-link-ink: color-mix(in srgb, var(--text) 36%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
