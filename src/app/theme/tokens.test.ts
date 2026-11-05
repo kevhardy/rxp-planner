@@ -56,7 +56,8 @@ const PAIRS: Pair[] = [
   ...on(["map-label", "map-label-strong"], ["art-ink", "map-sea"], 4.5),
   ...["map-label", "map-label-strong"].map((label): Pair => [label, "art-label-rim-diagonal", 4.5, { ground: "var(--map-backdrop)" }]),
   ["map-border", "map-sea", 4.5],
-  ["map-border", "map-backdrop", 3],
+  // A zone border reads against its --zone-border-halo, like a world label against its rim.
+  ["map-border", "zone-border-halo", 3, { ground: "var(--map-backdrop)" }],
   ["map-character", "art-paper", 3],
   ...on(["art-paper"], ["map-step-previous-fill", "map-step-upcoming-fill"], 4.5),
   ...on(["map-step-near-text"], ["map-step-near-previous-fill", "map-step-near-upcoming-fill"], 4.5),
