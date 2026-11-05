@@ -25,6 +25,8 @@
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  /* A hidden legend row keeps a readable name, so its dimmed swatch and
+     crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
@@ -162,8 +164,9 @@
   /* Near --bg, so the empty map reads as a recess beside the Library pane
      on --surface. */
   --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
-  /* Plain --muted loses definition on the dark --raised. */
-  --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
+  /* On the dark --raised, --muted reads as more than one step below a shown
+     name. */
+  --map-legend-hidden: var(--raised-label);
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --map-legend-heading: var(--text);
   /* A data URL cannot read a token, so it repeats this theme's `--muted`. */
