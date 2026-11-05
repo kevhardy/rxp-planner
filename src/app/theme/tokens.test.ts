@@ -296,7 +296,8 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   });
 
   it.each([
-    ".pin.selected",
+    ".pin-goto",
+    ".pin-start",
     ".pin.pin-route-start.selected",
     ".pin.pin-route-stop.selected",
     ".pin.pin-route-end.selected",

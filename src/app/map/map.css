@@ -638,9 +638,18 @@
   pointer-events: none;
 }
 
+/* The step list marks the selected step in coral, so its pins and quest
+   marks on the map take the same coral. */
+.pin-goto,
+.pin-waypoint,
+.pin-start,
+.pin-end,
+.pin-both {
+  box-shadow: var(--art-selected-ring);
+}
+
 .pin.selected {
   z-index: 1;
-  box-shadow: var(--art-icon-halo-marked);
 }
 
 .pin-start,
@@ -1325,6 +1334,15 @@
   border: 1.5px solid var(--surface);
   border-radius: var(--radius-round);
   background: var(--pin);
+}
+
+/* The ring reaches 4.5px past the box, so the whole mark fills the swatch column. */
+.step-swatch.selected {
+  width: calc(var(--legend-mark) - 9px);
+  height: calc(var(--legend-mark) - 9px);
+  border: 0;
+  outline: none;
+  box-shadow: var(--art-selected-ring);
 }
 
 .step-swatch.optional {

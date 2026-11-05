@@ -380,6 +380,11 @@
   --art-icon-halo: 0 0 0 1px color-mix(in srgb, var(--art-ink) 45%, transparent);
   --art-dot-rim: 0 0 0 1px var(--art-ink);
   --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+  /* The selection coral on the map, which draws the same in both modes. It
+     is the dark --pop lifted toward paper until it keeps 3:1 on terrain dark
+     enough to hide the ink casing around it. */
+  --art-pop: #ff958a;
+  --art-selected-ring: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-pop), 0 0 0 4.5px var(--art-ink);
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
