@@ -596,7 +596,6 @@
   color: var(--art-paper);
   font-size: var(--font-size-map-step);
   line-height: var(--line-height-map-step);
-  text-shadow: var(--art-text-halo);
 }
 
 .pin-previous,
