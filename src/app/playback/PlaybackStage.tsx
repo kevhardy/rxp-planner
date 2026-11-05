@@ -91,6 +91,7 @@ export function PlaybackStage() {
         if (i >= 0) store.seekStep(i);
       },
       edit: null,
+      numberedAhead: 1,
     };
   }, [step, record, route, playback, store, character, index]);
   const [follow, setFollow] = useState<Follow>({ on: true, again: 0, zoomIn: true });

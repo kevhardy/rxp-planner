@@ -211,7 +211,7 @@ describe("map panel", () => {
   it("shows the route workspace from Routes with no guide open", async () => {
     noRouting();
     const { user } = await mount();
-    expect(screen.getByText("Without a guide, use Search to find a quest, NPC, or place, or Routes to plan a route.")).toBeTruthy();
+    expect(screen.getByText("No guide open")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Routes" }));
     expect(screen.getByRole("button", { name: "Routes" }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("group", { name: /^Route map/ })).toBeTruthy();

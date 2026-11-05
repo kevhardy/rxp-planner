@@ -11,6 +11,7 @@ import { Dialog } from "../Dialog.tsx";
 import { Icon } from "../icons.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { Select } from "../ui/Field.tsx";
 import { OpenEditorButton } from "../EditorDock.tsx";
 import { useLayoutStore } from "../layout.ts";
@@ -107,15 +108,14 @@ function MapPanel() {
         {routes && data ? (
           <RouteMap closed={closedRoute} />
         ) : (
-          (map?.body ?? (
-            <p className="empty">
-              {data
-                ? "Without a guide, use Search to find a quest, NPC, or place, or Routes to plan a route."
-                : dataset?.error
-                  ? "Game data unavailable."
-                  : "Loading game data…"}
-            </p>
-          ))
+          (map?.body ??
+          (data ? (
+            <EmptyState icon="map" title="No guide open" className="map-empty">
+              Use Search to find a quest, NPC, or place, or Routes to plan a route.
+            </EmptyState>
+          ) : (
+            <p className="empty">{dataset?.error ? "Game data unavailable." : "Loading game data…"}</p>
+          )))
         )}
       </div>
     </section>
@@ -130,6 +130,8 @@ export interface MapFocus {
   profile: Profile | undefined;
   select: (selection: Selection) => void;
   edit: { store: EditorStore; skipped: boolean } | null;
+  /** How many steps after the selected one print their number, as in `guideLayout`. Undefined numbers every step. */
+  numberedAhead?: number | undefined;
 }
 
 export interface GuideMapView {
@@ -378,7 +380,7 @@ export function useGuideMap(
     showGuide: visible("guide"),
     previousSteps: settings.previousSteps,
     upcomingSteps: settings.upcomingSteps,
-    numberedAhead: edit ? undefined : 1,
+    numberedAhead: focus?.numberedAhead,
   });
   const pins = laid.pins.map(({ target, ...pin }): Pin => {
     if ("spot" in target) {

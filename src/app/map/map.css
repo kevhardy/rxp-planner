@@ -41,6 +41,16 @@
   text-wrap: balance;
 }
 
+.map-body > .map-empty {
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--map-empty);
+  text-align: center;
+  text-wrap: balance;
+}
+
 .map-viewport {
   position: absolute;
   inset: 0;
