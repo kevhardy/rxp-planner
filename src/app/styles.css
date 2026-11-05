@@ -1004,11 +1004,18 @@ label {
   margin-left: -1px;
 }
 
-/* A disabled main half has no fill, so the live half drops its fill to match. */
+/* The live half takes the fill and border of a disabled main half, so the
+   pair reads as one button. Its rest fill is the hover fill, so a hover shows
+   the press fill. */
 .split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
   /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The border keeps the pair one button beside its disabled half. The chevron keeps its live color. */
   border-color: var(--disabled-fg);
-  background: none;
+  background: var(--disabled-button-bg);
+}
+
+.split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more:hover {
+  /* stylelint-disable-next-line declaration-no-important -- The secondary hover fill in ui.css is !important. */
+  background: var(--press) !important;
 }
 
 .split-menu {
@@ -1769,13 +1776,17 @@ label {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
 
-@container (max-width: 600px) {
   .dock-tabs {
     gap: 2px;
   }
 
+  .dock-tabs > .ui-tab {
+    padding-inline: var(--space-2);
+  }
+}
+
+@container (max-width: 600px) {
   .dock-tabs > .ui-tab {
     padding-inline: var(--space-1);
   }
@@ -2160,8 +2171,11 @@ label {
   border-radius: 0;
 }
 
+/* The end margin and the dock's padding hold the last column of Tags, which
+   runs past the fields. */
 .step-form {
   max-width: 880px;
+  margin-inline-end: var(--space-4);
 }
 
 .form-grid {
@@ -2605,14 +2619,31 @@ legend {
   }
 }
 
-/* Three to a row, because the longest label, "Not in Season of Mastery",
-   wraps in a fifth of the form's measure. The negative margin takes back the
-   2px that each Checkbox pads above and below its line, so the step form's
-   sections stay apart and "Add filter" still fits in the dock. */
+/* Three to a row on the lines of the fields below, because the longest label,
+   "Not in Season of Mastery", wraps in one field. The negative margin takes
+   back the 2px that each Checkbox pads above and below its line, so the step
+   form's sections stay apart and "Add filter" still fits in the dock. */
 .tag-checks {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   row-gap: 0;
   margin-block: -2px;
+}
+
+.tag-checks > * {
+  grid-column: span 5;
+}
+
+/* With five fields to a row, the checks sit on fields 1, 3, and 5. "Season of
+   Mastery only" needs 167px, so the last check runs on past field 5 into the
+   end margin of .step-form. */
+@container (width >= 759px) {
+  .tag-checks > * {
+    grid-column: span 6;
+  }
+
+  .tag-checks > :nth-child(3n) {
+    grid-column: span 3;
+    margin-inline-end: calc(-1 * var(--space-8));
+  }
 }
 
 .tag-values {
