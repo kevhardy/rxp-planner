@@ -2164,6 +2164,10 @@ label {
   gap: var(--space-1);
 }
 
+.condition:not(.compact) {
+  gap: var(--space-1);
+}
+
 .condition:not(.compact) .ui-field {
   flex: 1 1 140px;
 }
@@ -2583,7 +2587,7 @@ legend {
 }
 
 .tag-values {
-  row-gap: var(--space-2);
+  row-gap: calc(var(--space-1) + 2px);
 }
 
 .command-form > :is(.arg-grow, .ui-select) {
@@ -2606,6 +2610,10 @@ legend {
 .shows-as {
   display: block;
   margin-top: var(--space-1);
+}
+
+.comment,
+.reference-picker .shows-as {
   color: var(--muted);
 }
 
@@ -2710,10 +2718,11 @@ legend {
   flex-direction: column;
 }
 
-/* The indent lines each warning up with its kind's label, past the summary's padding, chevron, and gap. */
+/* The indent lines each warning up with its kind's label, past the summary's padding, chevron, and gap.
+   The place width holds "Step 999, line 999", so every message starts at one edge. */
 .warnings {
   --warnings-indent: 44px;
-  --warnings-place-width: 100px;
+  --warnings-place-width: 112px;
 }
 
 /* On a raised card, the --pane-head of a docked pane reads as a sunken band. */
@@ -2757,6 +2766,10 @@ legend {
   border-top: 1px solid var(--raised-line);
 }
 
+.warn-kind {
+  margin-top: var(--space-2);
+}
+
 .warn-kind + .warn-kind {
   margin-top: var(--space-3);
 }
@@ -2791,16 +2804,11 @@ legend {
   cursor: progress;
 }
 
-.warn-place,
-.warn-place > .muted {
-  color: var(--label);
-}
-
 .warn-message {
   flex: 1;
   min-width: 0;
-  font-size: var(--font-size-note);
-  line-height: var(--line-height-note);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   text-wrap: pretty;
 }
 
@@ -2814,6 +2822,11 @@ legend {
   min-width: var(--warnings-place-width);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+  font-weight: var(--font-weight-medium);
+}
+
+.warn-place > .muted {
+  font-weight: var(--font-weight-regular);
 }
 
 .warn-more {
