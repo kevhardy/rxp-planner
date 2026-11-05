@@ -1309,7 +1309,7 @@
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
-.legend-step.off :is(.legend-name, .legend-state) {
+.legend-step.off .legend-name {
   color: var(--map-legend-hidden);
 }
 
@@ -1398,9 +1398,19 @@
 
 .legend-count,
 .legend-state {
-  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+}
+
+.legend-count {
+  color: var(--raised-label);
+}
+
+/* The state word ends closer to the eye than a count does, so it reads as
+   the eye's word and stays out of the counts' right edge. */
+.legend-state {
+  margin-right: calc(var(--space-1) - var(--space-2));
+  color: var(--muted);
 }
 
 .legend-filter {
