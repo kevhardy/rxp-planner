@@ -34,6 +34,8 @@ const PAIRS: Pair[] = [
   ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],
   ["map-legend-heading", "raised", 6],
+  // A group heading parts from the shown names under it by color, not by its weight alone.
+  ["map-legend-heading", "map-legend-shown", 1.2],
   // The ring around a dark step swatch parts from the legend and from the swatch's ink rim. At 3.1:1 on the
   // dark legend, the swatch lost its edge.
   ...on(["map-legend-step-outline"], ["raised", "map-step-rim"], 4),
