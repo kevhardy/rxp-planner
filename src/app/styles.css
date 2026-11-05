@@ -1071,8 +1071,11 @@ label {
   color: var(--muted);
 }
 
-.lib-guide {
-  padding-left: calc(var(--space-8) + var(--space-2));
+/* One tree level is the 12px disclosure chevron and its --space-2 gap, so a
+   child row starts under its parent folder's label. */
+.lib-guide,
+.lib-toggle.depth-1 {
+  padding-left: calc(var(--space-4) + var(--space-3) + var(--space-2));
 }
 
 .lib-name {
@@ -1159,20 +1162,12 @@ label {
   font-weight: var(--font-weight-medium);
 }
 
-.lib-toggle.depth-1 {
-  padding-left: var(--space-8);
-}
-
-.lib-toggle.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-4));
-}
-
-.lib-guide.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-6));
+:is(.lib-toggle, .lib-guide).depth-2 {
+  padding-left: calc(var(--space-4) + 2 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-guide.depth-3 {
-  padding-left: calc(2 * var(--space-8) + var(--space-2));
+  padding-left: calc(var(--space-4) + 3 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-builtins .lib-guide {
@@ -1191,7 +1186,7 @@ label {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1) var(--space-2);
-  padding: 0 var(--space-4) var(--space-2) calc(var(--space-8) + var(--space-2));
+  padding: 0 var(--space-4) var(--space-2) calc(var(--space-4) + var(--space-3) + var(--space-2));
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
