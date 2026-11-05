@@ -298,10 +298,11 @@ summary::-webkit-details-marker {
 }
 
 /* In a quiet group, another control in the bar is the active one, so the
-   current segment keeps only its bold label. */
+   current segment looks like the others. */
 .ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"] {
   border-block-end-color: var(--control-border) !important;
   box-shadow: none !important;
+  font-weight: var(--font-weight-regular) !important;
 }
 
 .ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:where(:not(:active)) {
