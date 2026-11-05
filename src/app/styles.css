@@ -1769,13 +1769,17 @@ label {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
 
-@container (max-width: 600px) {
   .dock-tabs {
     gap: 2px;
   }
 
+  .dock-tabs > .ui-tab {
+    padding-inline: var(--space-2);
+  }
+}
+
+@container (max-width: 600px) {
   .dock-tabs > .ui-tab {
     padding-inline: var(--space-1);
   }
