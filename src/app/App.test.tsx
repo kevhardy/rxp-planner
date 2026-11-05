@@ -488,7 +488,7 @@ describe("top bar", () => {
     expect([more.disabled, cascade(more, "background")?.value, cascade(more, "border-color")?.value]).toEqual([
       false,
       "transparent",
-      "var(--disabled-fg)",
+      "var(--disabled-border)",
     ]);
   });
 

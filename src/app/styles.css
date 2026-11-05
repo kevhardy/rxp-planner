@@ -1003,8 +1003,7 @@ label {
 /* The live half takes the fill and border of a disabled main half, so the
    pair reads as one button. */
 .split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
-  /* stylelint-disable-next-line rxpplanner/disabled-tokens-when-disabled -- The border keeps the pair one button beside its disabled half. The chevron keeps its live color. */
-  border-color: var(--disabled-fg);
+  border-color: var(--disabled-border);
   background: transparent;
 }
 
