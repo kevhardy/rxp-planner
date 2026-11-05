@@ -285,6 +285,10 @@
   /* A dark steel slate behind a plain map point, softer than --art-ink so a
      city's many points do not read as a pile of holes. */
   --map-icon-backing: #2b3746;
+  --map-dot-vendors: #e3a466;
+  --map-dot-trainers: #c49bf2;
+  --map-dot-supplies: #8fd6c8;
+  --map-dot-services: #dfe5ee;
   --map-label: #f3ecd8;
   --map-label-strong: #ffe8a3;
   --map-border: #fff4d6;
@@ -354,6 +358,7 @@
   --art-focus-halo:
     0 0 0 2px color-mix(in srgb, var(--art-paper) 85%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--art-paper) 85%, transparent);
   --art-icon-halo: 0 0 0 1px color-mix(in srgb, var(--art-ink) 45%, transparent);
+  --art-dot-rim: 0 0 0 1px var(--art-ink);
   --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);

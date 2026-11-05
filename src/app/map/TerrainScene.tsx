@@ -17,7 +17,7 @@ import { ItemButton, MarkButton } from "../ui/ItemButton.tsx";
 import type { Frame } from "./MapCanvas.tsx";
 import { mapTiles } from "./mapAssets.ts";
 import { MapIconImage } from "./MapIconImage.tsx";
-import { isCategoryId, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
+import { isCategoryId, useMapProfile, useMapSettings, type CategoryId, type LayerId } from "./mapSettings.ts";
 import {
   groupMarkers,
   showsSide,
@@ -235,6 +235,11 @@ type Shown = PlacedPoi & { marked?: true };
 
 const keyOf = ({ poi, at, marked }: Shown) => `${marked ? "marked:" : ""}${poi.category}:${poi.entity?.id ?? poi.name}:${at.x},${at.y}`;
 
+const PLAIN_LAYERS: ReadonlySet<LayerId> = new Set<LayerId>(["services", "vendors", "trainers", "supplies"]);
+
+// A flight master is a travel point, so it keeps its sprite like the transport layer.
+const isPlain = ({ layer, category, marked }: Shown) => !marked && PLAIN_LAYERS.has(layer) && category.key !== "flight-master";
+
 const labelOf = ({ poi, category }: PlacedPoi) => `${poi.name}: ${category.name}${poi.levels ? ` (${poi.levels})` : ""}`;
 
 const PlaceLabel = memo(function PlaceLabel({ placed, labels }: { placed: PlacedPlace; labels?: Map<PlacedPlace, HTMLElement> }) {
@@ -270,7 +275,7 @@ const Marker = memo(function Marker(props: {
     <MarkButton
       label={label}
       at={at}
-      className={`poi poi-${layer}${withName ? " named" : ""}${marked ? " marked" : ""}`}
+      className={`poi poi-${layer}${withName ? " named" : ""}${marked ? " marked" : ""}${isPlain(placed) ? " plain" : ""}`}
       data-category={category.key}
       onFocus={() => props.retain(keyOf(placed))}
       onContextMenu={() => props.retain(keyOf(placed))}
@@ -419,7 +424,11 @@ const MarkerRow = memo(function MarkerRow(props: {
         }}
       >
         {icons.slice(0, ROW_ICONS).map((p, i) => (
-          <MapIconImage key={i} icon={p.icon} className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}`} />
+          <MapIconImage
+            key={i}
+            icon={p.icon}
+            className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}${isPlain(p) ? " plain" : ""}`}
+          />
         ))}
         {icons.length > ROW_ICONS && (
           <span className="poi-more" aria-hidden="true">

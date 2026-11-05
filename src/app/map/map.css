@@ -196,18 +196,60 @@
   box-shadow: var(--art-icon-halo);
 }
 
-/* A city holds many plain points, so they draw a step smaller than the
-   guide's own marks. Vendor, trainer, and supply sprites are simple shapes
-   that still read at 16px. Transport, service, and instance sprites are
-   detailed art that turns to a dark speck below 18px. */
+/* Points other than the guide's own marks draw a step smaller. Transport,
+   service, and instance sprites are detailed art that turns to a dark speck
+   below 18px. */
 .map-overlay .poi:not(.marked, :focus-visible) .poi-icon,
 .map-overlay .poi-row:not(:focus-visible) .poi-icon:not(.marked) {
   --size: 18px;
 }
 
-.map-overlay .poi:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked, :focus-visible) .poi-icon,
-.map-overlay .poi-row:not(:focus-visible) .poi-icon:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked) {
-  --size: 16px;
+.map-overlay .poi-vendors {
+  --dot: var(--map-dot-vendors);
+}
+
+.map-overlay .poi-trainers {
+  --dot: var(--map-dot-trainers);
+}
+
+.map-overlay .poi-supplies {
+  --dot: var(--map-dot-supplies);
+}
+
+.map-overlay .poi-services {
+  --dot: var(--map-dot-services);
+}
+
+.map-overlay .poi.plain:hover {
+  z-index: 3;
+}
+
+/* Most plain sprites, such as the repair anvil, read as grey blocks at a
+   city's density, so they draw as dots. From this drawn width, a city's
+   points sit about 24px apart, and the sprites return. */
+@container map-overlay (width < 16000px) {
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
+    --size: 7px;
+    position: relative;
+    background: var(--dot);
+    box-shadow: var(--art-dot-rim);
+  }
+
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+  }
+
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
+    margin-left: 2px;
+  }
+
+  .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
+    translate: -3.5px -50%;
+  }
 }
 
 .map-overlay .poi .poi-icon {
