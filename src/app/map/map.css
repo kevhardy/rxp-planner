@@ -220,25 +220,27 @@
 }
 
 /* A plain point's group shows by its shape as well as its color. The map and
-   the legend draw the same dot. */
+   the legend draw the same dot. Each shape is drawn in a 14px box around a
+   10px dot and covers about 80px², so the diamond and the triangle reach past
+   the dot to weigh the same as the square. */
 .poi-services {
   --dot: var(--map-dot-services);
-  --dot-shape: circle(50%);
+  --dot-shape: circle(5px);
 }
 
 .poi-vendors {
   --dot: var(--map-dot-vendors);
-  --dot-shape: inset(0.5px round 1px);
+  --dot-shape: inset(2.5px round 1px);
 }
 
 .poi-trainers {
   --dot: var(--map-dot-trainers);
-  --dot-shape: polygon(50% -6%, 106% 50%, 50% 106%, -6% 50%);
+  --dot-shape: polygon(7px 0.7px, 13.3px 7px, 7px 13.3px, 0.7px 7px);
 }
 
 .poi-supplies {
   --dot: var(--map-dot-supplies);
-  --dot-shape: path("M3.1 0.9Q4 -0.5 4.9 0.9L7.7 6.2Q8.4 7.6 6.8 7.6H1.2Q-0.4 7.6 0.3 6.2Z");
+  --dot-shape: path("M6.34 1.5Q7 0.2 7.66 1.5L12.94 11.9Q13.6 13.2 12.3 13.2H1.7Q0.4 13.2 1.06 11.9Z");
 }
 
 .map-overlay .poi.plain:hover {
@@ -253,7 +255,7 @@
      box and would not follow the shape that clips the color inside it. */
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
-    --size: 8px;
+    --size: 10px;
     position: relative;
     background: none;
     box-shadow: none;
@@ -264,7 +266,7 @@
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -2px;
     background: var(--dot);
     clip-path: var(--dot-shape);
   }
@@ -277,11 +279,11 @@
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
-    margin-left: 2px;
+    margin-left: var(--space-1);
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
-    translate: -4px -50%;
+    translate: -5px -50%;
   }
 }
 
@@ -1269,8 +1271,8 @@
 
 .legend-row .dot-swatch {
   position: relative;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: none;
   box-shadow: none;
   filter: var(--art-dot-rim);
@@ -1279,7 +1281,7 @@
 .legend-row .dot-swatch::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -2px;
   background: var(--dot);
   clip-path: var(--dot-shape);
 }
