@@ -842,10 +842,12 @@ label {
 }
 
 /* Library opens a pane, not a popover, so it is not a popover trigger and
-   takes its open look here. It has the wash with no ring, so it reads
-   quieter than the current mode beside it. */
+   takes its open look here. It shares the bold label of the current mode,
+   with a wash and no bar or ring, so it reads quieter than the mode beside
+   it. */
 .library-toggle[aria-expanded="true"] {
   background: var(--pressed-wash);
+  font-weight: var(--font-weight-bold);
 }
 
 .library-toggle[aria-expanded="true"] svg {

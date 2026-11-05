@@ -556,7 +556,7 @@ describe("top bar", () => {
     expect(document.activeElement).toBe(button);
   });
 
-  it("draws open Preview as and Warnings as pressed toggles, and the open Library as a quieter wash", async () => {
+  it("draws open Preview as and Warnings as pressed toggles, and the open Library as a quieter wash with a bold label", async () => {
     await twoGuides();
     const { user } = await mount();
     const look = (button: HTMLElement) => [
@@ -564,6 +564,7 @@ describe("top bar", () => {
       cascade(button, "border-color")?.value,
       cascade(button, "box-shadow")?.value,
       cascade(button, "background")?.value,
+      cascade(button, "font-weight")?.value,
     ];
     const looks = [];
     for (const name of [/^Preview as /, /^Warnings/, /^Library$/]) {
@@ -573,7 +574,7 @@ describe("top bar", () => {
     }
     const pressed = ["true", "var(--accent)", "var(--ring-pressed)"];
     expect(looks.slice(0, 2).map((l) => l.slice(0, 3))).toEqual([pressed, pressed]);
-    expect(looks[2]).toEqual(["true", "1px solid transparent", undefined, "var(--pressed-wash)"]);
+    expect(looks[2]).toEqual(["true", "1px solid transparent", undefined, "var(--pressed-wash)", "var(--font-weight-bold)"]);
     expect(look(screen.getByRole("button", { name: "Edit" })).slice(0, 3)).not.toEqual(pressed);
   });
 
