@@ -1209,6 +1209,22 @@ label {
   line-height: var(--line-height-small);
 }
 
+.lib-credit .ui-button,
+.lib-about .ui-button {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+/* A ghost button shows no padding at rest, so its text lines up with the
+   row's end and sits one gap after "Source". */
+.lib-credit .ui-button {
+  margin-right: calc(-1 * var(--space-2));
+}
+
+.lib-about .ui-button {
+  margin-left: calc(-1 * var(--space-2));
+}
+
 .lib-credit a,
 .lib-about a {
   text-decoration-color: var(--control-border);
