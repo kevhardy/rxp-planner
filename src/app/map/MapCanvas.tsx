@@ -265,7 +265,7 @@ export function MapCanvas(props: {
                   label={pin.label}
                   at={at}
                   vars={{ "--fade": pin.fade, "--fill": pin.fill }}
-                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${look?.near ? " near" : ""}`}
+                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${look?.near ? " near" : ""}${pin.rank && !text ? " dot" : ""}`}
                   aria-describedby={pin.move ? hintId : undefined}
                   aria-haspopup={!pin.activate && pin.menu ? "menu" : undefined}
                   tabIndex={pin.kind === "previous" || pin.kind === "upcoming" ? -1 : 0}
