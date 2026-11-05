@@ -288,6 +288,11 @@ describe("the dark pale guide icons", () => {
   });
 });
 
+it("puts the light empty map between --pane-head and --surface", () => {
+  const empty = lightness(color("light", "map-empty"));
+  expect([empty > lightness(color("light", "pane-head")), empty < lightness(color("light", "surface"))]).toEqual([true, true]);
+});
+
 it("draws the light legend heading at least as dark as the shown names under it", () => {
   expect(lightness(color("light", "map-legend-heading"))).toBeLessThanOrEqual(lightness(color("light", "map-legend-shown")));
 });

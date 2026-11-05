@@ -1321,6 +1321,9 @@
 .legend-step:not(.off) svg,
 .legend-heading .ui-button:is([aria-pressed="true"], [aria-pressed="mixed"]):not(:disabled) svg {
   color: var(--map-legend-eye-shown);
+  /* Shown and hidden names share a weight, so the shown eye carries a
+     heavier stroke than the crossed eye. */
+  stroke-width: 2;
 }
 
 .legend-row[aria-pressed="false"] svg,
