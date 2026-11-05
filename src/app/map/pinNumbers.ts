@@ -16,8 +16,19 @@ const CLEAR = 2;
 // A mark of the selected step reaches past a pin's size by its 4.5px ring in
 // map.css, and by 1px more for an 18px quest icon.
 const MARK_EDGE = 6;
+// The space between that ring and a chip or a plain point, so neither reads as
+// pressed against the ring.
+const MARK_CLEAR = 4;
+// A plain point in map.css draws its shape in a 14px box, and the points of a
+// row sit 14px apart.
+const DOT_REACH = 7;
+const DOT_STEP = 14;
 // How far, in pixels, a chip can move from its point to clear another mark.
 const MAX_SHIFT = 24;
+// In Playback, map.css draws a selected step's pin as a badge this far right
+// of and above its point, which clears its own mark's ring by `MARK_CLEAR`.
+const BADGE_OFFSET = 19;
+const RINGED: ReadonlySet<Pin["kind"]> = new Set(["start", "end", "both"]);
 
 /** The length of the straight part between the pin's two round ends. */
 const barOf = (text: string) => Math.max(0, PIN_EDGES + text.length * DIGIT_WIDTH - PIN_SIZE);
@@ -25,9 +36,11 @@ const barOf = (text: string) => Math.max(0, PIN_EDGES + text.length * DIGIT_WIDT
 /**
  * What a ranked pin prints at this scale. `null` draws no pin, because a chip
  * or a mark of the selected step already covers its place. `at` is where the
- * chip draws when it moves off its point to clear another mark.
+ * chip draws when it moves off its point to clear another mark. `badge` is
+ * how far, in pixels, a selected step's badge moves to take the corner of a
+ * ringed mark whose ring it would cover.
  */
-export type PinLook = { text: string; near: boolean; at?: ViewPoint } | null;
+export type PinLook = { text: string; near: boolean; at?: ViewPoint; badge?: { x: number; y: number } } | null;
 
 interface Spot {
   x: number;
@@ -112,7 +125,7 @@ export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: num
     }
   }
   const placed: Spot[] = [];
-  const free = (s: Spot) => marks.every((m) => gap(m, s) >= PIN_SIZE + MARK_EDGE + CLEAR) && placed.every((p) => !crowds(p, s));
+  const free = (s: Spot) => marks.every((m) => gap(m, s) >= PIN_SIZE + MARK_EDGE + MARK_CLEAR) && placed.every((p) => !crowds(p, s));
   for (const chip of chips) {
     const own = drawn(chip);
     const shift = SHIFTS.find((s) => free({ ...own, x: own.x + s.x, y: own.y + s.y }));
@@ -126,5 +139,31 @@ export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: num
     const at = { x: (own.x + shift.x) / pxPerPercent, y: ((own.y + shift.y) * aspect) / pxPerPercent };
     looks.set(chip.key, { text: chipText(chip), near, ...(moved && { at }) });
   }
+  const rings = pins.flatMap((p) => (RINGED.has(p.kind) ? [spot(p)] : []));
+  for (const pin of pins) {
+    if (pin.rank !== 0 || !pin.text) continue;
+    const own = spot(pin);
+    const badge = { x: own.x + BADGE_OFFSET, y: own.y - BADGE_OFFSET, bar: 0 };
+    const ring = rings.find((r) => gap(r, badge) < PIN_SIZE + MARK_EDGE + MARK_CLEAR);
+    if (ring) looks.set(pin.key, { text: pin.text, near: false, badge: { x: ring.x - own.x, y: ring.y - own.y } });
+  }
   return looks;
+}
+
+/**
+ * Where a row of `count` plain points draws, so that it clears each mark of
+ * the selected step by `MARK_CLEAR`. `at` is the first point's center, and
+ * the others follow to its right. The row keeps `at` when it is clear, and
+ * when no place within `MAX_SHIFT` is.
+ */
+export function clearOfMarks(at: ViewPoint, count: number, marks: readonly ViewPoint[], pxPerPercent: number, aspect: number): ViewPoint {
+  const toPx = (p: ViewPoint) => ({ x: p.x * pxPerPercent, y: (p.y * pxPerPercent) / aspect });
+  const near = marks.map(toPx);
+  const bar = (count - 1) * DOT_STEP;
+  const row = { ...toPx(at), bar };
+  const center = { ...row, x: row.x + bar / 2 };
+  const free = (s: Spot) => near.every((m) => gap({ ...m, bar: 0 }, s) >= PIN_SIZE / 2 + MARK_EDGE + MARK_CLEAR + DOT_REACH);
+  const shift = SHIFTS.find((s) => free({ ...center, x: center.x + s.x, y: center.y + s.y }));
+  if (!shift || (shift.x === 0 && shift.y === 0)) return at;
+  return { x: (row.x + shift.x) / pxPerPercent, y: ((row.y + shift.y) * aspect) / pxPerPercent };
 }

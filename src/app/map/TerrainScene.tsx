@@ -18,6 +18,7 @@ import type { Frame } from "./MapCanvas.tsx";
 import { mapTiles } from "./mapAssets.ts";
 import { MapIconImage } from "./MapIconImage.tsx";
 import { drawsAsDot, isCategoryId, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
+import { clearOfMarks } from "./pinNumbers.ts";
 import {
   groupMarkers,
   showsSide,
@@ -114,6 +115,8 @@ export function TerrainMarkers(props: {
   icons?: (pxPerPercent: number) => readonly ViewPoint[];
   /** Where quest markers draw. A point's name moves to the other side of its icon to clear them. */
   quests?: readonly ViewPoint[];
+  /** Where the selected step's marks draw. A row of plain points moves clear of their rings. */
+  marks?: readonly ViewPoint[];
 }) {
   const { map, features, shows, frame, pxPerPercent, icons } = props;
   const { allFactions } = useMapSettings();
@@ -220,6 +223,11 @@ export function TerrainMarkers(props: {
       name.toggleAttribute("data-start", side === "start");
     }
   });
+  const aspect = canvasSize(map).width / canvasSize(map).height;
+  const drawnAt = (row: Shown[]) =>
+    props.marks?.length && row.every(isPlain)
+      ? clearOfMarks(row[0]!.at, Math.min(rowIcons(row).length, ROW_ICONS), props.marks, pxPerPercent, aspect)
+      : row[0]!.at;
   return (
     <>
       {shows("routes") && (
@@ -237,9 +245,9 @@ export function TerrainMarkers(props: {
       ))}
       {visibleRows.map(({ row, key, named }) =>
         row.length === 1 ? (
-          <Marker key={key} placed={row[0]!} named={named} names={names} onPick={props.onPick} retain={retain} />
+          <Marker key={key} placed={row[0]!} at={drawnAt(row)} named={named} names={names} onPick={props.onPick} retain={retain} />
         ) : (
-          <MarkerRow key={key} row={row} onPick={props.onPick} retain={retain} hover={hover} />
+          <MarkerRow key={key} row={row} at={drawnAt(row)} onPick={props.onPick} retain={retain} hover={hover} />
         ),
       )}
       {props.marked.places.map((p, i) => (
@@ -254,6 +262,8 @@ type Shown = PlacedPoi & { marked?: true };
 const keyOf = ({ poi, at, marked }: Shown) => `${marked ? "marked:" : ""}${poi.category}:${poi.entity?.id ?? poi.name}:${at.x},${at.y}`;
 
 const isPlain = ({ layer, category, marked }: Shown) => !marked && drawsAsDot(layer, category.key);
+
+const rowIcons = (row: Shown[]) => [...new Map(row.map((p) => [p.marked ? keyOf(p) : p.category.icon, p])).values()];
 
 const labelOf = ({ poi, category }: PlacedPoi) => `${poi.name}: ${category.name}${poi.levels ? ` (${poi.levels})` : ""}`;
 
@@ -278,13 +288,15 @@ const PlaceLabel = memo(function PlaceLabel({ placed, labels }: { placed: Placed
 
 const Marker = memo(function Marker(props: {
   placed: Shown;
+  /** Where the point draws, which can move off `placed.at` to clear a mark. */
+  at: ViewPoint;
   named: boolean;
   names: Map<HTMLElement, ViewPoint>;
   onPick: (poi: WorldMapPoi) => void;
   retain: (key: string) => void;
 }) {
-  const { placed, named, names } = props;
-  const { poi, layer, category, at, marked } = placed;
+  const { placed, at, named, names } = props;
+  const { poi, layer, category, marked } = placed;
   const label = labelOf(placed);
   const withName = marked || named;
   return (
@@ -326,17 +338,18 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 
 const MarkerRow = memo(function MarkerRow(props: {
   row: Shown[];
+  /** Where the row draws, which can move off its first point to clear a mark. */
+  at: ViewPoint;
   onPick: (poi: WorldMapPoi) => void;
   retain: (key: string) => void;
   hover: (key: string | null) => void;
 }) {
-  const { row } = props;
+  const { row, at } = props;
   const rowButton = useRef<HTMLButtonElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const listId = useId();
-  const icons = [...new Map(row.map((p) => [p.marked ? keyOf(p) : p.category.icon, p])).values()];
+  const icons = rowIcons(row);
   const named = row.filter((p) => p.marked);
-  const at = row[0]!.at;
   const key = keyOf(row[0]!);
   const items = () => [...list.current!.querySelectorAll("button")];
   const mapView = useMapView();

@@ -425,6 +425,7 @@ export function useGuideMap(
   );
   const shownPlaced = placed && (showQuests.available || showQuests.turnIns) ? placed : null;
   const questIcons = shownPlaced && lockNames ? shownMarkers(shownPlaced, showQuests).map((p) => p.at) : [];
+  const markSpots = pins.flatMap((p) => (p.rank ? [] : [p.at]));
   const terrainOverlay = (frame: Frame, pxPerPercent: number) => (
     <TerrainMarkers
       map={map}
@@ -435,6 +436,7 @@ export function useGuideMap(
       frame={frame}
       pxPerPercent={pxPerPercent}
       quests={questIcons}
+      marks={markSpots}
     />
   );
   const options = (

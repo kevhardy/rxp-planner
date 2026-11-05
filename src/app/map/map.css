@@ -763,8 +763,12 @@
   translate: calc(-50% + 5px) calc(-50% - 14px);
 }
 
-/* A badge sits on its mark, so the mark's own coral ring is enough. */
+/* A badge sits on its mark, so the mark's own coral ring is enough. The
+   selected step's badge sits outside that ring, at `BADGE_OFFSET` in
+   pinNumbers.ts, and moves by --badge-x and --badge-y onto the corner of a
+   ringed mark near its point. */
 .playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint):not(.dot) {
+  translate: calc(-50% + 19px + var(--badge-x, 0px)) calc(-50% - 19px + var(--badge-y, 0px));
   box-shadow: none;
 }
 
