@@ -82,6 +82,7 @@ const PAIRS: Pair[] = [
   ["danger-fg", "danger-press", 4.5],
   ["primary-fg", "primary-press", 4.5],
   ["level-earned", "level-track", 3],
+  ["disabled-fg", "disabled-button-bg", 3],
 ];
 
 const parse = (file: string) => postcss.parse(readFileSync(join(import.meta.dirname, file), "utf8"));
