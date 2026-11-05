@@ -82,8 +82,21 @@ export interface Shape {
   closed: boolean;
   className: string;
   fade?: number;
-  /** Draws a dark edge under the line, beneath every shape. */
+  /** Draws a dark edge under the line, beneath every shape of the same fade. */
   cased?: boolean;
+}
+
+/**
+ * Shapes grouped by fade, faintest first, so a stronger step draws on top. A layer fades its casings and lines as one
+ * image, so a faded line keeps its color instead of showing its dark casing through it.
+ */
+function fadeLayers(shapes: Shape[]): [number, Shape[]][] {
+  const layers = new Map<number, Shape[]>();
+  for (const s of shapes) {
+    const fade = s.fade ?? 1;
+    layers.set(fade, [...(layers.get(fade) ?? []), s]);
+  }
+  return [...layers].sort(([a], [b]) => a - b);
 }
 
 export interface Spawn {
@@ -217,7 +230,7 @@ export function MapCanvas(props: {
   const polyline = (points: ViewPoint[]) => points.map((p) => `${p.x},${p.y}`).join(" ");
   const outline = (s: Shape, className: string, key: string) => {
     const Line = s.closed ? "polygon" : "polyline";
-    return <Line key={key} className={className} opacity={s.fade} points={polyline(s.points)} />;
+    return <Line key={key} className={className} points={polyline(s.points)} />;
   };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
   const looks = pinLooks(pins, pxPerPercent, aspect, props.stand);
@@ -254,8 +267,12 @@ export function MapCanvas(props: {
             <span key={s.key} className="spawn" style={{ "--at-x": `${s.at.x}%`, "--at-y": `${s.at.y}%`, "--fill": slices(s.colors) }} />
           ))}
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {shapes.filter((s) => s.cased).map((s) => outline(s, `${s.className} casing`, `casing:${s.key}`))}
-            {shapes.map((s) => outline(s, s.className, s.key))}
+            {fadeLayers(shapes).map(([fade, layer]) => (
+              <g key={fade} opacity={fade < 1 ? fade : undefined}>
+                {layer.filter((s) => s.cased).map((s) => outline(s, `${s.className} casing`, `casing:${s.key}`))}
+                {layer.map((s) => outline(s, s.className, s.key))}
+              </g>
+            ))}
           </svg>
           {drawn.map((pin) => {
             const look = looks.get(pin.key);

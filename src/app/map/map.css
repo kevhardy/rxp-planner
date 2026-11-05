@@ -619,14 +619,18 @@
   stroke: var(--step-upcoming);
 }
 
+.map-overlay svg .route.upcoming {
+  stroke-width: 3.5px;
+}
+
 .map-overlay svg .casing {
   stroke: var(--art-shade);
   stroke-width: 4.5px;
 }
 
-.map-overlay svg .upcoming.casing {
+.map-overlay svg .route.upcoming.casing {
   stroke: var(--art-ink);
-  stroke-width: 5px;
+  stroke-width: 6px;
 }
 
 .pin {

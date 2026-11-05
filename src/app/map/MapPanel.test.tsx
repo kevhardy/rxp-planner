@@ -304,7 +304,7 @@ describe("map panel", () => {
       [...mapArea().querySelectorAll("polyline.route:not(.casing)")].map((l) => [
         l.getAttribute("class"),
         l.getAttribute("points"),
-        Number(l.getAttribute("opacity")),
+        Number(l.parentElement!.getAttribute("opacity") ?? 1),
       ]);
     const show = async (side: "Previous" | "Upcoming", state: "Hidden" | "Dimmed" | "Shown") => {
       const menu = screen.getByRole("button", { name: "Step display" });

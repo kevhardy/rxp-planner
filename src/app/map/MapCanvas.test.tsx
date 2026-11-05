@@ -368,7 +368,7 @@ describe("MapCanvas", () => {
     ]);
   });
 
-  it("draws a casing under every shape for each cased shape, and none for the others", () => {
+  it("fades each line with its casing as one layer, and draws stronger lines above fainter ones", () => {
     const at = (x: number, y: number): ViewPoint => ({ x, y });
     render(
       <MapCanvas
@@ -378,9 +378,11 @@ describe("MapCanvas", () => {
         scene={() => null}
         pins={[]}
         shapes={[
-          { key: "a", points: [at(10, 10), at(20, 20)], closed: false, className: "route upcoming", fade: 0.5, cased: true },
+          { key: "a", points: [at(10, 10), at(20, 20)], closed: false, className: "route upcoming", fade: 0.8, cased: true },
           { key: "b", points: [at(30, 30), at(40, 40), at(30, 40)], closed: true, className: "route selected", cased: true },
           { key: "c", points: [at(50, 50), at(60, 60)], closed: false, className: "rxp-line selected" },
+          { key: "d", points: [at(70, 70), at(80, 80)], closed: false, className: "route upcoming", fade: 0.5, cased: true },
+          { key: "e", points: [at(90, 90), at(95, 95)], closed: false, className: "route upcoming", fade: 0.5, cased: true },
         ]}
         areas={[]}
         spawns={[]}
@@ -390,18 +392,35 @@ describe("MapCanvas", () => {
         view={{ fit: { x: 50, y: 50, width: 100 } }}
       />,
     );
-    const drawn = [...document.querySelectorAll(".map-overlay svg > :is(polyline, polygon)")].map((s) => [
-      s.tagName,
-      s.getAttribute("class"),
-      s.getAttribute("points"),
-      s.getAttribute("opacity"),
+    const layers = [...document.querySelectorAll(".map-overlay svg > g")].map((g) => [
+      g.getAttribute("opacity"),
+      [...g.children].map((s) => [s.tagName, s.getAttribute("class"), s.getAttribute("points"), s.getAttribute("opacity")]),
     ]);
-    expect(drawn).toEqual([
-      ["polyline", "route upcoming casing", "10,10 20,20", "0.5"],
-      ["polygon", "route selected casing", "30,30 40,40 30,40", null],
-      ["polyline", "route upcoming", "10,10 20,20", "0.5"],
-      ["polygon", "route selected", "30,30 40,40 30,40", null],
-      ["polyline", "rxp-line selected", "50,50 60,60", null],
+    expect(layers).toEqual([
+      [
+        "0.5",
+        [
+          ["polyline", "route upcoming casing", "70,70 80,80", null],
+          ["polyline", "route upcoming casing", "90,90 95,95", null],
+          ["polyline", "route upcoming", "70,70 80,80", null],
+          ["polyline", "route upcoming", "90,90 95,95", null],
+        ],
+      ],
+      [
+        "0.8",
+        [
+          ["polyline", "route upcoming casing", "10,10 20,20", null],
+          ["polyline", "route upcoming", "10,10 20,20", null],
+        ],
+      ],
+      [
+        null,
+        [
+          ["polygon", "route selected casing", "30,30 40,40 30,40", null],
+          ["polygon", "route selected", "30,30 40,40 30,40", null],
+          ["polyline", "rxp-line selected", "50,50 60,60", null],
+        ],
+      ],
     ]);
   });
 
