@@ -2307,22 +2307,13 @@ label {
   margin-top: var(--space-4);
 }
 
+/* The columns of the fields above: 128px wide, 16px apart. Mob spans two. */
 .sim-kill-fields {
   display: grid;
-  grid-template-columns: auto minmax(0, 320px) auto;
+  grid-template-columns: 128px minmax(0, 272px) auto;
   justify-content: start;
   align-items: start;
   gap: var(--space-3) var(--space-4);
-}
-
-/* A count holds a few digits, but a placeholder such as "Automatic" needs
-   the wider field. */
-.sim-kill-fields .arg-short .ui-input {
-  width: 64px;
-}
-
-.sim-kill-fields .arg-short .ui-input[placeholder] {
-  width: 112px;
 }
 
 .sim-kill-xp {
