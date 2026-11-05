@@ -302,17 +302,21 @@ label {
 .mk-checkpoint {
   --kind: var(--warn);
 }
+/* A sheet of paper in the speech bubbles' fill and outline, so the note
+   reads as one of the guide icons. */
 .mk-note {
-  background: none;
-  color: var(--muted);
+  border-radius: 0;
+  background: url("./guideIcons/note.svg") center / 100% 100% no-repeat;
+  color: var(--guide-icon-ink);
+  filter: var(--ring-guide-icon);
 }
+/* At 12/16, the lines fit inside the paper with a margin. Drawn 1.2px wide
+   through that scale, so they read as text lines and not as a frame. */
 .mk-note > svg {
-  width: 20px;
-  height: 20px;
-  margin: -2px;
-  /* Drawn 1.75px wide through the 20/16 scale, so the lines keep the
-     stroke of the other shapes and span about the person's 11px. */
-  stroke-width: 1.4;
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  stroke-width: 1.6;
 }
 
 .app {
@@ -2079,10 +2083,6 @@ label {
   background-image: var(--icon-url);
   background-size: 100% 100%;
   background-position: center;
-}
-
-.guide-icon.vector.pale {
-  filter: var(--ring-guide-icon-pale);
 }
 
 .guide-icon.vector.vivid {
