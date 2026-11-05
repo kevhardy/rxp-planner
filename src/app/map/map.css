@@ -125,6 +125,11 @@
   text-shadow: var(--art-label-halo);
 }
 
+/* The world view draws labels over the bare sea, so they take a solid rim. */
+.map-viewport:not(:has(> .map-stage > .terrain-sea)) > .map-overlay .place {
+  text-shadow: var(--art-label-outline);
+}
+
 .map-overlay .place-zone {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
