@@ -926,12 +926,6 @@ label {
   overflow-y: auto;
 }
 
-.preview-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3) var(--space-6);
-}
-
 .preview-field {
   display: grid;
   grid-template-columns: 80px minmax(0, 1fr);
@@ -939,12 +933,23 @@ label {
   gap: var(--space-2);
 }
 
-.preview-field > .ui-field-error,
-.preview-note {
+.preview-field > .ui-field-error {
   grid-column: 2;
 }
 
+.preview-controls {
+  display: grid;
+  grid-template-columns: repeat(2, auto minmax(0, 1fr));
+  gap: var(--space-3) var(--space-8);
+}
+
+.preview-controls > .preview-field {
+  grid-column: span 2;
+  grid-template-columns: subgrid;
+}
+
 .preview-note {
+  grid-column: 4;
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -1071,8 +1076,11 @@ label {
   color: var(--muted);
 }
 
-.lib-guide {
-  padding-left: calc(var(--space-8) + var(--space-2));
+/* One tree level is the 12px disclosure chevron and its --space-2 gap, so a
+   child row starts under its parent folder's label. */
+.lib-guide,
+.lib-toggle.depth-1 {
+  padding-left: calc(var(--space-4) + var(--space-3) + var(--space-2));
 }
 
 .lib-name {
@@ -1159,20 +1167,12 @@ label {
   font-weight: var(--font-weight-medium);
 }
 
-.lib-toggle.depth-1 {
-  padding-left: var(--space-8);
-}
-
-.lib-toggle.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-4));
-}
-
-.lib-guide.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-6));
+:is(.lib-toggle, .lib-guide).depth-2 {
+  padding-left: calc(var(--space-4) + 2 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-guide.depth-3 {
-  padding-left: calc(2 * var(--space-8) + var(--space-2));
+  padding-left: calc(var(--space-4) + 3 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-builtins .lib-guide {
@@ -1191,7 +1191,7 @@ label {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1) var(--space-2);
-  padding: 0 var(--space-4) var(--space-2) calc(var(--space-8) + var(--space-2));
+  padding: 0 var(--space-4) var(--space-2) calc(var(--space-4) + var(--space-3) + var(--space-2));
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -1212,6 +1212,22 @@ label {
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+}
+
+.lib-credit .ui-button,
+.lib-about .ui-button {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+/* A ghost button shows no padding at rest, so its text lines up with the
+   row's end and sits one gap after "Source". */
+.lib-credit .ui-button {
+  margin-right: calc(-1 * var(--space-2));
+}
+
+.lib-about .ui-button {
+  margin-left: calc(-1 * var(--space-2));
 }
 
 .lib-credit a,
@@ -2101,11 +2117,13 @@ label {
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-3) var(--space-4);
   align-items: baseline;
 }
 
-.form-label {
+.form-label,
+.sim-settings legend,
+.line-title {
   color: var(--label);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
@@ -2211,10 +2229,17 @@ label {
 .sim-settings legend {
   margin-bottom: var(--space-2);
   padding: 0;
-  color: var(--text);
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
-  font-weight: var(--font-weight-bold);
+}
+
+.sim-settings > .tag-values {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 128px;
+  justify-content: start;
+}
+
+.sim-settings > .tag-values > * {
+  grid-column: auto;
 }
 
 .sim-settings p {
@@ -2458,9 +2483,6 @@ legend {
   align-items: baseline;
   gap: var(--space-2);
   margin: 0;
-  color: inherit;
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
 }
 
 .line-title .mk {
@@ -2540,10 +2562,17 @@ legend {
 }
 
 /* Three to a row, because the longest label, "Not in Season of Mastery",
-   wraps in a fifth of the form's measure. */
+   wraps in a fifth of the form's measure. The negative margin takes back the
+   2px that each Checkbox pads above and below its line, so the step form's
+   sections stay apart and "Add filter" still fits in the dock. */
 .tag-checks {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   row-gap: 0;
+  margin-block: -2px;
+}
+
+.tag-values {
+  row-gap: var(--space-2);
 }
 
 .command-form > :is(.arg-grow, .ui-select) {
@@ -2744,7 +2773,7 @@ legend {
   align-items: baseline;
   gap: var(--space-3);
   width: 100%;
-  padding: var(--space-1) var(--space-3) var(--space-1) var(--warnings-indent);
+  padding: calc(var(--space-1) + 2px) var(--space-3) calc(var(--space-1) + 2px) var(--warnings-indent);
 }
 
 .warn-item[aria-disabled] {
@@ -2759,6 +2788,8 @@ legend {
 .warn-message {
   flex: 1;
   min-width: 0;
+  font-size: var(--font-size-note);
+  line-height: var(--line-height-note);
   text-wrap: pretty;
 }
 
