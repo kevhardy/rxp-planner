@@ -23,7 +23,7 @@
 .map-body {
   --pin: var(--map-step);
   --step-previous: var(--kind-command);
-  --step-upcoming: var(--map-step-upcoming);
+  --step-upcoming: var(--map-step-upcoming-path);
   position: relative;
   flex: 1;
   min-height: 0;

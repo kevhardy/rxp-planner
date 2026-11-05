@@ -334,6 +334,8 @@
   --map-objective-5: #e4a9ff;
   --map-objective-6: #cccd00;
   --map-step-upcoming: #4cc472;
+  /* Lighter than --map-step-upcoming, so a thin dashed path stands out on grass and roofs. */
+  --map-step-upcoming-path: #8cf5a5;
   /* A numbered pin of a step before or after the selected one. A dark fill
      and a solid ink rim keep it apart from green terrain and quieter than the
      selected step's pin. Its light numeral needs no halo, which would blur it,
