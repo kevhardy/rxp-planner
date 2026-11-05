@@ -576,13 +576,13 @@ describe("terrain", () => {
       await user.selectOptions(mapShown(), "t0");
       expect(mapArea().querySelectorAll(".place-capital")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-instances, .poi-transport, .place-zone")).toHaveLength(3);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(within(mapArea()).getByRole("button", { name: "Selected step 1, line 1: .goto Elwynn Forest 48.94, 40.16" })).toBeTruthy();
 
       await user.selectOptions(mapShown(), "t1429");
       expect(mapArea().querySelectorAll(".poi-instances")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-transport")).toHaveLength(0);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-name")).toHaveLength(1);
       expect(await loadSetting("map")).toEqual(settings);
     } finally {

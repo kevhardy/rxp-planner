@@ -415,9 +415,18 @@
   color: var(--muted);
 }
 
+/* A thin dashed line on an ink casing reads as a route, where a bare line
+   across the map reads as a seam between tiles. */
 .map-overlay svg.routes polyline {
   stroke: var(--transport-line);
+  stroke-width: 1px;
   stroke-dasharray: 6px 4px;
+}
+
+.map-overlay svg.routes .transport-casing {
+  stroke: var(--map-transport-casing);
+  stroke-width: 3px;
+  stroke-dasharray: none;
 }
 
 .map-overlay svg {
