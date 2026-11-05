@@ -1558,7 +1558,7 @@ label {
   overflow-wrap: anywhere;
 }
 
-.row-text .guide-icon {
+:is(.row-text, .playback-title-text) .guide-icon {
   vertical-align: -2px;
 }
 
