@@ -462,6 +462,13 @@
   color: var(--muted);
 }
 
+/* The map cannot tell which of these legs the selected step uses, so every
+   leg draws at this strength, quieter than the step's own marks. The opacity
+   is on the whole layer, so a dash and its casing fade as one line. */
+.map-overlay svg.routes {
+  opacity: 0.6;
+}
+
 /* A thin dashed line on an ink casing reads as a route, where a bare line
    across the map reads as a seam between tiles. */
 .map-overlay svg.routes polyline {
