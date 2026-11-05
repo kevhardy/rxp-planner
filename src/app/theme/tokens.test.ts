@@ -57,7 +57,7 @@ const PAIRS: Pair[] = [
   ["map-border", "map-sea", 4.5],
   ["map-border", "map-backdrop", 3],
   ["map-character", "art-paper", 3],
-  ...on(["art-paper"], ["map-step-previous-fill", "map-step-upcoming-fill"], 3),
+  ...on(["art-paper"], ["map-step-previous-fill", "map-step-upcoming-fill"], 4.5),
   ...on(["stack-two", "stack-more"], ["map-interior"], 3),
   ...on(["warn", "danger", "ok"], ["surface", "press"], 4.5),
   ["warn", "warn-tint", 4.5],

@@ -314,12 +314,13 @@
   --map-enemy: #ff7b6b;
   --map-enemy-dead: #a59e93;
   --map-step-upcoming: #4cc472;
-  /* A numbered pin of a step before or after the selected one. A darker fill
-     and an ink rim keep it quieter than the selected step's pin, and its
-     light numeral keeps a dark halo. */
-  --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 80%, var(--art-ink));
-  --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 70%, var(--art-ink));
-  --map-step-rim: color-mix(in srgb, var(--art-ink) 60%, transparent);
+  /* A numbered pin of a step before or after the selected one. A dark fill
+     and a solid ink rim keep it apart from green terrain and quieter than the
+     selected step's pin. Its light numeral needs no halo, which would blur it,
+     so the fill keeps 4.5:1 under it. */
+  --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 65%, var(--art-ink));
+  --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 55%, var(--art-ink));
+  --map-step-rim: var(--art-ink);
   --font-size-map-step: 11px;
   --line-height-map-step: 1;
 

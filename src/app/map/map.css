@@ -556,6 +556,11 @@
   stroke-width: 4.5px;
 }
 
+.map-overlay svg .upcoming.casing {
+  stroke: var(--art-ink);
+  stroke-width: 5px;
+}
+
 .pin {
   display: grid;
   place-items: center;
@@ -653,7 +658,6 @@
   color: var(--art-paper);
   font-size: var(--font-size-map-step);
   line-height: var(--line-height-map-step);
-  text-shadow: var(--art-text-halo);
 }
 
 .pin-previous,
@@ -666,17 +670,46 @@
   background: var(--map-step-upcoming-fill);
 }
 
-.pin.crowded,
-.pin.crowded:hover:not(:disabled) {
+/* Opaque, so green terrain does not show through the fill. The numbers give the order of the steps. */
+.pin-upcoming {
+  opacity: 1;
+}
+
+.pin.near {
+  opacity: 0.5;
+}
+
+.pin.dot,
+.pin.dot:hover:not(:disabled) {
   width: 9px;
   min-width: 0;
   height: 9px;
   padding: 0;
 }
 
-/* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
-.pin-upcoming {
-  opacity: calc(0.5 + var(--fade, 1) * 0.5);
+.pin.dot:not(:hover) {
+  opacity: var(--fade, 1);
+}
+
+/* In Playback, a step pin is a badge on the upper-right corner of the sprite
+   that it marks, so the sprite stays in view. Badges draw over quest marks,
+   and the names of points draw over the guide's paths. The offset clears the
+   top of a 16px sprite and the start of its name. The z-index has no
+   specificity, so a focused pin still comes first. */
+:where(.playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint, .pin-previous, .pin-upcoming):not(.dot)) {
+  z-index: 2;
+}
+
+.playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint, .pin-previous, .pin-upcoming):not(.dot) {
+  translate: calc(-50% + 5px) calc(-50% - 14px);
+}
+
+.playback-stage .map-overlay .poi.named {
+  z-index: 1;
+}
+
+.playback-stage .map-overlay .poi-name {
+  text-shadow: var(--art-label-outline);
 }
 
 .pin-start,

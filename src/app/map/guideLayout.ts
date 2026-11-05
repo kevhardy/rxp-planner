@@ -26,13 +26,17 @@ function pinKind(command: string): "waypoint" | "goto" {
 interface StepLook {
   side: "previous" | "selected" | "upcoming";
   fade: number;
+  dot?: boolean;
 }
 
-function stepLook(d: number, steps: { previousSteps: StepShow; upcomingSteps: StepShow }): StepLook | undefined {
+const BEYOND_FADE = 0.35;
+
+function stepLook(d: number, steps: Pick<LayoutInput, "previousSteps" | "upcomingSteps" | "numberedAhead">): StepLook | undefined {
   if (d === 0) return { side: "selected", fade: 1 };
   const side = d < 0 ? "previous" : "upcoming";
   const show = d < 0 ? steps.previousSteps : steps.upcomingSteps;
   if (show === "hidden") return undefined;
+  if (d > (steps.numberedAhead ?? Infinity)) return { side, fade: BEYOND_FADE, dot: true };
   if (show === "shown") return { side, fade: 1 };
   return { side, fade: d < 0 ? 0.4 : 0.8 - (d - 1) * 0.06 };
 }
@@ -52,6 +56,8 @@ export interface LayoutInput {
   showGuide: boolean;
   previousSteps: StepShow;
   upcomingSteps: StepShow;
+  /** How many steps after the selected one print their number. Later steps draw faint, with dots for pins. Undefined numbers every step. */
+  numberedAhead?: number | undefined;
 }
 
 export type LaidPin = Omit<Pin, "activate" | "menu" | "move" | "drag"> & {
@@ -170,7 +176,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
             key: `p${i}:${p.line}`,
             at,
             kind: look.side,
-            text: String(i + 1),
+            ...(!look.dot && { text: String(i + 1) }),
             rank: Math.abs(i - origin),
             label: `${look.side === "previous" ? "Previous" : "Upcoming"} step ${i + 1}: .${p.command} ${where}`,
             fade,

@@ -17,7 +17,7 @@ import { Card } from "../ui/Card.tsx";
 import { MarkButton } from "../ui/ItemButton.tsx";
 import { MenuItem } from "../ui/MenuItem.tsx";
 import type { ViewPoint } from "./points.ts";
-import { crowdedNumbers } from "./pinNumbers.ts";
+import { pinLooks } from "./pinNumbers.ts";
 import { MapViewContext, type MapView, type UserMove, type ViewRequest } from "./view.ts";
 import { clamp, mapCover, type Frame, type Inset } from "./viewport.ts";
 
@@ -43,7 +43,7 @@ export interface Pin {
   kind: PinKind;
   label: string;
   text?: string;
-  /** How many steps the pin's step is from the selected step. Where ranked pins overlap, only the lowest rank prints its text. */
+  /** How many steps the pin's step is from the selected step, with `text` as its step number. Where ranked pins of a kind overlap, the lowest rank prints their step range. */
   rank?: number;
   chip?: string;
   selected?: boolean;
@@ -218,9 +218,8 @@ export function MapCanvas(props: {
     return <Line key={key} className={className} opacity={s.fade} points={polyline(s.points)} />;
   };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
-  const crowded = crowdedNumbers(pins, pxPerPercent, aspect);
-  // Crowded pins come first, so their dots draw under the numbers they make way for.
-  const drawn = [...pins.filter((p) => crowded.has(p.key)), ...pins.filter((p) => !crowded.has(p.key))];
+  const looks = pinLooks(pins, pxPerPercent, aspect);
+  const drawn = pins.filter((p) => looks.get(p.key) !== null);
   const [paths, shared] = useMemo(
     () => [props.spawns.filter((s) => s.colors.length === 1), props.spawns.filter((s) => s.colors.length > 1)],
     [props.spawns],
@@ -258,13 +257,15 @@ export function MapCanvas(props: {
           </svg>
           {drawn.map((pin) => {
             const at = moving?.key === pin.key ? moving.at : pin.at;
+            const look = looks.get(pin.key);
+            const text = look ? look.text : pin.text;
             return (
               <Fragment key={pin.key}>
                 <MarkButton
                   label={pin.label}
                   at={at}
                   vars={{ "--fade": pin.fade, "--fill": pin.fill }}
-                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${crowded.has(pin.key) ? " crowded" : ""}`}
+                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${look?.near ? " near" : ""}${pin.rank && !text ? " dot" : ""}`}
                   aria-describedby={pin.move ? hintId : undefined}
                   aria-haspopup={!pin.activate && pin.menu ? "menu" : undefined}
                   tabIndex={pin.kind === "previous" || pin.kind === "upcoming" ? -1 : 0}
@@ -319,7 +320,7 @@ export function MapCanvas(props: {
                     if (moving?.key === pin.key) place(pin, moving.at);
                   }}
                 >
-                  {pin.text && !crowded.has(pin.key) && <span aria-hidden="true">{pin.text}</span>}
+                  {text && <span aria-hidden="true">{text}</span>}
                   {pin.icons?.map((icon, i) => (
                     <MapIconImage key={i} icon={icon} size={18} />
                   ))}

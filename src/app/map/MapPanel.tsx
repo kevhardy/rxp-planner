@@ -378,6 +378,7 @@ export function useGuideMap(
     showGuide: visible("guide"),
     previousSteps: settings.previousSteps,
     upcomingSteps: settings.upcomingSteps,
+    numberedAhead: edit ? undefined : 1,
   });
   const pins = laid.pins.map(({ target, ...pin }): Pin => {
     if ("spot" in target) {
