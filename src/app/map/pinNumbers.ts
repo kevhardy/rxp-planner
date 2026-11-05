@@ -15,8 +15,9 @@ const NEAR = 20;
 const CLEAR = 2;
 // The visible space that placed chips keep between their boxes, so that they
 // never read as a stack. Two pills whose round ends nest on a diagonal read as
-// touching, so the boxes keep it and not the outlines.
-const BOX_CLEAR = 4;
+// touching, so the boxes keep it and not the outlines. Over bright foliage, a
+// 4px space still reads as one clipped badge.
+const BOX_CLEAR = 8;
 // A step pin in map.css draws 1px larger than `PIN_SIZE` each way: 17px tall,
 // and at least 17px wide.
 const STEP_PIN_SIZE = 17;

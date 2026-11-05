@@ -23,7 +23,7 @@
 .map-body {
   --pin: var(--map-step);
   --step-previous: var(--kind-command);
-  --step-upcoming: var(--map-step-upcoming-path);
+  --step-upcoming: var(--map-step-upcoming);
   position: relative;
   flex: 1;
   min-height: 0;
@@ -1242,10 +1242,6 @@
   color: var(--map-legend-heading);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-}
-
-.legend-group + .legend-group > .legend-heading {
-  margin-top: var(--space-4);
 }
 
 .step-display .popover:not([hidden]) {
