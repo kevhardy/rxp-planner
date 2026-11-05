@@ -926,12 +926,6 @@ label {
   overflow-y: auto;
 }
 
-.preview-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3) var(--space-6);
-}
-
 .preview-field {
   display: grid;
   grid-template-columns: 80px minmax(0, 1fr);
@@ -939,12 +933,23 @@ label {
   gap: var(--space-2);
 }
 
-.preview-field > .ui-field-error,
-.preview-note {
+.preview-field > .ui-field-error {
   grid-column: 2;
 }
 
+.preview-controls {
+  display: grid;
+  grid-template-columns: repeat(2, auto minmax(0, 1fr));
+  gap: var(--space-3) var(--space-8);
+}
+
+.preview-controls > .preview-field {
+  grid-column: span 2;
+  grid-template-columns: subgrid;
+}
+
 .preview-note {
+  grid-column: 4;
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
