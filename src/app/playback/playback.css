@@ -138,8 +138,8 @@
 
 .playback-guide h3 {
   margin: 0;
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
 }
 
@@ -156,20 +156,13 @@
   flex: none;
   flex-direction: column;
   gap: var(--space-1);
-  /* Holds a clock as long as "1:02:03". */
-  width: 56px;
+  /* `--clock-chars` is the length of the longest start clock. A colon is narrower than its ch, so the column runs a few pixels wide. */
+  width: calc(var(--clock-chars) * 1ch);
   padding: 2px 0;
   color: var(--muted);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
   text-align: right;
-}
-
-/* A step smaller than the step's length, so the start clock reads as a
-   different value. */
-.playback-time {
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
 }
 
 .playback-main {
@@ -243,8 +236,10 @@
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-1);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  /* Two more ch hold the estimate mark, so a row with it keeps the same width. */
+  min-width: calc((var(--length-chars) + 2) * 1ch);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   white-space: nowrap;
 }
 
