@@ -11,8 +11,8 @@ const SHAPES: Partial<Record<MarkKind, ReactNode>> = {
   hs: <path d="M3.75 7.75 8 4l4.25 3.75M5 6.75V12h6V6.75" />,
   target: (
     <>
-      <circle cx="8" cy="5.5" r="3" />
-      <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
+      <circle cx="8" cy="4.85" r="2.75" />
+      <path d="M3 13.8C3 10.7 5.2 8.95 8 8.95s5 1.75 5 4.85z" />
     </>
   ),
   use: (
