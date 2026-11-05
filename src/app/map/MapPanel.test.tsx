@@ -788,6 +788,17 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
+    it("says Some beside a partly shown group's eye, out of the accessible names that already say mixed", async () => {
+      const { user } = await mountGuide();
+      const services = within(legend()).getByRole("group", { name: "Services" });
+      const stateWord = () => services.querySelector(".legend-heading .legend-state");
+      expect([stateWord()?.textContent, stateWord()?.getAttribute("aria-hidden")]).toEqual(["Some", "true"]);
+      expect(within(services).getByRole("button", { name: "Services" }).getAttribute("aria-pressed")).toBe("mixed");
+
+      await user.click(within(services).getByRole("button", { name: "Services" }));
+      expect(stateWord()).toBeNull();
+    });
+
     it("sets shown names at regular weight, under the bold group heading", async () => {
       await mountGuide();
       const weight = (el: Element | null): string | undefined =>

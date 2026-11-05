@@ -327,6 +327,11 @@ function LegendGroup(
           {props.name}
         </h3>
         {props.action}
+        {props.pressed === "mixed" && (
+          <span className="legend-state" aria-hidden="true">
+            Some
+          </span>
+        )}
         {props.onToggle && (
           <IconButton
             icon={props.pressed === "mixed" ? "eyeMixed" : props.pressed ? "eye" : "eyeOff"}
