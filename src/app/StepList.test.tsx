@@ -92,7 +92,7 @@ describe("step row", () => {
       return [mark.getAttribute("class") ?? mark.tagName, p.textContent];
     });
     expect(where).toEqual([
-      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 → 47.6, 36.7"],
+      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7"],
       ["svg", "2 waypoints"],
       ["mk mk-target", "Target Eagan Peltskinner"],
       ["mk mk-kill tex", "Mobs Young Wolf, Timber Wolf"],
@@ -100,10 +100,15 @@ describe("step row", () => {
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Kill Young Wolves"]]);
 
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
     ]);
     expect(description(row.querySelector(".foot-tag")!)).toBe("Stays on screen until done");
+  });
+
+  it("binds each arrow of a coordinate chain to the point after it, so a wrap starts the line with the arrow", () => {
+    mount();
+    expect(document.querySelector("#step-0 .where-part")!.textContent).toBe("Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7");
   });
 
   it("draws a mark's vector icon, else its guide icon when the icon sheet holds it, else its shape", () => {
@@ -134,7 +139,7 @@ describe("step row", () => {
   it("puts settings last in who and when, and marks a footer of only settings", () => {
     mount("#group G\n#name Settings\nstep << Warrior\n    .disablecheckbox\n    #sticky\nstep\n    .disablecheckbox\n");
     expect(footer(document.getElementById("step-0")!)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
       ["foot-item foot-setting", ", ·Hide checkbox"],
     ]);
@@ -226,7 +231,7 @@ step
     expect(row.querySelector(".where-part .ui-mono")!.textContent).toBe("40.0, 50.0");
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Mage note"]]);
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Mage only"],
+      ["foot-item foot-condition", "Mage only"],
       ["foot-item foot-tag", ", ·Optional"],
     ]);
     expect(description(row.querySelector(".step-no")!)).toBe("Skipped: Only for Mage");

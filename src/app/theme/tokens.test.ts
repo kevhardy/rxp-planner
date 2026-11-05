@@ -180,6 +180,10 @@ const LADDER: Record<Theme, string[]> = {
   dark: ["raised", "topbar", "pane-head", "hover", "surface", "field", "bg"],
 };
 
+// A CIELAB difference near 1 is just noticeable, so 1.5 keeps two neighboring bands apart. Screen glare flattens
+// dark tones, so a dark band takes twice that step.
+const LADDER_STEP: Record<Theme, number> = { light: 1.5, dark: 3 };
+
 function distance(a: Rgb, b: Rgb): number {
   const oklab = (rgb: Rgb) => {
     const [r, g, bl] = linear(rgb);
@@ -223,15 +227,22 @@ it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or ta
   expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
 });
 
+it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s no lighter than --control-border", (part) => {
+  const stroke = written(`.sim-ring ${part}`, [styles]).stroke;
+  expect(lightness(color("dark", token(stroke)))).toBeLessThanOrEqual(lightness(color("dark", "control-border")));
+});
+
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);
   });
 
-  // A CIELAB difference near 1 is just noticeable, so 1.5 keeps two neighboring bands apart.
-  it.each(LADDER[theme].slice(1).map((band, i) => [LADDER[theme][i]!, band]))("puts --%s 1.5 L* or more above --%s", (upper, lower) => {
-    expect(lightness(color(theme, upper)) - lightness(color(theme, lower))).toBeGreaterThanOrEqual(1.5);
-  });
+  it.each(LADDER[theme].slice(1).map((band, i) => [LADDER[theme][i]!, band]))(
+    `puts --%s ${LADDER_STEP[theme]} L* or more above --%s`,
+    (upper, lower) => {
+      expect(lightness(color(theme, upper)) - lightness(color(theme, lower))).toBeGreaterThanOrEqual(LADDER_STEP[theme]);
+    },
+  );
 
   it("outlines a missing guide icon in --control-border", () => {
     const border = tokens[theme].get("--control-border")!.replace("#", "%23");

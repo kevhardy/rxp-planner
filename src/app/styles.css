@@ -1323,8 +1323,8 @@ label {
   grid-column: 1;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-step-no);
+  line-height: var(--line-height-step-no);
   text-align: center;
 }
 
@@ -1368,9 +1368,9 @@ label {
   width: 24px;
   height: 24px;
   border: 0;
-  color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  color: var(--label);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
 }
 
@@ -1393,11 +1393,11 @@ label {
 }
 
 .sim-ring .before {
-  stroke: var(--control-border);
+  stroke: var(--level-before);
 }
 
 .sim-ring .earned {
-  stroke: var(--text);
+  stroke: var(--level-earned);
 }
 
 .sim-ring .jump {
@@ -1596,6 +1596,10 @@ label {
   font-variant-numeric: tabular-nums;
 }
 
+.where-item .ui-mono {
+  white-space: nowrap;
+}
+
 .where-mark {
   display: flex;
   align-items: center;
@@ -1635,21 +1639,12 @@ label {
   color: var(--text);
 }
 
-.foot-warn {
-  color: var(--warn);
-}
-
 .foot-tag {
   color: var(--foot-tag);
 }
 
-/* On the selected row's `--selection` background, the plain warn and tag
-   colors fall below WCAG AA contrast in both themes. The warn color mixes in
-   the text color, and the tag uses the text color. */
-.step-row.selected .foot-warn {
-  color: var(--warn-on-selection);
-}
-
+/* On the selected row's `--selection` background, the plain tag color
+   falls below WCAG AA contrast in both themes. */
 .step-row.selected .foot-tag {
   color: var(--text);
 }
@@ -1691,6 +1686,11 @@ label {
   padding: 0 var(--space-1);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+}
+
+.header-row .step-no {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .header-row .step-skip {
@@ -1900,6 +1900,17 @@ label {
   gap: var(--space-1);
   margin-top: var(--space-1);
   margin-left: calc(-1 * var(--space-1));
+}
+
+/* One row of the colors and Clear takes 422px, so a narrower form sets them
+   three to a row in even columns. */
+@container (width < 430px) {
+  .rxp-colors {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-items: start;
+    row-gap: 0;
+  }
 }
 
 .rxp-swatch {

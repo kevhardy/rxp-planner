@@ -44,9 +44,11 @@
   --selection-on-bar: var(--selection);
   --press: #d7e1ed;
 
-  /* The progress arc carries the level, so a pale track keeps the ring
+  /* The progress arcs carry the level, so a pale track keeps the ring
      below the step title in weight. */
-  --level-track: var(--line);
+  --level-track: #b6bfca;
+  --level-before: var(--control-border);
+  --level-earned: var(--text);
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -111,32 +113,34 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --topbar: #323b49;
-  --bg: #1a2028;
+  --topbar: #37404f;
+  --bg: #141a22;
   --surface: #222a35;
-  --pane-head: #2c3542;
+  --pane-head: #2f3946;
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
-  --raised: #36414f;
+  --raised: #3c4856;
   /* Darker than every surface it sits on, so a field reads as a well, even
      in a float on --raised. */
-  --field: #1d242e;
-  --hover: #283039;
+  --field: #1b222b;
+  --hover: #29323b;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
-  --raised-line: color-mix(in srgb, var(--text) 15%, var(--line));
-  --control-border: #7e8da4;
+  --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
+  --control-border: #8797ae;
   --text: #e3e8ee;
   --muted: #aab6c5;
   /* A muted steel sea, so the world map does not read as a hole in the page.
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
-  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  /* Near --bg, so the empty map reads as a recess beside the Library pane
+     on --surface. */
+  --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
-  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* Dimming keeps a white fill, such as the speech bubble, quieter than the
      text beside it. The same dimming turns yellow and red marks brown, so
      colored icons keep their full color. A mid-tone rim gives a dark icon,
@@ -153,16 +157,20 @@
   /* --selection's hue, lifted above --topbar and --raised, so the current
      segment or tab sits above its bar and not below it. The coral bar under
      it needs 3:1, which caps how light it goes. */
-  --selection-on-bar: #2f4a68;
+  --selection-on-bar: #314d6b;
   --press: #1e2c3f;
 
-  --level-track: var(--control-border);
+  /* On a dark page a ring in --text reads as a bright circle beside the
+     title, so no part of the ring is lighter than --control-border. */
+  --level-track: #75859b;
+  --level-before: var(--level-track);
+  --level-earned: var(--control-border);
 
-  --accent: #7fa3c9;
+  --accent: #82a6cd;
   --pop: #ff6b5a;
   /* Tuned to 4.5:1 under the open-toggle wash on the top bar, where the
      Warnings count keeps it. */
-  --pop-ink: #ff978b;
+  --pop-ink: #ffa397;
   --pop-fg: #1a2028;
 
   --primary-bg: #4a73a0;
@@ -175,18 +183,20 @@
   --disabled-bg: #28313c;
   --disabled-fg: #707d8e;
 
-  --warn: #e3a33b;
+  /* One gold for warnings, RXP's WARN text, and the accept mark, since golds
+     a few degrees apart read as near misses. */
+  --warn: #e2ae3c;
   --danger: #f38170;
   --danger-fg: #1a2028;
   --ok: #4cc472;
 
-  --kind-accept: #dcae2f;
+  --kind-accept: var(--warn);
   --kind-turnin: #4cc472;
   --kind-complete: #f0874a;
   --kind-goto: #4fb3e8;
-  --kind-target: #ef7bbf;
+  --kind-target: #d39cc0;
   --kind-train: #b091f2;
-  --kind-vendor: #bc8253;
+  --kind-vendor: #a87c62;
   --kind-command: #a8a297;
   --kind-use: #3fc7b0;
   --kind-equip: #81a0f5;
@@ -194,7 +204,7 @@
   --rxp-enemy: #ff7b6b;
   --rxp-friendly: #5ccf7f;
   --rxp-loot: #79abff;
-  --rxp-warn: #e5b53c;
+  --rxp-warn: var(--warn);
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
   --rxp-buy-swatch: var(--rxp-buy);
@@ -222,7 +232,6 @@
   --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
   --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
-  --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
@@ -408,6 +417,9 @@
 
   --font-size-mark: 8px;
   --line-height-mark: 1;
+  /* A step's number, centered on the first line of its title. */
+  --font-size-step-no: var(--font-size-caption);
+  --line-height-step-no: var(--line-height-body);
 
   --space-1: 4px;
   --space-2: 8px;
