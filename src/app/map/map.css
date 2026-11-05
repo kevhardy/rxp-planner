@@ -625,7 +625,7 @@
 }
 
 .map-overlay svg .route.upcoming.casing {
-  stroke: var(--art-ink);
+  stroke: var(--art-shade-soft);
 }
 
 .pin {

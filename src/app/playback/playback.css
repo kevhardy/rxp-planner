@@ -186,7 +186,7 @@
 
 .playback-title-text {
   display: -webkit-box;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -212,6 +212,10 @@
 
 .playback-step.current :is(.playback-title-text, .playback-kills-text) {
   display: block;
+}
+
+.playback-step.current .playback-title-text {
+  font-weight: var(--font-weight-medium);
 }
 
 .playback-warnings {
