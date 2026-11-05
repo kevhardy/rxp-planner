@@ -2563,7 +2563,9 @@ legend {
 }
 
 /* Below 520px the title, the helper text, and the line tools share too little
-   room, so the helper text takes its own line under the title. */
+   room, so the helper text takes its own line under the title. It starts
+   under the title's text, past the .mk, as wide as --space-4, and the
+   title's gap. */
 @container line-heading (width < 520px) {
   .line-title {
     flex: 1;
@@ -2572,6 +2574,7 @@ legend {
   .line-description {
     order: 1;
     flex-basis: 100%;
+    padding-inline-start: calc(var(--space-4) + var(--space-2));
   }
 }
 
