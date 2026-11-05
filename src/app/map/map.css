@@ -1306,7 +1306,7 @@
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
 .legend-step.off :is(.legend-name, .legend-state) {
-  color: var(--muted);
+  color: var(--map-legend-hidden);
 }
 
 /* A filter's dimmed icon shows how the map draws its marks, whatever the

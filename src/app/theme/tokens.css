@@ -25,6 +25,7 @@
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  --map-legend-hidden: var(--muted);
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -152,6 +153,8 @@
   /* Near --bg, so the empty map reads as a recess beside the Library pane
      on --surface. */
   --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
+  /* Plain --muted loses definition on the dark --raised. */
+  --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
