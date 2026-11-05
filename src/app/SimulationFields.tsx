@@ -253,11 +253,13 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
             className="arg-short"
             mono
             value={count.draft ?? ""}
+            placeholder="such as 10"
             onCommit={(text) => stage(setCount, text)}
           />
           <MobField
             draftName="new extra mob"
             value={mob.draft ?? ""}
+            placeholder="such as Young Wolf"
             description="The NPC killed."
             onCommit={(id) => stage(setMob, id === undefined ? "" : String(id))}
           />
