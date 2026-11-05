@@ -2532,9 +2532,11 @@ legend {
 }
 
 .line-heading {
+  container: line-heading / inline-size;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-1) var(--space-3);
 }
 
 .line-title {
@@ -2558,6 +2560,19 @@ legend {
   flex: 1;
   min-width: 0;
   margin: 0;
+}
+
+/* Below 520px the title, the helper text, and the line tools share too little
+   room, so the helper text takes its own line under the title. */
+@container line-heading (width < 520px) {
+  .line-title {
+    flex: 1;
+  }
+
+  .line-description {
+    order: 1;
+    flex-basis: 100%;
+  }
 }
 
 .line-pane-empty {
