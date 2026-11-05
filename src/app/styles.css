@@ -220,6 +220,11 @@ label {
   white-space: nowrap;
 }
 
+.panel-head .count {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
 .region-steps > .panel-head,
 .editor-dock > .panel-head {
   flex-wrap: wrap;
@@ -1049,9 +1054,10 @@ label {
   background: var(--lib-row-hover);
 }
 
-/* Only the open guide takes the selection fill. A focused row, such as a
-   group just folded open, keeps the hover fill. */
-.lib-row:focus-within:not(.current) {
+/* Only the open guide takes the selection fill. A row with keyboard focus
+   takes the hover fill. A click leaves no fill, because a fill on a group
+   that was just folded open reads as a selection. */
+.lib-row:has(:focus-visible):not(.current) {
   background: var(--lib-row-hover);
 }
 
@@ -1099,6 +1105,8 @@ label {
 
 .lib-toggle > .count {
   margin-left: auto;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1197,8 +1205,8 @@ label {
   gap: var(--space-1) var(--space-2);
   padding: 0 var(--space-4) var(--space-2) calc(var(--space-4) + var(--space-3) + var(--space-2));
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .lib-credit p {
@@ -1214,14 +1222,14 @@ label {
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .lib-credit .ui-button,
 .lib-about .ui-button {
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 /* A ghost button shows no padding at rest, so its text lines up with the
