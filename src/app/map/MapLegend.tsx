@@ -29,7 +29,7 @@ import type { PlacedMarker } from "./questMarkers.ts";
 import { iconOf, showsSide, type TerrainFeatures } from "./terrain.ts";
 import { useFrame, type MapViewSource } from "./view.ts";
 import { canvasToView } from "./viewport.ts";
-import { wholeRowsHeight } from "./wholeRows.ts";
+import { wholeRowsHeight } from "../ui/wholeRows.ts";
 
 export const inFrame = (at: ViewPoint, f: Frame): boolean =>
   at.x >= f.left && at.x <= f.left + f.width && at.y >= f.top && at.y <= f.top + f.height;
@@ -80,7 +80,7 @@ export function MapLegend(props: {
     const panelPadding = panel.getBoundingClientRect().bottom - box.bottom;
     const room = Math.max(0, strip.getBoundingClientRect().bottom - box.top - panelPadding);
     el.style.maxHeight = `${room}px`;
-    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, box.top, room)}px`;
+    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, room)}px`;
     markRowsBelow(el);
   };
   useLayoutEffect(fit);

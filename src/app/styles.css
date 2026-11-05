@@ -2763,8 +2763,12 @@ legend {
   margin-right: 0;
 }
 
+/* A scroller paints no content in its border, so the bottom border is a
+   gutter under the last whole row that the cue of more rows covers. */
 .warnings-body {
-  padding: var(--space-1) var(--space-2) var(--space-4);
+  padding: var(--space-1) var(--space-2) 0;
+  border-bottom: var(--space-4) solid transparent;
+  border-radius: 0 0 var(--radius-float) var(--radius-float);
 }
 
 /* A styled scrollbar stays in view where the platform would hide an overlay
@@ -2785,19 +2789,11 @@ legend {
   }
 }
 
-/* The list ends `STRIP` in WarningsPanel.tsx below a whole row. The taller
-   first layer starts the fade under the text of that row, so the fade
-   covers only the space below it. The second layer is the opaque top of the
-   same gradient, over the scrollbar, so the scrollbar does not fade. */
+/* Matches .legend-body[data-clipped]. */
 .warnings-body[data-clipped] {
-  mask-image: var(--mask-fade-end), var(--mask-fade-end);
-  mask-position:
-    top left,
-    top right;
-  mask-repeat: no-repeat;
-  mask-size:
-    100% calc(100% + var(--space-3)),
-    8px 200%;
+  background:
+    var(--more-chevron) center bottom 2px / 12px no-repeat border-box,
+    var(--more-fade) bottom / 100% var(--space-4) no-repeat border-box;
 }
 
 .warnings summary {
@@ -2828,7 +2824,7 @@ legend {
 }
 
 .warn-kind + .warn-kind {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .warn-kind > summary {
@@ -2840,7 +2836,7 @@ legend {
 }
 
 .warn-kind.data-note > summary {
-  color: var(--raised-label);
+  color: var(--map-legend-heading);
 }
 
 .warn-kind ul {
