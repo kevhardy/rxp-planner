@@ -390,7 +390,6 @@
   --art-focus-halo:
     0 0 0 2px color-mix(in srgb, var(--art-paper) 85%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--art-paper) 85%, transparent);
   --art-icon-halo: 0 0 0 1px color-mix(in srgb, var(--art-ink) 45%, transparent);
-  --art-dot-rim: var(--art-focus-edge);
   --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
   /* The selection coral on the map, which draws the same in both modes. It
      is the dark --pop lifted toward paper until it keeps 3:1 on terrain dark

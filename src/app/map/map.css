@@ -21,6 +21,9 @@
 }
 
 .map-body {
+  /* A plain point's rim is an ink copy of its shape at this scale, which
+     reaches about 1px past each side of a 10px shape. */
+  --dot-rim-scale: 1.22;
   --pin: var(--map-step);
   --step-previous: var(--kind-command);
   --step-upcoming: var(--map-step-upcoming);
@@ -241,6 +244,8 @@
 .poi-supplies {
   --dot: var(--map-dot-supplies);
   --dot-shape: path("M6.34 1.5Q7 0.2 7.66 1.5L12.94 11.9Q13.6 13.2 12.3 13.2H1.7Q0.4 13.2 1.06 11.9Z");
+  /* The center of the triangle's inscribed circle, so its rim keeps one width on every side. */
+  --dot-middle: 7px 9.15px;
 }
 
 .map-overlay .poi.plain:hover {
@@ -251,19 +256,18 @@
    city's density, so they draw as dots. From this drawn width, a city's
    points sit about 24px apart, and the sprites return. */
 @container map-overlay (width < 16000px) {
-  /* The rim is a filter on the dot's box, because a box-shadow keeps to the
-     box and would not follow the shape that clips the color inside it. */
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
     --size: 10px;
     position: relative;
     background: none;
     box-shadow: none;
-    filter: var(--art-dot-rim);
   }
 
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before,
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::after {
     content: "";
     position: absolute;
     inset: -2px;
@@ -271,11 +275,19 @@
     clip-path: var(--dot-shape);
   }
 
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after {
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
+    background: var(--art-ink);
+    scale: var(--dot-rim-scale);
+    transform-origin: var(--dot-middle, center);
+  }
+
+  .map-overlay .poi.plain:not(:hover, :focus-visible)::after {
     content: "";
     position: absolute;
     inset: -6px;
-    border-radius: inherit;
+    border-radius: var(--radius-round);
+    pointer-events: auto;
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
@@ -1275,15 +1287,21 @@
   height: 10px;
   background: none;
   box-shadow: none;
-  filter: var(--art-dot-rim);
 }
 
-.legend-row .dot-swatch::before {
+.legend-row .dot-swatch::before,
+.legend-row .dot-swatch::after {
   content: "";
   position: absolute;
   inset: -2px;
   background: var(--dot);
   clip-path: var(--dot-shape);
+}
+
+.legend-row .dot-swatch::before {
+  background: var(--art-ink);
+  scale: var(--dot-rim-scale);
+  transform-origin: var(--dot-middle, center);
 }
 
 .legend-row .spawn-swatch {
