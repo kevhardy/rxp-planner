@@ -2101,7 +2101,7 @@ label {
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-3) var(--space-4);
   align-items: baseline;
 }
 
@@ -2546,10 +2546,17 @@ legend {
 }
 
 /* Three to a row, because the longest label, "Not in Season of Mastery",
-   wraps in a fifth of the form's measure. */
+   wraps in a fifth of the form's measure. The negative margin takes back the
+   2px that each Checkbox pads above and below its line, so the step form's
+   sections stay apart and "Add filter" still fits in the dock. */
 .tag-checks {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   row-gap: 0;
+  margin-block: -2px;
+}
+
+.tag-values {
+  row-gap: var(--space-2);
 }
 
 .command-form > :is(.arg-grow, .ui-select) {
