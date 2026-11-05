@@ -272,9 +272,22 @@
   max-width: 160px;
 }
 
+/* min-height, because the button primitive pins its height with !important. */
+.route-bar > .ui-button,
+.route-bar > .route-menu > .ui-button {
+  min-height: var(--control-field);
+}
+
+.route-bar > .ui-choice {
+  padding-block: calc((var(--control-field) - 1lh) / 2);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+/* Matches the space that a ghost button's border, its padding, and the bar's gap leave on the other side of each divider. */
 .route-bar > .route-slope {
-  padding-left: var(--space-2);
-  border-left: 1px solid var(--line);
+  padding-inline: calc(1px + var(--space-4));
+  border-inline: 1px solid var(--line);
 }
 
 .dialog.route-text-dialog {

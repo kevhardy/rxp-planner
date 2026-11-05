@@ -262,7 +262,7 @@ describe("Playback steps", () => {
     expect([action.firstElementChild!.className, action.textContent]).toEqual(["mk mk-deathskip tex", "Resurrect at Spirit Healer"]);
   });
 
-  it("shows whole titles, and clamps titles and kills to two lines except on the current step", async () => {
+  it("shows whole titles, and clamps titles to three lines and kills to two except on the current step", async () => {
     const style = document.head.appendChild(document.createElement("style"));
     style.textContent = ["../styles.css", "playback.css"].map((f) => readFileSync(join(import.meta.dirname, f), "utf8")).join("\n");
     try {
@@ -276,7 +276,7 @@ describe("Playback steps", () => {
         });
       expect(rows[1]!.querySelector(".playback-title-text")!.textContent).toBe(long);
       expect(shown(rows[1]!)).toEqual([
-        ["-webkit-box", "2"],
+        ["-webkit-box", "3"],
         ["-webkit-box", "2"],
       ]);
       fireEvent.click(within(rows[1]!).getByRole("button"));

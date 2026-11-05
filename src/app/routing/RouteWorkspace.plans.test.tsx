@@ -407,6 +407,16 @@ describe("route workspace", () => {
     });
   });
 
+  it("fills the coordinate dialog with the routed point at the middle of the view", async () => {
+    const user = await mount(plan(A, B));
+    await screen.findByRole("button", { name: "Route" });
+    await fromMenu(user, "Add destination…");
+    expect(screen.getByRole("textbox", { name: "World yards (x, y)" })).toHaveProperty(
+      "value",
+      expect.stringMatching(/^-?\d+\.\d{2}, -?\d+\.\d{2}$/),
+    );
+  });
+
   it("creates and extends a route from the keyboard", async () => {
     const user = await mount();
     const C: Point = [1000, 2000];
@@ -420,10 +430,6 @@ describe("route workspace", () => {
 
     await screen.findByRole("button", { name: "Route" });
     await fromMenu(user, "Set start…");
-    expect(screen.getByRole("textbox", { name: "World yards (x, y)" })).toHaveProperty(
-      "value",
-      expect.stringMatching(/^-?\d+\.\d{2}, -?\d+\.\d{2}$/),
-    );
     await enter("Set the start", A);
     expect(stop("Start of the new route")).toBeTruthy();
     await fromMenu(user, "Set destination…");

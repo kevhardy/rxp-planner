@@ -192,6 +192,8 @@ function PlaybackSteps() {
       </section>
     );
   const { steps, names } = playback.timeline;
+  const clockChars = formatClock(steps.at(-1)?.start ?? 0).length;
+  const lengthChars = Math.max(0, ...steps.map((step) => formatClock(shownSeconds(step).total).length));
   return (
     <section className="panel playback-steps" aria-label="Steps">
       <div className="panel-head">
@@ -211,7 +213,7 @@ function PlaybackSteps() {
         )}
       </div>
       <div ref={list} className="panel-body">
-        <ol className="playback-step-list">
+        <ol className="playback-step-list" style={{ "--clock-chars": clockChars, "--length-chars": lengthChars }}>
           {steps.map((step, i) => {
             return (
               <PlaybackStepRow

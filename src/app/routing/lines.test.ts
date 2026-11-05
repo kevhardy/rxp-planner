@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
-import type { InstanceId, WorldLocation } from "../../data/index.ts";
+import type { WorldLocation, WorldMapData } from "../../data/index.ts";
 import { worldMap } from "../../data/terrainFixture.ts";
 import { at, testFrame } from "../../routing/fixtures/region.ts";
 import { nativeToWorld, worldToNative, type NativeFrame, type Point } from "../../routing/frame.ts";
 import type { JourneyLeg } from "../../routing/journey.ts";
 import { createPlan, DEFAULT_LEG, type MovementMode, type RoutePlan } from "../../routing/plan.ts";
-import type { TileCoverage } from "../../routing/artifact.ts";
 import type { TerrainRoute } from "../../routing/search.ts";
-import { insetBeside, legLines, projection, tileCornerViews, type Projection } from "./lines.ts";
+import { insetBeside, landFrame, legLines, projection } from "./lines.ts";
 
 const run: MovementMode = { name: "Run", speed: 7, activation: 0 };
 
@@ -238,25 +237,16 @@ describe("inset beside a panel", () => {
   });
 });
 
-it("takes the corners of the present tiles of every routing map", () => {
-  const frame: NativeFrame["frame"] = { tilePixels: 512, cellsPerTile: 128, tileWorldUnits: 1, origin: [0, 0], size: [4, 4] };
-  const manifest = (map: InstanceId, tiles: TileCoverage[]) => ({ manifest: { scope: { variant: "v", build: "b", map }, frame, tiles } });
-  const maps = [
-    manifest(0, [
-      { tile: [1, 2], state: "present" },
-      { tile: [3, 3], state: "missing" },
-    ]),
-    manifest(1, [{ tile: [0, 0], state: "present" }]),
-  ];
-  const proj: Projection = {
-    toView: ([x, y], m) => ({ x, y: y + Number(m) * 100000 }),
-    stopView: () => undefined,
-    toStop: () => undefined,
-  };
-  expect(tileCornerViews(maps, proj)).toEqual([
-    { x: 512, y: 1024 },
-    { x: 1023, y: 1535 },
-    { x: 0, y: 100000 },
-    { x: 511, y: 100511 },
-  ]);
+it("bounds the land by the full-detail tiles, not the coarser ones", () => {
+  const map = {
+    tileSize: 256,
+    minZoom: 0,
+    nativeZoom: 1,
+    canvas: { left: 0, width: 1024, height: 1024 },
+    areas: [
+      { key: "west", canvasX: 0, canvasY: 0, tiles: { 0: [[0, 0, 0]], 1: [[1, 1, 2]] } },
+      { key: "east", canvasX: 512, canvasY: 512, tiles: { 1: [[0, 0, 0]] } },
+    ],
+  } as unknown as WorldMapData;
+  expect(landFrame(map)).toEqual({ left: 25, top: 25, width: 50, height: 50 });
 });
