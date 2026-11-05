@@ -2824,7 +2824,7 @@ legend {
 }
 
 .warn-kind + .warn-kind {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .warn-kind > summary {
@@ -2836,7 +2836,7 @@ legend {
 }
 
 .warn-kind.data-note > summary {
-  color: var(--raised-label);
+  color: var(--map-legend-heading);
 }
 
 .warn-kind ul {

@@ -27,6 +27,7 @@ const PAIRS: Pair[] = [
   ["raised-line", "raised", 1.5],
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],
+  ["map-legend-heading", "raised", 6],
   ...on(["float-edge"], ["raised", "bg", "surface"], 1.3),
   ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),
   ["pop-ink", "pressed-wash", 4.5, { ground: "var(--topbar)" }],

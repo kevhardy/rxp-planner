@@ -1235,9 +1235,13 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
-  color: var(--raised-label);
+  color: var(--map-legend-heading);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+}
+
+.legend-group + .legend-group > .legend-heading {
+  margin-top: var(--space-4);
 }
 
 /* A partly shown group squashes the eye's pupil into a dash, like the dash
