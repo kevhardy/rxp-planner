@@ -32,6 +32,9 @@ const PAIRS: Pair[] = [
   ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],
   ["map-legend-heading", "raised", 6],
+  // The ring around a dark step swatch parts from the legend and from the swatch's ink rim. At 3.1:1 on the
+  // dark legend, the swatch lost its edge.
+  ...on(["map-legend-step-outline"], ["raised", "map-step-rim"], 4),
   ...on(["float-edge"], ["raised", "bg", "guide-strip", "surface"], 1.3),
   ...on(["pop-ink"], ["topbar", "surface", "pane-head", "selection"], 4.5),
   ["pop-ink", "pressed-wash", 4.5, { ground: "var(--topbar)" }],
