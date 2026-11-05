@@ -82,7 +82,8 @@ const PAIRS: Pair[] = [
   ["danger-fg", "danger-press", 4.5],
   ["primary-fg", "primary-press", 4.5],
   ["level-earned", "level-track", 3],
-  ["disabled-fg", "disabled-button-bg", 3],
+  // A disabled button has no fill, so its label sits on the ground behind it.
+  ...on(["disabled-fg"], ["topbar", "surface"], 3),
 ];
 
 const parse = (file: string) => postcss.parse(readFileSync(join(import.meta.dirname, file), "utf8"));
