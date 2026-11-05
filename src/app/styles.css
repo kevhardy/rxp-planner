@@ -2890,11 +2890,11 @@ legend {
   min-width: var(--warnings-place-width);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
-  font-weight: var(--font-weight-medium);
 }
 
-.warn-place > .muted {
-  font-weight: var(--font-weight-regular);
+/* Matches .legend-count. */
+.warn-place .ui-mono {
+  font-family: var(--font-sans);
 }
 
 .warn-more {
