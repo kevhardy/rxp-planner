@@ -1244,15 +1244,6 @@
   margin-top: var(--space-4);
 }
 
-/* A partly shown group squashes the eye's pupil into a dash, like the dash
-   of a mixed checkbox. */
-.legend-heading [aria-pressed="mixed"] circle {
-  transform-box: fill-box;
-  transform-origin: center;
-  scale: 1.3 0.3;
-  fill: currentColor;
-}
-
 .step-display .popover:not([hidden]) {
   display: grid;
   gap: var(--space-3);
@@ -1318,7 +1309,7 @@
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
-.legend-step.off :is(.legend-name, .legend-state) {
+.legend-step.off .legend-name {
   color: var(--map-legend-hidden);
 }
 
@@ -1326,7 +1317,7 @@
    filter's state. */
 .legend-row[aria-pressed="false"] > .map-icon:not(.dim),
 .legend-step.off > .step-swatch {
-  opacity: 0.4;
+  opacity: 0.6;
 }
 
 .legend-row .map-icon {
@@ -1407,9 +1398,19 @@
 
 .legend-count,
 .legend-state {
-  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
+}
+
+.legend-count {
+  color: var(--raised-label);
+}
+
+/* The state word ends closer to the eye than a count does, so it reads as
+   the eye's word and stays out of the counts' right edge. */
+.legend-state {
+  margin-right: calc(var(--space-1) - var(--space-2));
+  color: var(--muted);
 }
 
 .legend-filter {

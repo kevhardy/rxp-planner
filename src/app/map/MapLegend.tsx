@@ -313,7 +313,7 @@ function LegendGroup(
         {props.action}
         {props.onToggle && (
           <IconButton
-            icon={props.pressed === false ? "eyeOff" : "eye"}
+            icon={props.pressed === "mixed" ? "eyeMixed" : props.pressed ? "eye" : "eyeOff"}
             label={props.name}
             description={`Show or hide all ${props.name}`}
             pressed={props.pressed}

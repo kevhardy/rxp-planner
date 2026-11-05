@@ -5,6 +5,13 @@ const PATHS = {
       <circle cx="8" cy="8" r="2" />
     </>
   ),
+  eyeMixed: (
+    <>
+      <path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" />
+      <circle cx="8" cy="8" r="2.4" strokeWidth={1.2} />
+      <path d="M8 5.6a2.4 2.4 0 0 0 0 4.8z" fill="currentColor" stroke="none" />
+    </>
+  ),
   eyeOff: (
     <>
       <path d="M2 2l12 12" />
