@@ -70,15 +70,22 @@ const VECTOR_ICONS: ReadonlyMap<GuideIconKey, string> = new Map([
 ]);
 
 // White and yellow fills fade into a light page, so light mode edges both
-// tones. On a dark page only the white speech bubbles outshine the text beside
-// them, and the dimming that quiets them would turn the yellow quest marks
-// brown.
-const VECTOR_TONES: ReadonlyMap<string, "pale" | "vivid"> = new Map([
+// tones. On a dark page the white speech bubbles would read as solid blobs,
+// so they turn to outlines as on a light page. A deep icon's dark fills weigh
+// at least twice as much on a light page as on a dark one, so both themes lift
+// them toward the other icons.
+const VECTOR_TONES: ReadonlyMap<string, "pale" | "vivid" | "deep"> = new Map([
   [talk, "pale"],
   [gossip, "pale"],
   [emote, "pale"],
   [accept, "vivid"],
   [turnin, "vivid"],
+  [abandon, "deep"],
+  [collect, "deep"],
+  [deathskip, "deep"],
+  [destroy, "deep"],
+  [goto, "deep"],
+  [train, "deep"],
 ]);
 
 const vectorsByCatalog = new WeakMap<GuideIconCatalog, Map<GuideIconEntry, string>>();

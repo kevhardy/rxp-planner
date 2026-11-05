@@ -2055,6 +2055,10 @@ label {
   filter: var(--ring-guide-icon-vivid);
 }
 
+.guide-icon.vector.deep {
+  filter: var(--ring-guide-icon-deep);
+}
+
 .guide-icon:not(.vector, .missing) {
   box-shadow: var(--ring-guide-sprite);
 }
