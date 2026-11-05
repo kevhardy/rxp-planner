@@ -1940,9 +1940,26 @@ label {
   margin-left: calc(-1 * var(--space-1));
 }
 
-/* One row of the colors and Clear takes 422px, so a narrower form sets them
-   three to a row in even columns. */
+.rxp-swatch {
+  gap: var(--space-1);
+  padding-inline: var(--space-1);
+}
+
+/* One row of the colors and Clear takes 422px. A narrower form tightens the
+   row to 398px, and a form narrower than that sets the colors three to a row
+   in even columns. */
 @container (width < 430px) {
+  .rxp-colors {
+    gap: 2px;
+    margin-left: calc(1px - var(--space-1));
+  }
+
+  .rxp-swatch {
+    padding-inline: calc(var(--space-1) - 1px);
+  }
+}
+
+@container (width < 400px) {
   .rxp-colors {
     display: grid;
     grid-template-columns: repeat(3, max-content);
@@ -1950,11 +1967,6 @@ label {
     row-gap: var(--space-1);
     margin-bottom: var(--space-1);
   }
-}
-
-.rxp-swatch {
-  gap: var(--space-1);
-  padding-inline: var(--space-1);
 }
 
 /* The last color holds Clear and its rule on its line, so a wrap never
