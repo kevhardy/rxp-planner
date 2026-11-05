@@ -75,7 +75,10 @@ it("shows each texture as a named icon at its size, cropped from the sheet, and 
 });
 
 it("draws a texture's vector icon by its path, or by its FileDataID through the catalog, unless its arguments crop the file", () => {
-  show("|TInterface\\Cursor\\Crosshair\\Interact:16|t Talk |T308474:0|t |T308474:16:16:0:0:64:64:0:32:0:32|t", "plain");
+  show(
+    "|TInterface\\Cursor\\Crosshair\\Interact:16|t Talk |T308474:0|t |T308474:16:16:0:0:64:64:0:32:0:32|t |TInterface\\GossipFrame\\AvailableQuestIcon:16|t",
+    "plain",
+  );
   const icons = screen
     .getAllByRole("img")
     .map((img) => [img.getAttribute("aria-label"), img.className, img.style.getPropertyValue("--icon-url")]);
@@ -83,6 +86,7 @@ it("draws a texture's vector icon by its path, or by its FileDataID through the 
     ["Icon Interface\\Cursor\\Crosshair\\Interact", "guide-icon vector", 'url("/src/app/guideIcons/interact.svg?no-inline")'],
     ["chatbubble 64grey", "guide-icon vector pale", 'url("/src/app/guideIcons/talk.svg?no-inline")'],
     ["Icon 308474", "guide-icon missing", ""],
+    ["Icon Interface\\GossipFrame\\AvailableQuestIcon", "guide-icon vector vivid", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
   ]);
 });
 

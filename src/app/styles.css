@@ -2024,6 +2024,10 @@ label {
   filter: var(--ring-guide-icon-pale);
 }
 
+.guide-icon.vector.vivid {
+  filter: var(--ring-guide-icon-vivid);
+}
+
 .guide-icon:not(.vector, .missing) {
   box-shadow: var(--ring-guide-sprite);
 }

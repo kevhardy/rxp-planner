@@ -69,9 +69,17 @@ const VECTOR_ICONS: ReadonlyMap<GuideIconKey, string> = new Map([
   [textureKey("interface/cursor/crosshair/interact")!, interact],
 ]);
 
-// The white speech bubbles outshine the text beside them on a dark page, where
-// the colored marks do not.
-const PALE_VECTORS: ReadonlySet<string> = new Set([talk, gossip, emote]);
+// White and yellow fills fade into a light page, so light mode edges both
+// tones. On a dark page only the white speech bubbles outshine the text beside
+// them, and the dimming that quiets them would turn the yellow quest marks
+// brown.
+const VECTOR_TONES: ReadonlyMap<string, "pale" | "vivid"> = new Map([
+  [talk, "pale"],
+  [gossip, "pale"],
+  [emote, "pale"],
+  [accept, "vivid"],
+  [turnin, "vivid"],
+]);
 
 const vectorsByCatalog = new WeakMap<GuideIconCatalog, Map<GuideIconEntry, string>>();
 
@@ -119,7 +127,7 @@ export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | Guide
   const vector = (typeof icon === "string" ? VECTOR_ICONS.get(icon) : undefined) ?? (entry && vectorByCatalogEntry(catalog).get(entry));
   if (vector)
     return {
-      className: PALE_VECTORS.has(vector) ? "guide-icon vector pale" : "guide-icon vector",
+      className: ["guide-icon vector", VECTOR_TONES.get(vector)].filter(Boolean).join(" "),
       vars: { ...box, "--icon-url": `url("${vector}")` },
       drawn: true,
     };
