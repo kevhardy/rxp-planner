@@ -1330,7 +1330,7 @@ describe("terrain", () => {
       expect(body.hasAttribute("data-clipped")).toBe(false);
     });
 
-    it("ends the body on a whole heading, as on a whole row", async () => {
+    it("ends the body before a heading whose first row does not fit", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1364,7 +1364,7 @@ describe("terrain", () => {
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
 
       act(() => resized.forEach((fit) => fit()));
-      expect(body.style.maxHeight).toBe(`${30 * (quests + 1)}px`);
+      expect(body.style.maxHeight).toBe(`${30 * quests}px`);
     });
   });
 });

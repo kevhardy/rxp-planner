@@ -283,7 +283,8 @@ const SWATCHES: Partial<Record<CategoryId, string>> = {
 const markRowsBelow = (body: HTMLElement) =>
   body.toggleAttribute("data-clipped", body.scrollTop + body.clientHeight < body.scrollHeight - 1);
 
-const LEGEND_ROWS = ".legend-heading, .legend-row, .legend-step, .legend-filter, .legend-body > button";
+// Leaves out headings, so the legend never ends on a heading with none of its rows.
+const LEGEND_ROWS = ".legend-row, .legend-step, .legend-filter, .legend-body > button";
 function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
   let available = 0;
   let turnIns = 0;
