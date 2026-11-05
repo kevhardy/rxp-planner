@@ -19,10 +19,10 @@
   --muted: #4c5868;
   /* A pale steel sea, so the world map is not a heavy block on a light
      page. Labels on it read against --art-label-outline, not the sea. */
-  --map-backdrop: #97a8bb;
+  --map-backdrop: #a6b2c0;
   /* On the pale sea, a solid diagonal rim thickens each stem into a black
      stencil, so the corners of --art-label-outline draw softer. */
-  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 42%, transparent);
+  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
   /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
   --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
