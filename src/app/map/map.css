@@ -494,6 +494,11 @@
   stroke-width: 4.5px;
 }
 
+.map-overlay svg .upcoming.casing {
+  stroke: var(--art-ink);
+  stroke-width: 5px;
+}
+
 .pin {
   display: grid;
   place-items: center;
@@ -604,9 +609,9 @@
   background: var(--map-step-upcoming-fill);
 }
 
-/* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
+/* Opaque, so green terrain does not show through the fill. The numbers give the order of the steps. */
 .pin-upcoming {
-  opacity: calc(0.5 + var(--fade, 1) * 0.5);
+  opacity: 1;
 }
 
 .pin.near {
