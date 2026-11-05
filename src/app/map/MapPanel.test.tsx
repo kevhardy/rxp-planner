@@ -791,6 +791,13 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
+    it("draws a plain point's row with the dot of the point's group, and other rows with their sprite", async () => {
+      await mountGuide();
+      const swatch = (name: string) => row(name).querySelector(".map-icon")!.className;
+      expect(swatch("Innkeepers")).toBe("map-icon dot-swatch poi-services");
+      expect(swatch("Ships")).toBe("map-icon");
+    });
+
     it("groups the zone labels, zone borders, and landmark labels under Map labels, which shows or hides all three", async () => {
       const { user } = await mountGuide();
       const labels = within(legend()).getByRole("group", { name: "Map labels" });

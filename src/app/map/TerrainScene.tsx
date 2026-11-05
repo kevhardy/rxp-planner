@@ -17,7 +17,7 @@ import { ItemButton, MarkButton } from "../ui/ItemButton.tsx";
 import type { Frame } from "./MapCanvas.tsx";
 import { mapTiles } from "./mapAssets.ts";
 import { MapIconImage } from "./MapIconImage.tsx";
-import { isCategoryId, useMapProfile, useMapSettings, type CategoryId, type LayerId } from "./mapSettings.ts";
+import { drawsAsDot, isCategoryId, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
 import {
   groupMarkers,
   showsSide,
@@ -253,10 +253,7 @@ type Shown = PlacedPoi & { marked?: true };
 
 const keyOf = ({ poi, at, marked }: Shown) => `${marked ? "marked:" : ""}${poi.category}:${poi.entity?.id ?? poi.name}:${at.x},${at.y}`;
 
-const PLAIN_LAYERS: ReadonlySet<LayerId> = new Set<LayerId>(["services", "vendors", "trainers", "supplies"]);
-
-// A flight master is a travel point, so it keeps its sprite like the transport layer.
-const isPlain = ({ layer, category, marked }: Shown) => !marked && PLAIN_LAYERS.has(layer) && category.key !== "flight-master";
+const isPlain = ({ layer, category, marked }: Shown) => !marked && drawsAsDot(layer, category.key);
 
 const labelOf = ({ poi, category }: PlacedPoi) => `${poi.name}: ${category.name}${poi.levels ? ` (${poi.levels})` : ""}`;
 
