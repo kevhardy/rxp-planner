@@ -2097,7 +2097,7 @@ label {
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
   align-items: baseline;
 }
 
@@ -2537,7 +2537,7 @@ legend {
    wraps in a fifth of the form's measure. */
 .tag-checks {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  row-gap: var(--space-2);
+  row-gap: 0;
 }
 
 .command-form > :is(.arg-grow, .ui-select) {
