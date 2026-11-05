@@ -2890,6 +2890,10 @@ legend {
   font-weight: var(--font-weight-medium);
 }
 
+.warn-kind > summary .count {
+  color: var(--muted);
+}
+
 .warn-kind-mark {
   flex: none;
   color: var(--warn);
