@@ -133,6 +133,7 @@ export function MapLegend(props: {
               <LegendGroup
                 key={layer.id}
                 name={layer.name}
+                mark="guide"
                 pressed={pressed}
                 onToggle={() => store.setCategories(ids, on < ids.length)}
                 action={
@@ -234,7 +235,7 @@ export function MapLegend(props: {
               key={layer.id}
               layer={layer.id}
               name={layer.name}
-              mark={ids.some((id) => drawsAsDot(layer.id, id))}
+              mark={ids.some((id) => drawsAsDot(layer.id, id)) ? `poi-${layer.id}` : undefined}
               pressed={pressed}
               onToggle={() => store.setCategories(ids, on < ids.length)}
             >
@@ -310,8 +311,8 @@ function LegendGroup(
   props: {
     name: string;
     layer?: string;
-    /** Draws the shape of the layer's plain points before the name. */
-    mark?: boolean;
+    /** The class of a mark drawn before the name, such as the shape of the layer's plain points. */
+    mark?: string | undefined;
     disabled?: boolean;
     action?: ReactNode;
     children: ReactNode;
@@ -322,7 +323,7 @@ function LegendGroup(
     <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
         <h3 id={id}>
-          {props.mark && <span className={`group-mark poi-${props.layer}`} aria-hidden="true" />}
+          {props.mark && <span className={`group-mark ${props.mark}`} aria-hidden="true" />}
           {props.name}
         </h3>
         {props.action}

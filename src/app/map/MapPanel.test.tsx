@@ -792,6 +792,7 @@ describe("terrain", () => {
       await mountGuide();
       const heading = screen.getByRole("heading", { name: "Services" });
       expect(heading.querySelector(".group-mark")!.className).toBe("group-mark poi-services");
+      expect(screen.getByRole("heading", { name: "Guide points" }).querySelector(".group-mark")!.className).toBe("group-mark guide");
       expect(row("Innkeepers").querySelector(".map-icon")).toBeNull();
       expect(row("Ships").querySelector(".map-icon")!.className).toBe("map-icon");
       expect(screen.getByRole("heading", { name: "Transport" }).querySelector(".group-mark")).toBeNull();
