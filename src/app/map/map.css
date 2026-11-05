@@ -1406,10 +1406,7 @@
   color: var(--raised-label);
 }
 
-/* The state word ends closer to the eye than a count does, so it reads as
-   the eye's word and stays out of the counts' right edge. */
 .legend-state {
-  margin-right: calc(var(--space-1) - var(--space-2));
   color: var(--muted);
 }
 
