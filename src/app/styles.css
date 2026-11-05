@@ -250,6 +250,11 @@ label {
   margin-inline-end: 0;
 }
 
+/* The weight of the 16px interface icons, such as the trash can. */
+.mk > svg {
+  stroke-width: 1.75;
+}
+
 .mk.tex {
   border-radius: 0;
   background: none;
@@ -305,9 +310,9 @@ label {
   width: 20px;
   height: 20px;
   margin: -2px;
-  /* Drawn 1.5px wide through the 20/16 scale, so the lines keep the
+  /* Drawn 1.75px wide through the 20/16 scale, so the lines keep the
      stroke of the other shapes and span about the person's 11px. */
-  stroke-width: 1.2;
+  stroke-width: 1.4;
 }
 
 .app {
@@ -2060,6 +2065,12 @@ label {
 
 .guide-icon.vector.vivid {
   filter: var(--ring-guide-icon-vivid);
+}
+
+/* The quest marks are narrow, so at full size they match the weight of the
+   other step marks. */
+.mk .guide-icon.vector.vivid {
+  background-size: 100% 100%;
 }
 
 .guide-icon.vector.deep {
