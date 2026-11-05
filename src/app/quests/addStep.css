@@ -75,8 +75,8 @@
   margin-top: var(--space-2);
   padding-bottom: 0;
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
 }
 

@@ -735,11 +735,6 @@ summary::-webkit-details-marker {
   color: var(--muted);
 }
 
-:is(.ui-heading, .ui-text)[data-size="micro"] {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
-}
-
 :is(.ui-heading, .ui-text)[data-size="small"] {
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
