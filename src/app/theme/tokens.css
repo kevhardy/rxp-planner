@@ -31,9 +31,9 @@
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
-  /* The chevron icon in --muted, under a list that scrolls on. A data URL
-     cannot read a token, so it repeats this theme's `--muted`. */
-  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234c5868' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
+  /* The chevron under a list that scrolls on, in --text at 70%. A data URL
+     cannot read a token, so it repeats this theme's `--text`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317202b' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -169,8 +169,8 @@
   --map-legend-hidden: var(--raised-label);
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --overlay-heading: var(--text);
-  /* A data URL cannot read a token, so it repeats this theme's `--muted`. */
-  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23aab6c5' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
+  /* A data URL cannot read a token, so it repeats this theme's `--text`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23e3e8ee' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -376,7 +376,11 @@
   --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
   --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
   --map-step-near-text: var(--map-label);
-  --more-fade: linear-gradient(transparent, var(--raised-line));
+  --more-fade: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--raised-line) 12%, transparent) 50%,
+    color-mix(in srgb, var(--raised-line) 40%, transparent)
+  );
   --font-size-map-step: 12px;
   --line-height-map-step: 1;
   --font-size-map-label: 12px;
