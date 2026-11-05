@@ -1580,6 +1580,10 @@ label {
   font-variant-numeric: tabular-nums;
 }
 
+.where-item .ui-mono {
+  white-space: nowrap;
+}
+
 .where-mark {
   display: flex;
   align-items: center;

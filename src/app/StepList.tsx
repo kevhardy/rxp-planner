@@ -512,7 +512,7 @@ const StepRow = memo(function StepRow(props: {
             {where.places.length > 0 && (
               <WherePart mark={<Mark mark={{ kind: "goto" }} />} verb="Go to ">
                 {where.places.map((place, i) => [
-                  i > 0 && " → ",
+                  i > 0 && " →\u00a0",
                   <Skippable
                     key={place.line}
                     className="where-item"

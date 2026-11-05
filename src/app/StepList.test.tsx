@@ -92,7 +92,7 @@ describe("step row", () => {
       return [mark.getAttribute("class") ?? mark.tagName, p.textContent];
     });
     expect(where).toEqual([
-      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 → 47.6, 36.7"],
+      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7"],
       ["svg", "2 waypoints"],
       ["mk mk-target", "Target Eagan Peltskinner"],
       ["mk mk-kill tex", "Mobs Young Wolf, Timber Wolf"],
@@ -104,6 +104,11 @@ describe("step row", () => {
       ["foot-item foot-tag", ", ·Sticky"],
     ]);
     expect(description(row.querySelector(".foot-tag")!)).toBe("Stays on screen until done");
+  });
+
+  it("binds each arrow of a coordinate chain to the point after it, so a wrap starts the line with the arrow", () => {
+    mount();
+    expect(document.querySelector("#step-0 .where-part")!.textContent).toBe("Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7");
   });
 
   it("draws a mark's vector icon, else its guide icon when the icon sheet holds it, else its shape", () => {
