@@ -29,6 +29,7 @@ const PAIRS: Pair[] = [
   ["map-legend-hidden", "raised", 4.5],
   ["map-legend-shown", "raised", 4.5],
   ["map-legend-eye-shown", "raised", 3],
+  ["map-legend-eye-hidden", "raised", 3],
   // A shown legend row reads apart from a hidden one by its name's lightness alone.
   ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],
@@ -304,6 +305,11 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
       expect(lightness(color(theme, upper)) - lightness(color(theme, lower))).toBeGreaterThanOrEqual(LADDER_STEP[theme]);
     },
   );
+
+  it("draws a shown legend eye with more contrast on --raised than a crossed one", () => {
+    const raised = color(theme, "raised");
+    expect(contrast(color(theme, "map-legend-eye-shown"), raised)).toBeGreaterThan(contrast(color(theme, "map-legend-eye-hidden"), raised));
+  });
 
   it("outlines a missing guide icon in --control-border", () => {
     const border = tokens[theme].get("--control-border")!.replace("#", "%23");
