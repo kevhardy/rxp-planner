@@ -2859,8 +2859,6 @@ legend {
 }
 
 .warn-guide > summary {
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
   font-weight: var(--font-weight-bold);
 }
 
@@ -2887,9 +2885,9 @@ legend {
   margin-bottom: var(--space-1);
   padding-left: var(--space-6);
   color: var(--overlay-heading);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  font-weight: var(--font-weight-medium);
 }
 
 .warn-kind-mark {
