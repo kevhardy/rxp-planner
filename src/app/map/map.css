@@ -1326,7 +1326,7 @@
    filter's state. */
 .legend-row[aria-pressed="false"] > .map-icon:not(.dim),
 .legend-step.off > .step-swatch {
-  opacity: 0.4;
+  opacity: 0.6;
 }
 
 .legend-row .map-icon {
