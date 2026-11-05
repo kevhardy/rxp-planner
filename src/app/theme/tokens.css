@@ -111,32 +111,34 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --topbar: #323b49;
-  --bg: #1a2028;
+  --topbar: #37404f;
+  --bg: #141a22;
   --surface: #222a35;
-  --pane-head: #2c3542;
+  --pane-head: #2f3946;
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
-  --raised: #36414f;
+  --raised: #3c4856;
   /* Darker than every surface it sits on, so a field reads as a well, even
      in a float on --raised. */
-  --field: #1d242e;
-  --hover: #283039;
+  --field: #1b222b;
+  --hover: #29323b;
   --line: #364252;
   /* --line all but vanishes on the dark --raised, so this mix brings a
      divider there to the contrast of the light one. */
-  --raised-line: color-mix(in srgb, var(--text) 15%, var(--line));
-  --control-border: #7e8da4;
+  --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
+  --control-border: #8797ae;
   --text: #e3e8ee;
   --muted: #aab6c5;
   /* A muted steel sea, so the world map does not read as a hole in the page.
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
-  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  /* Near --bg, so the empty map reads as a recess beside the Library pane
+     on --surface. */
+  --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
-  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e8da4' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   /* Dimming keeps a white fill, such as the speech bubble, quieter than the
      text beside it. The same dimming turns yellow and red marks brown, so
      colored icons keep their full color. A mid-tone rim gives a dark icon,
@@ -153,16 +155,16 @@
   /* --selection's hue, lifted above --topbar and --raised, so the current
      segment or tab sits above its bar and not below it. The coral bar under
      it needs 3:1, which caps how light it goes. */
-  --selection-on-bar: #2f4a68;
+  --selection-on-bar: #314d6b;
   --press: #1e2c3f;
 
   --level-track: var(--control-border);
 
-  --accent: #7fa3c9;
+  --accent: #82a6cd;
   --pop: #ff6b5a;
   /* Tuned to 4.5:1 under the open-toggle wash on the top bar, where the
      Warnings count keeps it. */
-  --pop-ink: #ff978b;
+  --pop-ink: #ffa397;
   --pop-fg: #1a2028;
 
   --primary-bg: #4a73a0;
