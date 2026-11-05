@@ -34,6 +34,8 @@
   --ring-guide-sprite: none;
 
   --selection: #d4e4f9;
+  /* The current segment or tab, on a bar that a selected row never sits on. */
+  --selection-on-bar: var(--selection);
   --press: #d7e1ed;
 
   /* The progress arc carries the level, so a pale track keeps the ring
@@ -141,6 +143,10 @@
   --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
   --selection: #233a54;
+  /* --selection's hue, lifted above --topbar and --raised, so the current
+     segment or tab sits above its bar and not below it. The coral bar under
+     it needs 3:1, which caps how light it goes. */
+  --selection-on-bar: #2f4a68;
   --press: #1e2c3f;
 
   --level-track: var(--control-border);

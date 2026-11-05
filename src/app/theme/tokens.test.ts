@@ -21,6 +21,8 @@ const PAIRS: Pair[] = [
   ["placeholder", "field", 4.5],
   ...on(["text", "muted"], ["map-empty"], 4.5),
   ["text", "field", 4.5],
+  ...on(["text"], ["selection-on-bar"], 4.5),
+  ["pop", "selection-on-bar", 3],
   ["control-border", "field", 3],
   ["raised-line", "raised", 1.5],
   ...on(["float-edge"], ["raised", "bg", "surface"], 1.3),
@@ -212,6 +214,11 @@ function onTerrain(colors: Rgb[]): number {
   const ratio = (a: number, b: number) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   return Math.min(...GROUNDS.map((ground) => Math.max(...colors.map((c) => ratio(luminance(c), ground)))));
 }
+
+// In dark mode a fill below its bar reads as a hole, so the current segment or tab sits above the bars it lands on.
+it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or tab 1.5 L* or more above --%s", (bar) => {
+  expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
+});
 
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {

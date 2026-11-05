@@ -295,7 +295,7 @@ summary::-webkit-details-marker {
 /* A caller sets --segment-pressed-fill to quiet the current segment when
    another control in its bar is the stronger cue. */
 .ui-segment[aria-pressed="true"]:where(:not(:active)) {
-  background: var(--segment-pressed-fill, var(--selection)) !important;
+  background: var(--segment-pressed-fill, var(--selection-on-bar)) !important;
 }
 
 .ui-segment:focus-visible {
@@ -363,7 +363,7 @@ summary::-webkit-details-marker {
 
 /* :where() adds no specificity, so a disabled tab's look still wins over the selected fill. */
 .ui-tab[aria-selected="true"]:where(:not(:active)) {
-  background: var(--selection) !important;
+  background: var(--selection-on-bar) !important;
 }
 
 .ui-tab:focus-visible {
