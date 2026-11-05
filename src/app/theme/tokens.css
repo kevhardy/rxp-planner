@@ -35,6 +35,7 @@
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
+  --map-legend-heading: var(--overlay-heading);
   /* The chevron under a list that scrolls on, in --text at 70%. A data URL
      cannot read a token, so it repeats this theme's `--text`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317202b' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
@@ -178,6 +179,8 @@
   --map-legend-shown: #fff;
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --overlay-heading: var(--text);
+  /* A legend heading reads at least as bright as the shown rows under it. */
+  --map-legend-heading: var(--map-legend-shown);
   /* A data URL cannot read a token, so it repeats this theme's `--text`. */
   --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23e3e8ee' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 

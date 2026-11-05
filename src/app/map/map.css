@@ -1236,7 +1236,7 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
-  color: var(--overlay-heading);
+  color: var(--map-legend-heading);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
 }
