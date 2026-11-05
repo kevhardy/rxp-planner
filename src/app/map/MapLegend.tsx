@@ -29,6 +29,7 @@ import type { PlacedMarker } from "./questMarkers.ts";
 import { iconOf, showsSide, type TerrainFeatures } from "./terrain.ts";
 import { useFrame, type MapViewSource } from "./view.ts";
 import { canvasToView } from "./viewport.ts";
+import { wholeRowsHeight } from "./wholeRows.ts";
 
 export const inFrame = (at: ViewPoint, f: Frame): boolean =>
   at.x >= f.left && at.x <= f.left + f.width && at.y >= f.top && at.y <= f.top + f.height;
@@ -79,7 +80,7 @@ export function MapLegend(props: {
     const panelPadding = panel.getBoundingClientRect().bottom - box.bottom;
     const room = Math.max(0, strip.getBoundingClientRect().bottom - box.top - panelPadding);
     el.style.maxHeight = `${room}px`;
-    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${cutHeight(el, box.top, room)}px`;
+    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, box.top, room)}px`;
     markRowsBelow(el);
   };
   useLayoutEffect(fit);
@@ -283,20 +284,6 @@ const markRowsBelow = (body: HTMLElement) =>
   body.toggleAttribute("data-clipped", body.scrollTop + body.clientHeight < body.scrollHeight - 1);
 
 const LEGEND_ROWS = ".legend-heading, .legend-row, .legend-step, .legend-filter, .legend-body > button";
-// How far the fade reaches into a clipped legend, from `.legend-body[data-clipped]` in map.css.
-const FADE = 12;
-
-/**
- * The tallest height up to `room` at which the fade covers no whole row, and the edge hides at least `FADE` of the
- * row that it cuts. So each row reads either in full or as cut, and a whole row never looks faded like a hidden one.
- */
-function cutHeight(body: HTMLElement, top: number, room: number): number {
-  const ends = [...body.querySelectorAll(LEGEND_ROWS)].map((row) => row.getBoundingClientRect().bottom - top + body.scrollTop);
-  let height = room;
-  for (const end of ends.sort((a, b) => b - a)) if (Math.abs(height - end) < FADE) height = end - FADE;
-  return height;
-}
-
 function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
   let available = 0;
   let turnIns = 0;

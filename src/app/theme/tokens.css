@@ -25,6 +25,7 @@
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  --map-legend-hidden: var(--muted);
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -152,6 +153,8 @@
   /* Near --bg, so the empty map reads as a recess beside the Library pane
      on --surface. */
   --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
+  /* Plain --muted loses definition on the dark --raised. */
+  --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -312,7 +315,7 @@
   /* A dark steel slate behind a plain map point, softer than --art-ink so a
      city's many points do not read as a pile of holes. */
   --map-icon-backing: #2b3746;
-  --map-dot-vendors: #bf9c7a;
+  --map-dot-vendors: #dbbc94;
   --map-dot-trainers: #c49bf2;
   --map-dot-supplies: #8fd6c8;
   --map-dot-services: #dfe5ee;
@@ -351,6 +354,7 @@
   --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
   --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
   --map-step-near-text: var(--map-label);
+  --map-legend-fade: linear-gradient(transparent, var(--raised-line));
   --font-size-map-step: 12px;
   --line-height-map-step: 1;
   --font-size-map-label: 12px;
