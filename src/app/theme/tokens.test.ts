@@ -271,7 +271,7 @@ it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more
 
 describe("the dark pale guide icons", () => {
   const note = readFileSync(join(import.meta.dirname, "../guideIcons/note.svg"), "utf8");
-  const fold = paint("dark", "fold", /<path d="M9 3L13 7H9Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  const fold = paint("dark", "fold", /<path d="M8 2.5L12 6.5H8Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
   const sheetTop = paint("dark", "sheet", /<stop offset="0" stop-color="(#[\da-f]{6})"/.exec(note)![1]!, {});
   const lift = Number(/^brightness\(([\d.]+)\)/.exec(tokens.dark.get("--ring-guide-icon-pale")!)![1]);
 
