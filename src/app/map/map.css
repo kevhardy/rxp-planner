@@ -147,12 +147,17 @@
   color: var(--map-label-strong);
 }
 
-/* Below this drawn width, both continents fit in about two screens, and full-size zone names run into each other. */
+/* Below this drawn width, both continents fit in about two screens, and full-size zone names run into each other.
+   Regular stems choke under the label's rim at these sizes, so the names keep a medium weight. */
 @container map-overlay (width < 2400px) {
   .map-overlay .place-zone {
     font-size: var(--font-size-caption);
     line-height: var(--line-height-caption);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .map-overlay .place small {
+    font-weight: var(--font-weight-medium);
   }
 }
 

@@ -53,6 +53,7 @@ const PAIRS: Pair[] = [
   ...on(["map-dot-vendors", "map-dot-trainers", "map-dot-supplies", "map-dot-services"], ["art-ink"], 3),
   // World labels read against the --art-ink rim of --art-label-outline, so the sea can be pale.
   ...on(["map-label", "map-label-strong"], ["art-ink", "map-sea"], 4.5),
+  ...["map-label", "map-label-strong"].map((label): Pair => [label, "art-label-rim-diagonal", 4.5, { ground: "var(--map-backdrop)" }]),
   ["map-border", "map-sea", 4.5],
   ["map-border", "map-backdrop", 3],
   ["map-character", "art-paper", 3],

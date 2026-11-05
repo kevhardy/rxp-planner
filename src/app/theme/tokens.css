@@ -19,6 +19,9 @@
   /* A pale steel sea, so the world map is not a heavy block on a light
      page. Labels on it read against --art-label-outline, not the sea. */
   --map-backdrop: #7d8da0;
+  /* On the pale sea, a solid diagonal rim thickens each stem into a black
+     stencil, so the corners of --art-label-outline draw softer. */
+  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
@@ -132,6 +135,7 @@
   /* A muted steel sea, so the world map does not read as a hole in the page.
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
+  --art-label-rim-diagonal: var(--art-ink);
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
 
   /* A data URL cannot read a token, so it repeats this theme's
@@ -363,11 +367,13 @@
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
-  /* A solid 1px rim of --art-ink in eight directions, so a label reads
-     against the rim at any sea color, with the soft halo outside it. */
+  /* A solid 1px rim of --art-ink on each side and --art-label-rim-diagonal
+     at each corner, so a label reads against the rim at any sea color, with
+     the soft halo outside it. */
   --art-label-outline:
-    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-ink),
-    -1px -1px var(--art-ink), 1px -1px var(--art-ink), -1px 1px var(--art-ink), var(--art-label-halo);
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
+    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
+    var(--art-label-halo);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }
