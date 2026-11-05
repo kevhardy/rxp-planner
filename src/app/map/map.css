@@ -1192,6 +1192,8 @@
 .map-legend[open] > summary {
   border-bottom: 1px solid var(--raised-line);
   border-radius: var(--radius-float) var(--radius-float) 0 0;
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
 }
 
 .map-legend summary > svg {
