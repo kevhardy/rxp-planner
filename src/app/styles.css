@@ -1955,9 +1955,9 @@ label {
 }
 
 /* One row of the colors and Clear takes 442px, or 422px with the closer gap
-   of a form narrower than 450px. A narrower form tightens the row to 398px,
-   and a form narrower than that sets the colors three to a row in even
-   columns. */
+   of a form narrower than 450px. A form too narrow for that row sets the
+   colors three to a row in even columns, where a wrapped row would leave
+   the last color and Clear alone on a line. */
 @container (width >= 450px) {
   .rxp-colors {
     gap: var(--space-2);
@@ -1965,17 +1965,6 @@ label {
 }
 
 @container (width < 430px) {
-  .rxp-colors {
-    gap: 2px;
-    margin-left: calc(1px - var(--space-1));
-  }
-
-  .rxp-swatch {
-    padding-inline: calc(var(--space-1) - 1px);
-  }
-}
-
-@container (width < 400px) {
   .rxp-colors {
     display: grid;
     grid-template-columns: repeat(3, max-content);
@@ -2875,6 +2864,7 @@ legend {
 }
 
 .warnings summary .count {
+  color: var(--muted);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -2900,10 +2890,6 @@ legend {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-medium);
-}
-
-.warn-kind > summary .count {
-  color: var(--muted);
 }
 
 .warn-kind-mark {
