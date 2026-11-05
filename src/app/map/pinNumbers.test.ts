@@ -58,10 +58,10 @@ it("spaces two-digit pins by their wider bar, and one-digit pins as circles, wit
     "12@22,0": { text: "12", near: false },
   });
   expect(looks([pin("6", 1, 0), pin("7", 2, 18)])).toEqual({ "6@0,0": { text: "6", near: false }, "7@18,0": { text: "7", near: false } });
-  // The round ends clear on a diagonal where the boxes' corners would touch.
+  // The round ends clear on a diagonal, so the pins stay apart, but the boxes' corners would touch, so "7" moves 5 px right to leave 2 px between the boxes.
   expect(looks([pin("6", 1, 0), pin("7", 2, 13, 13)])).toEqual({
     "6@0,0": { text: "6", near: false },
-    "7@13,13": { text: "7", near: false },
+    "7@13,13": { text: "7", near: false, at: { x: 18, y: 13 } },
   });
 });
 
@@ -100,9 +100,9 @@ it("joins a chip that a growing range comes to cover", () => {
 it("quiets a chip whose point is 20 px or less from a mark of the selected step, moves it clear of the mark's ring, and draws none under the mark", () => {
   const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
   const quest: Pin = { key: "quest", at: { x: 100, y: 0 }, kind: "start", label: "quest" };
-  // A chip keeps 26 px from a mark: its 16 px, the mark's 6 px ring, and the 4 px space.
+  // A chip keeps 28 px from a mark: its 16 px, the mark's 6 px ring, and the 6 px space.
   expect(looks([selected, quest, pin("6", 1, 18), pin("7", 2, 0, 30), pin("8", 3, 100, 10), pin("9", 4, 60)])).toEqual({
-    "6@18,0": { text: "6", near: true, at: { x: 26, y: 0 } },
+    "6@18,0": { text: "6", near: true, at: { x: 28, y: 0 } },
     "7@0,30": { text: "7", near: false },
     "8@100,10": null,
     "9@60,0": { text: "9", near: false },
@@ -113,7 +113,7 @@ it("puts the step of a pin under the selected step's mark in a chip close by", (
   const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
   expect(looks([selected, pin("6", 1, 2), pin("11", 6, 0, 19), pin("7", 2, 0, -2, "previous")])).toEqual({
     "6@2,0": null,
-    "11@0,19": { text: "6–11", near: true, at: { x: 0, y: 26 } },
+    "11@0,19": { text: "6–11", near: true, at: { x: 0, y: 28 } },
     "7@0,-2": null,
   });
 });

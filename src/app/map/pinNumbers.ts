@@ -12,13 +12,17 @@ const DIGIT_WIDTH = 7;
 // when it takes in the pin's step.
 const NEAR = 20;
 // The space between two drawn chips, so that they never read as a stack.
+// Placed chips keep it between their boxes, because two pills whose round ends
+// nest on a diagonal read as touching.
 const CLEAR = 2;
 // A mark of the selected step reaches past a pin's size by its 4.5px ring in
 // map.css, and by 1px more for an 18px quest icon.
 const MARK_EDGE = 6;
 // The space between that ring and a chip or a plain point, so neither reads as
-// pressed against the ring.
+// pressed against the ring. A chip's dark rim meets the ring's ink edge, so a
+// chip needs more.
 const MARK_CLEAR = 4;
+const CHIP_MARK_CLEAR = 6;
 // A plain point in map.css draws its shape in a 14px box, and the points of a
 // row sit 14px apart.
 const DOT_REACH = 7;
@@ -66,6 +70,7 @@ const drawn = (c: Chip): Spot => ({ ...c, bar: barOf(chipText(c)) });
 const gap = (a: Spot, b: Spot) => Math.hypot(Math.max(0, Math.abs(a.x - b.x) - (a.bar + b.bar) / 2), a.y - b.y);
 const overlaps = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE;
 const crowds = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE + CLEAR;
+const boxesClear = (a: Spot, b: Spot) => Math.max(Math.abs(a.x - b.x) - (a.bar + b.bar) / 2, Math.abs(a.y - b.y)) >= PIN_SIZE + CLEAR;
 
 /**
  * Where a ringed mark draws so that its ring clears the character at `stand` by `MARK_CLEAR`: straight away from the
@@ -154,7 +159,8 @@ export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: num
     }
   }
   const placed: Spot[] = [];
-  const free = (s: Spot) => marks.every((m) => gap(m, s) >= PIN_SIZE + MARK_EDGE + MARK_CLEAR) && placed.every((p) => !crowds(p, s));
+  const free = (s: Spot) =>
+    marks.every((m) => gap(m, s) >= PIN_SIZE + MARK_EDGE + CHIP_MARK_CLEAR) && placed.every((p) => boxesClear(p, s));
   for (const chip of chips) {
     const own = drawn(chip);
     const shift = SHIFTS.find((s) => free({ ...own, x: own.x + s.x, y: own.y + s.y }));
