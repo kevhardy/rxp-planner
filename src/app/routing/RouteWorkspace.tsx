@@ -57,7 +57,7 @@ import { summarizeJourney } from "../../routing/result.ts";
 import { CoordinateDialog } from "./CoordinateDialog.tsx";
 import { CoordinateReadout, type ReadoutPoint } from "./CoordinateReadout.tsx";
 import { legReport, readRoute, writeRoute } from "../../routing/share.ts";
-import { legLines, lineView, nearestLine, projection, skippedTiles, tileCornerViews } from "./lines.ts";
+import { landFrame, legLines, lineView, nearestLine, projection, skippedTiles } from "./lines.ts";
 import { layerSearches, LayersMenu, RouterLayers, tileRects, type LayerChoices } from "./MapLayers.tsx";
 import { NewLegsMenu } from "./newLegs.tsx";
 import { RideLayer, RidePopover, spread, type PlacedMark } from "./RideLayer.tsx";
@@ -102,6 +102,8 @@ export function RouteMap(props: { closed: RefObject<ClosedRoute | null> }) {
 }
 
 const NO_MARKS = { pois: [], places: [] };
+// Added to the map's own fit inset, for about 24px between the land and each edge.
+const LAND_SPACE = 12;
 const LABELS: readonly CategoryId[] = ["zones", "landmarks"];
 
 const capital = (text: string) => text[0]!.toUpperCase() + text.slice(1);
@@ -118,6 +120,7 @@ export function RouteWorkspace(props: {
   const settings = useMapSettings();
   const profile = useMapProfile();
   const features = useMemo(() => placeFeatures(map), [map]);
+  const land = useMemo(() => landFrame(map), [map]);
   const { load: routing, placed } = useRouting("routes");
   const [problem, setProblem] = useState<string | null>(null);
   const [focus, setFocus] = useState<(MapFocus & { selected: Selected; plan: RoutePlan | null; mode: string }) | null>(null);
@@ -612,7 +615,20 @@ export function RouteWorkspace(props: {
         ]
       : [{ label: "Set start…", run: () => enter("Set the start", (p) => editor.setPending(p)) }];
 
-  const fitView = fitRequest(fitted.length ? fitted.flatMap((stop) => proj.stopView(stop) ?? []) : tileCornerViews(engine.maps, proj));
+  const stopsFit = fitRequest(fitted.flatMap((stop) => proj.stopView(stop) ?? []));
+  const fitView =
+    stopsFit.fit || !land
+      ? stopsFit
+      : {
+          ...stopsFit,
+          fit: {
+            ...land,
+            inset: () => {
+              const { top, right, bottom, left } = cover();
+              return { top: top + LAND_SPACE, right: right + LAND_SPACE, bottom: bottom + LAND_SPACE, left: left + LAND_SPACE };
+            },
+          },
+        };
   const skipped = skippedTiles(
     selectedLeg === null ? undefined : shown?.legs[selectedLeg],
     proj,
