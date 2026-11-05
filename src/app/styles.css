@@ -1179,6 +1179,11 @@ label {
   border-top: 1px solid var(--line);
 }
 
+.lib-builtins > .lib-group-head .lib-name {
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
+}
+
 .lib-toggle.depth-2 {
   font-weight: var(--font-weight-medium);
 }
