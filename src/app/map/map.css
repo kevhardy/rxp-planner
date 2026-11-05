@@ -87,6 +87,12 @@
   container: map-overlay / inline-size;
 }
 
+/* Unzoomed, the stage can be narrower than the viewport, so a label at the
+   canvas edge runs onto the bare viewport instead of being cut. */
+.map-viewport:not(:has(> .map-stage.zoomed)) > .map-overlay {
+  overflow: visible;
+}
+
 /* Limit layer reuse to pans because promoted layers at fractional positions soften settled markers and labels. */
 .map-viewport.panning .map-overlay {
   will-change: transform;
@@ -123,6 +129,11 @@
   line-height: var(--line-height-small);
   text-align: center;
   text-shadow: var(--art-label-halo);
+}
+
+/* The world view draws labels over the bare sea, so they take a solid rim. */
+.map-viewport:not(:has(> .map-stage > .terrain-sea)) > .map-overlay .place {
+  text-shadow: var(--art-label-outline);
 }
 
 .map-overlay .place-zone {
@@ -186,9 +197,16 @@
 }
 
 /* A city holds many plain points, so they draw a step smaller than the
-   guide's own marks. */
+   guide's own marks. Vendor, trainer, and supply sprites are simple shapes
+   that still read at 16px. Transport, service, and instance sprites are
+   detailed art that turns to a dark speck below 18px. */
 .map-overlay .poi:not(.marked, :focus-visible) .poi-icon,
 .map-overlay .poi-row:not(:focus-visible) .poi-icon:not(.marked) {
+  --size: 18px;
+}
+
+.map-overlay .poi:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked, :focus-visible) .poi-icon,
+.map-overlay .poi-row:not(:focus-visible) .poi-icon:is(.poi-vendors, .poi-trainers, .poi-supplies):not(.marked) {
   --size: 16px;
 }
 
@@ -565,8 +583,10 @@
 .pin-previous:hover:not(:disabled),
 .pin-upcoming,
 .pin-upcoming:hover:not(:disabled) {
-  width: 15px;
+  width: auto;
+  min-width: 15px;
   height: 15px;
+  padding: 0 2px;
   border: 1px solid var(--map-step-rim);
   color: var(--art-paper);
   font-size: var(--font-size-map-step);
@@ -587,7 +607,9 @@
 .pin.crowded,
 .pin.crowded:hover:not(:disabled) {
   width: 9px;
+  min-width: 0;
   height: 9px;
+  padding: 0;
 }
 
 /* Halves the fade, so the numbers stay legible and the order of the steps still shows. */
@@ -1011,6 +1033,7 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
+  color: var(--label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -1098,11 +1121,6 @@
 .legend-row .map-icon {
   background-color: var(--art-ink);
   box-shadow: var(--ring-control);
-}
-
-/* Ship, zeppelin, and tram art is dark at its edge and would sink into a dark card. */
-.legend-group[data-layer="transport"] .map-icon:not(.route-swatch) {
-  outline: 1px solid var(--layer-swatch-border);
 }
 
 .legend-row .spawn-swatch {

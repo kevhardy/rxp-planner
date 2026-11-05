@@ -127,20 +127,24 @@ export function TerrainMarkers(props: {
     );
     const aspect = canvasSize(map).width / canvasSize(map).height;
     const marginY = (CULL_MARGIN_PX * aspect) / pxPerPercent;
-    return groupMarkers<Shown>(map, [...marked.map((p) => ({ ...p, marked: true as const })), ...pois], k).map((row) => {
-      const leader = row[0]!;
-      const named = row.length === 1 && level >= (leader.category.labelMinZoom ?? 7);
-      return {
-        row,
-        key: keyOf(leader),
-        marked: row.some((p) => p.marked),
-        named,
-        marginX:
-          Math.max(CULL_MARGIN_PX, named ? (leader.poi.label ?? leader.poi.name).length * LABEL_FONT_PX + ICON_AND_GAP_PX : 0) /
-          pxPerPercent,
-        marginY,
-      };
-    });
+    // A mark paints over the marks before it, so named points come last and
+    // their names read over plain points, while guide points still come later.
+    return groupMarkers<Shown>(map, [...marked.map((p) => ({ ...p, marked: true as const })), ...pois], k)
+      .map((row) => {
+        const leader = row[0]!;
+        const named = row.length === 1 && level >= (leader.category.labelMinZoom ?? 7);
+        return {
+          row,
+          key: keyOf(leader),
+          marked: row.some((p) => p.marked),
+          named,
+          marginX:
+            Math.max(CULL_MARGIN_PX, named ? (leader.poi.label ?? leader.poi.name).length * LABEL_FONT_PX + ICON_AND_GAP_PX : 0) /
+            pxPerPercent,
+          marginY,
+        };
+      })
+      .sort((a, b) => Number(a.named) - Number(b.named));
   }, [map, features.pois, marked, on, k, level, pxPerPercent, faction, allFactions]);
   const [retained, retain] = useState<string | null>(null);
   const [hovered, hover] = useState<string | null>(null);
@@ -415,7 +419,7 @@ const MarkerRow = memo(function MarkerRow(props: {
         }}
       >
         {icons.slice(0, ROW_ICONS).map((p, i) => (
-          <MapIconImage key={i} icon={p.icon} className={`poi-icon${p.marked ? " marked" : ""}`} />
+          <MapIconImage key={i} icon={p.icon} className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}`} />
         ))}
         {icons.length > ROW_ICONS && (
           <span className="poi-more" aria-hidden="true">

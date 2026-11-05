@@ -41,6 +41,7 @@ import { Dialog } from "../Dialog.tsx";
 import { usePendingAction, useRetain, useTimeout } from "../effects.ts";
 import { Icon } from "../icons.tsx";
 import { Button, DisclosureIcon } from "../ui/Button.tsx";
+import { Checkbox } from "../ui/Checkbox.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { Select } from "../ui/Field.tsx";
 import { MapCanvas, type Frame, type MapMenu, type MapMenuGroup, type MapMenuItem, type Pin } from "../map/MapCanvas.tsx";
@@ -56,7 +57,7 @@ import { summarizeJourney } from "../../routing/result.ts";
 import { CoordinateDialog } from "./CoordinateDialog.tsx";
 import { CoordinateReadout, type ReadoutPoint } from "./CoordinateReadout.tsx";
 import { legReport, readRoute, writeRoute } from "../../routing/share.ts";
-import { legLines, lineView, nearestLine, projection, skippedTiles } from "./lines.ts";
+import { legLines, lineView, nearestLine, projection, skippedTiles, tileCornerViews } from "./lines.ts";
 import { layerSearches, LayersMenu, RouterLayers, tileRects, type LayerChoices } from "./MapLayers.tsx";
 import { NewLegsMenu } from "./newLegs.tsx";
 import { RideLayer, RidePopover, spread, type PlacedMark } from "./RideLayer.tsx";
@@ -611,19 +612,7 @@ export function RouteWorkspace(props: {
         ]
       : [{ label: "Set start…", run: () => enter("Set the start", (p) => editor.setPending(p)) }];
 
-  const fitView = fitRequest(
-    fitted.length
-      ? fitted.flatMap((stop) => proj.stopView(stop) ?? [])
-      : engine.manifest.tiles
-          .filter((t) => t.state === "present")
-          .flatMap(({ tile: [x, y] }) => {
-            const size = engine.manifest.frame.tilePixels;
-            return [
-              proj.toView([x * size, y * size], firstMap) ?? [],
-              proj.toView([(x + 1) * size - 1, (y + 1) * size - 1], firstMap) ?? [],
-            ].flat();
-          }),
-  );
+  const fitView = fitRequest(fitted.length ? fitted.flatMap((stop) => proj.stopView(stop) ?? []) : tileCornerViews(engine.maps, proj));
   const skipped = skippedTiles(
     selectedLeg === null ? undefined : shown?.legs[selectedLeg],
     proj,
@@ -869,11 +858,12 @@ export function RouteWorkspace(props: {
           <SlopeField value={maxSlope} onChange={changeSlope} />
           <NewLegsMenu leg={newLegs} onChange={changeNewLegs} />
           {zones.length > 0 && (
-            <Described text="Show the routing zone edges">
-              <Button variant="ghost" size={28} pressed={borders} onClick={() => setBorders(!borders)}>
-                Zone borders
-              </Button>
-            </Described>
+            <Checkbox
+              label="Zone borders"
+              description="Show the routing zone edges"
+              checked={borders}
+              onChange={(e) => setBorders(e.target.checked)}
+            />
           )}
           <LayersMenu choices={layers} searches={searches} hasInteriors={!!map.interiors} onChange={changeLayers} />
           <span className="status" role="status">

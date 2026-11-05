@@ -332,7 +332,7 @@
 }
 
 .character-xp {
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -349,7 +349,7 @@
 }
 
 .character-stats dt {
-  color: var(--muted);
+  color: var(--label);
 }
 
 .character-stats dd {
@@ -368,6 +368,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  color: var(--label);
 }
 
 .character-count {

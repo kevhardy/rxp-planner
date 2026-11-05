@@ -6,6 +6,7 @@ import { routeOf } from "../../routing/result.ts";
 import type { TerrainRoute } from "../../routing/search.ts";
 import { transportSteps, type TransportLink } from "../../routing/transport.ts";
 import type { ViewPoint } from "../map/points.ts";
+import type { MapRouting } from "./engine.ts";
 import { canvasToView, viewToCanvas, zoomTo, type Box, type Fit, type Frame, type Inset } from "../map/viewport.ts";
 
 export const ATLAS = "atlas";
@@ -223,6 +224,24 @@ export function nearestLine(lines: ViewPoint[][], at: ViewPoint, pxPerPercent: n
     }
   });
   return best?.i;
+}
+
+/** The corners of every present tile of every routing map, so a fit shows all the land that routes can cross. */
+export function tileCornerViews(
+  maps: readonly { manifest: Pick<MapRouting["manifest"], "tiles" | "frame" | "scope"> }[],
+  proj: Projection,
+): ViewPoint[] {
+  return maps.flatMap(({ manifest: { tiles, frame, scope } }) =>
+    tiles
+      .filter((t) => t.state === "present")
+      .flatMap(({ tile: [x, y] }) => {
+        const size = frame.tilePixels;
+        return [
+          proj.toView([x * size, y * size], scope.map) ?? [],
+          proj.toView([(x + 1) * size - 1, (y + 1) * size - 1], scope.map) ?? [],
+        ].flat();
+      }),
+  );
 }
 
 export function frameAround(points: ViewPoint[], aspect: number, min = 2): Frame | undefined {

@@ -16,9 +16,9 @@
   --control-border: #6d7a8b;
   --text: #17202b;
   --muted: #4c5868;
-  /* A mid steel sea, so the map is not the darkest block on a light page.
-     Map labels keep 4.5:1 on it. */
-  --map-backdrop: #5b6b7d;
+  /* A pale steel sea, so the world map is not a heavy block on a light
+     page. Labels on it read against --art-label-outline, not the sea. */
+  --map-backdrop: #7d8da0;
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
@@ -358,6 +358,11 @@
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
+  /* A solid 1px rim of --art-ink in eight directions, so a label reads
+     against the rim at any sea color, with the soft halo outside it. */
+  --art-label-outline:
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-ink),
+    -1px -1px var(--art-ink), 1px -1px var(--art-ink), -1px 1px var(--art-ink), var(--art-label-halo);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }

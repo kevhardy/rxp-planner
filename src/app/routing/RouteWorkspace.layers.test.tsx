@@ -186,19 +186,19 @@ describe("map layers", () => {
     expect(layers.want).toHaveBeenLastCalledWith([]);
   });
 
-  it("offers Zone borders only with a zone grid, and draws the zone edges while it is pressed", async () => {
+  it("offers Zone borders only with a zone grid, and draws the zone edges while it is checked", async () => {
     await mount(plan(A, B));
-    expect(screen.queryByRole("button", { name: "Zone borders" })).toBeNull();
+    expect(screen.queryByRole("checkbox", { name: "Zone borders" })).toBeNull();
     cleanup();
 
     const grid: ZoneGrid = { scope: manifest.scope, frame: manifest.frame, zones: [0], tiles: [] };
     const user = await mount(plan(A, B), () =>
       Promise.resolve({ ok: true, engine: { ...engine, maps: [{ manifest, zones: grid }] }, missing: [] }),
     );
-    const borders = await screen.findByRole("button", { name: "Zone borders" });
-    expect([borders.getAttribute("aria-pressed"), document.querySelector(".zone-borders")]).toEqual(["false", null]);
+    const borders = await screen.findByRole<HTMLInputElement>("checkbox", { name: "Zone borders" });
+    expect([borders.checked, document.querySelector(".zone-borders")]).toEqual([false, null]);
     await user.click(borders);
-    expect(borders.getAttribute("aria-pressed")).toBe("true");
+    expect(borders.checked).toBe(true);
     expect(document.querySelector(".zone-borders")).not.toBeNull();
     await user.click(borders);
     expect(document.querySelector(".zone-borders")).toBeNull();
