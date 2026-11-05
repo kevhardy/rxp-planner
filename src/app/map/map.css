@@ -685,8 +685,16 @@
   opacity: 1;
 }
 
-.pin.near {
-  opacity: 0.5;
+.pin-previous.near,
+.pin-previous.near:hover:not(:disabled) {
+  background: var(--map-step-near-previous-fill);
+  color: var(--map-step-near-text);
+}
+
+.pin-upcoming.near,
+.pin-upcoming.near:hover:not(:disabled) {
+  background: var(--map-step-near-upcoming-fill);
+  color: var(--map-step-near-text);
 }
 
 .pin.dot,

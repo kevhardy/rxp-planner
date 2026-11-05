@@ -321,6 +321,11 @@
   --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 65%, var(--art-ink));
   --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 55%, var(--art-ink));
   --map-step-rim: var(--art-ink);
+  /* A chip by the selected step's marks draws quieter: a grayer fill and a
+     softer numeral, still opaque so terrain does not show through. */
+  --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
+  --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
+  --map-step-near-text: var(--map-label);
   --font-size-map-step: 11px;
   --line-height-map-step: 1;
 

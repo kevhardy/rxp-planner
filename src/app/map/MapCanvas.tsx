@@ -256,8 +256,8 @@ export function MapCanvas(props: {
             {shapes.map((s) => outline(s, s.className, s.key))}
           </svg>
           {drawn.map((pin) => {
-            const at = moving?.key === pin.key ? moving.at : pin.at;
             const look = looks.get(pin.key);
+            const at = moving?.key === pin.key ? moving.at : (look?.at ?? pin.at);
             const text = look ? look.text : pin.text;
             return (
               <Fragment key={pin.key}>
