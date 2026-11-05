@@ -2761,7 +2761,7 @@ legend {
 }
 
 .warnings.popover {
-  width: min(620px, 100vw - 16px);
+  width: min(660px, var(--warnings-room, 100vw - 16px));
   max-height: calc(100vh - 78px);
   padding: 0;
 }

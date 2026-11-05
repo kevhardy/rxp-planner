@@ -85,6 +85,8 @@ export function WarningsPanel() {
     if (!open || !el || typeof ResizeObserver === "undefined") return;
     const mark = () => el.toggleAttribute("data-clipped", el.scrollHeight - el.scrollTop - el.clientHeight > 1);
     const fit = () => {
+      // The popover hangs left from the button's right edge, so it keeps 8px from the window's left edge.
+      el.parentElement!.style.setProperty("--warnings-room", `${wrap.current!.getBoundingClientRect().right - 8}px`);
       el.style.maxHeight = "";
       if (el.scrollHeight - el.clientHeight > 1) el.style.maxHeight = `${wholeRowsHeight(el, ROWS, el.getBoundingClientRect().height)}px`;
       mark();
