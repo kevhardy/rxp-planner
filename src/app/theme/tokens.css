@@ -166,9 +166,9 @@
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
   --art-label-rim-diagonal: var(--art-ink);
-  /* Near --bg, so the empty map reads as a recess beside the Library pane
-     on --surface. */
-  --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
+  /* Halfway to --surface, so the empty map reads as a recess beside the
+     Library pane on --surface, not as a dark hole. */
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   /* On the dark --raised, --muted reads as more than one step below a shown
      name, and --raised-label reads too close to it. */
   --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
