@@ -29,9 +29,9 @@
   /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
   --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
-     darkest block on the page. A trace of the sea reads as a map with no
+     darkest block on the page. A tint of the sea reads as a map with no
      guide, not as a blank pane. */
-  --map-empty: color-mix(in srgb, var(--map-backdrop) 10%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
+  --map-empty: color-mix(in srgb, var(--map-backdrop) 25%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
   /* A hidden legend row keeps a readable name, so its dimmed swatch and
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
