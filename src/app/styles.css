@@ -2888,7 +2888,6 @@ legend {
   min-width: 0;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-  text-wrap: pretty;
 }
 
 .warn-message .ui-mono {

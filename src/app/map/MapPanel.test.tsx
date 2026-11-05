@@ -795,6 +795,28 @@ describe("terrain", () => {
       expect(swatch("Ships")).toBe("map-icon");
     });
 
+    it("lists the groups drawn as plain shapes right after the guide's own marks", async () => {
+      await mountGuide();
+      const groups = within(legend())
+        .getAllByRole("group")
+        .map((g) => g.querySelector("h3")!.textContent);
+      expect(groups).toEqual([
+        "Guide points",
+        "Services",
+        "Repair and vendors",
+        "Training and supplies",
+        "Class trainers",
+        "Quests",
+        "Map labels",
+        "Dungeons and raids",
+        "Transport",
+        "Quest givers",
+        "Skyborne",
+        "Rare NPCs",
+        "Filters",
+      ]);
+    });
+
     it("groups the zone labels, zone borders, and landmark labels under Map labels, which shows or hides all three", async () => {
       const { user } = await mountGuide();
       const labels = within(legend()).getByRole("group", { name: "Map labels" });
@@ -1351,9 +1373,9 @@ describe("terrain", () => {
       await mountGuide({ map: { legendOpen: true } });
       const body = legend().querySelector<HTMLElement>(".legend-body")!;
       const lines = [...body.querySelectorAll(".legend-heading, .legend-row, .legend-step, .legend-filter")];
-      const quests = lines.indexOf(screen.getByRole("heading", { name: "Quests" }).parentElement!);
+      const labels = lines.indexOf(screen.getByRole("heading", { name: "Map labels" }).parentElement!);
       vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
-        if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 108 + 30 * (quests + 1) + 10 });
+        if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 108 + 30 * (labels + 1) + 10 });
         if (this.matches(".map-legend")) return DOMRect.fromRect({ y: 60, width: 280, height: 448 });
         if (this === body) return DOMRect.fromRect({ y: 100, width: 280, height: 400 });
         const line = lines.indexOf(this);
@@ -1364,7 +1386,7 @@ describe("terrain", () => {
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
 
       act(() => resized.forEach((fit) => fit()));
-      expect(body.style.maxHeight).toBe(`${30 * quests}px`);
+      expect(body.style.maxHeight).toBe(`${30 * labels}px`);
     });
   });
 });
