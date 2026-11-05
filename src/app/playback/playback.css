@@ -652,8 +652,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade);
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   transform: translateX(-50%);
 }
@@ -698,8 +698,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade);
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   transform: translateY(-50%);
 }
 

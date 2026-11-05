@@ -136,10 +136,10 @@
   --rxp-buy-swatch: #5a8a00;
 
   --elevation-1: 0 0 0 1px rgb(23 32 43 / 0.14), 0 1px 2px rgb(23 32 43 / 0.12);
-  --elevation-2: 0 0 0 1px rgb(23 32 43 / 0.12), 0 12px 30px -8px rgb(23 32 43 / 0.3);
-  /* The elevation ring is translucent, so its tone follows what lies behind
-     it. A float that spans the guide strip and the map takes this solid
-     edge to keep one tone on all four sides. */
+  --elevation-2: 0 0 0 1px var(--float-edge), 0 12px 30px -8px rgb(23 32 43 / 0.3);
+  /* A translucent ring takes the tone of what lies behind it, and fades over
+     pale map tiles such as snow. A float's solid edge keeps one tone on all
+     four sides, over the guide strip and the map alike. */
   --float-edge: #9fabba;
   --scrim: rgb(23 32 43 / 0.45);
 

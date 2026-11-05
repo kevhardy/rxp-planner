@@ -733,9 +733,9 @@
 .pin-upcoming,
 .pin-upcoming:hover:not(:disabled) {
   width: auto;
-  min-width: 15px;
-  height: 15px;
-  padding: 0 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 calc(var(--space-1) - 1px);
   border: 1px solid var(--map-step-rim);
   color: var(--art-paper);
   font-size: var(--font-size-map-step);
@@ -1032,8 +1032,8 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-round);
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
 }
 
@@ -1419,6 +1419,8 @@
   box-shadow: var(--ring-control);
 }
 
+/* 11px, because a bold "Aa" at 12px is 15px wide and crosses the ring of the
+   round 16px swatch. */
 .legend-row .label-swatch::before {
   content: "Aa";
   color: var(--map-label);

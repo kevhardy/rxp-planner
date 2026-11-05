@@ -148,8 +148,8 @@ strong {
 }
 
 small {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 :focus-visible {
