@@ -803,6 +803,8 @@
 }
 
 .playback-stage .map-overlay .poi-name {
+  font-size: var(--font-size-map-label);
+  line-height: var(--line-height-map-label);
   text-shadow: var(--art-label-outline);
 }
 
@@ -1193,15 +1195,21 @@
   display: grid;
 }
 
-/* The bottom padding scrolls with the rows, so a clipped list fades out at
-   the legend's edge, and the last row still clears the edge at the end. */
+/* The bottom padding scrolls with the rows, so the last row still clears the
+   legend's edge at the end. */
 .legend-body {
   padding-bottom: var(--space-2);
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--control-border) transparent;
 }
 
+/* The mask runs half its fade past the edge, so the fade reaches only
+   `FADE` in MapLegend.tsx into the legend, over the row that the edge cuts. */
 .legend-body[data-clipped] {
   mask-image: var(--mask-fade-end);
+  mask-size: 100% calc(100% + var(--space-3));
+  mask-repeat: no-repeat;
 }
 
 .legend-body :focus-visible {
@@ -1221,7 +1229,7 @@
 .legend-heading h3 {
   flex: 1;
   margin: 0;
-  color: var(--label);
+  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }
@@ -1293,9 +1301,9 @@
   color: var(--text);
 }
 
-.legend-row[aria-pressed="false"] .legend-name,
+.legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
 .legend-filter[aria-pressed="false"] .legend-name,
-.legend-step.off .legend-name {
+.legend-step.off :is(.legend-name, .legend-state) {
   color: var(--muted);
 }
 
@@ -1382,14 +1390,9 @@
   white-space: normal;
 }
 
-.legend-count {
-  color: var(--label);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
-}
-
+.legend-count,
 .legend-state {
-  color: var(--label);
+  color: var(--raised-label);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
 }

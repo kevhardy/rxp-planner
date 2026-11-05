@@ -351,8 +351,10 @@
   --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
   --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
   --map-step-near-text: var(--map-label);
-  --font-size-map-step: 11px;
+  --font-size-map-step: 12px;
   --line-height-map-step: 1;
+  --font-size-map-label: 12px;
+  --line-height-map-label: 16px;
 
   --stack-two: #36c3dc;
   --stack-more: #ee72bb;
