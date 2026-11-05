@@ -1349,8 +1349,8 @@
   box-shadow: var(--ring-control);
 }
 
-/* Sits in the column of the row icons below, so the heading text lines up
-   with the row names. */
+/* Sits one spacing step left of the row icons below, so the rows read as a
+   tree under their heading. */
 .group-mark {
   position: absolute;
   top: calc(50% - 5px);
@@ -1461,6 +1461,14 @@
   gap: var(--space-2);
   min-height: var(--control-small);
   padding: 2px var(--space-3);
+}
+
+.legend-body :is(.legend-row, .legend-step) {
+  padding-left: calc(var(--space-3) + var(--space-3));
+}
+
+.legend-body .legend-filter {
+  padding-left: calc(var(--legend-label-start) + var(--space-3));
 }
 
 .legend-step svg {
