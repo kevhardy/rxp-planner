@@ -1308,7 +1308,6 @@
 .legend-filter svg {
   flex: none;
   margin: 0 -2px 0 auto;
-  color: var(--muted);
 }
 
 .legend-row[aria-pressed="true"] .legend-name,
@@ -1322,6 +1321,13 @@
 .legend-step:not(.off) svg,
 .legend-heading .ui-button:is([aria-pressed="true"], [aria-pressed="mixed"]):not(:disabled) svg {
   color: var(--map-legend-eye-shown);
+}
+
+.legend-row[aria-pressed="false"] svg,
+.legend-filter[aria-pressed="false"] svg,
+.legend-step svg.off,
+.legend-heading .ui-button[aria-pressed="false"]:not(:disabled) svg {
+  color: var(--map-legend-eye-hidden);
 }
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),
@@ -1452,10 +1458,6 @@
   box-sizing: content-box;
   margin-right: -2px;
   padding: 2px;
-}
-
-.legend-step svg.off {
-  color: var(--muted);
 }
 
 .step-swatch {

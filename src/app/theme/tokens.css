@@ -36,9 +36,10 @@
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
   --map-legend-shown: var(--text);
-  /* A shown eye takes the color of an open toggle, so a shown row reads
-     apart from a hidden one at a glance in a long list. */
+  /* A shown eye takes the color of an open toggle, and a crossed eye fades
+     toward the legend, so in a long list the shown rows draw the eye first. */
   --map-legend-eye-shown: var(--accent);
+  --map-legend-eye-hidden: color-mix(in srgb, var(--muted) 75%, var(--raised));
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
@@ -193,6 +194,8 @@
   /* On the dark --raised, a shown name in --text reads too close to a hidden
      one. */
   --map-legend-shown: #fff;
+  /* The dark --accent reads dim beside the white names of shown rows. */
+  --map-legend-eye-shown: color-mix(in srgb, var(--accent) 70%, var(--text));
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --overlay-heading: var(--text);
   /* A legend heading reads at least as bright as the shown rows under it. */
