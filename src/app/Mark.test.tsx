@@ -19,8 +19,8 @@ it("draws every kind as an icon or a shape, not text, when the icon sheet lacks 
     mark.textContent,
     mark.querySelector(":scope > .guide-icon.vector") !== null ||
       mark.querySelectorAll("svg > *").length > 0 ||
-      // The note's sheet, lines included, is the CSS background of `.mk-note`.
-      mark.classList.contains("mk-note"),
+      // The note's sheet and the target's person are CSS backgrounds.
+      mark.matches(".mk-note, .mk-target"),
   ]);
   expect(marks).toEqual(kinds.map(() => ["", true]));
 });
