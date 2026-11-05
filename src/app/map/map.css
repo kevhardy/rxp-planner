@@ -1352,6 +1352,14 @@
   transform-origin: var(--dot-middle, center);
 }
 
+.group-mark.poi-services {
+  --dot: var(--map-legend-services);
+}
+
+.group-mark.poi-services::before {
+  background: var(--map-legend-services-rim);
+}
+
 .legend-row .spawn-swatch {
   border-radius: var(--radius-control);
   /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
