@@ -7,6 +7,7 @@
       // config that package.json names. The Vite plugin still reads the test settings in vite.config.ts.
       "vitest": false,
       "entry": [
+        "scripts/guide-icon-ink.ts",
         "scripts/playback-performance.ts",
         "scripts/guides/simulation-diff.ts",
         "scripts/routing/cli.ts",
