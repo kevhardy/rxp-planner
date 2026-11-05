@@ -18,10 +18,10 @@
   --muted: #4c5868;
   /* A pale steel sea, so the world map is not a heavy block on a light
      page. Labels on it read against --art-label-outline, not the sea. */
-  --map-backdrop: #7d8da0;
+  --map-backdrop: #97a8bb;
   /* On the pale sea, a solid diagonal rim thickens each stem into a black
      stencil, so the corners of --art-label-outline draw softer. */
-  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 40%, transparent);
+  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 42%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
@@ -312,7 +312,7 @@
   /* A dark steel slate behind a plain map point, softer than --art-ink so a
      city's many points do not read as a pile of holes. */
   --map-icon-backing: #2b3746;
-  --map-dot-vendors: #e3a466;
+  --map-dot-vendors: #bf9c7a;
   --map-dot-trainers: #c49bf2;
   --map-dot-supplies: #8fd6c8;
   --map-dot-services: #dfe5ee;
@@ -337,6 +337,8 @@
   --map-objective-5: #e4a9ff;
   --map-objective-6: #cccd00;
   --map-step-upcoming: #4cc472;
+  /* Lighter than --map-step-upcoming, so a thin dashed path stands out on grass and roofs. */
+  --map-step-upcoming-path: #8cf5a5;
   /* A numbered pin of a step before or after the selected one. A dark fill
      and a solid ink rim keep it apart from green terrain and quieter than the
      selected step's pin. Its light numeral needs no halo, which would blur it,

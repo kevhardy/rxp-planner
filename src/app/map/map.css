@@ -21,12 +21,9 @@
 }
 
 .map-body {
-  /* A plain point's rim is an ink copy of its shape at this scale, which
-     reaches about 1px past each side of a 10px shape. */
-  --dot-rim-scale: 1.22;
   --pin: var(--map-step);
   --step-previous: var(--kind-command);
-  --step-upcoming: var(--map-step-upcoming);
+  --step-upcoming: var(--map-step-upcoming-path);
   position: relative;
   flex: 1;
   min-height: 0;
@@ -224,27 +221,35 @@
 
 /* A plain point's group shows by its shape as well as its color. The map and
    the legend draw the same dot. Each shape is drawn in a 14px box around a
-   10px dot and covers about 80px², so the diamond and the triangle reach past
-   the dot to weigh the same as the square. */
+   10px dot. The circle, square, and diamond each cover about 80px². The
+   triangle covers about 72px², because its points draw the eye more than a
+   rounder shape of the same area.
+
+   The rim is an ink copy of the shape, scaled around the center of the
+   shape's inscribed circle by 1 + 1.1px / that circle's radius. So each
+   shape has the same 1.1px rim on every side. */
 .poi-services {
   --dot: var(--map-dot-services);
   --dot-shape: circle(5px);
+  --dot-rim-scale: 1.22;
 }
 
 .poi-vendors {
   --dot: var(--map-dot-vendors);
   --dot-shape: inset(2.5px round 1px);
+  --dot-rim-scale: 1.24;
 }
 
 .poi-trainers {
   --dot: var(--map-dot-trainers);
   --dot-shape: polygon(7px 0.7px, 13.3px 7px, 7px 13.3px, 0.7px 7px);
+  --dot-rim-scale: 1.25;
 }
 
 .poi-supplies {
   --dot: var(--map-dot-supplies);
-  --dot-shape: path("M6.34 1.5Q7 0.2 7.66 1.5L12.94 11.9Q13.6 13.2 12.3 13.2H1.7Q0.4 13.2 1.06 11.9Z");
-  /* The center of the triangle's inscribed circle, so its rim keeps one width on every side. */
+  --dot-shape: path("M6.39 2.11Q7 0.92 7.61 2.11L12.46 11.68Q13.07 12.88 11.88 12.88H2.12Q0.93 12.88 1.54 11.68Z");
+  --dot-rim-scale: 1.3;
   --dot-middle: 7px 9.15px;
 }
 
@@ -455,6 +460,13 @@
 .poi-item small {
   flex: none;
   color: var(--muted);
+}
+
+/* The map cannot tell which of these legs the selected step uses, so every
+   leg draws at this strength, quieter than the step's own marks. The opacity
+   is on the whole layer, so a dash and its casing fade as one line. */
+.map-overlay svg.routes {
+  opacity: 0.6;
 }
 
 /* A thin dashed line on an ink casing reads as a route, where a bare line
