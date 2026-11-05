@@ -167,7 +167,8 @@ function ReferencePicker(props: { field: FieldText; selection: [number, number];
       )}
       {result && (
         <p className="shows-as">
-          Shows as: <GuideText parts={guideText(result.text, (type, id) => names.lookup(type, id)?.name)} links="entity" />
+          <span className="muted">Shows as:</span>{" "}
+          <GuideText parts={guideText(result.text, (type, id) => names.lookup(type, id)?.name)} links="entity" />
         </p>
       )}
       {error && (

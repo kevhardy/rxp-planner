@@ -2624,8 +2624,7 @@ legend {
   margin-top: var(--space-1);
 }
 
-.comment,
-.reference-picker .shows-as {
+.comment {
   color: var(--muted);
 }
 
