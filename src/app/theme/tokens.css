@@ -8,6 +8,9 @@
   --surface: #ebf0f6;
   --pane-head: #d3dde9;
   --guide-strip: var(--bg);
+  /* --muted falls under 5:1 on the light strip, the darkest band, so the
+     strip's secondary text takes some --text. */
+  --guide-strip-muted: color-mix(in srgb, var(--text) 20%, var(--muted));
   --raised: #fff;
   --field: var(--raised);
   /* The least share of --muted, with a small margin, that keeps 4.5:1 on
@@ -170,6 +173,7 @@
      between --field and --surface, which steps the top bar, strip, and pane
      heads about as far apart as in the light theme. */
   --guide-strip: color-mix(in srgb, var(--field) 50%, var(--surface));
+  --guide-strip-muted: var(--muted);
   /* --surface all but matches the strip, so a guide card lifts toward --text
      to draw its shape with its fill. */
   --chain-card: color-mix(in srgb, var(--text) 8%, var(--surface));
