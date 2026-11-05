@@ -588,7 +588,7 @@
 
 .map-overlay .route {
   stroke-width: 2.5px;
-  stroke-dasharray: 5px 4px;
+  stroke-dasharray: 8px 6px;
   stroke-linejoin: round;
 }
 
