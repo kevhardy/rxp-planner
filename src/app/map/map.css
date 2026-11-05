@@ -304,6 +304,12 @@
   text-shadow: var(--art-label-halo);
 }
 
+.map-overlay .poi-name[data-start] {
+  left: auto;
+  right: 100%;
+  translate: -4px -50%;
+}
+
 .map-overlay .poi-group {
   position: absolute;
   top: var(--at-y);

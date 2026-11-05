@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WorldMapPlace } from "../../data/index.ts";
-import { clearLabels, labelShows, pickLabels } from "./labels.ts";
+import { clearLabels, labelShows, nameSide, pickLabels } from "./labels.ts";
 
 describe("labelShows", () => {
   const place = (kind: WorldMapPlace["kind"], minZoom = 0): WorldMapPlace => ({ name: "A", kind, area: "kalimdor", x: 0, y: 0, minZoom });
@@ -98,5 +98,20 @@ describe("clearLabels", () => {
   it("hides a zone label with no clear spot within 64 pixels, and moves a capital's as far as it takes", () => {
     const block = { x: 100, y: 100, width: 200, height: 100 };
     expect(clearLabels([zone, { ...zone, x: 101, mustShow: true }], [block])).toEqual([null, { x: 0, y: -64 }]);
+  });
+});
+
+describe("nameSide", () => {
+  const icon = { x: 100, y: 50, width: 18, height: 18 };
+  const name = { width: 80, height: 14 };
+  const quest = (x: number) => ({ x, y: 50, width: 16, height: 16 });
+
+  it("draws the name after its icon, unless a quest marker covers it there and not before the icon", () => {
+    expect([
+      nameSide(icon, name, []),
+      nameSide(icon, name, [quest(140)]),
+      nameSide(icon, name, [quest(140), quest(50)]),
+      nameSide(icon, name, [quest(60)]),
+    ]).toEqual(["end", "start", "end", "end"]);
   });
 });

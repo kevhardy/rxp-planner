@@ -28,7 +28,7 @@ import {
   type PlacedPoi,
   type TerrainFeatures,
 } from "./terrain.ts";
-import { clearLabels, labelShows, pickLabels } from "./labels.ts";
+import { clearLabels, labelShows, nameSide, pickLabels } from "./labels.ts";
 import type { ViewPoint } from "./points.ts";
 import { useMapView } from "./view.ts";
 import { canvasSize, mapCover } from "./viewport.ts";
@@ -38,6 +38,7 @@ const LABEL_FONT_PX = 11;
 const ICON_AND_GAP_PX = 32;
 // The largest icon a caller passes in `icons`: the ride mark in a wide map.
 const ICON_PX = 18;
+const QUEST_ICON_PX = 16;
 
 // A continent fills the map near level 1.5 and a zone near levels 4 to 6. From about level 3, the water that the tiles
 // bake in along each coast shows as dark blocks against a lighter backdrop.
@@ -111,6 +112,8 @@ export function TerrainMarkers(props: {
   pxPerPercent: number;
   /** Where the caller draws map icons that zone labels move clear of, at a given scale. */
   icons?: (pxPerPercent: number) => readonly ViewPoint[];
+  /** Where quest markers draw. A point's name moves to the other side of its icon to clear them. */
+  quests?: readonly ViewPoint[];
 }) {
   const { map, features, shows, frame, pxPerPercent, icons } = props;
   const { allFactions } = useMapSettings();
@@ -205,6 +208,18 @@ export function TerrainMarkers(props: {
       el.style.translate = move && (move.x || move.y) ? `calc(${move.x}px - 50%) calc(${move.y}px - 50%)` : "";
     });
   }, [labels, places, map, pxPerPercent, iconsAt]);
+  const [names] = useState(() => new Map<HTMLElement, ViewPoint>());
+  // No dependencies: names mount and unmount with the rows of every frame.
+  useLayoutEffect(() => {
+    const aspect = canvasSize(map).width / canvasSize(map).height;
+    const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
+    const quests = (props.quests ?? []).map((at) => ({ ...screen(at), width: QUEST_ICON_PX, height: QUEST_ICON_PX }));
+    for (const [name, at] of names) {
+      const icon = { ...screen(at), width: name.parentElement!.offsetWidth, height: name.parentElement!.offsetHeight };
+      const side = nameSide(icon, { width: name.offsetWidth, height: name.offsetHeight }, quests);
+      name.toggleAttribute("data-start", side === "start");
+    }
+  });
   return (
     <>
       {shows("routes") && (
@@ -219,7 +234,7 @@ export function TerrainMarkers(props: {
       ))}
       {visibleRows.map(({ row, key, named }) =>
         row.length === 1 ? (
-          <Marker key={key} placed={row[0]!} named={named} onPick={props.onPick} retain={retain} />
+          <Marker key={key} placed={row[0]!} named={named} names={names} onPick={props.onPick} retain={retain} />
         ) : (
           <MarkerRow key={key} row={row} onPick={props.onPick} retain={retain} hover={hover} />
         ),
@@ -264,10 +279,11 @@ const PlaceLabel = memo(function PlaceLabel({ placed, labels }: { placed: Placed
 const Marker = memo(function Marker(props: {
   placed: Shown;
   named: boolean;
+  names: Map<HTMLElement, ViewPoint>;
   onPick: (poi: WorldMapPoi) => void;
   retain: (key: string) => void;
 }) {
-  const { placed, named } = props;
+  const { placed, named, names } = props;
   const { poi, layer, category, at, marked } = placed;
   const label = labelOf(placed);
   const withName = marked || named;
@@ -286,7 +302,15 @@ const Marker = memo(function Marker(props: {
     >
       <MapIconImage icon={placed.icon} className="poi-icon" />
       {withName && (
-        <span className="poi-name" aria-hidden="true">
+        <span
+          ref={(el) => {
+            if (!el) return;
+            names.set(el, at);
+            return () => void names.delete(el);
+          }}
+          className="poi-name"
+          aria-hidden="true"
+        >
           {poi.label ?? poi.name}
         </span>
       )}

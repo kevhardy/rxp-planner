@@ -16,6 +16,7 @@ import {
   markerLabel,
   questActions,
   questRows,
+  shownMarkers,
   type PlacedMarker,
   type QuestAction,
   type QuestMarker,
@@ -39,9 +40,7 @@ export const QuestMarkers = memo(function QuestMarkers(props: {
   const frame = useFrame(useMapView());
   const groups = useMemo(() => {
     const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
-    const shown = placed.filter(
-      ({ marker }) => (show.available && marker.available.length > 0) || (show.turnIns && marker.turnIns.length > 0),
-    );
+    const shown = shownMarkers(placed, show);
     shown.sort((a, b) => a.at.y - b.at.y || a.at.x - b.at.x);
     return groupOnScreen(shown, screen).map((group) => ({ at: group[0]!.at, markers: group.map((p) => p.marker) }));
   }, [placed, show, pxPerPercent, aspect]);
