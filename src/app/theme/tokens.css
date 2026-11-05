@@ -43,7 +43,9 @@
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
-  --map-legend-heading: var(--overlay-heading);
+  /* Shown names take --text, so a lighter heading reads quieter than the
+     rows under it. The heavier weight carries the step. */
+  --map-legend-heading: var(--text);
   /* The legend's Services mark. A near-white dot on the white legend reads
      as an empty radio button, so the mark takes a grey step from the map's
      dot and a softer rim. */

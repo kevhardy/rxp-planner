@@ -34,8 +34,6 @@ const PAIRS: Pair[] = [
   ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],
   ["map-legend-heading", "raised", 6],
-  // A group heading parts from the shown names under it by color, not by its weight alone.
-  ["map-legend-heading", "map-legend-shown", 1.2],
   // The ring around a dark step swatch parts from the legend and from the swatch's ink rim. At 3.1:1 on the
   // dark legend, the swatch lost its edge.
   ...on(["map-legend-step-outline"], ["raised", "map-step-rim"], 4),
@@ -273,7 +271,7 @@ it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more
 
 describe("the dark pale guide icons", () => {
   const note = readFileSync(join(import.meta.dirname, "../guideIcons/note.svg"), "utf8");
-  const fold = paint("dark", "fold", /<path d="M9 3L13 7H9Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
+  const fold = paint("dark", "fold", /<path d="M8 2.5L12 6.5H8Z" fill="(#[\da-f]{6})"/.exec(note)![1]!, {});
   const sheetTop = paint("dark", "sheet", /<stop offset="0" stop-color="(#[\da-f]{6})"/.exec(note)![1]!, {});
   const lift = Number(/^brightness\(([\d.]+)\)/.exec(tokens.dark.get("--ring-guide-icon-pale")!)![1]);
 
@@ -288,6 +286,15 @@ describe("the dark pale guide icons", () => {
   it("keeps the note's fold 3 L* or more lighter than the top of its sheet", () => {
     expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
   });
+});
+
+it("draws the light legend heading at least as dark as the shown names under it", () => {
+  expect(lightness(color("light", "map-legend-heading"))).toBeLessThanOrEqual(lightness(color("light", "map-legend-shown")));
+});
+
+// On the dark legend, a heading parts from the shown names under it by color, not by its weight alone.
+it("puts the dark legend heading at 1.2:1 or more on the shown names under it", () => {
+  expect(contrast(color("dark", "map-legend-heading"), color("dark", "map-legend-shown"))).toBeGreaterThanOrEqual(1.2);
 });
 
 // 20 L* keeps the ring quieter than the step title beside it.
