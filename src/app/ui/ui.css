@@ -566,6 +566,12 @@ summary::-webkit-details-marker {
   border-color: var(--text);
 }
 
+/* The ring covers the field's own border, so focus shows one edge. An invalid
+   field keeps its danger border beside the ring. */
+:is(.ui-input, .ui-select > select, .ui-textarea):focus-visible:not([aria-invalid="true"]) {
+  outline-offset: -1px;
+}
+
 :is(.ui-input, .ui-select > select, .ui-textarea)[aria-invalid="true"] {
   border-color: var(--danger);
 }
