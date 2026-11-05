@@ -2100,10 +2100,6 @@ label {
   background-position: center;
 }
 
-.guide-icon.vector.pale {
-  filter: var(--ring-guide-icon-pale);
-}
-
 .guide-icon.vector.vivid {
   filter: var(--ring-guide-icon-vivid);
 }
