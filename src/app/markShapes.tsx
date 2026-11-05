@@ -9,12 +9,6 @@ const other = <path d="M5 8h6" />;
 const SHAPES: Partial<Record<MarkKind, ReactNode>> = {
   complete: <path d="M8 3.75 12.25 8 8 12.25 3.75 8z" fill="currentColor" />,
   hs: <path d="M3.75 7.75 8 4l4.25 3.75M5 6.75V12h6V6.75" />,
-  target: (
-    <>
-      <circle cx="8" cy="4.85" r="2.75" />
-      <path d="M3 13.8C3 10.7 5.2 8.95 8 8.95s5 1.75 5 4.85z" />
-    </>
-  ),
   use: (
     <path
       d="M8 3.5c.35 2.3 2.2 4.15 4.5 4.5-2.3.35-4.15 2.2-4.5 4.5-.35-2.3-2.2-4.15-4.5-4.5 2.3-.35 4.15-2.2 4.5-4.5z"
@@ -45,7 +39,8 @@ const SHAPES: Partial<Record<MarkKind, ReactNode>> = {
       />
     </>
   ),
-  // The sheet in `.mk-note` draws its own lines.
+  // `.mk-target` and `.mk-note` draw their own art.
+  target: null,
   note: null,
   tag: <path d="m6.5 3.5-1 9M10.5 3.5l-1 9M3.75 6.25h8.5M3.75 9.75h8.5" />,
   checkpoint: <path d="M4 3.5h8M8 12.5V6.5M5 9.5l3-3 3 3" />,
