@@ -278,6 +278,15 @@ it("draws the note's fold 3 L* or more lighter than the top of its sheet", () =>
   expect(lightness(fold) - lightness(sheetTop)).toBeGreaterThanOrEqual(LADDER_STEP.dark);
 });
 
+// CSS brightness() scales the encoded sRGB channels.
+it("lifts the dark target person's plum base to 3:1 or more on --surface", () => {
+  const target = readFileSync(join(import.meta.dirname, "../guideIcons/target.svg"), "utf8");
+  const base = paint("dark", "base", /<stop offset="1" stop-color="(#[\da-f]{6})"/.exec(target)![1]!, {});
+  const lift = Number(/^brightness\(([\d.]+)\)/.exec(tokens.dark.get("--ring-guide-icon-target")!)?.[1] ?? 1);
+  const lifted = base.map((channel) => Math.min(255, channel * lift)) as Rgb;
+  expect(contrast(lifted, color("dark", "surface"))).toBeGreaterThanOrEqual(3);
+});
+
 it("puts the light empty map between --pane-head and --surface", () => {
   const empty = lightness(color("light", "map-empty"));
   expect([empty > lightness(color("light", "pane-head")), empty < lightness(color("light", "surface"))]).toEqual([true, true]);
