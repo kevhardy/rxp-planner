@@ -893,6 +893,18 @@ describe("terrain", () => {
       ]).toEqual(["true", "true", "none", undefined, undefined]);
     });
 
+    it("draws a shown eye in a heavier stroke than a crossed eye", async () => {
+      await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,10,50\n");
+      const stroke = (svg: Element) => Number(cascade(svg, "stroke-width")?.value ?? svg.getAttribute("stroke-width"));
+      const crossed = stroke(legend().querySelector(".legend-step svg.off")!);
+      const shown = [
+        within(legend()).getByRole("button", { name: "Guide points" }).querySelector("svg")!,
+        row("Objective spawns").querySelector("svg:last-child")!,
+        legend().querySelector(".legend-step:not(.off) svg")!,
+      ].map(stroke);
+      expect(shown.map((width) => width > crossed)).toEqual([true, true, true]);
+    });
+
     it("closes the Step display popover from its close button and returns focus to the button", async () => {
       const { user } = await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,10,50\n");
       const menu = within(legend()).getByRole("button", { name: "Step display" });
