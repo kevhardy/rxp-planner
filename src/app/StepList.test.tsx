@@ -12,7 +12,7 @@ import { EntityContext, GameDataContext, GuideIconsContext, StoresContext } from
 import { RouteStrip } from "./preview/RouteStrip.tsx";
 import { DEFAULT_SETTINGS, type PreviewSettings } from "./preview/settings.ts";
 import { unrelatedEntities } from "./renderPlanner.tsx";
-import { StepList } from "./StepList.tsx";
+import { ringArcs, StepList } from "./StepList.tsx";
 import { createStores, DEFAULT_SAVED_SETTINGS } from "./stores.ts";
 import { cascade } from "./ui/testing.ts";
 
@@ -366,6 +366,55 @@ step
     await user.click(screen.getByRole("button", { name: "Show skipped steps" }));
     expect(document.querySelector(".step-fold")).toBeNull();
     expect(shownRows()).toHaveLength(6);
+  });
+});
+
+describe("ringArcs", () => {
+  it("lengthens a short arc back from its true end, so the ring's total stays true", () => {
+    expect(
+      ringArcs([
+        ["before", 0.25],
+        ["earned", 0.015625],
+        ["jump", 0],
+      ]),
+    ).toEqual([
+      { kind: "before", from: 0, to: 20.5625 },
+      { kind: "earned", from: 20.5625, to: 26.5625 },
+    ]);
+  });
+
+  it("keeps arcs that are long enough at their shares", () => {
+    expect(
+      ringArcs([
+        ["before", 0.25],
+        ["earned", 0.5],
+        ["jump", 0.125],
+      ]),
+    ).toEqual([
+      { kind: "before", from: 0, to: 25 },
+      { kind: "earned", from: 25, to: 75 },
+      { kind: "jump", from: 75, to: 87.5 },
+    ]);
+  });
+
+  it("joins a first arc squeezed below the shortest arc to the arc after it", () => {
+    expect(
+      ringArcs([
+        ["before", 0.03125],
+        ["earned", 0.03125],
+        ["jump", 0],
+      ]),
+    ).toEqual([{ kind: "earned", from: 0, to: 6.25 }]);
+  });
+
+  it("grows a total below the shortest arc to that length from the ring's start", () => {
+    expect(
+      ringArcs([
+        ["before", 0],
+        ["earned", 0.015625],
+        ["jump", 0],
+      ]),
+    ).toEqual([{ kind: "earned", from: 0, to: 6 }]);
   });
 });
 
