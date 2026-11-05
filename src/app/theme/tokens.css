@@ -268,9 +268,9 @@
 }
 
 :root {
-  /* Lighter than --disabled-bg, so a disabled button weighs less than the
-     enabled outline buttons beside it, but still shows a fill on --surface. */
-  --disabled-button-bg: var(--hover);
+  /* Not --hover, which on the light top bar is close to --pressed-wash, so a
+     disabled button would read as a toggle that is on. */
+  --disabled-button-bg: var(--surface);
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
