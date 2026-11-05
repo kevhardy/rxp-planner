@@ -284,6 +284,8 @@
   --elevation-2: 0 0 0 1px #586782, 0 14px 34px -8px rgb(8 11 16 / 0.8);
   --float-edge: #586782;
   --scrim: rgb(8 11 16 / 0.6);
+  /* Dark --hover sits far below --raised, so half of it bands the list. */
+  --warn-stripe: color-mix(in srgb, var(--hover) 25%, var(--raised));
 
   --objective-1: #ffa8b5;
   --objective-2: #4ee75f;
@@ -301,7 +303,7 @@
      page background. */
   --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
   --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
-  /* Half of --hover, so a hovered row still reads over the stripe. */
+  /* Part of --hover, so a hovered row still reads over the stripe. */
   --warn-stripe: color-mix(in srgb, var(--hover) 50%, var(--raised));
   --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
