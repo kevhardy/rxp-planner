@@ -29,17 +29,15 @@
   /* On the pale sea, a solid diagonal rim thickens each stem into a black
      stencil, so the corners of --art-label-outline draw softer. */
   --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
-  /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
-  --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* A third, 3px blur thickens place names on the pale map into a dark band. */
   --art-label-halo: 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
   /* A rim of --art-ink on each side and --art-label-rim-diagonal at each
-     corner, so a label reads against the rim at any sea color. A full 1px
-     rim thickens the letters on the pale sea, so the light rim is 0.75px. */
+     corner, so a label reads against the rim at any sea color. A rim offset
+     between device pixels blurs into a grey edge, so the rim is a whole 1px.
+     On the pale sea, a blur outside the rim only thickens the stroke. */
   --art-label-outline:
-    0.75px 0 var(--art-ink), -0.75px 0 var(--art-ink), 0 0.75px var(--art-ink), 0 -0.75px var(--art-ink),
-    0.75px 0.75px var(--art-label-rim-diagonal), -0.75px -0.75px var(--art-label-rim-diagonal),
-    0.75px -0.75px var(--art-label-rim-diagonal), -0.75px 0.75px var(--art-label-rim-diagonal), var(--art-label-outline-halo);
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
+    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal);
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. A faint tint of the sea reads as a map with
      no guide, not as a blank pane, and stays lighter than --pane-head. */

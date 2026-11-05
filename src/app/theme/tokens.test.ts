@@ -310,6 +310,13 @@ it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s 20 L* 
 });
 
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
+  // At 1x, a shadow offset between device pixels anti-aliases the world label rim into a grey edge.
+  it("offsets the world label rim by whole pixels", () => {
+    const offsets = (tokens[theme].get("--art-label-outline") ?? "").match(/-?[\d.]+px/g) ?? [];
+    expect(offsets.length).toBeGreaterThan(0);
+    expect(offsets.filter((offset) => !Number.isInteger(parseFloat(offset)))).toEqual([]);
+  });
+
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);
   });
