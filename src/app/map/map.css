@@ -1211,7 +1211,7 @@
 }
 
 /* Matches .warnings-body[data-clipped], so both lists say alike that rows
-   lie below, with no scrollbar. */
+   lie below. */
 .legend-body[data-clipped] {
   background:
     var(--more-chevron) center bottom 1px / 14px no-repeat border-box,
