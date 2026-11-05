@@ -24,8 +24,6 @@ const PAIRS: Pair[] = [
   ...on(["text"], ["selection-on-bar"], 4.5),
   ["pop", "selection-on-bar", 3],
   ["control-border", "field", 3],
-  // The scrollbar thumb of a list in a float, such as the legend and Warnings.
-  ["control-border", "raised", 3],
   ["raised-line", "raised", 1.5],
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],

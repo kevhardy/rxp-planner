@@ -2784,8 +2784,24 @@ legend {
   padding: var(--space-1) var(--space-2) 0;
   border-bottom: var(--space-4) solid transparent;
   border-radius: 0 0 var(--radius-float) var(--radius-float);
-  scrollbar-width: thin;
-  scrollbar-color: var(--control-border) transparent;
+}
+
+/* A styled scrollbar stays in view where the platform would hide an overlay
+   one until the list scrolls. */
+.warnings-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.warnings-body::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .warnings-body {
+    scrollbar-color: var(--control-border) transparent;
+    scrollbar-width: thin;
+  }
 }
 
 /* Matches .legend-body[data-clipped]. */
