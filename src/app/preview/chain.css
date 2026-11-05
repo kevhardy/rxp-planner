@@ -85,7 +85,7 @@
   width: var(--strip-card);
   height: calc(var(--control-small) + 2px);
   padding: 0 var(--space-2);
-  border: 1px solid var(--control-border);
+  border: 1px solid var(--chain-edge);
   border-radius: var(--radius-control);
   background: var(--surface);
 }
