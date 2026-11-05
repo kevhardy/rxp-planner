@@ -2227,7 +2227,8 @@ label {
 
 .sim-kill-fields {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 320px) auto;
+  justify-content: start;
   align-items: start;
   gap: var(--space-3) var(--space-4);
 }
