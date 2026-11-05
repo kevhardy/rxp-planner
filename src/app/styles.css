@@ -1601,7 +1601,9 @@ label {
   margin-top: calc(var(--space-1) + 2px);
 }
 
+/* Prose lines wrap, so a 1px gap runs a step's notes into one block. */
 .step-notes {
+  gap: calc(var(--space-1) - 1px);
   font-size: var(--font-size-note);
   line-height: var(--line-height-note);
 }
