@@ -2174,11 +2174,8 @@ label {
   border-radius: 0;
 }
 
-/* The end margin and the dock's padding hold the last column of Tags, which
-   runs past the fields. */
 .step-form {
   max-width: 880px;
-  margin-inline-end: var(--space-4);
 }
 
 /* 9px between rows is the most that leaves 12px below "Add filter" in the
@@ -2615,7 +2612,7 @@ legend {
   gap: var(--space-3) var(--space-4);
 }
 
-:is(.command-form, .tag-values) > *,
+.command-form > *,
 .arg-run > * {
   --span: 3;
   grid-column: span var(--span);
@@ -2623,38 +2620,44 @@ legend {
 
 /* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 78px of Plex Sans at the body size, 17px for the picker, and 18px of padding and border. */
 @container (width < 759px) {
-  :is(.command-form, .tag-values) > *,
+  .command-form > *,
   .arg-run > * {
     --span: 5;
   }
 }
 
-/* Three to a row on the lines of the fields below, because the longest label,
-   "Not in Season of Mastery", wraps in one field. The negative top margin
-   takes back the 2px that each Checkbox pads above its line, so "Add filter"
-   still fits in the dock. The bottom margin puts Values as far below the last
-   check as Condition sits below the last value field. */
+/* The checks sit three to a row on the lines of the fields below, so each
+   check needs a field as wide as its label. The widest, "Not in Season of
+   Mastery", needs 178px, which four fields to a row hold from 760px. */
+.tag-checks,
+.tag-values {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.tag-checks > *,
+.tag-values > * {
+  --span: 4;
+  grid-column: span var(--span);
+}
+
+@container (width >= 760px) {
+  .tag-checks > *,
+  .tag-values > * {
+    --span: 3;
+  }
+}
+
+.tag-checks > :nth-child(3n + 1) {
+  grid-column: 1 / span var(--span);
+}
+
+/* The negative top margin takes back the 2px that each Checkbox pads above
+   its line, so "Add filter" still fits in the dock. The bottom margin puts
+   Values as far below the last check as Condition sits below the last value
+   field. */
 .tag-checks {
   row-gap: 0;
   margin-block: -2px var(--space-1);
-}
-
-.tag-checks > * {
-  grid-column: span 5;
-}
-
-/* With five fields to a row, the checks sit on fields 1, 3, and 5. "Season of
-   Mastery only" needs 167px, so the last check runs on past field 5 into the
-   end margin of .step-form. */
-@container (width >= 759px) {
-  .tag-checks > * {
-    grid-column: span 6;
-  }
-
-  .tag-checks > :nth-child(3n) {
-    grid-column: span 3;
-    margin-inline-end: calc(-1 * var(--space-8));
-  }
 }
 
 .tag-values {
