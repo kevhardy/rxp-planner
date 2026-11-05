@@ -124,7 +124,7 @@ export function MapLegend(props: {
         Legend <Icon name="chevronDown" size={12} />
       </summary>
       <div ref={body} className="legend-body" onScroll={(e) => markRowsBelow(e.currentTarget)}>
-        {LAYERS.map((layer) => {
+        {LEGEND_LAYERS.map((layer) => {
           const ids = layerCategories(layer.id);
           const on = ids.filter(shows).length;
           const pressed = on === ids.length ? true : on === 0 ? false : "mixed";
@@ -270,6 +270,15 @@ export function MapLegend(props: {
 }
 
 const MAP_LABELS: readonly LayerId[] = ["zones", "zoneBorders", "landmarks"];
+
+// The map draws crowded points of these layers as plain shapes, which only the
+// legend explains, so they come before layers drawn as game icons.
+const LEGEND_FIRST: readonly LayerId[] = ["guide", "references", "services", "vendors", "supplies", "trainers"];
+const legendRank = (id: LayerId) => {
+  const i = LEGEND_FIRST.indexOf(id);
+  return i < 0 ? LEGEND_FIRST.length : i;
+};
+const LEGEND_LAYERS = LAYERS.toSorted((a, b) => legendRank(a.id) - legendRank(b.id));
 const LAYER_NAMES = Object.fromEntries(LAYERS.map((l) => [l.id, l.name])) as Record<LayerId, string>;
 
 // The map draws these layers as text or lines, not as game icons.
