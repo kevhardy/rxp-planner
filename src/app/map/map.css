@@ -791,7 +791,7 @@
 }
 
 .playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint, .pin-previous, .pin-upcoming):not(.dot) {
-  translate: calc(-50% + 5px) calc(-50% - 14px);
+  translate: calc(-50% + 5px) calc(-50% - 16px);
 }
 
 /* A badge sits on its mark, so the mark's own coral ring is enough. The
