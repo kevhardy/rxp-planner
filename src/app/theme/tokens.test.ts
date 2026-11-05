@@ -24,6 +24,8 @@ const PAIRS: Pair[] = [
   ...on(["text"], ["selection-on-bar"], 4.5),
   ["pop", "selection-on-bar", 3],
   ["control-border", "field", 3],
+  // The scrollbar thumb of a list in a float, such as the legend and Warnings.
+  ["control-border", "raised", 3],
   ["raised-line", "raised", 1.5],
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],
@@ -159,13 +161,18 @@ const tokens = readTokens();
 function color(theme: Theme, name: string, element: Record<string, string> = {}): Rgb {
   const value = element[name] ?? tokens[theme].get(`--${name}`) ?? tokens.light.get(`--${name}`) ?? tokens.element.get(`--${name}`);
   if (value === undefined) throw new Error(`No token --${name}`);
+  return paint(theme, name, value, element);
+}
+
+function paint(theme: Theme, name: string, value: string, element: Record<string, string>): Rgb {
   const alias = /^var\(--([\w-]+)\)$/.exec(value);
   if (alias) return color(theme, alias[1]!, element);
   // color-mix in srgb mixes the encoded channels, not linear light. A mix with transparent is a wash, which
   // the element's `ground` shows through.
-  const mix = /^color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, (?:var\(--([\w-]+)\)|transparent)\)$/.exec(value);
+  const mix = /^color-mix\(in srgb, var\(--([\w-]+)\) (\d+)%, (transparent|.+)\)$/.exec(value);
   if (mix) {
-    const [a, b, share] = [color(theme, mix[1]!, element), color(theme, mix[3] ?? "ground", element), Number(mix[2]) / 100];
+    const b = mix[3] === "transparent" ? color(theme, "ground", element) : paint(theme, name, mix[3]!, element);
+    const [a, share] = [color(theme, mix[1]!, element), Number(mix[2]) / 100];
     return [0, 1, 2].map((i) => Math.round(a[i]! * share + b[i]! * (1 - share))) as Rgb;
   }
   const hex = /^#([\da-f]{3}|[\da-f]{6})$/i.exec(value)?.[1];

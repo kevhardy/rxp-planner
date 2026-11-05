@@ -19,15 +19,16 @@
   --muted: #4c5868;
   /* A pale steel sea, so the world map is not a heavy block on a light
      page. Labels on it read against --art-label-outline, not the sea. */
-  --map-backdrop: #97a8bb;
+  --map-backdrop: #a6b2c0;
   /* On the pale sea, a solid diagonal rim thickens each stem into a black
      stencil, so the corners of --art-label-outline draw softer. */
-  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 42%, transparent);
+  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
   /* A wide blur outside the crisp rim reads as a thick stroke on the pale sea. */
   --art-label-outline-halo: 0 0 1px color-mix(in srgb, var(--art-ink) 40%, transparent);
   /* Halfway to --surface, so an empty map does not draw the eye as the
-     darkest block on the page. */
-  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+     darkest block on the page. A trace of the sea reads as a map with no
+     guide, not as a blank pane. */
+  --map-empty: color-mix(in srgb, var(--map-backdrop) 10%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
   /* A hidden legend row keeps a readable name, so its dimmed swatch and
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
@@ -174,6 +175,7 @@
   /* A muted steel sea, so the world map does not read as a hole in the page.
      Map labels keep 4.5:1 on it. */
   --map-backdrop: #1b2633;
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   --art-label-rim-diagonal: var(--art-ink);
   --art-label-outline-halo: var(--art-label-halo);
   /* On the dark --raised, --muted reads as more than one step below a shown
