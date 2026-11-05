@@ -1598,7 +1598,7 @@ label {
 }
 
 .step-does + :is(.step-where, .step-notes) {
-  margin-top: var(--space-1);
+  margin-top: calc(var(--space-1) + 2px);
 }
 
 .step-notes {
@@ -1611,7 +1611,9 @@ label {
   color: var(--text);
 }
 
-.step-does .row-text {
+/* A title that wraps turns regular after its first line, so a long title
+   does not read as a dense block. */
+.step-does .row-text::first-line {
   font-weight: var(--font-weight-medium);
 }
 
