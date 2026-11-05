@@ -227,6 +227,11 @@ it.each(["topbar", "pane-head", "raised"])("lifts the dark current segment or ta
   expect(lightness(color("dark", "selection-on-bar")) - lightness(color("dark", bar))).toBeGreaterThanOrEqual(1.5);
 });
 
+it.each([".track", ".before", ".earned"])("keeps the dark level ring's %s no lighter than --control-border", (part) => {
+  const stroke = written(`.sim-ring ${part}`, [styles]).stroke;
+  expect(lightness(color("dark", token(stroke)))).toBeLessThanOrEqual(lightness(color("dark", "control-border")));
+});
+
 describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
   it.each(PAIRS)("puts --%s on --%s at %s:1 or more", (fg, bg, min, element) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);

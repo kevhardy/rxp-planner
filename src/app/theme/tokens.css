@@ -44,9 +44,11 @@
   --selection-on-bar: var(--selection);
   --press: #d7e1ed;
 
-  /* The progress arc carries the level, so a pale track keeps the ring
+  /* The progress arcs carry the level, so a pale track keeps the ring
      below the step title in weight. */
-  --level-track: var(--line);
+  --level-track: #b6bfca;
+  --level-before: var(--control-border);
+  --level-earned: var(--text);
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -158,7 +160,11 @@
   --selection-on-bar: #314d6b;
   --press: #1e2c3f;
 
-  --level-track: var(--control-border);
+  /* On a dark page a ring in --text reads as a bright circle beside the
+     title, so no part of the ring is lighter than --control-border. */
+  --level-track: #75859b;
+  --level-before: var(--level-track);
+  --level-earned: var(--control-border);
 
   --accent: #82a6cd;
   --pop: #ff6b5a;

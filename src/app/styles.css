@@ -1352,9 +1352,9 @@ label {
   width: 24px;
   height: 24px;
   border: 0;
-  color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  color: var(--label);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
 }
 
@@ -1377,11 +1377,11 @@ label {
 }
 
 .sim-ring .before {
-  stroke: var(--control-border);
+  stroke: var(--level-before);
 }
 
 .sim-ring .earned {
-  stroke: var(--text);
+  stroke: var(--level-earned);
 }
 
 .sim-ring .jump {
