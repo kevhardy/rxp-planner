@@ -1607,9 +1607,12 @@ label {
   line-height: var(--line-height-body);
 }
 
-.step-does .row-text,
-.step-notes .row-text {
+.step-does .row-text {
   color: var(--text);
+}
+
+.step-notes .row-text {
+  color: var(--label);
 }
 
 /* Only a step's first action line takes the heavier weight, so a step of
