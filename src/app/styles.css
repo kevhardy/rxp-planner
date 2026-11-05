@@ -2841,10 +2841,11 @@ legend {
 }
 
 .warn-kind > summary {
+  margin-bottom: var(--space-1);
   padding-left: var(--space-6);
   color: var(--warn);
-  font-size: var(--font-size-caption);
-  line-height: var(--line-height-caption);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
 }
 
