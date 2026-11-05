@@ -103,6 +103,7 @@
 
   --disabled-bg: #dde3ea;
   --disabled-fg: #7b8694;
+  --disabled-border: #b3bbc5;
 
   --warn: #915500;
   --danger: #b42318;
@@ -262,6 +263,7 @@
 
   --disabled-bg: #28313c;
   --disabled-fg: #808c9d;
+  --disabled-border: #515b69;
 
   /* One gold for warnings, RXP's WARN text, and the accept mark, since golds
      a few degrees apart read as near misses. */

@@ -289,7 +289,7 @@ describe("each primitive", () => {
     ["Open primary", "hover", "background", "var(--raised)"],
     ["Open primary", "press", "background", "var(--press)"],
     ["Closed primary", "press", "background", "var(--primary-press)"],
-    ["Disabled", "rest", "border-color", "var(--disabled-fg)"],
+    ["Disabled", "rest", "border-color", "var(--disabled-border)"],
     ["Disabled", "hover", "background", "transparent"],
     ["Disabled", "rest", "box-shadow", "none"],
     ["Disabled", "rest", "color", "var(--disabled-fg)"],

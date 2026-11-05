@@ -299,6 +299,17 @@ describe.each<Theme>(["light", "dark"])("the %s theme", (theme) => {
     expect(contrast(color(theme, fg, element), color(theme, bg, element))).toBeGreaterThanOrEqual(min);
   });
 
+  // WCAG exempts a disabled control, so its border only has to stay visible.
+  it.each(["topbar", "surface"])(
+    "draws a disabled button's border at 1.4:1 or more on --%s, and at half the contrast of a live one or less",
+    (bg) => {
+      const ground = color(theme, bg);
+      const disabled = contrast(color(theme, "disabled-border"), ground);
+      expect(disabled).toBeGreaterThanOrEqual(1.4);
+      expect(disabled).toBeLessThanOrEqual(contrast(color(theme, "control-border"), ground) / 2);
+    },
+  );
+
   it.each(LADDER[theme].slice(1).map((band, i) => [LADDER[theme][i]!, band]))(
     `puts --%s ${LADDER_STEP[theme]} L* or more above --%s`,
     (upper, lower) => {
