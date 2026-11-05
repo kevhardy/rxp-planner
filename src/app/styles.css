@@ -358,7 +358,7 @@ label {
   position: relative;
   flex: none;
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--guide-strip);
 }
 
 .body {

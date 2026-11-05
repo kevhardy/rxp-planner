@@ -7,6 +7,7 @@
   --bg: #cbd5e1;
   --surface: #ebf0f6;
   --pane-head: #d3dde9;
+  --guide-strip: var(--bg);
   --raised: #fff;
   --field: var(--raised);
   --hover: #e3e9f1;
@@ -82,7 +83,7 @@
   --danger-press: #8f1b12;
 
   --disabled-bg: #dde3ea;
-  --disabled-fg: #8893a1;
+  --disabled-fg: #7b8694;
 
   --warn: #915500;
   --danger: #b42318;
@@ -135,6 +136,13 @@
   --bg: #141a22;
   --surface: #222a35;
   --pane-head: #2f3946;
+  /* --bg reads as a trough under the top bar, so the strip sits halfway
+     between --field and --surface, which steps the top bar, strip, and pane
+     heads about as far apart as in the light theme. */
+  --guide-strip: color-mix(in srgb, var(--field) 50%, var(--surface));
+  /* A guide card's --surface fill all but matches the strip, so its edge
+     alone outlines the card. */
+  --chain-edge: color-mix(in srgb, var(--text) 28%, var(--line));
   /* As light as --control-border allows at 3:1, so a secondary button on the
      top bar reads as a control. */
   --raised: #3c4856;
