@@ -1591,7 +1591,8 @@ label {
   line-height: var(--line-height-body);
 }
 
-.step-does + :is(.step-where, .step-notes) {
+.step-does + :is(.step-where, .step-notes),
+.step-where + .step-notes {
   margin-top: calc(var(--space-1) + 2px);
 }
 
