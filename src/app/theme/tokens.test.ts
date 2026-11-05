@@ -28,6 +28,7 @@ const PAIRS: Pair[] = [
   ["raised-label", "raised", 6],
   ["map-legend-hidden", "raised", 4.5],
   ["map-legend-shown", "raised", 4.5],
+  ["map-legend-eye-shown", "raised", 3],
   // A shown legend row reads apart from a hidden one by its name's lightness alone.
   ["map-legend-shown", "map-legend-hidden", 1.5],
   ["overlay-heading", "raised", 6],

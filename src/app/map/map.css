@@ -1181,6 +1181,8 @@
   min-height: 32px;
   padding: 0 var(--space-3);
   border-radius: inherit;
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
   font-weight: var(--font-weight-bold);
   cursor: pointer;
 }
@@ -1192,8 +1194,6 @@
 .map-legend[open] > summary {
   border-bottom: 1px solid var(--raised-line);
   border-radius: var(--radius-float) var(--radius-float) 0 0;
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
 }
 
 .map-legend summary > svg {
@@ -1311,10 +1311,17 @@
   color: var(--muted);
 }
 
-.legend-row[aria-pressed="true"] :is(.legend-name, svg),
-.legend-filter[aria-pressed="true"] :is(.legend-name, svg),
-.legend-step:not(.off) :is(.legend-name, svg) {
+.legend-row[aria-pressed="true"] .legend-name,
+.legend-filter[aria-pressed="true"] .legend-name,
+.legend-step:not(.off) .legend-name {
   color: var(--map-legend-shown);
+}
+
+.legend-row[aria-pressed="true"] svg,
+.legend-filter[aria-pressed="true"] svg,
+.legend-step:not(.off) svg,
+.legend-heading .ui-button:is([aria-pressed="true"], [aria-pressed="mixed"]):not(:disabled) svg {
+  color: var(--map-legend-eye-shown);
 }
 
 .legend-row[aria-pressed="false"] :is(.legend-name, .legend-count),

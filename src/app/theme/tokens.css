@@ -36,6 +36,9 @@
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
   --map-legend-shown: var(--text);
+  /* A shown eye takes the color of an open toggle, so a shown row reads
+     apart from a hidden one at a glance in a long list. */
+  --map-legend-eye-shown: var(--accent);
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
