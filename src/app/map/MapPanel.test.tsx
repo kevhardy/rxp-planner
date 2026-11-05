@@ -788,6 +788,17 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
+    it("sets shown names at regular weight, under the bold group heading", async () => {
+      await mountGuide();
+      const weight = (el: Element | null): string | undefined =>
+        el ? (cascade(el, "font-weight")?.value ?? weight(el.parentElement)) : undefined;
+      expect([
+        weight(screen.getByRole("heading", { name: "Services" })),
+        weight(row("Innkeepers").querySelector(".legend-name")),
+        weight(row("Battlemasters").querySelector(".legend-name")),
+      ]).toEqual(["var(--font-weight-bold)", "var(--font-weight-regular)", "var(--font-weight-regular)"]);
+    });
+
     it("draws the shape of a plain point's group beside the group's heading, and other rows with their sprite", async () => {
       await mountGuide();
       const heading = screen.getByRole("heading", { name: "Services" });
