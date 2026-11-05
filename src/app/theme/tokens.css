@@ -31,7 +31,7 @@
   /* Halfway to --surface, so an empty map does not draw the eye as the
      darkest block on the page. A tint of the sea reads as a map with no
      guide, not as a blank pane. */
-  --map-empty: color-mix(in srgb, var(--map-backdrop) 25%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
+  --map-empty: color-mix(in srgb, var(--map-backdrop) 15%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
   /* A hidden legend row keeps a readable name, so its dimmed swatch and
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
