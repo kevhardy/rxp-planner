@@ -31,6 +31,7 @@
   /* A hidden legend row keeps a readable name, so its dimmed swatch and
      crossed eye carry the off state. */
   --map-legend-hidden: var(--muted);
+  --map-legend-shown: var(--text);
   /* The heading of a group of rows in a float list, such as the legend and
      Warnings. */
   --overlay-heading: var(--raised-label);
@@ -172,6 +173,9 @@
   /* On the dark --raised, --muted reads as more than one step below a shown
      name, and --raised-label reads too close to it. */
   --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
+  /* On the dark --raised, a shown name in --text reads too close to a hidden
+     one. */
+  --map-legend-shown: #fff;
   /* --raised-label on the dark --raised reads too close to the rows below it. */
   --overlay-heading: var(--text);
   /* A data URL cannot read a token, so it repeats this theme's `--text`. */
@@ -384,7 +388,7 @@
   );
   --font-size-map-step: 12px;
   --line-height-map-step: 1;
-  --font-size-map-label: 12px;
+  --font-size-map-label: 13px;
   --line-height-map-label: 16px;
 
   --stack-two: #36c3dc;
