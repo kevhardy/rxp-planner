@@ -271,6 +271,11 @@ it.each(["light", "dark"] as const)("draws the %s --chain-card at 1.29:1 or more
   expect(contrast(color(theme, "chain-card"), color(theme, "guide-strip"))).toBeGreaterThanOrEqual(1.29);
 });
 
+// The strip parts the top bar from the pane heads below it. Under 3 L* below --pane-head, the two read as one band.
+it("puts the light --guide-strip 5 L* or more below --pane-head", () => {
+  expect(lightness(color("light", "pane-head")) - lightness(color("light", "guide-strip"))).toBeGreaterThanOrEqual(5);
+});
+
 // The fold has no outline of its own, so lightness alone parts it from the sheet. 3 L*, the step that keeps two dark
 // bands apart, keeps it readable.
 it("draws the note's fold 3 L* or more lighter than the top of its sheet", () => {
