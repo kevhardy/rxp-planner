@@ -21,6 +21,9 @@
 }
 
 .map-body {
+  /* A plain point's rim is an ink copy of its shape at this scale, which
+     reaches about 1px past each side of a 10px shape. */
+  --dot-rim-scale: 1.22;
   --pin: var(--map-step);
   --step-previous: var(--kind-command);
   --step-upcoming: var(--map-step-upcoming);
@@ -220,25 +223,29 @@
 }
 
 /* A plain point's group shows by its shape as well as its color. The map and
-   the legend draw the same dot. */
+   the legend draw the same dot. Each shape is drawn in a 14px box around a
+   10px dot and covers about 80px², so the diamond and the triangle reach past
+   the dot to weigh the same as the square. */
 .poi-services {
   --dot: var(--map-dot-services);
-  --dot-shape: circle(50%);
+  --dot-shape: circle(5px);
 }
 
 .poi-vendors {
   --dot: var(--map-dot-vendors);
-  --dot-shape: inset(0.5px round 1px);
+  --dot-shape: inset(2.5px round 1px);
 }
 
 .poi-trainers {
   --dot: var(--map-dot-trainers);
-  --dot-shape: polygon(50% -6%, 106% 50%, 50% 106%, -6% 50%);
+  --dot-shape: polygon(7px 0.7px, 13.3px 7px, 7px 13.3px, 0.7px 7px);
 }
 
 .poi-supplies {
   --dot: var(--map-dot-supplies);
-  --dot-shape: path("M3.1 0.9Q4 -0.5 4.9 0.9L7.7 6.2Q8.4 7.6 6.8 7.6H1.2Q-0.4 7.6 0.3 6.2Z");
+  --dot-shape: path("M6.34 1.5Q7 0.2 7.66 1.5L12.94 11.9Q13.6 13.2 12.3 13.2H1.7Q0.4 13.2 1.06 11.9Z");
+  /* The center of the triangle's inscribed circle, so its rim keeps one width on every side. */
+  --dot-middle: 7px 9.15px;
 }
 
 .map-overlay .poi.plain:hover {
@@ -249,39 +256,46 @@
    city's density, so they draw as dots. From this drawn width, a city's
    points sit about 24px apart, and the sprites return. */
 @container map-overlay (width < 16000px) {
-  /* The rim is a filter on the dot's box, because a box-shadow keeps to the
-     box and would not follow the shape that clips the color inside it. */
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
-    --size: 8px;
+    --size: 10px;
     position: relative;
     background: none;
     box-shadow: none;
-    filter: var(--art-dot-rim);
   }
 
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before,
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::after {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -2px;
     background: var(--dot);
     clip-path: var(--dot-shape);
   }
 
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after {
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
+    background: var(--art-ink);
+    scale: var(--dot-rim-scale);
+    transform-origin: var(--dot-middle, center);
+  }
+
+  .map-overlay .poi.plain:not(:hover, :focus-visible)::after {
     content: "";
     position: absolute;
     inset: -6px;
-    border-radius: inherit;
+    border-radius: var(--radius-round);
+    pointer-events: auto;
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
-    margin-left: 2px;
+    margin-left: var(--space-1);
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
-    translate: -4px -50%;
+    translate: -5px -50%;
   }
 }
 
@@ -457,6 +471,20 @@
   stroke-dasharray: none;
 }
 
+/* A round dot at each end, so a route reads as one that stops at a dock. */
+.map-overlay svg.routes .transport-end {
+  fill: none;
+  stroke: var(--map-transport);
+  stroke-width: 4px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-overlay svg.routes .transport-end.transport-casing {
+  stroke: var(--map-transport-casing);
+  stroke-width: 6px;
+}
+
 .map-overlay svg {
   position: absolute;
   inset: 0;
@@ -594,11 +622,11 @@
   place-items: center;
   width: 16px;
   height: 16px;
-  border: 1.5px solid var(--surface);
+  border: 1.5px solid var(--art-ink);
   border-radius: var(--radius-round);
   translate: -50% -50%;
   background: var(--pin);
-  color: var(--surface);
+  color: var(--art-ink);
   font-size: var(--font-size-mark);
   line-height: var(--line-height-mark);
   font-weight: var(--font-weight-bold);
@@ -617,7 +645,7 @@
 }
 
 .pin:hover:not(:disabled) {
-  border-color: var(--text);
+  border-color: var(--art-paper);
   background: var(--pin);
 }
 
@@ -637,7 +665,7 @@
 .pin-waypoint,
 .pin-waypoint:hover:not(:disabled) {
   border: 2px solid var(--pin);
-  background: var(--surface);
+  background: var(--art-ink);
   color: var(--pin);
 }
 
@@ -749,8 +777,12 @@
   translate: calc(-50% + 5px) calc(-50% - 14px);
 }
 
-/* A badge sits on its mark, so the mark's own coral ring is enough. */
+/* A badge sits on its mark, so the mark's own coral ring is enough. The
+   selected step's badge sits outside that ring, at `BADGE_OFFSET` in
+   pinNumbers.ts, and moves by --badge-x and --badge-y onto the corner of a
+   ringed mark near its point. */
 .playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint):not(.dot) {
+  translate: calc(-50% + 19px + var(--badge-x, 0px)) calc(-50% - 19px + var(--badge-y, 0px));
   box-shadow: none;
 }
 
@@ -1170,7 +1202,7 @@
   align-items: center;
   gap: var(--space-1);
   min-height: var(--control-small);
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   padding: 0 var(--space-2) 0 var(--space-3);
 }
 
@@ -1269,25 +1301,31 @@
 
 .legend-row .dot-swatch {
   position: relative;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: none;
   box-shadow: none;
-  filter: var(--art-dot-rim);
+}
+
+.legend-row .dot-swatch::before,
+.legend-row .dot-swatch::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: var(--dot);
+  clip-path: var(--dot-shape);
 }
 
 .legend-row .dot-swatch::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--dot);
-  clip-path: var(--dot-shape);
+  background: var(--art-ink);
+  scale: var(--dot-rim-scale);
+  transform-origin: var(--dot-middle, center);
 }
 
 .legend-row .spawn-swatch {
   border-radius: var(--radius-control);
   /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
-  background-image: conic-gradient(var(--objective-1) 0 33%, var(--objective-2) 0 67%, var(--objective-3) 0);
+  background-image: conic-gradient(var(--map-objective-1) 0 33%, var(--map-objective-2) 0 67%, var(--map-objective-3) 0);
 }
 
 /* The halo reaches 4.5px past the box, so the whole mark fills the swatch column. */
@@ -1339,9 +1377,8 @@
 }
 
 .legend-state {
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-caption);
-  font-style: italic;
   line-height: var(--line-height-caption);
 }
 
@@ -1371,7 +1408,7 @@
   flex: none;
   width: 12px;
   height: 12px;
-  border: 1.5px solid var(--surface);
+  border: 1.5px solid var(--art-ink);
   border-radius: var(--radius-round);
   background: var(--pin);
 }

@@ -49,8 +49,8 @@ const PAIRS: Pair[] = [
   ...on(["rxp-buy-swatch"], ["surface", "hover", "press"], 3),
   ...on(OBJECTIVES, ["surface", "raised", "selection", "map-terrain"], 3),
   ...OBJECTIVES.map((objective): Pair => [objective, "objective-tint", 3, { objective: `var(--${objective})` }]),
-  ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming"], ["map-terrain"], 3),
-  // A plain point's dot reads against its --art-dot-rim.
+  ...on(["map-enemy", "map-enemy-dead", "map-step-upcoming", ...OBJECTIVES.map((objective) => `map-${objective}`)], ["map-terrain"], 3),
+  // A plain point's dot reads against its --art-ink rim.
   ...on(["map-dot-vendors", "map-dot-trainers", "map-dot-supplies", "map-dot-services"], ["art-ink"], 3),
   // World labels read against the --art-ink rim of --art-label-outline, so the sea can be pale.
   ...on(["map-label", "map-label-strong"], ["art-ink", "map-sea"], 4.5),

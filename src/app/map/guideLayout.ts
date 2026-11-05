@@ -7,7 +7,7 @@ import type { Selection } from "../store.ts";
 import type { AreaRing } from "./areas.ts";
 import { slices, type Area, type Pin, type Shape, type Spawn } from "./MapCanvas.tsx";
 import type { StepShow } from "./mapSettings.ts";
-import { DRAG_COMMANDS, objectiveColor, questSpots, type Placed, type QuestSpot, type SpotObjective, type ViewPoint } from "./points.ts";
+import { DRAG_COMMANDS, mapObjectiveColor, questSpots, type Placed, type QuestSpot, type SpotObjective, type ViewPoint } from "./points.ts";
 import type { Surface } from "./surfaces.ts";
 
 const NEARBY = 10;
@@ -95,7 +95,7 @@ function objectiveSpawns(surface: Surface, spots: QuestSpot[], highlight: string
   const spawns: Spawn[] = [];
   const dots: Spawn[] = [];
   for (const [key, { at, objectives }] of places) {
-    const spawn = { key, at, colors: objectives.map((o) => objectiveColor(o.color)) };
+    const spawn = { key, at, colors: objectives.map((o) => mapObjectiveColor(o.color)) };
     spawns.push(spawn);
     if (objectives.some((o) => o.key === highlight)) dots.push(spawn);
   }
@@ -115,7 +115,7 @@ export function projectAreas(surface: Surface, areas: { key: string; color: numb
       })
       .map((ats) => `M${ats.map((at) => `${round(at.x)} ${round(at.y)}`).join("L")}Z`)
       .join("");
-    return d ? [{ key, color: objectiveColor(color), d }] : [];
+    return d ? [{ key, color: mapObjectiveColor(color), d }] : [];
   });
 }
 
@@ -208,7 +208,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
           at,
           kind: spot.kind,
           label: title,
-          ...(objectives.length > 0 && { fill: slices(objectives.map((o) => objectiveColor(o.color))) }),
+          ...(objectives.length > 0 && { fill: slices(objectives.map((o) => mapObjectiveColor(o.color))) }),
           ...(highlight !== null && objectives.length > 0 && !objectives.some((o) => o.key === highlight) && { fade: 0.12 }),
           ...(spot.kind !== "objective" && { icons: QUEST_ICONS[spot.kind] }),
           target: { spot, title },

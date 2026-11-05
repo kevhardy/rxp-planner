@@ -5,7 +5,7 @@ import { worldMap } from "../../data/terrainFixture.ts";
 import { parseGuide } from "../../guide/index.ts";
 import { guideLayout } from "./guideLayout.ts";
 import type { Pin } from "./MapCanvas.tsx";
-import { pinLooks } from "./pinNumbers.ts";
+import { clearOfMarks, pinLooks } from "./pinNumbers.ts";
 import { terrainSurface } from "./surfaces.ts";
 
 const pin = (text: string, rank: number, x: number, y = 0, kind: Pin["kind"] = "upcoming"): Pin => ({
@@ -100,9 +100,9 @@ it("joins a chip that a growing range comes to cover", () => {
 it("quiets a chip whose point is 20 px or less from a mark of the selected step, moves it clear of the mark's ring, and draws none under the mark", () => {
   const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
   const quest: Pin = { key: "quest", at: { x: 100, y: 0 }, kind: "start", label: "quest" };
-  // A chip keeps 24 px from a mark: its 16 px, the mark's 6 px ring, and the 2 px space.
+  // A chip keeps 26 px from a mark: its 16 px, the mark's 6 px ring, and the 4 px space.
   expect(looks([selected, quest, pin("6", 1, 18), pin("7", 2, 0, 30), pin("8", 3, 100, 10), pin("9", 4, 60)])).toEqual({
-    "6@18,0": { text: "6", near: true, at: { x: 24, y: 0 } },
+    "6@18,0": { text: "6", near: true, at: { x: 26, y: 0 } },
     "7@0,30": { text: "7", near: false },
     "8@100,10": null,
     "9@60,0": { text: "9", near: false },
@@ -113,7 +113,26 @@ it("puts the step of a pin under the selected step's mark in a chip close by", (
   const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
   expect(looks([selected, pin("6", 1, 2), pin("11", 6, 0, 19), pin("7", 2, 0, -2, "previous")])).toEqual({
     "6@2,0": null,
-    "11@0,19": { text: "6–11", near: true, at: { x: 0, y: 24 } },
+    "11@0,19": { text: "6–11", near: true, at: { x: 0, y: 26 } },
     "7@0,-2": null,
   });
+});
+
+it("moves a row of plain points clear of a mark of the selected step, and keeps a clear row in place", () => {
+  const marks = [{ x: 0, y: 0 }];
+  // A row's nearest point keeps 25 px from a mark: the mark's 8 px half and 6 px ring, the 4 px space, and the point's 7 px reach.
+  expect(clearOfMarks({ x: 14, y: 0 }, 2, marks, 1, 1)).toEqual({ x: 25, y: 0 });
+  // The second point sits 14 px right of the first, so a row left of the mark moves by the second point.
+  expect(clearOfMarks({ x: -30, y: 0 }, 2, marks, 1, 1)).toEqual({ x: -39, y: 0 });
+  const clear = { x: 0, y: 30 };
+  expect(clearOfMarks(clear, 3, marks, 1, 1)).toBe(clear);
+});
+
+it("moves a selected step's badge onto the corner of a ringed mark whose ring it would cover", () => {
+  const selected: Pin = { key: "here", at: { x: 0, y: 0 }, kind: "goto", label: "here", text: "5", rank: 0 };
+  // The badge draws 19 px right of and above its point, 21 px from a mark at (2, -7), under the 26 px of the mark's ring, the space, and the badge.
+  expect(looks([selected, { key: "quest", at: { x: 2, y: -7 }, kind: "start", label: "quest" }])).toEqual({
+    here: { text: "5", near: false, badge: { x: 2, y: -7 } },
+  });
+  expect(looks([selected, { key: "far", at: { x: 0, y: 60 }, kind: "start", label: "far" }])).toEqual({});
 });

@@ -264,7 +264,12 @@ export function MapCanvas(props: {
                 <MarkButton
                   label={pin.label}
                   at={at}
-                  vars={{ "--fade": pin.fade, "--fill": pin.fill }}
+                  vars={{
+                    "--fade": pin.fade,
+                    "--fill": pin.fill,
+                    "--badge-x": look?.badge && `${look.badge.x}px`,
+                    "--badge-y": look?.badge && `${look.badge.y}px`,
+                  }}
                   className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${look?.near ? " near" : ""}${pin.rank && !text ? " dot" : ""}`}
                   aria-describedby={pin.move ? hintId : undefined}
                   aria-haspopup={!pin.activate && pin.menu ? "menu" : undefined}
