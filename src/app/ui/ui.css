@@ -251,7 +251,7 @@ summary::-webkit-details-marker {
   border-block: 1px solid var(--control-border);
   border-inline-start: 1px solid var(--line);
   background: var(--raised);
-  color: var(--muted);
+  color: var(--text);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
   white-space: nowrap;
@@ -733,11 +733,6 @@ summary::-webkit-details-marker {
 
 :is(.ui-heading, .ui-text)[data-tone="muted"] {
   color: var(--muted);
-}
-
-:is(.ui-heading, .ui-text)[data-size="micro"] {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
 }
 
 :is(.ui-heading, .ui-text)[data-size="small"] {

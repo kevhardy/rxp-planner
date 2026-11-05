@@ -357,7 +357,7 @@ function QuestsPanel(props: Simulated & { profile: Profile; onAdd: (s: QuestSugg
         if (rows.length === 0) return null;
         return (
           <section key={kind} className="add-group" aria-labelledby={`${id}-${kind}`}>
-            <Heading level={3} size="micro" tone="muted" id={`${id}-${kind}`}>
+            <Heading level={3} size="small" tone="muted" id={`${id}-${kind}`}>
               {title}
             </Heading>
             <ul>

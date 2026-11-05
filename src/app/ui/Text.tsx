@@ -1,6 +1,6 @@
 import { createElement, type ReactNode } from "react";
 
-export type TypeStep = "micro" | "small" | "body" | "pane-title" | "title";
+export type TypeStep = "small" | "body" | "pane-title" | "title";
 
 export type Tone = "muted";
 

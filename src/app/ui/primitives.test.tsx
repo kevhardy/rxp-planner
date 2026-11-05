@@ -385,6 +385,11 @@ describe("each primitive", () => {
     expect(winners).toEqual(new Set(important));
   });
 
+  it("labels an unpressed segment in --text, like the other available buttons, so it does not read as disabled", () => {
+    gallery();
+    expect(["Segment", "Secondary"].map((name) => cascade(named(name), "color")?.value)).toEqual(["var(--text)", "var(--text)"]);
+  });
+
   it("positions each item and art, so its ::after hit area sizes on the button and not on a pane", () => {
     gallery();
     expect(["Item", "Art"].map((name) => cascade(named(name), "position")?.value)).toEqual(["relative", "relative"]);
