@@ -211,10 +211,12 @@
      half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
   --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
   --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
-  /* The grey fill of the speech bubbles and the note sheet reads as a smudge
-     on the dark page. The lift brings its brightest pixels to the contrast
-     of the quest marks, where a lighter rim would frame every icon. */
-  --ring-guide-icon-pale: brightness(1.25) var(--ring-guide-icon);
+  /* The note sheet's light fold is the brightest pixel of the pale icons.
+     This dims the fold to the contrast of --muted on the dark page, so the
+     icons sit below the step text. It also puts the bubble fill at about the
+     same share of --muted's contrast as in the light theme. The dark outline
+     and the rim keep the bubble's shape. */
+  --ring-guide-icon-pale: brightness(0.8) var(--ring-guide-icon);
   --ring-guide-icon-vivid: var(--ring-guide-icon);
   /* On the dark page, a deep icon's dark fills and outline sit near the page
      color, so a strong lift brings out its shape, and the contrast step
