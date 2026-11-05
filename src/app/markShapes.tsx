@@ -45,7 +45,8 @@ const SHAPES: Partial<Record<MarkKind, ReactNode>> = {
       />
     </>
   ),
-  note: <path d="M4.5 5h7M4.5 8h7M4.5 11h4" />,
+  // The sheet in `.mk-note` draws its own lines.
+  note: null,
   tag: <path d="m6.5 3.5-1 9M10.5 3.5l-1 9M3.75 6.25h8.5M3.75 9.75h8.5" />,
   checkpoint: <path d="M4 3.5h8M8 12.5V6.5M5 9.5l3-3 3 3" />,
   path: other,
