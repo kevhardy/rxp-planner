@@ -2855,6 +2855,8 @@ legend {
 }
 
 .warn-guide > summary {
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
   font-weight: var(--font-weight-bold);
 }
 
