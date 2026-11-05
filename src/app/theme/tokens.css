@@ -80,7 +80,7 @@
   --disabled-bg: #dde3ea;
   --disabled-fg: #8893a1;
 
-  --warn: #825800;
+  --warn: #915500;
   --danger: #b42318;
   --danger-fg: #fff;
   --ok: #13703a;
@@ -102,8 +102,8 @@
   --rxp-enemy: #b42318;
   --rxp-friendly: #13703a;
   --rxp-loot: #1f5fc2;
-  --rxp-warn: #825800;
-  --rxp-buy: #334c00;
+  --rxp-warn: var(--warn);
+  --rxp-buy: #375602;
   --rxp-pick: #a3218f;
   /* Text needs the dark BUY above, which reads as black in an 8px dot. */
   --rxp-buy-swatch: #5a8a00;
