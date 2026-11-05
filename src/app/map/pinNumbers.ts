@@ -11,10 +11,15 @@ const DIGIT_WIDTH = 7;
 // when the chip draws quieter, and how close it sits to a pin under that mark
 // when it takes in the pin's step.
 const NEAR = 20;
-// The space between two drawn chips, so that they never read as a stack.
-// Placed chips keep it between their boxes, because two pills whose round ends
-// nest on a diagonal read as touching.
+// Two chips of a kind closer than this, between their outlines, join.
 const CLEAR = 2;
+// The visible space that placed chips keep between their boxes, so that they
+// never read as a stack. Two pills whose round ends nest on a diagonal read as
+// touching, so the boxes keep it and not the outlines.
+const BOX_CLEAR = 4;
+// A step pin in map.css draws 1px larger than `PIN_SIZE` each way: 17px tall,
+// and at least 17px wide.
+const STEP_PIN_SIZE = 17;
 // A mark of the selected step reaches past a pin's size by its 4.5px ring in
 // map.css, and by 1px more for an 18px quest icon.
 const MARK_EDGE = 6;
@@ -70,7 +75,9 @@ const drawn = (c: Chip): Spot => ({ ...c, bar: barOf(chipText(c)) });
 const gap = (a: Spot, b: Spot) => Math.hypot(Math.max(0, Math.abs(a.x - b.x) - (a.bar + b.bar) / 2), a.y - b.y);
 const overlaps = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE;
 const crowds = (a: Spot, b: Spot) => gap(a, b) < PIN_SIZE + CLEAR;
-const boxesClear = (a: Spot, b: Spot) => Math.max(Math.abs(a.x - b.x) - (a.bar + b.bar) / 2, Math.abs(a.y - b.y)) >= PIN_SIZE + CLEAR;
+const stepPinWidth = (s: Spot) => Math.max(STEP_PIN_SIZE, PIN_SIZE + s.bar);
+const boxesClear = (a: Spot, b: Spot) =>
+  Math.max(Math.abs(a.x - b.x) - (stepPinWidth(a) + stepPinWidth(b)) / 2, Math.abs(a.y - b.y) - STEP_PIN_SIZE) >= BOX_CLEAR;
 
 /**
  * Where a ringed mark draws so that its ring clears the character at `stand` by `MARK_CLEAR`: straight away from the

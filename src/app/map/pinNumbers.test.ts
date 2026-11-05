@@ -50,18 +50,33 @@ it("draws no other step's pin under the selected step's pins, and every number a
   });
 });
 
-it("spaces two-digit pins by their wider bar, and one-digit pins as circles, with 2 px between them", () => {
+it("joins two pins of a kind whose outlines come within 2 px, measuring a two-digit pin by its wider bar", () => {
   // At 1 px a percent: two 20px bars 20px apart leave 16 px between their outlines, under a pin's 16 px and the 2 px space; 22 px apart, they clear.
   expect(looks([pin("11", 6, 0), pin("12", 7, 20)])).toEqual({ "11@0,0": { text: "11–12", near: false }, "12@20,0": null });
+  // Their 20px boxes then leave 2 px, so "12" moves 2 px right to leave 4 px.
   expect(looks([pin("11", 6, 0), pin("12", 7, 22)])).toEqual({
     "11@0,0": { text: "11", near: false },
-    "12@22,0": { text: "12", near: false },
+    "12@22,0": { text: "12", near: false, at: { x: 24, y: 0 } },
   });
-  expect(looks([pin("6", 1, 0), pin("7", 2, 18)])).toEqual({ "6@0,0": { text: "6", near: false }, "7@18,0": { text: "7", near: false } });
-  // The round ends clear on a diagonal, so the pins stay apart, but the boxes' corners would touch, so "7" moves 5 px right to leave 2 px between the boxes.
+});
+
+it("keeps 4 px between the boxes of placed chips, which draw 17 px tall and at least 17 px wide", () => {
+  expect(looks([pin("11", 6, 0), pin("12", 7, 24)])).toEqual({
+    "11@0,0": { text: "11", near: false },
+    "12@24,0": { text: "12", near: false },
+  });
+  expect(looks([pin("6", 1, 0), pin("7", 2, 18)])).toEqual({
+    "6@0,0": { text: "6", near: false },
+    "7@18,0": { text: "7", near: false, at: { x: 21, y: 0 } },
+  });
+  // The round ends clear on a diagonal, but the boxes' corners would touch.
   expect(looks([pin("6", 1, 0), pin("7", 2, 13, 13)])).toEqual({
     "6@0,0": { text: "6", near: false },
-    "7@13,13": { text: "7", near: false, at: { x: 18, y: 13 } },
+    "7@13,13": { text: "7", near: false, at: { x: 21, y: 13 } },
+  });
+  expect(looks([pin("6", 1, 0), pin("7", 2, 0, 20)])).toEqual({
+    "6@0,0": { text: "6", near: false },
+    "7@0,20": { text: "7", near: false, at: { x: 0, y: 21 } },
   });
 });
 
@@ -78,10 +93,10 @@ it("draws a crowded run as one chip at the nearest step, with the run's step ran
 });
 
 it("moves a chip of another kind to the nearest free place, and draws none where no place is free", () => {
-  // The "4" circle needs 18 px from the "6" circle 4 px away, so it moves 14 px right.
+  // The "4" box needs 21 px from the "6" box 4 px away, so it moves 17 px right.
   expect(looks([pin("6", 1, 0), pin("4", 1, 4, 0, "previous")])).toEqual({
     "6@0,0": { text: "6", near: false },
-    "4@4,0": { text: "4", near: false, at: { x: 18, y: 0 } },
+    "4@4,0": { text: "4", near: false, at: { x: 21, y: 0 } },
   });
   const ring = [-36, -18, 0, 18, 36].flatMap((x) => [-36, -18, 0, 18, 36].map((y) => pin("6", 1, x, y)));
   expect(looks([...ring, pin("4", 2, 0, 0, "previous")])["4@0,0"]).toBeNull();
