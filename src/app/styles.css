@@ -84,9 +84,9 @@ a {
   right: -2px;
   bottom: -2px;
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
   text-shadow: var(--art-text-halo);
 }
 
@@ -1054,13 +1054,13 @@ label {
 }
 
 .lib-row:hover {
-  background: var(--hover);
+  background: var(--lib-row-hover);
 }
 
 /* Only the open guide takes the selection fill. A focused row, such as a
    group just folded open, keeps the hover fill. */
 .lib-row:focus-within:not(.current) {
-  background: var(--hover);
+  background: var(--lib-row-hover);
 }
 
 .lib-row.current {
@@ -1566,9 +1566,28 @@ label {
   vertical-align: -2px;
 }
 
+/* As in an inventory mark, the art draws at 19/16 of the box so its dark
+   frame falls outside, and the outline gives the art a light edge. */
+:is(.row-text, .playback-title-text) .guide-icon.framed {
+  --crop-w: calc(var(--box-w) * 19 / 16);
+  --crop-h: calc(var(--box-h) * 19 / 16);
+  background-image: var(--guide-icon-outline), var(--rxp-guide-icons, none);
+  background-size:
+    100% 100%,
+    calc(var(--crop-w) * var(--sheet-w)) calc(var(--crop-h) * var(--sheet-h));
+  background-position:
+    0 0,
+    calc(var(--crop-w) * var(--cell-x) - var(--box-w) * 3 / 32) calc(var(--crop-h) * var(--cell-y) - var(--box-h) * 3 / 32);
+  box-shadow: none;
+}
+
 .step-does {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+}
+
+.step-does + :is(.step-where, .step-notes) {
+  margin-top: var(--space-1);
 }
 
 .step-notes {
@@ -1688,16 +1707,14 @@ label {
   border-radius: var(--radius-control);
   background: var(--primary-bg);
   color: var(--primary-fg);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
 }
 
 .step-side .level-mark {
   margin: 0;
   padding: 0 var(--space-1);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
 }
 
 .header-row .step-no {
@@ -2022,8 +2039,8 @@ label {
   border-radius: var(--radius-control);
   background: var(--bg);
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   vertical-align: 1px;
   cursor: default;
   user-select: all;
@@ -2290,22 +2307,13 @@ label {
   margin-top: var(--space-4);
 }
 
+/* The columns of the fields above: 128px wide, 16px apart. Mob spans two. */
 .sim-kill-fields {
   display: grid;
-  grid-template-columns: auto minmax(0, 320px) auto;
+  grid-template-columns: 128px minmax(0, 272px) auto;
   justify-content: start;
   align-items: start;
   gap: var(--space-3) var(--space-4);
-}
-
-/* A count holds a few digits, but a placeholder such as "Automatic" needs
-   the wider field. */
-.sim-kill-fields .arg-short .ui-input {
-  width: 64px;
-}
-
-.sim-kill-fields .arg-short .ui-input[placeholder] {
-  width: 112px;
 }
 
 .sim-kill-xp {
@@ -2777,10 +2785,10 @@ legend {
   }
 }
 
-/* The taller first layer pushes the end of the fade below the list, so the
-   last row fades only part way and does not read as disabled. The second
-   layer is the opaque top of the same gradient, over the scrollbar, so the
-   scrollbar does not fade. */
+/* The list ends `STRIP` in WarningsPanel.tsx below a whole row. The taller
+   first layer starts the fade under the text of that row, so the fade
+   covers only the space below it. The second layer is the opaque top of the
+   same gradient, over the scrollbar, so the scrollbar does not fade. */
 .warnings-body[data-clipped] {
   mask-image: var(--mask-fade-end), var(--mask-fade-end);
   mask-position:
@@ -2788,7 +2796,7 @@ legend {
     top right;
   mask-repeat: no-repeat;
   mask-size:
-    100% calc(100% + var(--space-2)),
+    100% calc(100% + var(--space-3)),
     8px 200%;
 }
 

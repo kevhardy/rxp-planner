@@ -54,12 +54,15 @@
   /* The current segment or tab, on a bar that a selected row never sits on. */
   --selection-on-bar: var(--selection);
   --press: #d7e1ed;
+  /* --hover sits too close to --surface for the band of a hovered or
+     focused Library row to show on a light page. */
+  --lib-row-hover: var(--press);
 
   /* The progress arcs carry the level, so a pale track keeps the ring
      below the step title in weight. */
   --level-track: #b6bfca;
   --level-before: var(--control-border);
-  --level-earned: var(--text);
+  --level-earned: var(--accent);
 
   --accent: #3f6690;
   --pop: #d9473a;
@@ -182,12 +185,13 @@
      it needs 3:1, which caps how light it goes. */
   --selection-on-bar: #314d6b;
   --press: #1e2c3f;
+  --lib-row-hover: var(--hover);
 
   /* On a dark page a ring in --text reads as a bright circle beside the
-     title, so no part of the ring is lighter than --control-border. */
-  --level-track: #75859b;
-  --level-before: var(--level-track);
-  --level-earned: var(--control-border);
+     title, so the arcs stay well below --text, and the track sits dark
+     enough under the earned arc for 3:1. */
+  --level-track: #44526a;
+  --level-before: #75859b;
 
   --accent: #82a6cd;
   --pop: #ff6b5a;
