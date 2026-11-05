@@ -26,6 +26,9 @@
      darkest block on the page. */
   --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
   --map-legend-hidden: var(--muted);
+  /* The chevron icon in --muted, under a list that scrolls on. A data URL
+     cannot read a token, so it repeats this theme's `--muted`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234c5868' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -158,6 +161,8 @@
   --map-empty: color-mix(in srgb, var(--bg) 75%, var(--surface));
   /* Plain --muted loses definition on the dark --raised. */
   --map-legend-hidden: color-mix(in srgb, var(--muted) 50%, var(--raised-label));
+  /* A data URL cannot read a token, so it repeats this theme's `--muted`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23aab6c5' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 6 5 5 5-5'/%3E%3C/svg%3E");
 
   /* A data URL cannot read a token, so it repeats this theme's
      `--control-border`. */
@@ -358,7 +363,7 @@
   --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
   --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
   --map-step-near-text: var(--map-label);
-  --map-legend-fade: linear-gradient(transparent, var(--raised-line));
+  --more-fade: linear-gradient(transparent, var(--raised-line));
   --font-size-map-step: 12px;
   --line-height-map-step: 1;
   --font-size-map-label: 12px;

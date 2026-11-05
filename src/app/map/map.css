@@ -1204,14 +1204,18 @@
    covers no text. */
 .legend-body {
   overflow: auto;
-  border-bottom: var(--space-3) solid transparent;
+  border-bottom: var(--space-4) solid transparent;
   border-radius: 0 0 var(--radius-float) var(--radius-float);
   scrollbar-width: thin;
   scrollbar-color: var(--control-border) transparent;
 }
 
+/* Matches .warnings-body[data-clipped], so both lists say alike that rows
+   lie below, with no scrollbar. */
 .legend-body[data-clipped] {
-  background: var(--map-legend-fade) bottom / 100% var(--space-3) no-repeat border-box;
+  background:
+    var(--more-chevron) center bottom 2px / 12px no-repeat border-box,
+    var(--more-fade) bottom / 100% var(--space-4) no-repeat border-box;
 }
 
 .legend-body :focus-visible {
