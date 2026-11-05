@@ -219,20 +219,26 @@
   --size: 18px;
 }
 
-.map-overlay .poi-vendors {
-  --dot: var(--map-dot-vendors);
-}
-
-.map-overlay .poi-trainers {
-  --dot: var(--map-dot-trainers);
-}
-
-.map-overlay .poi-supplies {
-  --dot: var(--map-dot-supplies);
-}
-
-.map-overlay .poi-services {
+/* A plain point's group shows by its shape as well as its color. The map and
+   the legend draw the same dot. */
+.poi-services {
   --dot: var(--map-dot-services);
+  --dot-shape: circle(50%);
+}
+
+.poi-vendors {
+  --dot: var(--map-dot-vendors);
+  --dot-shape: inset(0.5px round 1px);
+}
+
+.poi-trainers {
+  --dot: var(--map-dot-trainers);
+  --dot-shape: polygon(50% -6%, 106% 50%, 50% 106%, -6% 50%);
+}
+
+.poi-supplies {
+  --dot: var(--map-dot-supplies);
+  --dot-shape: path("M3.1 0.9Q4 -0.5 4.9 0.9L7.7 6.2Q8.4 7.6 6.8 7.6H1.2Q-0.4 7.6 0.3 6.2Z");
 }
 
 .map-overlay .poi.plain:hover {
@@ -243,12 +249,24 @@
    city's density, so they draw as dots. From this drawn width, a city's
    points sit about 24px apart, and the sprites return. */
 @container map-overlay (width < 16000px) {
+  /* The rim is a filter on the dot's box, because a box-shadow keeps to the
+     box and would not follow the shape that clips the color inside it. */
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
   .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
-    --size: 7px;
+    --size: 8px;
     position: relative;
+    background: none;
+    box-shadow: none;
+    filter: var(--art-dot-rim);
+  }
+
+  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
+  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: var(--dot);
-    box-shadow: var(--art-dot-rim);
+    clip-path: var(--dot-shape);
   }
 
   .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after {
@@ -263,7 +281,7 @@
   }
 
   .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
-    translate: -3.5px -50%;
+    translate: -4px -50%;
   }
 }
 
@@ -638,9 +656,18 @@
   pointer-events: none;
 }
 
+/* The step list marks the selected step in coral, so its pins and quest
+   marks on the map take the same coral. */
+.pin-goto,
+.pin-waypoint,
+.pin-start,
+.pin-end,
+.pin-both {
+  box-shadow: var(--art-selected-ring);
+}
+
 .pin.selected {
   z-index: 1;
-  box-shadow: var(--art-icon-halo-marked);
 }
 
 .pin-start,
@@ -685,8 +712,16 @@
   opacity: 1;
 }
 
-.pin.near {
-  opacity: 0.5;
+.pin-previous.near,
+.pin-previous.near:hover:not(:disabled) {
+  background: var(--map-step-near-previous-fill);
+  color: var(--map-step-near-text);
+}
+
+.pin-upcoming.near,
+.pin-upcoming.near:hover:not(:disabled) {
+  background: var(--map-step-near-upcoming-fill);
+  color: var(--map-step-near-text);
 }
 
 .pin.dot,
@@ -712,6 +747,11 @@
 
 .playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint, .pin-previous, .pin-upcoming):not(.dot) {
   translate: calc(-50% + 5px) calc(-50% - 14px);
+}
+
+/* A badge sits on its mark, so the mark's own coral ring is enough. */
+.playback-stage .map-overlay .pin:is(.pin-goto, .pin-waypoint):not(.dot) {
+  box-shadow: none;
 }
 
 .playback-stage .map-overlay .poi.named {
@@ -1227,6 +1267,23 @@
   box-shadow: var(--ring-control);
 }
 
+.legend-row .dot-swatch {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background: none;
+  box-shadow: none;
+  filter: var(--art-dot-rim);
+}
+
+.legend-row .dot-swatch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--dot);
+  clip-path: var(--dot-shape);
+}
+
 .legend-row .spawn-swatch {
   border-radius: var(--radius-control);
   /* stylelint-disable-next-line function-disallowed-list -- split: objective colors */
@@ -1317,6 +1374,15 @@
   border: 1.5px solid var(--surface);
   border-radius: var(--radius-round);
   background: var(--pin);
+}
+
+/* The ring reaches 4.5px past the box, so the whole mark fills the swatch column. */
+.step-swatch.selected {
+  width: calc(var(--legend-mark) - 9px);
+  height: calc(var(--legend-mark) - 9px);
+  border: 0;
+  outline: none;
+  box-shadow: var(--art-selected-ring);
 }
 
 .step-swatch.optional {

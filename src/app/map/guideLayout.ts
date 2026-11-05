@@ -29,7 +29,8 @@ interface StepLook {
   dot?: boolean;
 }
 
-const BEYOND_FADE = 0.35;
+// Faint under the next step's 0.8, but strong enough that a later path still shows on green terrain.
+const BEYOND_FADE = 0.5;
 
 function stepLook(d: number, steps: Pick<LayoutInput, "previousSteps" | "upcomingSteps" | "numberedAhead">): StepLook | undefined {
   if (d === 0) return { side: "selected", fade: 1 };

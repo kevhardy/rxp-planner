@@ -10,6 +10,8 @@ import type { Frame, Spawn } from "./MapCanvas.tsx";
 import { MapIconImage } from "./MapIconImage.tsx";
 import { PopoverMenu } from "./PopoverMenu.tsx";
 import {
+  CATEGORIES,
+  drawsAsDot,
   LAYERS,
   layerCategories,
   showsCategory,
@@ -95,17 +97,20 @@ export function MapLegend(props: {
     };
   }, []);
 
-  const row = (id: CategoryId, name: string) => (
-    <LegendRow
-      key={id}
-      name={name}
-      icon={categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
-      iconClass={SWATCHES[id]}
-      count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
-      on={shows(id)}
-      onToggle={() => store.setCategories([id], !shows(id))}
-    />
-  );
+  const row = (id: CategoryId, name: string) => {
+    const dot = drawsAsDot(CATEGORIES[id], id);
+    return (
+      <LegendRow
+        key={id}
+        name={name}
+        icon={categories.has(id) && !dot ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
+        iconClass={dot ? `dot-swatch poi-${CATEGORIES[id]}` : SWATCHES[id]}
+        count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
+        on={shows(id)}
+        onToggle={() => store.setCategories([id], !shows(id))}
+      />
+    );
+  };
   return (
     <details
       className="map-legend"

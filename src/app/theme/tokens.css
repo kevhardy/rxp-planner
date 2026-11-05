@@ -326,6 +326,11 @@
   --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 65%, var(--art-ink));
   --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 55%, var(--art-ink));
   --map-step-rim: var(--art-ink);
+  /* A chip by the selected step's marks draws quieter: a grayer fill and a
+     softer numeral, still opaque so terrain does not show through. */
+  --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
+  --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
+  --map-step-near-text: var(--map-label);
   --font-size-map-step: 11px;
   --line-height-map-step: 1;
 
@@ -378,8 +383,13 @@
   --art-focus-halo:
     0 0 0 2px color-mix(in srgb, var(--art-paper) 85%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--art-paper) 85%, transparent);
   --art-icon-halo: 0 0 0 1px color-mix(in srgb, var(--art-ink) 45%, transparent);
-  --art-dot-rim: 0 0 0 1px var(--art-ink);
+  --art-dot-rim: var(--art-focus-edge);
   --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+  /* The selection coral on the map, which draws the same in both modes. It
+     is the dark --pop lifted toward paper until it keeps 3:1 on terrain dark
+     enough to hide the ink casing around it. */
+  --art-pop: #ff958a;
+  --art-selected-ring: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-pop), 0 0 0 4.5px var(--art-ink);
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
   --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
