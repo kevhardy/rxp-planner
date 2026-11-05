@@ -195,6 +195,7 @@ describe("each primitive", () => {
           onChange={() => {}}
         />
         <Segmented label="Size" size={32} value={null} options={[{ value: "a", label: "Large segment" }]} onChange={() => {}} />
+        <Segmented label="Quiet" quiet value="a" options={[{ value: "a", label: "Quiet on segment" }]} onChange={() => {}} />
         <MenuItem>Menu item</MenuItem>
         <MenuItem disabled>Disabled menu item</MenuItem>
         <Tab selected={false} controls="p">
@@ -304,7 +305,7 @@ describe("each primitive", () => {
     ["Segment", "hover", "background", "var(--hover)"],
     ["Segment", "hover", "color", "var(--text)"],
     ["Segment", "press", "background", "var(--press)"],
-    ["On segment", "rest", "background", "var(--segment-pressed-fill, var(--selection-on-bar))"],
+    ["On segment", "rest", "background", "var(--selection-on-bar)"],
     ["On segment", "press", "background", "var(--press)"],
     ["On segment", "rest", "border-block-end-color", "var(--pop)"],
     ["On segment", "rest", "border-end-start-radius", "0"],
@@ -312,6 +313,13 @@ describe("each primitive", () => {
     ["On segment", "rest", "box-shadow", "var(--ink-bar-bottom)"],
     ["On segment", "rest", "color", "var(--text)"],
     ["On segment", "rest", "font-weight", "var(--font-weight-bold)"],
+    ["Quiet on segment", "rest", "background", "var(--raised)"],
+    ["Quiet on segment", "press", "background", "var(--press)"],
+    ["Quiet on segment", "rest", "border-block-end-color", "var(--control-border)"],
+    ["Quiet on segment", "rest", "border-end-start-radius", "var(--radius-control)"],
+    ["Quiet on segment", "rest", "border-end-end-radius", "var(--radius-control)"],
+    ["Quiet on segment", "rest", "box-shadow", "none"],
+    ["Quiet on segment", "rest", "font-weight", "var(--font-weight-bold)"],
 
     ["Menu item", "hover", "background", "var(--hover)"],
     ["Menu item", "focus", "background", "var(--hover)"],

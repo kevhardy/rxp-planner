@@ -188,7 +188,7 @@ function TopBar(props: {
         </span>
         <span className="sr-only">RXP Planner</span>
       </h1>
-      <ModeSwitch />
+      <ModeSwitch quiet={props.libraryOpen} />
       <Described text="Your guides and RestedXP's built-in guides">
         <Button
           ref={props.libraryButton}
@@ -255,13 +255,14 @@ function Logo() {
   );
 }
 
-function ModeSwitch() {
+function ModeSwitch(props: { quiet: boolean }) {
   const store = useLayoutStore();
   const { mode } = useLayout();
   return (
     <Segmented
       label="Mode"
       size={32}
+      quiet={props.quiet}
       value={mode}
       onChange={(m) => store.update({ mode: m })}
       options={[

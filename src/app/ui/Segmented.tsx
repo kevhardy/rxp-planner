@@ -14,6 +14,7 @@ export function Segmented<T extends string | null>(props: {
   options: ReadonlyArray<Segment<T>>;
   onChange: (value: T) => void;
   size?: ControlSize;
+  quiet?: boolean;
   className?: string;
   style?: never;
   "aria-pressed"?: never;
@@ -25,6 +26,7 @@ export function Segmented<T extends string | null>(props: {
       role="group"
       aria-label={props.label}
       data-size={size}
+      data-quiet={props.quiet || undefined}
     >
       {props.options.map((option) => (
         <button

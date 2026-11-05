@@ -293,10 +293,27 @@ summary::-webkit-details-marker {
   font-weight: var(--font-weight-bold) !important;
 }
 
-/* A caller sets --segment-pressed-fill to quiet the current segment when
-   another control in its bar is the stronger cue. */
 .ui-segment[aria-pressed="true"]:where(:not(:active)) {
-  background: var(--segment-pressed-fill, var(--selection-on-bar)) !important;
+  background: var(--selection-on-bar) !important;
+}
+
+/* In a quiet group, another control in the bar is the active one, so the
+   current segment keeps only its bold label. */
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"] {
+  border-block-end-color: var(--control-border) !important;
+  box-shadow: none !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:where(:not(:active)) {
+  background: var(--raised) !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:first-child {
+  border-end-start-radius: var(--radius-control) !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:last-child {
+  border-end-end-radius: var(--radius-control) !important;
 }
 
 .ui-segment:focus-visible {
