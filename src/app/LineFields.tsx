@@ -412,7 +412,10 @@ function TextForm(props: { line: TextLine; replace: (update: (l: BodyLine) => Bo
           hideLabel
           value={line.text}
           tools={(field) => <InsertReference field={field} />}
-          onCommit={(value) => replace((l) => (l.kind === "text" ? setText(l, value) : l))}
+          onCommit={(value) => {
+            setError(null);
+            return replace((l) => (l.kind === "text" ? setText(l, value) : l));
+          }}
         />
         {error && (
           <span className="error" role="alert">
