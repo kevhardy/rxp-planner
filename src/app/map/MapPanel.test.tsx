@@ -828,36 +828,12 @@ describe("terrain", () => {
       ]).toEqual(["var(--font-weight-bold)", "var(--font-weight-regular)", "var(--font-weight-regular)"]);
     });
 
-    it("draws the shape of a plain point's group beside the group's heading, and other rows with their sprite", async () => {
+    it("draws each service row with its game icon, and rings only the Guide points heading", async () => {
       await mountGuide();
-      const heading = screen.getByRole("heading", { name: "Services" });
-      expect(heading.querySelector(".group-mark")!.className).toBe("group-mark poi-services");
-      expect(screen.getByRole("heading", { name: "Guide points" }).querySelector(".group-mark")!.className).toBe("group-mark guide");
-      expect(row("Innkeepers").querySelector(".map-icon")).toBeNull();
-      expect(row("Ships").querySelector(".map-icon")!.className).toBe("map-icon");
-      expect(screen.getByRole("heading", { name: "Transport" }).querySelector(".group-mark")).toBeNull();
-    });
-
-    it("lists the groups drawn as plain shapes right after the guide's own marks", async () => {
-      await mountGuide();
-      const groups = within(legend())
-        .getAllByRole("group")
-        .map((g) => g.querySelector("h3")!.textContent);
-      expect(groups).toEqual([
-        "Guide points",
-        "Services",
-        "Repair and vendors",
-        "Training and supplies",
-        "Class trainers",
-        "Quests",
-        "Map labels",
-        "Dungeons and raids",
-        "Transport",
-        "Quest givers",
-        "Skyborne",
-        "Rare NPCs",
-        "Filters",
-      ]);
+      expect(row("Innkeepers").querySelector(".map-icon")!.className).toBe("map-icon");
+      expect(row("Battlemasters").querySelector(".map-icon")!.className).toBe("map-icon");
+      expect(screen.getByRole("heading", { name: "Guide points" }).querySelector(".group-mark")).not.toBeNull();
+      expect(screen.getByRole("heading", { name: "Services" }).querySelector(".group-mark")).toBeNull();
     });
 
     it("groups the zone labels, zone borders, and landmark labels under Map labels, which shows or hides all three", async () => {

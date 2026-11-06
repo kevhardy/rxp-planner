@@ -5,7 +5,7 @@ import { worldMap } from "../../data/terrainFixture.ts";
 import { parseGuide } from "../../guide/index.ts";
 import { guideLayout } from "./guideLayout.ts";
 import type { Pin } from "./MapCanvas.tsx";
-import { clearOfMarks, pinLooks } from "./pinNumbers.ts";
+import { pinLooks } from "./pinNumbers.ts";
 import { terrainSurface } from "./surfaces.ts";
 
 const pin = (text: string, rank: number, x: number, y = 0, kind: Pin["kind"] = "upcoming"): Pin => ({
@@ -131,16 +131,6 @@ it("puts the step of a pin under the selected step's mark in a chip close by", (
     "11@0,19": { text: "6–11", near: true, at: { x: 0, y: 28 } },
     "7@0,-2": null,
   });
-});
-
-it("moves a row of plain points clear of a mark of the selected step, and keeps a clear row in place", () => {
-  const marks = [{ x: 0, y: 0 }];
-  // A row's nearest point keeps 25 px from a mark: the mark's 8 px half and 6 px ring, the 4 px space, and the point's 7 px reach.
-  expect(clearOfMarks({ x: 14, y: 0 }, 2, marks, 1, 1)).toEqual({ x: 25, y: 0 });
-  // The second point sits 14 px right of the first, so a row left of the mark moves by the second point.
-  expect(clearOfMarks({ x: -30, y: 0 }, 2, marks, 1, 1)).toEqual({ x: -39, y: 0 });
-  const clear = { x: 0, y: 30 };
-  expect(clearOfMarks(clear, 3, marks, 1, 1)).toBe(clear);
 });
 
 it("moves a selected step's badge onto the corner of a ringed mark whose ring it would cover", () => {

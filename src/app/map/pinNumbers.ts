@@ -24,15 +24,11 @@ const STEP_PIN_SIZE = 17;
 // A mark of the selected step reaches past a pin's size by its 4.5px ring in
 // map.css, and by 1px more for an 18px quest icon.
 const MARK_EDGE = 6;
-// The space between that ring and a chip or a plain point, so neither reads as
-// pressed against the ring. A chip's dark rim meets the ring's ink edge, so a
-// chip needs more.
+// The space between that ring and another mark, so neither reads as pressed
+// against the ring. A chip's dark rim meets the ring's ink edge, so a chip
+// needs more.
 const MARK_CLEAR = 4;
 const CHIP_MARK_CLEAR = 6;
-// A plain point in map.css draws its shape in a 14px box, and the points of a
-// row sit 14px apart.
-const DOT_REACH = 7;
-const DOT_STEP = 14;
 // How far, in pixels, a chip can move from its point to clear another mark.
 const MAX_SHIFT = 24;
 // In Playback, map.css draws a selected step's pin as a badge this far right
@@ -191,22 +187,4 @@ export function pinLooks(pins: readonly Pin[], pxPerPercent: number, aspect: num
     if (ring) looks.set(pin.key, { text: pin.text, near: false, badge: { x: ring.x - own.x, y: ring.y - own.y } });
   }
   return looks;
-}
-
-/**
- * Where a row of `count` plain points draws, so that it clears each mark of
- * the selected step by `MARK_CLEAR`. `at` is the first point's center, and
- * the others follow to its right. The row keeps `at` when it is clear, and
- * when no place within `MAX_SHIFT` is.
- */
-export function clearOfMarks(at: ViewPoint, count: number, marks: readonly ViewPoint[], pxPerPercent: number, aspect: number): ViewPoint {
-  const toPx = (p: ViewPoint) => ({ x: p.x * pxPerPercent, y: (p.y * pxPerPercent) / aspect });
-  const near = marks.map(toPx);
-  const bar = (count - 1) * DOT_STEP;
-  const row = { ...toPx(at), bar };
-  const center = { ...row, x: row.x + bar / 2 };
-  const free = (s: Spot) => near.every((m) => gap({ ...m, bar: 0 }, s) >= PIN_SIZE / 2 + MARK_EDGE + MARK_CLEAR + DOT_REACH);
-  const shift = SHIFTS.find((s) => free({ ...center, x: center.x + s.x, y: center.y + s.y }));
-  if (!shift || (shift.x === 0 && shift.y === 0)) return at;
-  return { x: (row.x + shift.x) / pxPerPercent, y: ((row.y + shift.y) * aspect) / pxPerPercent };
 }

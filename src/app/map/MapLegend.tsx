@@ -10,8 +10,6 @@ import type { Frame, Spawn } from "./MapCanvas.tsx";
 import { MapIconImage } from "./MapIconImage.tsx";
 import { PopoverMenu } from "./PopoverMenu.tsx";
 import {
-  CATEGORIES,
-  drawsAsDot,
   LAYERS,
   layerCategories,
   showsCategory,
@@ -97,20 +95,17 @@ export function MapLegend(props: {
     };
   }, []);
 
-  const row = (id: CategoryId, name: string) => {
-    const dot = drawsAsDot(CATEGORIES[id], id);
-    return (
-      <LegendRow
-        key={id}
-        name={name}
-        icon={dot ? null : categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
-        iconClass={SWATCHES[id]}
-        count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
-        on={shows(id)}
-        onToggle={() => store.setCategories([id], !shows(id))}
-      />
-    );
-  };
+  const row = (id: CategoryId, name: string) => (
+    <LegendRow
+      key={id}
+      name={name}
+      icon={categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
+      iconClass={SWATCHES[id]}
+      count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
+      on={shows(id)}
+      onToggle={() => store.setCategories([id], !shows(id))}
+    />
+  );
   return (
     <details
       className="map-legend"
@@ -124,7 +119,7 @@ export function MapLegend(props: {
         Legend <Icon name="chevronDown" size={12} />
       </summary>
       <div ref={body} className="legend-body" onScroll={(e) => markRowsBelow(e.currentTarget)}>
-        {LEGEND_LAYERS.map((layer) => {
+        {LAYERS.map((layer) => {
           const ids = layerCategories(layer.id);
           const on = ids.filter(shows).length;
           const pressed = on === ids.length ? true : on === 0 ? false : "mixed";
@@ -133,7 +128,7 @@ export function MapLegend(props: {
               <LegendGroup
                 key={layer.id}
                 name={layer.name}
-                mark="guide"
+                ringed
                 pressed={pressed}
                 onToggle={() => store.setCategories(ids, on < ids.length)}
                 action={
@@ -235,7 +230,6 @@ export function MapLegend(props: {
               key={layer.id}
               layer={layer.id}
               name={layer.name}
-              mark={ids.some((id) => drawsAsDot(layer.id, id)) ? `poi-${layer.id}` : undefined}
               pressed={pressed}
               onToggle={() => store.setCategories(ids, on < ids.length)}
             >
@@ -273,14 +267,6 @@ export function MapLegend(props: {
 
 const MAP_LABELS: readonly LayerId[] = ["zones", "zoneBorders", "landmarks"];
 
-// The map draws crowded points of these layers as plain shapes, which only the
-// legend explains, so they come before layers drawn as game icons.
-const LEGEND_FIRST: readonly LayerId[] = ["guide", "references", "services", "vendors", "supplies", "trainers"];
-const legendRank = (id: LayerId) => {
-  const i = LEGEND_FIRST.indexOf(id);
-  return i < 0 ? LEGEND_FIRST.length : i;
-};
-const LEGEND_LAYERS = LAYERS.toSorted((a, b) => legendRank(a.id) - legendRank(b.id));
 const LAYER_NAMES = Object.fromEntries(LAYERS.map((l) => [l.id, l.name])) as Record<LayerId, string>;
 
 // The map draws these layers as text or lines, not as game icons.
@@ -311,8 +297,8 @@ function LegendGroup(
   props: {
     name: string;
     layer?: string;
-    /** The class of a mark drawn before the name, such as the shape of the layer's plain points. */
-    mark?: string | undefined;
+    /** Draws the selected step's ring before the name. */
+    ringed?: boolean;
     disabled?: boolean;
     action?: ReactNode;
     children: ReactNode;
@@ -323,7 +309,7 @@ function LegendGroup(
     <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
         <h3 id={id}>
-          {props.mark && <span className={`group-mark ${props.mark}`} aria-hidden="true" />}
+          {props.ringed && <span className="group-mark" aria-hidden="true" />}
           {props.name}
         </h3>
         {props.action}
@@ -349,10 +335,9 @@ function LegendGroup(
   );
 }
 
-/** `icon` null leaves the mark column empty, for a plain point whose group heading draws its shape. */
 function LegendRow(props: {
   name: string;
-  icon: string | null | undefined;
+  icon: string | undefined;
   iconClass?: string | undefined;
   count: number | undefined;
   on: boolean;
@@ -368,11 +353,7 @@ function LegendRow(props: {
       disabled={props.disabled}
       onClick={props.onToggle}
     >
-      {props.icon === null ? (
-        <span />
-      ) : (
-        <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
-      )}
+      <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
       <span className="legend-name">{name}</span>
       {count !== undefined && <span className="legend-count">{count}</span>}
       <Icon name={props.on ? "eye" : "eyeOff"} />

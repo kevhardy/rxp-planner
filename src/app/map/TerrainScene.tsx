@@ -17,8 +17,7 @@ import { ItemButton, MarkButton } from "../ui/ItemButton.tsx";
 import type { Frame } from "./MapCanvas.tsx";
 import { mapTiles } from "./mapAssets.ts";
 import { MapIconImage } from "./MapIconImage.tsx";
-import { drawsAsDot, isCategoryId, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
-import { clearOfMarks } from "./pinNumbers.ts";
+import { isCategoryId, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
 import {
   groupMarkers,
   showsSide,
@@ -115,8 +114,6 @@ export function TerrainMarkers(props: {
   icons?: (pxPerPercent: number) => readonly ViewPoint[];
   /** Where quest markers draw. A point's name moves to the other side of its icon to clear them. */
   quests?: readonly ViewPoint[];
-  /** Where the selected step's marks draw. A row of plain points moves clear of their rings. */
-  marks?: readonly ViewPoint[];
 }) {
   const { map, features, shows, frame, pxPerPercent, icons } = props;
   const { allFactions } = useMapSettings();
@@ -134,7 +131,7 @@ export function TerrainMarkers(props: {
     const aspect = canvasSize(map).width / canvasSize(map).height;
     const marginY = (CULL_MARGIN_PX * aspect) / pxPerPercent;
     // A mark paints over the marks before it, so named points come last and
-    // their names read over plain points, while guide points still come later.
+    // their names read over unnamed points, while guide points still come later.
     return groupMarkers<Shown>(map, [...marked.map((p) => ({ ...p, marked: true as const })), ...pois], k)
       .map((row) => {
         const leader = row[0]!;
@@ -223,11 +220,6 @@ export function TerrainMarkers(props: {
       name.toggleAttribute("data-start", side === "start");
     }
   });
-  const aspect = canvasSize(map).width / canvasSize(map).height;
-  const drawnAt = (row: Shown[]) =>
-    props.marks?.length && row.every(isPlain)
-      ? clearOfMarks(row[0]!.at, Math.min(rowIcons(row).length, ROW_ICONS), props.marks, pxPerPercent, aspect)
-      : row[0]!.at;
   return (
     <>
       {shows("routes") && (
@@ -247,9 +239,9 @@ export function TerrainMarkers(props: {
       ))}
       {visibleRows.map(({ row, key, named }) =>
         row.length === 1 ? (
-          <Marker key={key} placed={row[0]!} at={drawnAt(row)} named={named} names={names} onPick={props.onPick} retain={retain} />
+          <Marker key={key} placed={row[0]!} at={row[0]!.at} named={named} names={names} onPick={props.onPick} retain={retain} />
         ) : (
-          <MarkerRow key={key} row={row} at={drawnAt(row)} onPick={props.onPick} retain={retain} hover={hover} />
+          <MarkerRow key={key} row={row} at={row[0]!.at} onPick={props.onPick} retain={retain} hover={hover} />
         ),
       )}
       {props.marked.places.map((p, i) => (
@@ -262,8 +254,6 @@ export function TerrainMarkers(props: {
 type Shown = PlacedPoi & { marked?: true };
 
 const keyOf = ({ poi, at, marked }: Shown) => `${marked ? "marked:" : ""}${poi.category}:${poi.entity?.id ?? poi.name}:${at.x},${at.y}`;
-
-const isPlain = ({ layer, category, marked }: Shown) => !marked && drawsAsDot(layer, category.key);
 
 const rowIcons = (row: Shown[]) => [...new Map(row.map((p) => [p.marked ? keyOf(p) : p.category.icon, p])).values()];
 
@@ -305,7 +295,7 @@ const Marker = memo(function Marker(props: {
     <MarkButton
       label={label}
       at={at}
-      className={`poi poi-${layer}${withName ? " named" : ""}${marked ? " marked" : ""}${isPlain(placed) ? " plain" : ""}`}
+      className={`poi poi-${layer}${withName ? " named" : ""}${marked ? " marked" : ""}`}
       data-category={category.key}
       onFocus={() => props.retain(keyOf(placed))}
       onContextMenu={() => props.retain(keyOf(placed))}
@@ -463,11 +453,7 @@ const MarkerRow = memo(function MarkerRow(props: {
         }}
       >
         {icons.slice(0, ROW_ICONS).map((p, i) => (
-          <MapIconImage
-            key={i}
-            icon={p.icon}
-            className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}${isPlain(p) ? " plain" : ""}`}
-          />
+          <MapIconImage key={i} icon={p.icon} className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}`} />
         ))}
         {icons.length > ROW_ICONS && (
           <span className="poi-more" aria-hidden="true">

@@ -59,11 +59,6 @@
   /* Shown names take --text, so a lighter heading reads quieter than the
      rows under it. The heavier weight carries the step. */
   --map-legend-heading: var(--text);
-  /* The legend's Services mark. A near-white dot on the white legend reads
-     as an empty radio button, so the mark takes a grey step from the map's
-     dot and a softer rim. */
-  --map-legend-services: color-mix(in srgb, var(--map-dot-services) 80%, var(--control-border));
-  --map-legend-services-rim: var(--control-border);
   --map-legend-step-outline: var(--control-border);
   /* The chevron under a list that scrolls on, in --text at 70%. A data URL
      cannot read a token, so it repeats this theme's `--text`. */
@@ -221,8 +216,6 @@
   --overlay-heading: var(--text);
   /* Shown names take --text, so a heading in white reads a step above them. */
   --map-legend-heading: #fff;
-  --map-legend-services: var(--map-dot-services);
-  --map-legend-services-rim: var(--art-ink);
   /* On the map, a dark step pin reads by its ink rim on lit terrain. The
      dark --raised is too close to the ink, so a light ring stands in for
      the terrain. */
@@ -394,13 +387,9 @@
 :root {
   --art-ink: #0b0f17;
   --art-paper: #fff;
-  /* A dark steel slate behind a plain map point, softer than --art-ink so a
+  /* A dark steel slate behind a map point's sprite, softer than --art-ink so a
      city's many points do not read as a pile of holes. */
   --map-icon-backing: #2b3746;
-  --map-dot-vendors: #dbbc94;
-  --map-dot-trainers: #c49bf2;
-  --map-dot-supplies: #8fd6c8;
-  --map-dot-services: #dfe5ee;
   --map-label: #f3ecd8;
   --map-label-strong: #ffe8a3;
   --map-border: #fff4d6;

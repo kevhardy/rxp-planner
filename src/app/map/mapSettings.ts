@@ -79,15 +79,6 @@ export function isCategoryId(key: string): key is CategoryId {
   return Object.hasOwn(CATEGORIES, key);
 }
 
-const DOT_LAYERS: ReadonlySet<LayerId> = new Set<LayerId>(["services", "vendors", "trainers", "supplies"]);
-
-/**
- * Whether an unmarked point of this category draws as its layer's dot where
- * the map is too crowded for sprites. A flight master is a travel point, so it
- * keeps its sprite like the transport layer.
- */
-export const drawsAsDot = (layer: LayerId, category: string): boolean => DOT_LAYERS.has(layer) && category !== "flight-master";
-
 export function layerCategories(layer: LayerId): CategoryId[] {
   return (Object.keys(CATEGORIES) as CategoryId[]).filter((id) => CATEGORIES[id] === layer);
 }

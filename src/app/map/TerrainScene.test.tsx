@@ -270,7 +270,7 @@ describe("terrain marker thresholds", () => {
 });
 
 describe("terrain marker order", () => {
-  it("draws a named marker after the plain markers, so its name paints over them", () => {
+  it("draws a named marker after the unnamed markers, so its name paints over them", () => {
     const published = {
       ...worldMap,
       places: [],
@@ -295,43 +295,6 @@ describe("terrain marker order", () => {
       </StoresContext.Provider>,
     );
     expect([...container.querySelectorAll(".poi")].map((el) => el.className)).toEqual([
-      "ui-mark poi poi-services plain",
-      "ui-mark poi poi-instances named",
-    ]);
-  });
-});
-
-describe("terrain plain points", () => {
-  it("draws services as plain points, but keeps flight masters, dungeons, and marked points as full icons", () => {
-    const inn = worldMap.pois[0]!;
-    const published = {
-      ...worldMap,
-      places: [],
-      pois: [
-        { ...inn, name: "Innkeeper", x: inn.x - 200, level: 3 },
-        { ...inn, name: "Flight master", category: "flight-master", x: inn.x + 200, level: 3 },
-        { ...worldMap.pois.find((p) => p.category === "dungeon")!, level: 3 },
-      ],
-      categories: [...worldMap.categories, { key: "flight-master", group: "npc", name: "Flight Masters", icon: "inn" }],
-    };
-    const placed = placeFeatures(published);
-    const stores = { ...createStores(), map: new MapSettingsStore({ ...DEFAULT_MAP_SETTINGS, allFactions: true }) };
-    const { container } = render(
-      <StoresContext.Provider value={stores}>
-        <TerrainMarkers
-          map={published}
-          features={placed}
-          shows={() => true}
-          marked={{ pois: [{ ...placed.pois[0]!, at: { x: 1, y: 1 } }], places: [] }}
-          onPick={() => {}}
-          frame={{ left: 0, top: 0, width: 100, height: 100 }}
-          pxPerPercent={(canvasSize(published).width / 100) * 2 ** (5 - published.nativeZoom)}
-        />
-      </StoresContext.Provider>,
-    );
-    expect([...container.querySelectorAll(".poi")].map((el) => el.className)).toEqual([
-      "ui-mark poi poi-services named marked",
-      "ui-mark poi poi-services plain",
       "ui-mark poi poi-services",
       "ui-mark poi poi-instances named",
     ]);

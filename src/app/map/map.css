@@ -219,91 +219,6 @@
   --size: 18px;
 }
 
-/* A plain point's group shows by its shape as well as its color. The legend
-   draws the dot before the group's heading. Each shape is drawn in a
-   14px box around a 10px dot. The circle, square, and diamond each cover
-   about 80px². The triangle covers about 72px², because its points draw the
-   eye more than a rounder shape of the same area.
-
-   The rim is an ink copy of the shape, scaled around the center of the
-   shape's inscribed circle by 1 + 1.1px / that circle's radius. So each
-   shape has the same 1.1px rim on every side. */
-.poi-services {
-  --dot: var(--map-dot-services);
-  --dot-shape: circle(5px);
-  --dot-rim-scale: 1.22;
-}
-
-.poi-vendors {
-  --dot: var(--map-dot-vendors);
-  --dot-shape: inset(2.5px round 1px);
-  --dot-rim-scale: 1.24;
-}
-
-.poi-trainers {
-  --dot: var(--map-dot-trainers);
-  --dot-shape: polygon(7px 0.7px, 13.3px 7px, 7px 13.3px, 0.7px 7px);
-  --dot-rim-scale: 1.25;
-}
-
-.poi-supplies {
-  --dot: var(--map-dot-supplies);
-  --dot-shape: path("M6.39 2.11Q7 0.92 7.61 2.11L12.46 11.68Q13.07 12.88 11.88 12.88H2.12Q0.93 12.88 1.54 11.68Z");
-  --dot-rim-scale: 1.3;
-  --dot-middle: 7px 9.15px;
-}
-
-.map-overlay .poi.plain:hover {
-  z-index: 3;
-}
-
-/* Most plain sprites, such as the repair anvil, read as grey blocks at a
-   city's density, so they draw as dots. From this drawn width, a city's
-   points sit about 24px apart, and the sprites return. */
-@container map-overlay (width < 16000px) {
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain {
-    --size: 10px;
-    position: relative;
-    background: none;
-    box-shadow: none;
-  }
-
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before,
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::after,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::after {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background: var(--dot);
-    clip-path: var(--dot-shape);
-  }
-
-  .map-overlay .poi.plain:not(:hover, :focus-visible) .poi-icon::before,
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-icon.plain::before {
-    background: var(--art-ink);
-    scale: var(--dot-rim-scale);
-    transform-origin: var(--dot-middle, center);
-  }
-
-  .map-overlay .poi.plain:not(:hover, :focus-visible)::after {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    border-radius: var(--radius-round);
-    pointer-events: auto;
-  }
-
-  .map-overlay .poi-group:not(:has(:focus-visible)) .poi-row:has(> .poi-icon.plain) .poi-icon + .poi-icon {
-    margin-left: var(--space-1);
-  }
-
-  .map-overlay .poi-group:not(:has(:focus-visible)):has(> .poi-row > .poi-icon.plain:first-child) {
-    translate: -5px -50%;
-  }
-}
-
 .map-overlay .poi .poi-icon {
   pointer-events: auto;
   cursor: pointer;
@@ -1342,52 +1257,16 @@
   box-shadow: var(--ring-control);
 }
 
-/* Sits one spacing step left of the row icons below, so the rows read as a
-   tree under their heading. */
+/* The Guide points heading takes the ring of a selected step, centered over
+   the row icons below. */
 .group-mark {
   position: absolute;
-  top: calc(50% - 5px);
-  left: calc(var(--space-3) + var(--legend-mark) / 2 - 5px);
-  width: 10px;
-  height: 10px;
-}
-
-.group-mark::before,
-.group-mark::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  background: var(--dot);
-  clip-path: var(--dot-shape);
-}
-
-.group-mark::before {
-  background: var(--art-ink);
-  scale: var(--dot-rim-scale);
-  transform-origin: var(--dot-middle, center);
-}
-
-.group-mark.poi-services {
-  --dot: var(--map-legend-services);
-}
-
-.group-mark.poi-services::before {
-  background: var(--map-legend-services-rim);
-}
-
-/* 12px, as wide as the dots of the other headings. The heading color keeps
-   coral for the selected step. */
-.group-mark.guide {
-  translate: -1px -1px;
+  top: calc(50% - 6px);
+  left: calc(var(--space-3) + var(--legend-mark) / 2 - 6px);
   width: 12px;
   height: 12px;
   border: 2px solid var(--map-legend-heading);
   border-radius: var(--radius-round);
-}
-
-.group-mark.guide::before,
-.group-mark.guide::after {
-  content: none;
 }
 
 .legend-row .spawn-swatch {
