@@ -960,7 +960,7 @@ function expireBackground(route: Carried, guide: number, step: number, preview: 
   const asYouGo = preview.tags.has("completewith") || preview.tags.has("sticky");
   route.background = route.background.filter((w) => {
     const owed = route.owed.get(w.ref.questId)?.get(w.ref.row);
-    const open = w.guide === guide && (w.until === "next" ? asYouGo : step < w.until);
+    const open = w.guide === guide && (w.until === "next" ? asYouGo : windowOpen(w.until, step + 1));
     return open && !!owed && !owed.closed && owed.counted < w.to;
   });
 }
@@ -1526,7 +1526,7 @@ function leaveRunning(run: StepRun, ref: ObjectiveRef, to: number, found: KillAs
 // gives one kill, in the order the walk passes it, and the walk never waits for a respawn.
 function passBy(run: StepRun, legs: readonly WalkLeg[]) {
   const { data, route, guide, s, settings, kills, collecting, credited, passedSpawns, passProgress } = run;
-  const works = route.background.filter((w) => w.guide === guide && (w.until === "next" || s <= w.until));
+  const works = route.background.filter((w) => w.guide === guide && (w.until === "next" || windowOpen(w.until, s)));
   const refs = new Map([...collecting, ...works.map((w) => w.ref)].map((ref) => [refKey(ref), ref]));
   creditSharedDrops(run, [...refs.values()]);
   const mobsOf = (w: BackgroundKills) => (owedFor(route, w.ref).first ?? w.fresh)!;
@@ -1932,11 +1932,14 @@ function straightLegs(acts: readonly Act[], from: WorldLocation | null, mode: Tr
   return legs;
 }
 
-// RXP keeps every `#completewith` step showing (`addon:LoadGuide` in
-// GuideWindow.lua), and a window that names a showing step ends only when
-// that step completes (`addon.UpdateStepCompletion`). So a window that names
-// a `#completewith` step lasts through that step's own window.
-function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
+/**
+ * The last step of each label's `#completewith` window, by label. RXP keeps
+ * every `#completewith` step showing (`addon:LoadGuide` in GuideWindow.lua),
+ * and a window that names a showing step ends only when that step completes
+ * (`addon.UpdateStepCompletion`). So a window that names a `#completewith`
+ * step lasts through that step's own window.
+ */
+export function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
   const labels = stepLabels(steps, profile);
   const end = (i: number, seen: Set<number>): number => {
     const tag = steps[i]!.body.find((l) => l.kind === "tag" && l.name === "completewith" && holds(l.condition, profile));
@@ -1945,6 +1948,13 @@ function windowEnds(steps: readonly Step[], profile: Profile): Map<string, numbe
   };
   return new Map([...labels].map(([label, i]) => [label, end(i, new Set())]));
 }
+
+/**
+ * Whether a window that `windowEnds` ends at step `end` is open at step `s`.
+ * RXP completes the window's step once the current step is past `end`
+ * (`addon.UpdateStepCompletion` in GuideWindow.lua).
+ */
+export const windowOpen = (end: number, s: number): boolean => s <= end;
 
 function passing(legs: readonly WalkLeg[], p: WorldLocation): { off: number; along: number; leg: number } | undefined {
   let best: { off: number; along: number; leg: number } | undefined;
