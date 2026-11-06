@@ -744,6 +744,23 @@ describe("PlaybackRouting", () => {
     );
   });
 
+  it.each([
+    ["the search fails", { frames: [frame], route: () => Promise.reject(new Error("search failed")) }, "failed"],
+    ["an end is off the loaded maps", { frames: [], route: () => Promise.reject(new Error("not asked")) }, "off-map"],
+  ] as const)("keeps straight travel as pending, then with its reason when %s", async (_, fake: WayRouter, reason) => {
+    const seen: Playback[] = [];
+    await new PlaybackRouting(fake, { every: 0 }).play(
+      input(loc(0, 0), loc(30, 60)),
+      Infinity,
+      () => 0,
+      (p) => seen.push(p),
+    );
+    expect(seen.map((p) => [p.ways(1)[0]!.source, p.ways(1)[0]!.estimate, p.routing])).toEqual([
+      ["straight (pending)", "pending", { asked: 1, routed: 0, pending: 1, straight: {} }],
+      [`straight (${reason})`, reason, { asked: 1, routed: 0, pending: 0, straight: { [reason]: 1 } }],
+    ]);
+  });
+
   it("walks a known flight at walking time when the router finds no flight there", async () => {
     const [stormwind, thelsamar] = [world(478.62, -8832.77), world(-2930.01, -5421.91)];
     const flights = new FlightNodes({
@@ -759,7 +776,15 @@ describe("PlaybackRouting", () => {
     ]);
     const fly: PlaybackInput = { ...walk, data: { ...walk.data, flights }, guides: [parseGuide(`#group G\n#name A\n${text}`)] };
     fly.simulation = simulateRoute(fly.guides, 0, fly.profile, fly.data);
-    const playback = await new PlaybackRouting(router([stormwind, thelsamar], [0, 0], 40), { every: 0 }).play(fly, Infinity, () => 0);
+    const seen: Playback[] = [];
+    const routing = new PlaybackRouting(router([stormwind, thelsamar], [0, 0], 40), { every: 0 });
+    const playback = await routing.play(
+      fly,
+      Infinity,
+      () => 0,
+      (p) => seen.push(p),
+    );
+    expect(seen[0]!.ways(0).map((w) => [w.source, w.estimate])).toEqual([["flight (pending)", "pending"]]);
     expect(playback.ways(0).map((w) => [w.to, w.seconds, w.source, w.estimate])).toEqual([[thelsamar, 40, "routing", "flight-unknown"]]);
     expect(playback.timeline.warnings.map((w) => w.message)).toEqual([
       ".fly Thelsamar with no known flight to Thelsamar, Loch Modan; walked",
