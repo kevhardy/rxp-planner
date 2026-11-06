@@ -2,8 +2,8 @@ import {
   cloneElement,
   useId,
   useLayoutEffect,
+  useReducer,
   useRef,
-  useState,
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
@@ -40,10 +40,10 @@ import { useOverlayRoot } from "./overlayRoot.ts";
  * The description shows on hover and on focus within that follows a key
  * press, and hides when both end. A link inside the child has its own
  * description, so hovering or focusing it hides this one. A press or Escape
- * hides it until the pointer or focus leaves; typing hides it until focus
- * leaves. It is dismissed when its pane scrolls it out of view or a dialog
- * makes `#app` inert, until the next hover or focus, or the next change of
- * `open`. The control, the child or the first control inside it, gets
+ * hides it until the pointer or focus leaves or `open` turns on; typing hides
+ * it until focus leaves. It is dismissed when its pane scrolls it out of view
+ * or a dialog makes `#app` inert, until the next hover or focus, or the next
+ * change of `open`. The control, the child or the first control inside it, gets
  * `aria-describedby` unless its `aria-label` already says the same. The tooltip renders in `document.body`, or in the
  * open dialog that holds the child, with fixed positioning, so no pane clips it. It sits above the child, left-aligned,
  * and moves inside the nearest `data-tip-bounds` ancestor, else `#app`, and
@@ -83,21 +83,22 @@ export function Described(props: {
   const id = useId();
   const anchor = useRef<HTMLElement | null>(null);
   const tip = useRef<HTMLSpanElement>(null);
-  const [hover, setHover] = useState(false);
-  const [focus, setFocus] = useState(false);
-  const [pressed, setPressed] = useState(false);
-  const [typed, setTyped] = useState(false);
-  const [pinned, setPinned] = useState(false);
-  const [away, setAway] = useState(false);
+  const [state, dispatch] = useReducer(reduce, {
+    hover: false,
+    focus: false,
+    pinned: false,
+    suppressed: undefined,
+    dismissed: false,
+    wasOpen: props.open,
+  });
   const overlayRoot = useOverlayRoot();
-  const [wasOpen, setWasOpen] = useState(props.open);
-  if (wasOpen !== props.open) {
-    setWasOpen(props.open);
-    setAway(false);
-  }
+  if (state.wasOpen !== props.open) dispatch({ type: "open", open: props.open });
   const shown =
     !!text &&
-    (pinned || (((hover && props.hover !== false) || focus || (!!props.open && !away)) && !pressed && !typed && !props.popoverOpen));
+    (state.pinned ||
+      (((state.hover && props.hover !== false) || state.focus || (!!props.open && !state.dismissed)) &&
+        !state.suppressed &&
+        !props.popoverOpen));
 
   useLayoutEffect(() => {
     const el = anchor.current;
@@ -131,10 +132,7 @@ export function Described(props: {
         bottom: innerHeight,
       };
       if (el.closest("[inert]") || at.bottom < bounds.top || at.top > bounds.bottom) {
-        setHover(false);
-        setFocus(false);
-        setPinned(false);
-        setAway(true);
+        dispatch({ type: "dismiss" });
         return;
       }
       const { left, top } = placeTip(at, box.getBoundingClientRect(), bounds, { above: reach, below: Math.max(band && band + 1, reach) });
@@ -144,12 +142,10 @@ export function Described(props: {
     };
     place();
     const escape = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      setPressed(true);
-      setPinned(false);
+      if (e.key === "Escape") dispatch({ type: "escape" });
     };
     const outside = (e: PointerEvent) => {
-      if (!(e.target instanceof Node) || !el.contains(e.target)) setPinned(false);
+      if (!(e.target instanceof Node) || !el.contains(e.target)) dispatch({ type: "outside" });
     };
     document.addEventListener("keydown", escape);
     document.addEventListener("pointerdown", outside, true);
@@ -171,35 +167,32 @@ export function Described(props: {
         },
         onPointerOver: (e) => {
           own.onPointerOver?.(e);
-          setHover(!inLink(e) && (!props.clipped || cut(e.currentTarget)));
+          dispatch({ type: "hover", on: !inLink(e) && (!props.clipped || cut(e.currentTarget)) });
         },
         onPointerLeave: (e) => {
           own.onPointerLeave?.(e);
-          setHover(false);
-          setPressed(false);
+          dispatch({ type: "leave" });
         },
         onPointerDown: (e) => {
           own.onPointerDown?.(e);
-          setPressed(true);
+          dispatch({ type: "press" });
         },
         onClick: (e) => {
           own.onClick?.(e);
-          if (props.pin) setPinned(!pinned);
+          if (props.pin) dispatch({ type: "pin" });
         },
         onFocus: (e) => {
           own.onFocus?.(e);
-          setFocus(keyboard && !inLink(e) && (!props.clipped || cut(e.currentTarget)));
+          dispatch({ type: "focus", on: keyboard && !inLink(e) && (!props.clipped || cut(e.currentTarget)) });
         },
         onBlur: (e) => {
           own.onBlur?.(e);
           if (e.currentTarget.contains(e.relatedTarget)) return;
-          setFocus(false);
-          setTyped(false);
-          setPressed(false);
+          dispatch({ type: "blur" });
         },
         onInput: (e) => {
           own.onInput?.(e);
-          setTyped(true);
+          dispatch({ type: "type" });
         },
       });
   return (
@@ -214,6 +207,53 @@ export function Described(props: {
         )}
     </>
   );
+}
+
+interface TipState {
+  hover: boolean;
+  focus: boolean;
+  pinned: boolean;
+  suppressed: "press" | "typing" | undefined;
+  dismissed: boolean;
+  wasOpen: boolean | undefined;
+}
+
+type TipEvent =
+  | { type: "hover" | "focus"; on: boolean }
+  | { type: "leave" | "press" | "pin" | "blur" | "type" | "escape" | "outside" | "dismiss" }
+  | { type: "open"; open: boolean | undefined };
+
+function reduce(state: TipState, event: TipEvent): TipState {
+  const patch = change(state, event);
+  return (Object.keys(patch) as (keyof TipState)[]).some((key) => patch[key] !== state[key]) ? { ...state, ...patch } : state;
+}
+
+function change(state: TipState, event: TipEvent): Partial<TipState> {
+  const unpress = state.suppressed === "press" ? undefined : state.suppressed;
+  switch (event.type) {
+    case "hover":
+      return { hover: event.on };
+    case "focus":
+      return { focus: event.on };
+    case "leave":
+      return { hover: false, suppressed: unpress };
+    case "press":
+      return { suppressed: state.suppressed ?? "press" };
+    case "escape":
+      return { pinned: false, suppressed: state.suppressed ?? "press" };
+    case "type":
+      return { suppressed: "typing" };
+    case "blur":
+      return { focus: false, suppressed: undefined };
+    case "pin":
+      return { pinned: !state.pinned };
+    case "outside":
+      return { pinned: false };
+    case "dismiss":
+      return { hover: false, focus: false, pinned: false, dismissed: true };
+    case "open":
+      return { wasOpen: event.open, dismissed: false, suppressed: event.open ? unpress : state.suppressed };
+  }
 }
 
 function inLink(e: SyntheticEvent) {
