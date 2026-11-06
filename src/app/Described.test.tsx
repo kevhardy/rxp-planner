@@ -154,6 +154,39 @@ describe("Described", () => {
     expect(tip().hidden).toBe(false);
   });
 
+  it("stays hidden after typing when a press in the field ends with the pointer leaving", async () => {
+    const user = userEvent.setup();
+    render(
+      <Described text="Minimum level">
+        <input aria-label="Level" />
+      </Described>,
+    );
+    const input = screen.getByRole("textbox");
+    await user.tab();
+    await user.keyboard("2");
+    await user.click(input);
+    await user.unhover(input);
+    await user.hover(input);
+    expect(tip().hidden).toBe(true);
+  });
+
+  it("stays hidden after a press while open turns off under the pointer", async () => {
+    const user = userEvent.setup();
+    const ring = (open: boolean) => (
+      <Described text="Level 2, 40% xp" open={open}>
+        <button type="button" tabIndex={-1}>
+          2
+        </button>
+      </Described>
+    );
+    const { rerender } = render(ring(true));
+    const button = screen.getByRole("button");
+    await user.hover(button);
+    await user.pointer({ keys: "[MouseLeft>]", target: button });
+    rerender(ring(false));
+    expect(tip().hidden).toBe(true);
+  });
+
   it("leaves a link inside the child to its own description", async () => {
     const user = userEvent.setup();
     render(
