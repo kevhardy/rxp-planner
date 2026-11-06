@@ -411,11 +411,11 @@ export function stopKeys(
             kind: "stops",
             request: { ...request, heights: { from: height, to: height } },
           }).stops;
-        kept.delete(key);
+        if (kept.get(key) === keys) kept.delete(key);
         return undefined;
       },
       (error: unknown) => {
-        kept.delete(key);
+        if (kept.get(key) === keys) kept.delete(key);
         throw error;
       },
     );

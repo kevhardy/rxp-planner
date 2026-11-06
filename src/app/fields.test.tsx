@@ -32,4 +32,17 @@ describe("ConditionEditor", () => {
     expect(onCommit).toHaveBeenLastCalledWith("Human Warrior");
     expect(onCommit).toHaveBeenCalledTimes(2);
   });
+
+  it("clears a token button's error when a later text commit succeeds", async () => {
+    const user = userEvent.setup();
+    const onCommit = vi.fn((text: string | undefined) => (text === "Human !Warrior/Orc" ? "Not allowed here" : null));
+    render(<ConditionEditor label="Condition" draftName="condition" condition={parseCondition("Human Warrior/Orc")} onCommit={onCommit} />);
+
+    await user.click(screen.getByRole("button", { name: "Negate Warrior" }));
+    expect(screen.getByRole("alert").textContent).toBe("Not allowed here");
+    await user.clear(screen.getByRole("textbox", { name: "Condition" }));
+    await user.type(screen.getByRole("textbox", { name: "Condition" }), "Orc{Enter}");
+    expect(onCommit).toHaveBeenLastCalledWith("Orc");
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
 });
