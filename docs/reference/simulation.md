@@ -47,7 +47,7 @@ reads the keys in this table.
 | Key              | Where                                                               | What it does                                                                                                                                                              |
 | ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `party=2`        | Header                                                              | Makes the guide a duo guide. `party=1`, or no `party=`, makes it solo. See [Party](#party).                                                                               |
-| `done=ID,ID`     | Header                                                              | Counts the quests as turned in.                                                                                                                                           |
+| `done=ID,ID`     | Header                                                              | Counts the quests as turned in, and takes them out of the quest log.                                                                                                      |
 | `level=TARGET`   | Header, step, or line                                               | A checkpoint. See below.                                                                                                                                                  |
 | `kills=N`        | `.complete` line                                                    | Counts N kills of the line's objective at the line, of `mob=ID` when given.                                                                                               |
 | `mob=ID`         | `.complete` line                                                    | Sets the mob of the objective's kills.                                                                                                                                    |
@@ -114,6 +114,10 @@ in the log with every objective complete. An object gives counts by
 `.complete` objective index, such as `{"1": 2}`. The counts are progress
 already made, so a later `.complete` line or the turn-in counts only the
 rest.
+
+A quest is never in the log and turned in at once. A quest that `done`
+turns in leaves the log, and a quest that `log` puts in the log is no longer
+turned in.
 
 The fields apply in table order, so `xp` uses the level that the same object
 sets. The step's gates, such as `#level` and `.isQuestTurnedIn`, read the

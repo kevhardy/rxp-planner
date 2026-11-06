@@ -1,4 +1,4 @@
-import { objectiveRef, withStatus } from "./character.ts";
+import { advance, objectiveRef, withStatus } from "./character.ts";
 import type { Faction } from "./profile.ts";
 import type { ObjectiveProgress, SimData, SimPosition, SimState } from "./simulate.ts";
 import { xpToNextLevel } from "./xp.ts";
@@ -110,13 +110,14 @@ const STATE_FIELDS = {
     parse: (v) => record(v, flag, isId),
     apply: (to, quests, known) => {
       const done = new Set(to.state.done);
+      const turnedIn: number[] = [];
       const unknown: string[] = [];
-      for (const [key, turnedIn] of Object.entries(quests)) {
+      for (const [key, isDone] of Object.entries(quests)) {
         if (!known.data.quest(Number(key))) unknown.push(key);
-        else if (turnedIn) done.add(Number(key));
+        else if (isDone) turnedIn.push(Number(key));
         else done.delete(Number(key));
       }
-      to.state = { ...to.state, done };
+      to.state = advance({ ...to.state, done }, { kind: "done", questIds: turnedIn });
       return unknown;
     },
   }),
@@ -129,6 +130,7 @@ const STATE_FIELDS = {
       ),
     apply: (to, entries, known) => {
       const log = new Map(to.state.log);
+      const done = new Set(to.state.done);
       const unknown: string[] = [];
       for (const [key, entry] of Object.entries(entries)) {
         const questId = Number(key);
@@ -156,8 +158,9 @@ const STATE_FIELDS = {
             objectives[ref.row] = { count, complete: need !== null && count >= need };
           }
         log.set(questId, withStatus(objectives));
+        done.delete(questId);
       }
-      to.state = { ...to.state, log };
+      to.state = { ...to.state, log, done };
       return unknown;
     },
   }),
