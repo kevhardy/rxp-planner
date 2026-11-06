@@ -1556,6 +1556,17 @@ describe("kills", () => {
     expect(unproven(`${deferred}.abandon 7\n.accept 7\nstep\n.turnin 7`)).toEqual([true]);
   });
 
+  it("warns about a turn-in's kills for each objective that no .disablecheckbox line deferred", () => {
+    const two = simData({ 456: { objectives: [monsters(7, [6], "Kobold Vermin"), { ...monsters(4, [707]), index: 2 }] } }, {}, npcs);
+    const acts = simulate("step\n.accept 456\n.complete 456,1\n.disablecheckbox\nstep\n.turnin 456", two).guides[0]!.steps[1]!.acts;
+    expect(
+      acts.flatMap((a) => (a.kind === "kill" ? [[a.kills.map((k) => [k.objective!.row, k.count]), a.unproven ?? false]] : [])),
+    ).toEqual([
+      [[[0, 7]], false],
+      [[[1, 4]], true],
+    ]);
+  });
+
   it("leaves a #completewith or .disablecheckbox line's kills to the next line that counts them", () => {
     const counts = (text: string) => run(text).guides[0]!.steps.map((s) => s.kills.map((k) => [k.at.line, k.count]));
     expect(counts("step\n.accept 7\n.complete 7,1\n.disablecheckbox\nstep\n.complete 7,1")).toEqual([[], [[0, 10]]]);
