@@ -84,9 +84,9 @@ export function App({ stores }: { stores: Stores }) {
               if (!(e.relatedTarget instanceof Node) || !e.currentTarget.contains(e.relatedTarget)) setDropping(false);
             }}
             onDrop={(e) => {
+              setDropping(false);
               if (e.dataTransfer.files.length === 0) return;
               e.preventDefault();
-              setDropping(false);
               startImport([...e.dataTransfer.files]);
             }}
           >
