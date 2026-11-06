@@ -3,7 +3,8 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { parseCondition } from "../guide/index.ts";
-import { ConditionEditor, DraftField } from "./fields.tsx";
+import { NO_DRAFT, readDraft, type DraftOwner, type DraftState } from "./drafts.ts";
+import { ConditionEditor, DraftField, DraftScope } from "./fields.tsx";
 import { cascade } from "./ui/testing.ts";
 
 afterEach(cleanup);
@@ -17,6 +18,37 @@ describe("DraftField", () => {
       </>,
     );
     expect(["Count", "questId"].map((name) => cascade(screen.getByLabelText(name), "min-width")?.value)).toEqual(["0", "100%"]);
+  });
+
+  it("keeps the draft while focus moves between the input and its tools, and commits once focus leaves both", async () => {
+    const user = userEvent.setup();
+    const onCommit = vi.fn((_text: string) => null);
+    render(
+      <>
+        <DraftField label="Name" draftName="Name" value="Old" onCommit={onCommit} tools={() => <button type="button">Tool</button>} />
+        <button type="button">Elsewhere</button>
+      </>,
+    );
+    const input = screen.getByRole("textbox", { name: "Name" });
+    await user.type(input, " name");
+    await user.click(screen.getByRole("button", { name: "Tool" }));
+    await user.click(input);
+    expect(onCommit).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(onCommit.mock.calls).toEqual([["Old name"]]);
+  });
+
+  it("drops the draft before onCommit runs", async () => {
+    const user = userEvent.setup();
+    const owner: DraftOwner = { object: { unscoped: true }, guide: "guide" };
+    const during: DraftState[] = [];
+    render(
+      <DraftScope.Provider value={owner}>
+        <DraftField label="Name" draftName="Name" value="Old" onCommit={() => (during.push(readDraft(owner, "Name")), null)} />
+      </DraftScope.Provider>,
+    );
+    await user.type(screen.getByRole("textbox", { name: "Name" }), " name{Enter}");
+    expect([during, readDraft(owner, "Name")]).toEqual([[NO_DRAFT], NO_DRAFT]);
   });
 });
 
