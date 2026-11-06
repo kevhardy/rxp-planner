@@ -136,6 +136,24 @@ describe("Described", () => {
     expect(tip().hidden).toBe(false);
   });
 
+  it("shows for open again after Escape when open goes off and back on", async () => {
+    const user = userEvent.setup();
+    const ring = (open: boolean) => (
+      <Described text="Level 2, 40% xp" open={open}>
+        <button type="button" tabIndex={-1}>
+          2
+        </button>
+      </Described>
+    );
+    const { rerender } = render(ring(true));
+    expect(tip().hidden).toBe(false);
+    await user.keyboard("{Escape}");
+    expect(tip().hidden).toBe(true);
+    rerender(ring(false));
+    rerender(ring(true));
+    expect(tip().hidden).toBe(false);
+  });
+
   it("leaves a link inside the child to its own description", async () => {
     const user = userEvent.setup();
     render(
