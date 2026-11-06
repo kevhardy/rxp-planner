@@ -1,13 +1,22 @@
 import { linkObjective, locatedSpawns, yards, type GameData, type WorldLocation, type ZoneId } from "../data/index.ts";
 import { luaNumber, type GuideDocument, type Step } from "../guide/index.ts";
-import { stepLabels, type StepPreview } from "./preview.ts";
+import type { StepPreview } from "./preview.ts";
 import type { Faction, Profile } from "./profile.ts";
 import { questAccess, trivialQuest } from "./questAccess.ts";
 import { objectiveRef } from "./character.ts";
 import { completeIndex, completeRows } from "./completeRows.ts";
 import { objectiveTargets } from "./killTargets.ts";
 import { lineQuest } from "./lineQuest.ts";
-import { collectLine, refKey, type ObjectiveRef, type QuestProgress, type RouteSimulation, type SimData } from "./simulate.ts";
+import {
+  collectLine,
+  refKey,
+  windowEnds,
+  windowOpen,
+  type ObjectiveRef,
+  type QuestProgress,
+  type RouteSimulation,
+  type SimData,
+} from "./simulate.ts";
 
 /** How the player works on an objective: kill its mobs, kill mobs for a drop, or loot objects or items on the ground. */
 type OpportunityKind = "kill" | "drop" | "object";
@@ -115,7 +124,7 @@ export function findOpportunities(
   for (const g of simulation.guides) {
     if (g.hidden) continue;
     const doc = guides[g.source]!;
-    const labels = stepLabels(doc.steps, profile);
+    const ends = windowEnds(doc.steps, profile);
     const work = g.steps.map((snap, s) => (snap.preview.shown ? stepWork(doc.steps[s]!, snap.preview, data) : undefined));
 
     g.steps.forEach((snap, s) => {
@@ -128,7 +137,7 @@ export function findOpportunities(
       if (!located) return;
       const { zoneId, area } = located;
       const ownKeys = new Set(own.targets.map(refKey));
-      const firstCoverStep = firstCoverSteps(g.steps, work, s, labels);
+      const firstCoverStep = firstCoverSteps(g.steps, work, s, ends);
       // The window's kills, or a `#sticky` step's `.complete` line, can mark a covered objective done while the window
       // still works on it.
       const progressBeforeCover = (ref: ObjectiveRef, progress: QuestProgress | undefined) => {
@@ -244,9 +253,8 @@ function stepWork(step: Step, preview: StepPreview, data: OpportunityData): Step
 const asYouGo = (preview: StepPreview) => preview.tags.has("completewith") || preview.tags.has("sticky");
 
 // `#completewith next` lasts through a run of `#completewith` and `#sticky`
-// steps to the next other step, and `#completewith <label>` through the
-// label's step. `#sticky` alone covers each objective until its line is done,
-// as RXP keeps the step active until each line is done
+// steps to the next other step. `#sticky` alone covers each objective until
+// its line is done, as RXP keeps the step active until each line is done
 // (`addon.UpdateStepCompletion` in GuideWindow.lua). The simulation credits
 // such a step's objectives at the step itself, so the finder estimates the
 // end from the guide: the first later step, not as you go, that needs at least
@@ -255,7 +263,7 @@ function firstCoverSteps(
   snaps: readonly { preview: StepPreview }[],
   work: readonly (StepWork | undefined)[],
   s: number,
-  labels: ReadonlyMap<string, number>,
+  ends: ReadonlyMap<string, number>,
 ): Map<string, number> {
   const firstNamed = new Map<string, number>();
   const firstCover = new Map<string, number>();
@@ -269,7 +277,7 @@ function firstCoverSteps(
         ? !work.slice(p + 1, s).some((q) => q && !asYouGo(q.preview) && (q.needs.get(key) ?? -1) >= w.needs.get(key)!)
         : until === "next"
           ? snaps.slice(p + 1, s).every((q) => !q.preview.shown || asYouGo(q.preview))
-          : (labels.get(until) ?? -1) >= s;
+          : windowOpen(ends.get(until) ?? -1, s);
     for (const ref of w.targets) if (covers(refKey(ref))) firstCover.set(refKey(ref), firstNamed.get(refKey(ref))!);
   }
   return firstCover;

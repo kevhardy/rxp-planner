@@ -590,7 +590,9 @@ and `--min-share` set the options in [Method](#method).
    remains, then the distance.
 
 An objective is `covered` when an active `#completewith` or `#sticky` step
-before the step names it. The window's kills, or a `#sticky` step's
+before the step names it. A `#completewith` step is active at the steps of
+its window, as [Background kills](#background-kills) gives it, so the
+finder and the simulation agree. The window's kills, or a `#sticky` step's
 `.complete` line, can mark it done while the window still works on it. So a
 covered objective reads its progress from before the first as-you-go step
 that names it. `plannedStep` is the next step that works on the objective,
