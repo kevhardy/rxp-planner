@@ -112,15 +112,12 @@ export class PlaybackStore {
       const from = this.#routing?.routing;
       this.#routing = { router: routing.router, routing: new PlaybackRouting(routing.router, from && { from }) };
     }
-    const { status } = this.#state;
     if (!input) {
       cancelAnimationFrame(this.#frame);
       this.#stop();
       this.#set({ status: { kind: "none" }, playhead: 0, playing: false });
       return detach;
     }
-    if (status.kind === "ready") this.#set({ status: { ...status, stale: true } });
-    else this.#set({ status: { kind: "pricing" } });
     this.#schedule();
     return detach;
   }
@@ -151,7 +148,7 @@ export class PlaybackStore {
     if (last?.input === input && last.routing === attached.routing && last.reach === reach) return;
     const play = (this.#play = { input, routing: attached.routing, reach });
     const { status } = this.#state;
-    if (status.kind === "ready" && !status.stale) this.#set({ status: { ...status, stale: true } });
+    this.#set({ status: status.kind === "ready" ? { ...status, stale: true } : { kind: "pricing" } });
     const unavailable = attached.routing.router ? undefined : attached.routing.unavailable;
     routing
       .play(
@@ -200,6 +197,7 @@ export class PlaybackStore {
   seek(seconds: number): void {
     const { status } = this.#state;
     const end = status.kind === "ready" ? status.playback.timeline.totals.seconds : 0;
+    this.#wanted = undefined;
     this.#set({ playhead: Math.max(0, Math.min(seconds, end)) });
   }
 
@@ -225,15 +223,14 @@ export class PlaybackStore {
     const { status } = this.#state;
     if (status.kind !== "ready") return;
     const index = status.playback.indexOf(wanted.source, wanted.step);
-    if (index < 0) return;
-    this.#wanted = undefined;
-    this.seekStep(index);
+    if (index >= 0) this.seekStep(index);
   }
 
   play(): void {
     const { status, playhead, playing } = this.#state;
     if (playing || status.kind !== "ready") return;
     const end = status.playback.timeline.totals.seconds;
+    this.#wanted = undefined;
     this.#set({ playing: true, playhead: playhead >= end ? 0 : playhead });
     let last = performance.now();
     const tick = (now: number) => {

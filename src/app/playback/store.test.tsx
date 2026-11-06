@@ -159,6 +159,7 @@ describe("PlaybackStore", () => {
       store.attach(input(70), straight, session);
       await waitFor(() => expect(store.getState().status).toEqual({ kind: "failed", error: "Worker crashed" }));
       store.attach(input(140), straight, session);
+      await Promise.resolve();
       expect(store.getState().status).toEqual({ kind: "pricing" });
       expect((await settled(store)).timeline.steps.map((s) => s.start)).toEqual([0, 0, 24]);
     } finally {
