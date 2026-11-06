@@ -1,9 +1,9 @@
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 import { GAME, xpRate, xpRateOptions } from "../../rules/index.ts";
 import { PLAYABLE_RACES, RACE_FACTION, raceClassOptions, type ClassName, type PlayableRace } from "../../data/index.ts";
 import { useGameData } from "../context.ts";
 import { Described } from "../Described.tsx";
-import { useOutsidePress } from "../effects.ts";
+import { useDisclosure } from "../effects.ts";
 import { Icon } from "../icons.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
@@ -38,35 +38,11 @@ const characterSummary = (s: PreviewSettings) => `${characterName(s)} · ${s.sol
 
 export function PreviewAs() {
   const settings = usePreviewSettings();
-  const [open, setOpen] = useState(false);
+  const { open, toggle, button, wrap } = useDisclosure({ focus: (wrap) => wrap.querySelector(".popover select") });
   const popoverId = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
-
-  useOutsidePress(
-    open,
-    wrap,
-    () => setOpen(false),
-    () => wrap.current?.querySelector<HTMLElement>(".popover select"),
-  );
 
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the button and popover inside.
-    <span
-      ref={wrap}
-      className="preview-as"
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(false);
-        button.current?.focus();
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) setOpen(false);
-      }}
-    >
+    <span {...wrap} className="preview-as">
       <Described text="Preview character: race, class, trading, and XP rate" popoverOpen={open}>
         <Button
           ref={button}
@@ -75,7 +51,7 @@ export function PreviewAs() {
           className="preview-button"
           popoverOpen={open}
           aria-controls={popoverId}
-          onClick={() => setOpen(!open)}
+          onClick={toggle}
         >
           <Icon name="user" />
           <span className="sr-only">Preview as</span> <span className="preview-summary">{characterSummary(settings)}</span>

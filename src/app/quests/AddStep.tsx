@@ -25,7 +25,7 @@ import { insertCheckpoint, insertQuest, questPointAt } from "../../rules/questIn
 import { targetXp, totalXp, xpToNextLevel, type KillXpSettings, type LevelTarget, type PartySize } from "../../rules/xp.ts";
 import { useEditor, useEditorStore, useGameData } from "../context.ts";
 import { editSection } from "../drafts.ts";
-import { useOutsidePress } from "../effects.ts";
+import { useDisclosure } from "../effects.ts";
 import { EntityLink, ItemIcon, useEntityNames } from "../EntityLink.tsx";
 import { moveActive, OptionList } from "../fields.tsx";
 import { Icon } from "../icons.tsx";
@@ -53,33 +53,11 @@ export function AddStepButton(props: {
   profile: Profile;
   onBlank: () => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const { open, toggle, close, button, wrap } = useDisclosure();
   const popoverId = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
-
-  useOutsidePress(open, wrap, () => setOpen(false));
-
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
 
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the button and popover inside.
-    <span
-      ref={wrap}
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        close();
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) setOpen(false);
-      }}
-    >
+    <span {...wrap}>
       <IconButton
         ref={button}
         icon="plus"
@@ -88,7 +66,7 @@ export function AddStepButton(props: {
         popoverOpen={open}
         aria-haspopup="dialog"
         aria-controls={open ? popoverId : undefined}
-        onClick={() => setOpen(!open)}
+        onClick={toggle}
       />
       {open && (
         <AddStepPopover

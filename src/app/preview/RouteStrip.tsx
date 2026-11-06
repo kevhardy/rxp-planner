@@ -13,7 +13,7 @@ import {
 import type { GameRules } from "../../data/index.ts";
 import { useEditor, useGameData, useStores } from "../context.ts";
 import { Described } from "../Described.tsx";
-import { useOutsidePress, usePendingAction } from "../effects.ts";
+import { useDisclosure, usePendingAction } from "../effects.ts";
 import { guideMeta } from "../../rules/registration.ts";
 import { Icon } from "../icons.tsx";
 import { useLayout } from "../layout.ts";
@@ -247,47 +247,23 @@ function CardName({ name }: { name: string }) {
   );
 }
 
-function StartCard({ route, card, name, button }: { route: RouteView; card: GuideCard; name: string; button: CardButton }) {
+function StartCard({ route, card, name, button: cardButton }: { route: RouteView; card: GuideCard; name: string; button: CardButton }) {
   const stores = useStores();
   const { mode } = useLayout();
-  const [open, setOpen] = useState(false);
+  const { open, toggle, button, wrap } = useDisclosure({ focus: (wrap) => wrap.querySelector(".popover button, .popover select") });
   const popoverId = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const toggle = useRef<HTMLButtonElement>(null);
   const start = startOf(route);
   const warning = startLevelWarning(route);
   const { unreached } = route;
   const flagged = !!warning || unreached !== undefined;
 
-  useOutsidePress(
-    open,
-    wrap,
-    () => setOpen(false),
-    () => wrap.current?.querySelector<HTMLElement>(".popover button, .popover select"),
-  );
-
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the card and popover inside.
-    <span
-      ref={wrap}
-      className={`chain-card start${flagged ? " flagged" : ""}${card.status ? ` ${card.status.kind}` : ""}`}
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(false);
-        toggle.current?.focus();
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) setOpen(false);
-      }}
-    >
+    <span {...wrap} className={`chain-card start${flagged ? " flagged" : ""}${card.status ? ` ${card.status.kind}` : ""}`}>
       <Described text={card.about}>
         <ItemButton
           className="chain-start-name"
           aria-label={name}
-          {...button}
+          {...cardButton}
           onClick={() => card.source !== route.open && openOnRoute(stores, route, card.source)}
         >
           <CardName name={card.name} />
@@ -295,13 +271,13 @@ function StartCard({ route, card, name, button }: { route: RouteView; card: Guid
       </Described>
       <Described text="Start guide and level" popoverOpen={open}>
         <Button
-          ref={toggle}
+          ref={button}
           variant="ghost"
           className="chain-start-settings"
           aria-label={`Start settings${flagged ? ", with a warning" : ""}`}
           popoverOpen={open}
           aria-controls={popoverId}
-          onClick={() => setOpen(!open)}
+          onClick={toggle}
         >
           {flagged && <Icon name="warning" size={12} className="warn" />}
           <Icon name="chevronDown" size={12} />

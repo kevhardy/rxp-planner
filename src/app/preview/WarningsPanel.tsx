@@ -5,7 +5,7 @@ import { addSimDone, type Warning, type WarningKind } from "../../rules/index.ts
 import { DatasetContext, useEditor, useEditorStore, useGameData, useStores } from "../context.ts";
 import { Described } from "../Described.tsx";
 import { editSection } from "../drafts.ts";
-import { useOutsidePress } from "../effects.ts";
+import { useDisclosure } from "../effects.ts";
 import { GuideText } from "../GuideText.tsx";
 import { Icon } from "../icons.tsx";
 import { Button, DisclosureIcon } from "../ui/Button.tsx";
@@ -35,12 +35,10 @@ export function WarningsPanel() {
   const route = useRoute();
   const data = useGameData();
   const dataset = useContext(DatasetContext);
-  const [open, setOpen] = useState(false);
+  const { open, toggle, close, button, wrap } = useDisclosure();
   const panelId = useId();
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const store = useEditorStore();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const refocus = useRef<number | null>(null);
 
@@ -72,14 +70,7 @@ export function WarningsPanel() {
     if (document.activeElement && document.activeElement !== document.body) return;
     const items = body.current?.querySelectorAll<HTMLElement>(".warn-item");
     (items?.[Math.min(at, items.length - 1)] ?? button.current)?.focus();
-  }, [groups]);
-
-  useOutsidePress(open, wrap, () => setOpen(false));
-
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
+  }, [groups, button]);
 
   const applyFix = (button: HTMLElement, guide: number, fix: Fix) => {
     const items = [...body.current!.querySelectorAll(".warn-item")];
@@ -92,21 +83,7 @@ export function WarningsPanel() {
   const message = !groups ? (dataset?.error ? "Quest data unavailable." : "Loading quest data…") : null;
 
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the button and panel inside.
-    <span
-      ref={wrap}
-      className="warnings-menu"
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        close();
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) setOpen(false);
-      }}
-    >
+    <span {...wrap} className="warnings-menu">
       <Described text="Route warnings by guide" popoverOpen={open}>
         <Button
           ref={button}
@@ -115,7 +92,7 @@ export function WarningsPanel() {
           popoverOpen={open}
           aria-controls={panelId}
           aria-label={groups ? `Warnings, ${total}` : "Warnings"}
-          onClick={() => setOpen(!open)}
+          onClick={toggle}
         >
           <span className={total > 0 ? "warnings-total warn" : "warnings-total"}>
             <Icon name="warning" />
