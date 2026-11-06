@@ -3,10 +3,12 @@ import { isCoordinateLine } from "../rules/points.ts";
 import { replaceSection, sectionText } from "./sections.ts";
 import type { DocOp, EditorStore, GuideEdit, Selection } from "./store.ts";
 
-export interface DraftState {
-  draft: string | null;
+interface Draft {
+  draft: string;
   error: string | null;
 }
+
+export type DraftState = Draft | { draft: null; error: null };
 
 export const NO_DRAFT: DraftState = { draft: null, error: null };
 
@@ -21,7 +23,7 @@ export interface DraftOwner {
   guide: string;
 }
 
-type DraftEntry = { kind: "field"; state: DraftState } | { kind: "raw"; state: { draft: string; error: string | null }; base: string };
+type DraftEntry = { kind: "field"; state: Draft } | { kind: "raw"; state: Draft; base: string };
 
 const drafts = new WeakMap<DraftObject, Map<string, DraftEntry>>();
 
@@ -50,7 +52,7 @@ function writeEntry(owner: DraftOwner, name: string, entry: DraftEntry | undefin
 
 /** Sets a field's draft; `NO_DRAFT` drops it. Raw text drafts change through `changeRawDraft`. */
 export function writeDraft(owner: DraftOwner, name: string, state: DraftState): void {
-  writeEntry(owner, name, state.draft === null && state.error === null ? undefined : { kind: "field", state });
+  writeEntry(owner, name, state.draft === null ? undefined : { kind: "field", state });
 }
 
 function link(from: DraftObject, to: DraftObject): void {
