@@ -88,9 +88,9 @@ export interface SimData {
   /** The UI map that an RXP zone name or alias names, which `.zoneskip` compares. */
   uiMapNamed(token: string): UiMapId | undefined;
   /** The nearest known Spirit Healer on the death point's world map. */
-  spiritHealer?(from: WorldLocation): SimPosition | undefined;
+  nearestSpiritHealer?(from: WorldLocation): SimPosition | undefined;
   /** Where an NPC spawns for a quest's objectives, or with no quest for a grind. */
-  spawns?(npcId: number, questId: number | undefined): readonly Spawn[];
+  spawns?: (npcId: number, questId: number | undefined) => readonly Spawn[];
   /** The NPCs whose records list their spawns, from which a grind with no named mob picks a local one. */
   npcsWithSpawns?(): readonly number[];
   /** Fallback UI map for a position with no guide zone. */
@@ -202,7 +202,7 @@ export interface SimItem {
   sold: boolean;
 }
 
-export type SimDropper = Pick<Dropper, "id" | "chance" | "guaranteed">;
+type SimDropper = Pick<Dropper, "id" | "chance" | "guaranteed">;
 
 /** An exact name match: one NPC or item, or several entities sharing the name, with the NPCs among them. */
 export type NameMatch = { kind: "npc" | "item"; id: number } | { kind: "ambiguous"; npcIds: readonly number[] };
@@ -314,7 +314,7 @@ export interface SimStart {
 }
 
 /** Objective progress in a `SimStart`. Its `count` counts as progress already made, as `ObjectiveProgress.kills.counted` does. */
-export type SeededProgress = Pick<ObjectiveProgress, "count" | "complete">;
+type SeededProgress = Pick<ObjectiveProgress, "count" | "complete">;
 
 /** An objective: `objectives[row]` of the quest. */
 export interface ObjectiveRef {
@@ -331,7 +331,7 @@ export interface XpGain {
   checkpoint: number;
 }
 
-export interface TurnInXp {
+interface TurnInXp {
   at: Location;
   questId: number;
   xp: number;
@@ -468,7 +468,7 @@ export interface StepSnapshot {
  * `hearthKey`. Only the priced timeline knows them; a step not listed
  * assumes its `state=` `hearth`, else a ready Hearthstone.
  */
-export type HearthClock = ReadonlyMap<string, number>;
+type HearthClock = ReadonlyMap<string, number>;
 
 export const hearthKey = (guide: number, step: number) => `${guide}/${step}`;
 
@@ -1984,7 +1984,7 @@ function walk(
       route.at = state.bind ?? route.at;
       landed = state.bind ?? landed;
     } else if (a.kind === "deathskip") {
-      const to = route.at ? data.spiritHealer?.(route.at) : undefined;
+      const to = route.at ? data.nearestSpiritHealer?.(route.at) : undefined;
       walked.push(to ? learn({ ...a, to }, { kind: "position", at: to }) : a);
       route.at = to ?? route.at;
       landed = to ?? landed;

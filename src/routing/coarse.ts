@@ -17,7 +17,7 @@ const REACH = 7;
 const SPAN = 2 * REACH + 1;
 const SPACING = TILE_WORLD_UNITS / CELLS;
 
-export interface CoarseBand {
+interface CoarseBand {
   /** The steepest slope limit, in degrees, that the band serves. */
   maxSlope: number;
   component: Uint32Array;
@@ -45,7 +45,7 @@ export interface Coarse {
 }
 
 /** Lower bounds in yards from each region to one target: of the length, and of the swim length. Infinity: no route. */
-export interface CoarseBounds {
+interface CoarseBounds {
   length: Float64Array;
   swim: Float64Array;
 }

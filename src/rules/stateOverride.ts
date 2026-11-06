@@ -163,7 +163,7 @@ const STATE_FIELDS = {
   }),
 };
 
-export type StateKey = keyof typeof STATE_FIELDS;
+type StateKey = keyof typeof STATE_FIELDS;
 
 export type StatePatch = { [K in StateKey]?: (typeof STATE_FIELDS)[K] extends Field<infer T> ? T : never };
 

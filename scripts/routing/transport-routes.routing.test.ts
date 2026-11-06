@@ -44,12 +44,13 @@ const near = (p: Point, [dx, dy]: Point): Point => [p[0] + dx, p[1] + dy];
 
 function stubGround(speed: number, places: Record<string, string> = {}) {
   const land = new Map<string, string>();
-  for (const l of all) for (const s of [l.from, l.to]) land.set(`${s.map}:${s.point}`, ISLANDS[s.id] ?? `map ${s.map}`);
+  for (const l of all) for (const s of [l.from, l.to]) land.set(`${s.map}:${s.point.join(",")}`, ISLANDS[s.id] ?? `map ${s.map}`);
   for (const [key, island] of Object.entries(places)) land.set(key, island);
   const calls: string[] = [];
   const ground: GroundLeg = async (from, to) => {
-    calls.push(`${from.point}>${to.point}`);
-    if (land.get(`${from.map}:${from.point}`) !== land.get(`${to.map}:${to.point}`)) return { result: { kind: "no-path" } };
+    calls.push(`${from.point.join(",")}>${to.point.join(",")}`);
+    if (land.get(`${from.map}:${from.point.join(",")}`) !== land.get(`${to.map}:${to.point.join(",")}`))
+      return { result: { kind: "no-path" } };
     const distance = Math.hypot(from.point[0] - to.point[0], from.point[1] - to.point[1]) * YARDS_PER_PIXEL;
     return { result: { kind: "straight", points: [from.point, to.point], distance, activation: 0, seconds: (DETOUR * distance) / speed } };
   };
@@ -103,7 +104,7 @@ describe("routeTransport", () => {
   it("routes Stormwind to Darnassus by the ship to Auberdine, the ferry to Rut'theran, and the portal", async () => {
     const from = stop("TRAM_STORMWIND");
     const to = { map: 1, point: near(stop("PORTAL_DARNASSUS_RUTTHERAN").point, [30, 0]) };
-    const { ground, calls } = stubGround(7, { [`1:${to.point}`]: "darnassus" });
+    const { ground, calls } = stubGround(7, { [`1:${to.point.join(",")}`]: "darnassus" });
     const leg = await routeTransport(from, to, usableLinks(links, alliance), 7, ground);
     expect(steps(leg)).toEqual([
       walk,
@@ -124,7 +125,7 @@ describe("routeTransport", () => {
   it("finds the same way with fewer ground legs when a ground bound is tighter than the straight line", async () => {
     const from = stop("TRAM_STORMWIND");
     const to = { map: 1, point: near(stop("PORTAL_DARNASSUS_RUTTHERAN").point, [30, 0]) };
-    const places = { [`1:${to.point}`]: "darnassus" };
+    const places = { [`1:${to.point.join(",")}`]: "darnassus" };
     const plain = stubGround(7, places);
     const bounded = stubGround(7, places);
     const exactStubBound: GroundBound = async (a, b) => {
@@ -223,8 +224,10 @@ describe("routeTransport", () => {
       { map: 1, point: near(stop("elevator-thunder-bluff-west-1:bottom").point, [20, 0]) },
       { map: 1, point: near(top.point, [-20, 0]) },
     ];
-    const mesa = Object.fromEntries([to.point, top.point, stop("elevator-thunder-bluff-west-2:top").point].map((p) => [`1:${p}`, "mesa"]));
-    const { ground } = stubGround(7, { ...mesa, [`1:${from.point}`]: "map 1" });
+    const mesa = Object.fromEntries(
+      [to.point, top.point, stop("elevator-thunder-bluff-west-2:top").point].map((p) => [`1:${p.join(",")}`, "mesa"]),
+    );
+    const { ground } = stubGround(7, { ...mesa, [`1:${from.point.join(",")}`]: "map 1" });
     const heights: (number | undefined)[] = [];
     const leg = await routeTransport(from, to, usableLinks(links, horde), 7, (start, end, ends) => {
       heights.push(start.height, end.height);

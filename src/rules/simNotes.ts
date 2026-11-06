@@ -123,7 +123,7 @@ function split(amount: number, { quest, kills, checkpoint }: XpGain): [earned: n
   return [amount - jump, jump];
 }
 
-export interface BandSegment {
+interface BandSegment {
   /** Progress from before the guide's first step or from a `state=` on arrival, quest and kill XP, or checkpoint XP. */
   kind: "before" | "earned" | "jump";
   /** The part of the level it fills, from 0 to 1. */

@@ -10,7 +10,7 @@ import { visibleTiles } from "../map/terrain.ts";
 import { canvasToView, viewToCanvas, zoomTo, type Box, type Fit, type Frame, type Inset } from "../map/viewport.ts";
 
 export const ATLAS = "atlas";
-export type LineMap = InstanceId | typeof ATLAS | { world: InstanceId };
+type LineMap = InstanceId | typeof ATLAS | { world: InstanceId };
 
 export interface Projection {
   toView(p: Point, map: LineMap): ViewPoint | undefined;

@@ -46,7 +46,7 @@ export type Target =
 export type InteractAction = "accept" | "turnin" | "train" | "vendor" | "home" | "fp" | "fly" | "gather";
 
 /** A kill act's quest objectives: what they counted before the act, and what they need. */
-export interface KillProgress {
+interface KillProgress {
   questId: number;
   counted: number;
   /** What the act's kills add: kills of a monster objective, or the drops that they are expected to give. */

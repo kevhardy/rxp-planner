@@ -113,7 +113,7 @@ export type RouteEnd =
   | { kind: "jumpLoop"; from: number; command: JumpCommand; step: number; line: number };
 
 /** Commands whose third (`.xp`) or second (`.maxlevel`) argument names a label to jump to. */
-export type JumpCommand = "xp" | "maxlevel";
+type JumpCommand = "xp" | "maxlevel";
 
 /**
  * Groups that RXP's Classic mode treats as speedrun guides: it shows them as
@@ -150,7 +150,7 @@ export function previewRoute(guides: readonly GuideDocument[], start: number, pr
 }
 
 /** A guide as `walkRoute` enters it, before its steps. */
-export type GuideEntry = Omit<GuidePreview, "steps" | "shown">;
+type GuideEntry = Omit<GuidePreview, "steps" | "shown">;
 
 /** What `walkRoute` yields: each guide, then each of its steps, and how the route ends. */
 export type RouteEvent =

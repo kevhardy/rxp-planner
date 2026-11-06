@@ -14,7 +14,7 @@ export interface ColorRun {
   color: RxpColor;
 }
 
-export type EntityPart = EntityId & { text: string; color?: RxpColor };
+type EntityPart = EntityId & { text: string; color?: RxpColor };
 
 export interface MonoPart {
   mono: string;

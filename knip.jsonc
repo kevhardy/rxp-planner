@@ -1,6 +1,5 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "rules": { "types": "off", "nsTypes": "off" },
   "workspaces": {
     ".": {
       // The configs in integration/ throw without an installed dataset, and the Vitest plugin loads every

@@ -55,7 +55,7 @@ const texts = ["x", "a -- b", "", "<< c", "line\nbreak"];
 const argLists = [["1", "2"], ["", "a"], ["Elwynn Forest", "1", "2"], []];
 const conditions = ["Mage", undefined, "", "(A", "Horde/ /Alliance"];
 
-function random(seed: number) {
+function mulberry32(seed: number) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
     let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -68,7 +68,7 @@ const withoutRaw = (doc: GuideDocument): unknown =>
   JSON.parse(JSON.stringify(doc, (key, value: unknown) => (key === "raw" ? undefined : value)));
 
 it(`keeps ${SEQUENCES} random edit sequences consistent with their text`, () => {
-  const next = random(20260923);
+  const next = mulberry32(20260923);
   const int = (n: number) => Math.floor(next() * n);
   const pick = <T>(items: readonly T[]): T => items[int(items.length)]!;
 

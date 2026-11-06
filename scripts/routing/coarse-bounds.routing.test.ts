@@ -47,7 +47,7 @@ describe("the coarse layer on the installed artifacts", () => {
           await routeLeg(terrain, from, to, DEFAULT_LEG, request),
           await routeLeg(plain, from, to, DEFAULT_LEG, request),
         ];
-        const leg = `map ${map} ${from} > ${to} ${JSON.stringify(request)}`;
+        const leg = `map ${map} ${from.join(",")} > ${to.join(",")} ${JSON.stringify(request)}`;
         expect(sameOutcomeOrProvedNoPath(withLayer, without), `${leg}: ${withLayer.kind} with the layer, ${without.kind} without`).toBe(
           true,
         );

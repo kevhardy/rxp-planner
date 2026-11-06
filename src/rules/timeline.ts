@@ -1,5 +1,5 @@
 import {
-  FLIGHT_MASTER_REACH,
+  FLIGHT_MASTER_REACH_YARDS,
   nearest,
   npcSpawns,
   within,
@@ -77,7 +77,7 @@ export type Fly = (leg: FlightLeg) => TravelEstimate | undefined | Promise<Trave
  */
 export type Walk = (leg: TravelLeg & { readonly mode: "Run"; readonly toward: Spawn }) => { seconds?: number; way?: string };
 
-export type TravelTarget = Target | { kind: "bind" };
+type TravelTarget = Target | { kind: "bind" };
 
 /**
  * `from` is where the leg starts; the first travel of a route without a start
@@ -546,7 +546,7 @@ async function price(act: Act, keyframe: SimState, fold: SimState, clock: Clock,
       if (!flight) {
         const why =
           target.from === undefined
-            ? `with no ${clock.profile.faction} flight master within ${FLIGHT_MASTER_REACH} yd`
+            ? `with no ${clock.profile.faction} flight master within ${FLIGHT_MASTER_REACH_YARDS} yd`
             : known
               ? `with no known flight to ${node.name}`
               : `before .fp ${node.name}`;

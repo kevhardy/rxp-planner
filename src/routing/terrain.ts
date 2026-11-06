@@ -21,7 +21,7 @@ export const HAZARD = 2;
  * terrain upstream, but the artifact does not include it or it failed to
  * load. `no-terrain`: the tile has no terrain upstream.
  */
-export type Coverage = "present" | "missing-coverage" | "no-terrain";
+type Coverage = "present" | "missing-coverage" | "no-terrain";
 const COVERAGES: readonly Coverage[] = ["present", "missing-coverage", "no-terrain"];
 
 /** `[x, y]` cells of a region, from its north-west corner. */
@@ -387,9 +387,9 @@ export interface TileBounds {
 export interface Terrain {
   /** The frame of the artifact that the terrain reads. The search resolves plan stops with it. */
   readonly frame: NativeFrame;
-  bounds(points: readonly Point[], margin: number): TileBounds;
+  bounds: (points: readonly Point[], margin: number) => TileBounds;
   /** A tile that fails to load or verify gives `missing-coverage`, and a later region reads it again. */
-  region(points: readonly Point[], margin: number): Promise<TerrainRegion>;
+  region: (points: readonly Point[], margin: number) => Promise<TerrainRegion>;
   coarse?(): Promise<CoarseLayer | undefined>;
 }
 

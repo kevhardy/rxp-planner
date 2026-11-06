@@ -44,7 +44,7 @@ const BUILTIN = "rxp:seq.lua#1";
 const VERSION_LINE = 3;
 const APPLIED = { ok: true };
 
-function random(seed: number) {
+function mulberry32(seed: number) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
     let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -64,7 +64,7 @@ interface ModelState {
 }
 
 function runSequences(withBuiltin: boolean, seed: number) {
-  const next = random(seed);
+  const next = mulberry32(seed);
   const int = (n: number) => Math.floor(next() * n);
   const pick = <T>(items: readonly T[]): T => items[int(items.length)]!;
   let counter = 0;

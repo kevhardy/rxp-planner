@@ -19,7 +19,7 @@ export type Race = (typeof RACES)[number];
  */
 const SKYBORNE_RACES = ["HighOrder", "Windshaper"] as const;
 
-export type SkyborneRace = (typeof SKYBORNE_RACES)[number];
+type SkyborneRace = (typeof SKYBORNE_RACES)[number];
 
 export type PlayableRace = Race | SkyborneRace;
 

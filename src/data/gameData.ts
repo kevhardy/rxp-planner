@@ -60,7 +60,7 @@ export type GotoForm =
   /** `<uiMapId>/<instance>` with HereBeDragons world coordinates. */
   | "world";
 
-export type GotoFailure =
+type GotoFailure =
   /** RXP does not know the zone name, or neither the data nor the client knows the map ID. */
   | "unknown-zone"
   | "no-bounds"
@@ -229,7 +229,7 @@ export class GameData {
     return { ...map, ...terrainGeometry(this.#dataset.terrain) };
   }
 
-  spiritHealer(from: WorldLocation): WorldLocation | undefined {
+  nearestSpiritHealer(from: WorldLocation): WorldLocation | undefined {
     const terrain = this.#dataset.terrain;
     const graveyards = (terrain.pois ?? []).flatMap((poi) => {
       if (poi.category !== "graveyard") return [];

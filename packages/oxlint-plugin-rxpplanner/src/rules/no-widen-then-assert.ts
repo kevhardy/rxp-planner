@@ -3,9 +3,7 @@ import { isTypeAssertion, unwrapParentheses, unwrapTypeParentheses } from "../as
 import { constDeclarator, isReassigned, resolveReference } from "../scope.ts";
 
 type Category = "top" | "object" | "record";
-interface Evidence {
-  type: ESTree.TSType | null;
-}
+type Evidence = { kind: "annotation"; type: ESTree.TSType } | { kind: "knownValue" };
 
 const boundaryTypes = new Set([
   "ArrowFunctionExpression",
@@ -122,8 +120,8 @@ export default defineRule({
 
     function evidenceOf(expression: ESTree.Node, boundary: ESTree.Node, seen = new Set<Variable>()): Evidence | null {
       const node = unwrapParentheses(expression);
-      if (isTypeAssertion(node)) return broadCategory(node.typeAnnotation) ? null : { type: node.typeAnnotation };
-      if (knownValueTypes.has(node.type)) return { type: null };
+      if (isTypeAssertion(node)) return broadCategory(node.typeAnnotation) ? null : { kind: "annotation", type: node.typeAnnotation };
+      if (knownValueTypes.has(node.type)) return { kind: "knownValue" };
       if (node.type !== "Identifier") return null;
       const variable = resolveReference(sourceCode, node);
       if (!variable || seen.has(variable)) return null;
@@ -131,7 +129,7 @@ export default defineRule({
       const annotated = variable.identifiers.find((identifier) => identifier.typeAnnotation);
       if (annotated?.typeAnnotation) {
         const type = annotated.typeAnnotation.typeAnnotation;
-        return functionBoundary(annotated) === boundary && !broadCategory(type) ? { type } : null;
+        return functionBoundary(annotated) === boundary && !broadCategory(type) ? { kind: "annotation", type } : null;
       }
       const constant = constDeclarator(variable);
       if (!constant || functionBoundary(constant.declarator) !== boundary) return null;
@@ -160,7 +158,7 @@ export default defineRule({
 
       const narrows =
         category === "top" ||
-        (evidence.type !== null && sameTypeText(target, evidence.type)) ||
+        (evidence.kind === "annotation" && sameTypeText(target, evidence.type)) ||
         (category === "object" && isDefinitelyObject(target)) ||
         (category === "record" && isNarrowerRecord(target));
       if (narrows) context.report({ node, messageId: "widenThenAssert" });

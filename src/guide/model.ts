@@ -100,8 +100,6 @@ export type BodyLine = TagLine | CommandLine | TextLine | ConditionLine | Commen
 
 export type Line = StepLine | BodyLine;
 
-export type LineKind = Line["kind"];
-
 export interface Condition {
   /** Expression text after `<<`, trimmed. The serializer writes this text. */
   text: string;

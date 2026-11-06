@@ -73,7 +73,7 @@ export function orderedGuides(guides: Iterable<GuideRecord>): GuideRecord[] {
   return libraryGroups(guides).flatMap((g) => g.guides);
 }
 
-export interface BuiltinEntry {
+interface BuiltinEntry {
   guide: GuideRecord;
   name: string;
   /** Why RXP's guide menu leaves the guide out for the character. */

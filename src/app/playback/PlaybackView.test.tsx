@@ -250,7 +250,7 @@ describe("Playback steps", () => {
   });
 
   it("draws the spirit healer mark before a death skip's resurrection", async () => {
-    const healer = vi.spyOn(GameData.prototype, "spiritHealer").mockImplementation((from) => from);
+    const healer = vi.spyOn(GameData.prototype, "nearestSpiritHealer").mockImplementation((from) => from);
     onTestFinished(() => healer.mockRestore());
     mount(undefined, ["#group G\n#name A\nstep\n.goto Elwynn Forest,40,50\n+Walk\nstep\n#softcore\n.deathskip\n"]);
     const action = await waitFor(() => {

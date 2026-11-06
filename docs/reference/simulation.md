@@ -325,7 +325,7 @@ Commands that this list leaves out take no time.
   or waits, whichever is shorter, with a warning. The cooldown carries
   across guides, so a late `.hs` in one guide can make the next guide wait.
 
-A flight master is in reach within `FLIGHT_MASTER_REACH` of where the
+A flight master is in reach within `FLIGHT_MASTER_REACH_YARDS` of where the
 character stands, else of the step's last `.goto`. Each race starts with the
 flight masters in its `startingFlightNodes`, because the server grants them
 at character creation.
@@ -352,7 +352,7 @@ at character creation.
 ### Death skips
 
 `.deathskip` moves the character to the nearest Spirit Healer on the same
-world map (`GameData.spiritHealer`). The terrain has no links from death
+world map (`GameData.nearestSpiritHealer`). The terrain has no links from death
 zones to graveyards, so the nearest healer approximates the game's choice.
 The step takes `deathskip` seconds. The simulation models no corpse run,
 resurrection sickness, or durability loss. With the Playback setting

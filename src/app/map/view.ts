@@ -60,7 +60,7 @@ export interface KeptFrame {
 
 export type UserMove = "pan" | "zoom" | "reset";
 
-export interface Shown {
+interface Shown {
   readonly frame: Frame;
   readonly pxPerPercent: number;
 }

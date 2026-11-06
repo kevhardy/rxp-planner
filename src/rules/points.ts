@@ -41,7 +41,7 @@ export const isRouteStop = (line: BodyLine): boolean => {
 export const isCoordinateLine = (line: BodyLine): boolean =>
   isPointLine(line) || (line.kind === "command" && commandRule(line.name)?.path === true);
 
-export interface StepPath<P = MapLocation> {
+interface StepPath<P = MapLocation> {
   line: number;
   command: "line" | "loop";
   points: P[];

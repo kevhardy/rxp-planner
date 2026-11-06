@@ -158,7 +158,7 @@ export interface TerrainRoute {
  * A leg that does not follow terrain: horizontal distance at the mode speed.
  * It makes no claim that the ground between the stops is passable.
  */
-export interface StraightEstimate {
+interface StraightEstimate {
   kind: "straight";
   points: [Point, Point];
   /** Horizontal world units. */
@@ -338,7 +338,7 @@ export async function keptReach(
   const own = await nodes(at, height);
   const keys = side === "from" ? own?.from : own?.to;
   const memo = reachMemo(terrain, request, leg.downhill);
-  const set = keys && (memo.get(unusableStopKey(side, at, height)) ?? memo.get(`${side === "from" ? "f" : "b"}${keys}`));
+  const set = keys && (memo.get(unusableStopKey(side, at, height)) ?? memo.get(`${side === "from" ? "f" : "b"}${keys.join(",")}`));
   if (!set) return undefined;
   return async (other, height) => {
     const theirs = await nodes(other, height);
@@ -851,7 +851,7 @@ function searchRegion(region: TerrainRegion, from: Point, to: Point, downhill: b
   const leaves = startIndoor ? doorNodes(starts) : startThroughSides ? withSides(sources, sourceCell, stopNodes) : sources,
     comes = endIndoor ? doorNodes(goals) : endThroughSides ? withSides(endNodes, targetCell, nodesOf) : endNodes;
   if (goal.kind === "stops") {
-    const target = startStop.class === "target" && `${startStop.building.home}:${startStop.building.index}`;
+    const target = startStop.class === "target" && `${startStop.building.home.join(",")}:${startStop.building.index}`;
     return {
       ...done({ kind: "no-path" }),
       stops: { ...(leaves && { from: keys(leaves) }), ...(comes && { to: keys(comes) }), ...(target && { target }) },
@@ -874,8 +874,8 @@ function searchRegion(region: TerrainRegion, from: Point, to: Point, downhill: b
     : endThroughSides || (endNode >= 0 ? usable(endNode) : stopNodes(targetCell).length > 0);
   if (!flood && !inside && !endFound) return unusableEndpoint("end");
   const reach = goal.kind === "route" && !inside && leaves && comes ? goal.reach : undefined;
-  const startKey = `f${keys(leaves ?? [])}`,
-    endKey = `b${keys(comes ?? [])}`;
+  const startKey = `f${keys(leaves ?? []).join(",")}`,
+    endKey = `b${keys(comes ?? []).join(",")}`;
   if (reach && leaves && comes) {
     const forward = reach.get(startKey),
       backward = reach.get(endKey);

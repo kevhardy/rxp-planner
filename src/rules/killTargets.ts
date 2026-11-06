@@ -20,7 +20,7 @@ import type { Location } from "./validate.ts";
 import type { PartySize } from "./xp.ts";
 
 /** `unknownSimKey` is for an `extra=` whose `mob=` names no NPC with known levels. */
-export type KillWarning = Extract<SimWarning, { kind: "noKillTarget" | "noKillCount" | "unknownSimKey" }>;
+type KillWarning = Extract<SimWarning, { kind: "noKillTarget" | "noKillCount" | "unknownSimKey" }>;
 
 export interface StepKills {
   kills: KillAssumption[];
@@ -246,7 +246,7 @@ export function objectiveKills(data: SimData, ref: ObjectiveRef, line: KillLine)
   return out;
 }
 
-export interface ItemProgress {
+interface ItemProgress {
   items: number;
   unroundedKills: number;
   kills: number[];

@@ -4,7 +4,7 @@ import { loadSaved, saveSaved, type SavedSetting } from "./savedSetting.ts";
 import type { Selection } from "./store.ts";
 
 export type Theme = "light" | "dark";
-export type AppMode = "edit" | "playback";
+type AppMode = "edit" | "playback";
 
 export const EDITOR_TABS = [
   { id: "lines", label: "Lines", header: true },

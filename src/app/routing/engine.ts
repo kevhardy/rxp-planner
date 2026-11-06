@@ -72,14 +72,14 @@ export function searchRouting(terrains: ReadonlyMap<InstanceId, Terrain>): Searc
   };
 }
 
-export interface SearchRequest {
+interface SearchRequest {
   plan: RoutePlan;
   maxSlope: number;
   rides?: Rides;
   mode?: string;
   known: [string, LegResult][];
 }
-export type SearchReply = { ok: true; value: Journeys } | { ok: false; error: string } | { progress: LegUpdate[] };
+type SearchReply = { ok: true; value: Journeys } | { ok: false; error: string } | { progress: LegUpdate[] };
 
 export interface SearchWorker {
   postMessage(request: SearchRequest): void;
@@ -194,7 +194,7 @@ export async function openSearch(): Promise<Search> {
   return searchRouting(await openTerrains());
 }
 
-export interface MissingMap {
+interface MissingMap {
   map: InstanceId;
   reason: string;
 }
