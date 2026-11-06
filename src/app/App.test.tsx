@@ -630,6 +630,16 @@ describe("import", () => {
     expect(within(screen.getByRole("navigation", { name: "Library" })).getAllByRole("listitem")).toHaveLength(2);
   });
 
+  it("hides the drop hint after a drop that holds no files", async () => {
+    await mount();
+    const app = document.getElementById("app")!;
+    fireEvent.dragOver(app, { dataTransfer: { files: [], types: ["Files"] } });
+    expect(screen.getByText("Drop to import guides")).toBeTruthy();
+    fireEvent.drop(app, { dataTransfer: { files: [], types: ["Files"] } });
+    expect(screen.queryByText("Drop to import guides")).toBeNull();
+    expect(screen.queryByRole("dialog", { name: "Import guide" })).toBeNull();
+  });
+
   it("drops a read that finishes after the dialog closes", async () => {
     const { user } = await mount();
     const late = slowFile("#group Late\n#name Late\nstep\n", "late.txt");
