@@ -537,7 +537,14 @@ export function AddLineMenu(props: {
   const [error, setError] = useState<string | null>(null);
   const { showGuideSyntax } = useLayout();
   return (
-    <PopoverMenu className={props.className} label={props.label} icon={props.icon} description={props.description} align="start">
+    <PopoverMenu
+      className={props.className}
+      label={props.label}
+      icon={props.icon}
+      description={props.description}
+      align="start"
+      onOpen={() => setError(null)}
+    >
       {(close) => (
         <div className="add-line">
           <Select aria-label="New line type" value={key} onChange={(e) => setKey(e.target.value)}>

@@ -13,9 +13,10 @@ export function PopoverMenu(props: {
   beside?: string;
   icon?: IconName | undefined;
   disabled?: boolean;
+  onOpen?: () => void;
   children: ReactNode | ((close: () => void) => ReactNode);
 }) {
-  const { open, toggle, close, dismiss, button, wrap } = useDisclosure();
+  const { open, toggle, close, dismiss, button, wrap } = useDisclosure({ onOpen: props.onOpen });
   const popoverId = useId();
   const popover = useRef<HTMLElement>(null);
   const [place, setPlace] = useState<Place>({});

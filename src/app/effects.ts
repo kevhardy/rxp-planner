@@ -90,12 +90,15 @@ export function useOutsidePress(
 }
 
 /**
- * The open state of a popover that `button` toggles, with the props of the element that wraps both. Each time it
- * opens, the element that `focus` finds in the wrapper takes focus. Escape and `close` close it and focus `button`.
- * With `lightDismiss`, a press or focus outside the wrapper closes it without focusing `button`.
+ * The open state of a popover that `button` toggles, with the props of the element that wraps both. `onOpen` runs
+ * on each toggle that opens it, and then the element that `focus` finds in the wrapper takes focus. Escape and
+ * `close` close it and focus `button`. With `lightDismiss`, a press or focus outside the wrapper closes it without
+ * focusing `button`.
  */
-export function useDisclosure(options: { focus?: (wrap: HTMLElement) => HTMLElement | null; lightDismiss?: boolean } = {}) {
-  const { focus, lightDismiss = true } = options;
+export function useDisclosure(
+  options: { focus?: (wrap: HTMLElement) => HTMLElement | null; lightDismiss?: boolean; onOpen?: (() => void) | undefined } = {},
+) {
+  const { focus, lightDismiss = true, onOpen } = options;
   const [open, setOpen] = useState(false);
   const wrap = useRef<HTMLSpanElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -116,7 +119,10 @@ export function useDisclosure(options: { focus?: (wrap: HTMLElement) => HTMLElem
   );
   return {
     open,
-    toggle: () => setOpen(!open),
+    toggle: () => {
+      if (!open) onOpen?.();
+      setOpen(!open);
+    },
     close,
     dismiss,
     button,
