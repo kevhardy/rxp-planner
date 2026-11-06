@@ -472,6 +472,144 @@ describe("MapCanvas", () => {
     expect(drag.mock.lastCall?.[0]?.x).toBeCloseTo(50.18, 10);
   });
 
+  it("cancels a pointer drag on Escape, and neither moves nor opens the pin when the pointer moves on and lifts", () => {
+    placeStage();
+    const [move, drag, activate] = [vi.fn(), vi.fn(), vi.fn()];
+    render(
+      <MapCanvas
+        {...canvas({ fit: area }).props}
+        pins={[{ key: "a", at: { x: 50, y: 50 }, kind: "goto", label: "Point", move, drag, activate }]}
+      />,
+    );
+    const pin = screen.getByRole("button", { name: "Point" });
+    fireEvent.pointerDown(pin, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerMove(pin, { clientX: 300, clientY: 200 });
+    fireEvent.keyDown(pin, { key: "Escape" });
+    fireEvent.pointerMove(pin, { clientX: 320, clientY: 200 });
+    fireEvent.pointerUp(pin, { clientX: 320, clientY: 200 });
+    fireEvent.click(pin, { detail: 1 });
+    expect([drag.mock.calls, move.mock.calls, activate.mock.calls]).toEqual([[[{ x: 62.5, y: 50 }], [null]], [], []]);
+    expect(pin.classList.contains("moving")).toBe(false);
+  });
+
+  it("places a pointer drag once on Enter, though the pin stops being movable before the pointer lifts", () => {
+    placeStage();
+    const [move, activate] = [vi.fn(), vi.fn()];
+    function Loading() {
+      const [movable, setMovable] = useState(true);
+      const at = { x: 50, y: 50 };
+      const pin = movable
+        ? { key: "a", at, kind: "goto" as const, label: "Point", activate, move: (to: ViewPoint) => (move(to), setMovable(false)) }
+        : { key: "a", at, kind: "goto" as const, label: "Point", activate };
+      return <MapCanvas {...canvas({ fit: area }).props} pins={[pin]} />;
+    }
+    const errors: unknown[] = [];
+    const onError = (e: ErrorEvent) => (e.preventDefault(), errors.push(e.error));
+    window.addEventListener("error", onError);
+    render(<Loading />);
+    const pin = screen.getByRole("button", { name: "Point" });
+    fireEvent.pointerDown(pin, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerMove(pin, { clientX: 300, clientY: 200 });
+    fireEvent.keyDown(pin, { key: "Enter" });
+    fireEvent.pointerMove(pin, { clientX: 320, clientY: 200 });
+    fireEvent.pointerUp(pin, { clientX: 320, clientY: 200 });
+    fireEvent.click(pin, { detail: 1 });
+    fireEvent.blur(pin);
+    window.removeEventListener("error", onError);
+    expect([errors, move.mock.calls, activate.mock.calls]).toEqual([[], [[{ x: 62.5, y: 50 }]], []]);
+  });
+
+  it.each([false, true])(
+    "places a keyboard move when the pointer presses another pin, then drags that pin unless the placement takes its move away (%s)",
+    (loads) => {
+      placeStage();
+      const [moveA, moveB] = [vi.fn(), vi.fn()];
+      function Pins() {
+        const [movable, setMovable] = useState(true);
+        const pin = (key: string, x: number, move: (to: ViewPoint) => void) => ({
+          key,
+          at: { x, y: 50 },
+          kind: "goto" as const,
+          label: key,
+          ...(movable && { move: (to: ViewPoint) => (move(to), loads && setMovable(false)) }),
+        });
+        return <MapCanvas {...canvas({ fit: area }).props} pins={[pin("A", 40, moveA), pin("B", 50, moveB)]} />;
+      }
+      const errors: unknown[] = [];
+      const onError = (e: ErrorEvent) => (e.preventDefault(), errors.push(e.error));
+      window.addEventListener("error", onError);
+      render(<Pins />);
+      const [a, b] = [screen.getByRole("button", { name: "A" }), screen.getByRole("button", { name: "B" })];
+      a.focus();
+      fireEvent.keyDown(a, { key: "ArrowRight" });
+      fireEvent.pointerDown(b, { button: 0, clientX: 200, clientY: 200 });
+      fireEvent.blur(a);
+      fireEvent.pointerMove(b, { clientX: 300, clientY: 200 });
+      const dragsB = b.classList.contains("moving");
+      fireEvent.pointerUp(b, { clientX: 300, clientY: 200 });
+      window.removeEventListener("error", onError);
+      expect([errors, moveA.mock.calls, dragsB, moveB.mock.calls]).toEqual([
+        [],
+        [[{ x: 40.1, y: 50 }]],
+        !loads,
+        loads ? [] : [[{ x: 62.5, y: 50 }]],
+      ]);
+    },
+  );
+
+  it("cancels a drag when a second pointer presses another pin, and drags that pin after the first pointer lifts", () => {
+    placeStage();
+    const [dragA, moveA, moveB] = [vi.fn(), vi.fn(), vi.fn()];
+    render(
+      <MapCanvas
+        {...canvas({ fit: area }).props}
+        pins={[
+          { key: "A", at: { x: 40, y: 50 }, kind: "goto", label: "A", move: moveA, drag: dragA },
+          { key: "B", at: { x: 50, y: 50 }, kind: "goto", label: "B", move: moveB },
+        ]}
+      />,
+    );
+    const [a, b] = [screen.getByRole("button", { name: "A" }), screen.getByRole("button", { name: "B" })];
+    fireEvent.pointerDown(a, { button: 0, pointerId: 1, clientX: 120, clientY: 200 });
+    fireEvent.pointerMove(a, { pointerId: 1, clientX: 220, clientY: 200 });
+    fireEvent.pointerDown(b, { button: 0, pointerId: 2, clientX: 200, clientY: 200 });
+    fireEvent.pointerUp(a, { pointerId: 1, clientX: 220, clientY: 200 });
+    fireEvent.pointerCancel(a, { pointerId: 1 });
+    fireEvent.pointerMove(b, { pointerId: 2, clientX: 300, clientY: 200 });
+    fireEvent.pointerUp(b, { pointerId: 2, clientX: 300, clientY: 200 });
+    expect([dragA.mock.calls, moveA.mock.calls, moveB.mock.calls]).toEqual([[[{ x: 52.5, y: 50 }], [null]], [], [[{ x: 62.5, y: 50 }]]]);
+  });
+
+  it("skips only the pointer click that ends a drag, through a keyboard move, and opens the pin on a later keyboard click or tap", () => {
+    placeStage();
+    const [move, activate] = [vi.fn(), vi.fn()];
+    render(
+      <MapCanvas
+        {...canvas({ fit: area }).props}
+        pins={[{ key: "a", at: { x: 50, y: 50 }, kind: "goto", label: "Point", move, activate }]}
+      />,
+    );
+    const pin = screen.getByRole("button", { name: "Point" });
+    fireEvent.pointerDown(pin, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerMove(pin, { clientX: 300, clientY: 200 });
+    fireEvent.keyDown(pin, { key: "Escape" });
+    fireEvent.keyDown(pin, { key: "ArrowRight" });
+    fireEvent.pointerUp(pin, { clientX: 300, clientY: 200 });
+    fireEvent.click(pin, { detail: 1 });
+    fireEvent.keyDown(pin, { key: "Enter" });
+    expect([move.mock.calls, activate.mock.calls]).toEqual([[[{ x: 50.1, y: 50 }]], []]);
+
+    // A touch drag ends with no click, so the next click comes from the keyboard.
+    fireEvent.pointerDown(pin, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerMove(pin, { clientX: 300, clientY: 200 });
+    fireEvent.pointerUp(pin, { clientX: 300, clientY: 200 });
+    fireEvent.click(pin, { detail: 0 });
+    fireEvent.pointerDown(pin, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerUp(pin, { clientX: 200, clientY: 200 });
+    fireEvent.click(pin, { detail: 1 });
+    expect(activate.mock.calls).toEqual([[], []]);
+  });
+
   it("runs the input callbacks of the last commit while a transition that changes them is suspended", async () => {
     placeStage();
     const first = { onClick: vi.fn(), onUserMove: vi.fn() };
