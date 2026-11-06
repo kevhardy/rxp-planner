@@ -388,7 +388,10 @@ export function ConditionEditor(props: {
   const [open, setOpen] = useState(!props.compact);
   const [error, setError] = useState<string | null>(null);
   const rows = condition ? conditionRows(condition.expr) : [];
-  const commitText = (text: string) => onCommit(text.trim() || undefined);
+  const commitText = (text: string) => {
+    setError(null);
+    return onCommit(text.trim() || undefined);
+  };
   const commitRows = (next: ConditionLiteral[][]) => setError(commitText(conditionRowsText(next)));
 
   return (
