@@ -445,14 +445,15 @@ never optional.
   goes to the quest NPC before that NPC's `.accept` or `.turnin`, else to
   the guide's last place.
 
-A `.turnin` can count kills that no `.complete` line counted. If a
-`.disablecheckbox` line left them to a later line, the player made them on
-the way, and the timeline prices them. Otherwise no step shows where or when
-the player made them, so they take no time. They still give their XP and
-complete their objectives, because RXP keeps the step until the player turns
-the quest in. The step gives a warning that suggests `state=`. A guide that
-leaves out a kill step can therefore look faster. Read these warnings when
-you compare versions of a guide.
+A `.turnin` can count kills that no `.complete` line counted. The simulation
+prices these kills for each objective. If a `.disablecheckbox` line left the
+objective's kills to a later line, the player made them on the way, and the
+timeline prices them. Otherwise no step shows where or when the player made
+them, so they take no time. They still give their XP and complete their
+objectives, because RXP keeps the step until the player turns the quest in.
+The step gives a warning that suggests `state=`. A guide that leaves out a
+kill step can therefore look faster. Read these warnings when you compare
+versions of a guide.
 
 ### Travel
 
