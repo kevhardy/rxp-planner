@@ -153,7 +153,7 @@ describe("stepRow on Northshire", () => {
   });
 
   it("shows a goto's text as an action with nested colors", () => {
-    const step = row("Northshire", 13);
+    const step = row("Northshire", 14);
     expect(step.does).toEqual([
       {
         line: 2,

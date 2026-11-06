@@ -8,9 +8,9 @@ RXPGuides.RegisterGuide([[
 << Human Mage
 #name 1-10 Elwynn Forest Mage AoE
 #version 1
-#group RestedXP Forever Guide (A)
-#subgroup Speedrun Guide Mage
-#defaultfor Human
+#group RestedXP Alliance Mage
+
+#defaultfor none Human
 #next 10-12 Loch Modan Mage AoE
 step
     #sticky
@@ -310,7 +310,7 @@ step
 .target "Auntie" Bernice Stonefield
     .accept 84 >> Accept Back to Billy
 step
-    .goto 1429,34.945,83.855
+    .goto 1429/0,322.53,-9880.48--c:1429,34.945,83.855
 >>Talk to |cRXP_FRIENDLY_Gramma Stonefield|r
     .turnin 111 >> Turn in Speak with Gramma
 .target Gramma Stonefield
@@ -816,9 +816,9 @@ RXPGuides.RegisterGuide([[
 << Gnome Mage
 #name 1-10 Dun Morogh Mage AoE
 #version 1
-#group RestedXP Forever Guide (A)
-#subgroup Speedrun Guide Mage
-#defaultfor Dwarf/Gnome
+#group RestedXP Alliance Mage
+
+#defaultfor none Gnome
 #next 10-12 Loch Modan Mage AoE
 step
     #era/som
@@ -1467,9 +1467,9 @@ RXPGuides.RegisterGuide([[
 << Alliance Mage
 #name 10-12 Loch Modan Mage AoE
 #version 1
-#group RestedXP Forever Guide (A)
-#subgroup Speedrun Guide Mage
-#defaultfor Human Mage/Gnome Mage
+#group RestedXP Alliance Mage
+
+#defaultfor none Mage
 #next 12-18 Darkshore Mage AoE
 step
     #era/som
@@ -1872,7 +1872,7 @@ step
     .goto 1437/0,-819.67,-3691.42,15,0
     .goto 1437/0,-807.26,-3716.22,15,0
     .goto 1437/0,-827.94,-3724.49,15,0
-    .goto 1437,10.760,56.721
+    .goto 1437/0,-834.55,-3711.29--c:1437,10.760,56.721
     .vendor >> If you have 8s, Check for Bronze Tube from Neal Allen and buy it if it's there
 step
     .money <0.04

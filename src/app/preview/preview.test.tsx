@@ -1,8 +1,5 @@
 // @vitest-environment jsdom
 import "fake-indexeddb/auto";
-import { Blob as NodeBlob } from "node:buffer";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
@@ -10,7 +7,7 @@ import { GameData, type EntityIndex } from "../../data/index.ts";
 import { plannerContext, plannerData, plannerFile, plannerNames } from "../../data/plannerFixture.ts";
 import { EntityIndex as FinishedEntities } from "../../data/entities.ts";
 import { insertLine, parseLine, type BodyLine } from "../../guide/index.ts";
-import { BUILTIN_PATH, decodeBuiltins, type Builtins } from "../../io/builtin.ts";
+import type { Builtins } from "../../io/builtin.ts";
 import { questAccess, type RouteView, type SimData, type StartLevel } from "../../rules/index.ts";
 import { loadLibrary, loadSetting, saveLibrary, saveSetting, type StoredLibrary } from "../../storage/index.ts";
 import { renderPlanner, unrelatedEntities } from "../renderPlanner.tsx";
@@ -23,11 +20,6 @@ import { DEFAULT_LAYOUT } from "../layout.ts";
 import { usePlaybackRoute, useRoute, useSimData } from "./route.ts";
 import { DEFAULT_SETTINGS, loadPreviewSettings, readSettings, useFaction, usePreviewSettings } from "./settings.ts";
 import { WarningsPanel } from "./WarningsPanel.tsx";
-
-const root = join(import.meta.dirname, "../../..");
-
-// jsdom's Blob has no stream(), which built-in guide decoding needs.
-globalThis.Blob = NodeBlob as typeof Blob;
 
 let data: GameData;
 
@@ -95,8 +87,6 @@ function stepStatus(index: number): string {
   const row = document.getElementById(`step-${index}`)!;
   return row.querySelector(".step-skip")?.textContent?.replace(/^Skipped · /, "") ?? "shown";
 }
-
-const bundledBuiltins = () => decodeBuiltins(new Uint8Array(readFileSync(join(root, "public", BUILTIN_PATH))));
 
 const guideCards = () =>
   within(screen.getByRole("toolbar", { name: "Guides on the route" })).getAllByRole("button", { name: /, guide \d+ of \d+/ });
@@ -764,13 +754,20 @@ describe("route", () => {
   it("keeps a saved open guide and route start that RXP moved to its dungeon guides", async () => {
     const preview = { ...DEFAULT_SETTINGS, start: "rxp:RestedXP-Skyborne.lua#4" };
     await saveSetting("preview", preview);
-    const { user } = await mount([], "rxp:RestedXP-Skyborne.lua#4", await bundledBuiltins());
+    const moved = {
+      id: "rxp:dungeon/RestedXP-Skyborne.lua#5",
+      text: "#group RestedXP Forever Dungeon Guide (A) << Alliance\n#group RestedXP Forever Dungeon Guide (H) << Horde\n#name Random Stuff\n#internal\nstep\n",
+      order: 0,
+      fileName: "dungeon/RestedXP-Skyborne.lua",
+    };
+    const builtins = { version: "v1", guides: [moved] };
+    const { user } = await mount([], "rxp:RestedXP-Skyborne.lua#4", builtins);
     expect(within(routeBar()).getByText("RestedXP Forever Dungeon Guide (A)")).toBeTruthy();
-    expect(within(routeBar()).getByRole("button", { current: "page" }).getAttribute("aria-label")).toMatch(
-      /^Random Stuff, guide 1 of \d+, open guide$/,
+    expect(within(routeBar()).getByRole("button", { current: "page" }).getAttribute("aria-label")).toBe(
+      "Random Stuff, guide 1 of 1, open guide",
     );
     expect((await startFrom(user)).selectedOptions[0]!.textContent).toBe("This guide (Random Stuff)");
-    const stores = createStores({ guides: [] }, await bundledBuiltins(), { ...DEFAULT_SAVED_SETTINGS, preview });
+    const stores = createStores({ guides: [] }, builtins, { ...DEFAULT_SAVED_SETTINGS, preview });
     expect(stores.preview.getState().start).toBe("rxp:dungeon/RestedXP-Skyborne.lua#5");
   });
 });
