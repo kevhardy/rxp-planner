@@ -309,7 +309,7 @@ export interface SimStart {
    * `objectives`. The status follows from the progress.
    */
   log: ReadonlyMap<number, readonly SeededProgress[]>;
-  /** Quests turned in. */
+  /** Quests turned in. A quest in `log` too counts as turned in. */
   done: ReadonlySet<number>;
 }
 
@@ -585,15 +585,18 @@ function simulate(
   const carried = carry(profile.faction, settings);
   const log = new Map<number, QuestProgress>();
   for (const [questId, seeded] of seed?.log ?? []) log.set(questId, withStatus(seeded.map(({ count, complete }) => ({ count, complete }))));
-  progressMade(carried, new Map(), log);
-  const first: SimState = {
-    ...atTotal(rules, totalXp(rules, profile.level, xp)),
-    position: null,
-    log,
-    done: seed ? new Set(seed.done) : priorTurnIns(guides, start, profile, data, settings),
-    bind: null,
-    flightPaths: flightPathsAtCreation(rules, profile),
-  };
+  const first = advance(
+    {
+      ...atTotal(rules, totalXp(rules, profile.level, xp)),
+      position: null,
+      log,
+      done: new Set(),
+      bind: null,
+      flightPaths: flightPathsAtCreation(rules, profile),
+    },
+    { kind: "done", questIds: [...(seed ? seed.done : priorTurnIns(guides, start, profile, data, settings))] },
+  );
+  progressMade(carried, new Map(), first.log);
   let state = first;
   const route: GuideSimulation[] = [];
   const warnings: SimWarning[] = [];
@@ -801,8 +804,11 @@ function runHeader(
   const checkpoints: Checkpoint[] = [];
   for (const d of directives) {
     if (d.at.step !== undefined || !headerLines[d.at.line!]) continue;
-    if (d.key === "done") state = advance(state, { kind: "done", questIds: d.questIds });
-    else if (d.key === "level") {
+    if (d.key === "done") {
+      const after = advance(state, { kind: "done", questIds: d.questIds });
+      progressMade(route, state.log, after.log);
+      state = after;
+    } else if (d.key === "level") {
       const check = checkpoint(
         state,
         d.at,

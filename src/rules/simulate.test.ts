@@ -445,6 +445,23 @@ describe("simulateRoute", () => {
     expect(s.steps[0]!.levelUps).toEqual([]);
   });
 
+  it("takes a quest that a header's done= turns in out of the log, with the kills that it still owed", () => {
+    const docs = [
+      guide("P", "step\n.goto Elwynn Forest,1,1\n.accept 412\n.complete 412,1,1", "#next S\n"),
+      guide("S", "step\n.goto Elwynn Forest,1,1,10\n.collect 3083,3,412", "-- @sim done=412\n"),
+    ];
+    const data = simData(
+      { 412: { objectives: [{ index: 1, kind: "item", ids: [3083], count: 3, name: "Restabilization Cog" }] } },
+      { "Elwynn Forest,1,1": loc(1, 1), "Elwynn Forest,1,1,10": loc(1, 1) },
+      { 1211: { levels: { min: 8, max: 10 }, elite: false, zoneIds: [1] } },
+      { 3083: { droppers: [{ id: 1211 }], sold: false, objectsOnly: false } },
+    );
+    const s = simulateRoute(docs, 0, createProfile({ race: "Human", class: "WARRIOR" }), data).guides[1]!;
+    expect([[...s.afterHeader.log.keys()], [...s.afterHeader.done]]).toEqual([[], [412]]);
+    // RXP completes a .collect line for a quest turned in (`addon.functions.collect` in functions.lua).
+    expect(s.steps[0]!.acts).toEqual([]);
+  });
+
   it("runs predecessors with hardcore mode off, even after a #hardcore guide", () => {
     const docs = [
       guide("A", "step\n.turnin 783", "#hardcore\n#next B\n"),
@@ -1680,6 +1697,15 @@ describe("seeded start", () => {
     expect(step.state.log.size).toBe(0);
     expect(step.state).toMatchObject({ level: 1, xp: 0 });
   });
+
+  it("counts a quest that the seed puts in the log and turns in as turned in", () => {
+    const sim = simulateRoute([guide("A", "step\n.turnin 456")], 0, profile, data, 0, {
+      log: new Map([[456, [{ count: 4, complete: false }]]]),
+      done: new Set([456]),
+    });
+    expect([[...sim.start.log.keys()], [...sim.start.done]]).toEqual([[], [456]]);
+    expect(sim.guides[0]!.steps[0]!.kills).toEqual([]);
+  });
 });
 
 describe("state= on arrival", () => {
@@ -1728,6 +1754,16 @@ describe("state= on arrival", () => {
     expect(complete.before.log.get(456)).toEqual({ status: "complete", objectives: [{ count: 3, complete: true }] });
     expect(complete.kills).toEqual([]);
     expect([...steps(`{"log": {"456": false}}`)[1]!.before.log.keys()]).toEqual([]);
+  });
+
+  it("keeps a quest in the log or turned in, whichever field applies last", () => {
+    const before = (text: string, json: string) => {
+      const { log, done } = simulate(`${text}step\n${state(json)}\n.turnin 456`, data).guides[0]!.steps.at(-1)!.before;
+      return [[...log.keys()], [...done]];
+    };
+    expect(before("step\n.accept 456\n", `{"done": {"456": true}}`)).toEqual([[], [456]]);
+    expect(before("step\n.accept 456\n.turnin 456\n", `{"log": {"456": {"1": 2}}}`)).toEqual([[456], []]);
+    expect(before("", `{"done": {"456": true}, "log": {"456": "complete"}}`)).toEqual([[456], []]);
   });
 
   describe("under a running #completewith window", () => {

@@ -124,7 +124,6 @@ export function suggestQuests(
   const out: QuestSuggestion[] = [];
 
   for (const [id, progress] of state.log) {
-    if (state.done.has(id)) continue;
     const quest = sim.quest(id);
     if (!quest || (zone !== undefined && !quest.zoneIds.includes(zone))) continue;
     if (progress.status === "complete") {

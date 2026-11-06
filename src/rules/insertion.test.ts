@@ -275,10 +275,9 @@ describe("suggestQuests", () => {
     expect(ids(suggestQuests(state(), data, sim, warrior, { sort: "xp" }))).toEqual([52, 1638, 97915, 54, 18, 33, 783, 98372]);
   });
 
-  it("leaves out logged quests that a header done= across #next marks as turned in", () => {
+  it("leaves out quests that a header done= across #next turns in", () => {
     const docs = [guide("A", "step\n.accept 33\n.accept 52", "#next B\n"), guide("B", "step\n.accept 783", "-- @sim done=33,52\n")];
     const at = insertionState(simulateRoute(docs, 0, { ...warrior, level: 5 }, sim).guides[1], null)!;
-    expect([...at.log.keys()]).toEqual([33, 52]);
     expect(ids(suggestQuests(at, data, sim, warrior, { zone: null })).filter((id) => id === 33 || id === 52)).toEqual([]);
   });
 });

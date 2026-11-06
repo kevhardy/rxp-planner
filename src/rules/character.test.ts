@@ -57,6 +57,7 @@ describe("advance", () => {
     ["bind", { kind: "bind", at: here }, { bind: here }],
     ["flightPath", { kind: "flightPath", node: 4 }, { flightPaths: new Set([4]) }],
     ["done", { kind: "done", questIds: [7, 8] }, { done: new Set([7, 8]) }],
+    ["done for a quest in the log", { kind: "done", questIds: [1] }, { log: new Map(), done: new Set([7, 1]) }],
     ["position", { kind: "position", at: here }, { position: here }],
   ])("applies %s once, however often it runs", (_, effect, changed) => {
     const once = advance(start, effect);

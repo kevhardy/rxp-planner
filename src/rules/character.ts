@@ -26,7 +26,6 @@ export type Effect =
   | { kind: "bind"; at: SimPosition }
   /** A flight master learned, by taxi node ID. */
   | { kind: "flightPath"; node: number }
-  /** A guide header's `@sim done=`: quests to treat as turned in. */
   | { kind: "done"; questIds: readonly number[] }
   /** `SimState.position` after a step. */
   | { kind: "position"; at: SimPosition | null };
@@ -119,8 +118,11 @@ export function advance(state: SimState, effect: Effect): SimState {
       return { ...state, bind: effect.at };
     case "flightPath":
       return { ...state, flightPaths: new Set(state.flightPaths).add(effect.node) };
-    case "done":
-      return { ...state, done: new Set([...state.done, ...effect.questIds]) };
+    case "done": {
+      const log = new Map(state.log);
+      for (const questId of effect.questIds) log.delete(questId);
+      return { ...state, log, done: new Set([...state.done, ...effect.questIds]) };
+    }
     case "position":
       return { ...state, position: effect.at };
   }
