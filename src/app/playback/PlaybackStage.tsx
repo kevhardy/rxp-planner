@@ -97,6 +97,7 @@ export function PlaybackStage() {
   const [follow, setFollow] = useState<Follow>({ on: true, again: 0, zoomIn: true });
   const here = useRef<ViewPoint>(undefined);
   const following = follow.on && !!follow.at;
+  const cameraMoving = usePlayback((s) => s.playing) && following;
   const pauseFollow = () => setFollow((f) => (f.on ? { ...zoomShown(f), on: false } : f));
   const ways = useMemo(() => (playback ? playback.ways(index) : []), [playback, index]);
   const interiors = useContext(DatasetContext)?.data?.worldMap?.interiors;
@@ -159,7 +160,7 @@ export function PlaybackStage() {
   const map = useGuideMap(data, focus, extras);
   const notice = usePlaybackNotice();
   return (
-    <section className="panel map-panel playback-stage" aria-label="Map">
+    <section className={`panel map-panel playback-stage${cameraMoving ? " camera-moving" : ""}`} aria-label="Map">
       <div className="panel-head">
         <h2>Map</h2>
         {map?.controls}

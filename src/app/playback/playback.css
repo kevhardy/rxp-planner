@@ -23,6 +23,13 @@
   flex: 1;
 }
 
+/* While the camera moves on every frame, the compositor moves these layers instead of painting them again. A paused camera
+   drops the promotion, because the compositor filters a layer at a fractional offset and blurs its text. */
+.playback-stage.camera-moving .map-viewport > .map-stage,
+.playback-stage.camera-moving .map-viewport > .map-overlay {
+  will-change: transform;
+}
+
 .playback-notice.problem {
   color: var(--text);
 }
