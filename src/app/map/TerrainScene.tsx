@@ -230,8 +230,10 @@ export function TerrainMarkers(props: {
   const [names] = useState(() => new Map<HTMLElement, ViewPoint>());
   const [sided] = useState(() => ({ quests: props.quests, pxPerPercent, at: new WeakMap<HTMLElement, ViewPoint>() }));
   // No dependencies: names mount and unmount with the rows of every frame. A row keeps its `at` while its point stays, so
-  // a name is measured again only when it mounts or moves, or when the quest markers or the scale change.
+  // a name is measured again only when it mounts or moves, or when the quest markers or the scale change. A name measured
+  // while the web fonts load gets measured again on a later frame, because its width can still change.
   useLayoutEffect(() => {
+    const fontsLoaded = !("fonts" in document) || document.fonts.status === "loaded";
     if (sided.quests !== props.quests || sided.pxPerPercent !== pxPerPercent) {
       Object.assign(sided, { quests: props.quests, pxPerPercent, at: new WeakMap() });
     }
@@ -240,7 +242,7 @@ export function TerrainMarkers(props: {
     const quests = (props.quests ?? []).map((at) => ({ ...screen(at), width: QUEST_ICON_PX, height: QUEST_ICON_PX }));
     for (const [name, at] of names) {
       if (sided.at.get(name) === at) continue;
-      sided.at.set(name, at);
+      if (fontsLoaded) sided.at.set(name, at);
       const icon = { ...screen(at), width: name.parentElement!.offsetWidth, height: name.parentElement!.offsetHeight };
       const side = nameSide(icon, { width: name.offsetWidth, height: name.offsetHeight }, quests);
       name.toggleAttribute("data-start", side === "start");

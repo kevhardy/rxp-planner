@@ -348,4 +348,21 @@ describe("terrain marker names", () => {
     rerender(scene(around, quests));
     expect(sides(container)).toEqual([true]);
   });
+
+  it("measures a name again once the web fonts load", () => {
+    // 40px right of the point, a quest marker covers the end of a name only once the web font makes the name wide.
+    const quests = [{ x: at.x + 40 / pxPerPercent, y: at.y }];
+    const fonts = { status: "loading" };
+    Object.defineProperty(document, "fonts", { value: fonts, configurable: true });
+    try {
+      const { container, rerender } = render(scene(around, quests));
+      expect(sides(container)).toEqual([false]);
+      Object.defineProperty(container.querySelector(".poi-name")!, "offsetWidth", { value: 100 });
+      fonts.status = "loaded";
+      rerender(scene({ ...around }, quests));
+      expect(sides(container)).toEqual([true]);
+    } finally {
+      Reflect.deleteProperty(document, "fonts");
+    }
+  });
 });
