@@ -263,7 +263,7 @@ export async function routeTrip(
     };
     for (const [i, leg] of trip.entries()) {
       const { active = false, continues: was = false } = asked[i] ?? {};
-      const continues = continuesAfter(plan, (j) => rideWalks(trip[j]), moves, i);
+      const continues = continuesAfter(plan, i, moves, (j) => rideWalks(trip[j]));
       if (leg.kind === "crossing" || continues === was) continue;
       const walk = rideGround(i, mode, { active, continues });
       const end = stopAt(plan, i + 1)!;
@@ -404,7 +404,7 @@ export async function tripLegRequest(
   let active = false;
   for (let i = Math.max(run.from, 1); i <= leg; i++)
     active = await activeAfter(plan, terrain, options.maxSlope, walk, i, run.from, requests, active);
-  const continues = continuesAfter(plan, walk, (k) => requests[k - run.from]!.moves, leg);
+  const continues = continuesAfter(plan, leg, (k) => requests[k - run.from]!.moves, walk);
   return {
     terrain,
     request: { ...requests[leg - run.from]!.request, active, continues },
@@ -430,6 +430,11 @@ export type RideWalks = { before: boolean; after: boolean } | undefined;
 export const rideWalks = (leg: JourneyLeg | undefined): RideWalks =>
   leg?.kind === "transport" ? { before: partMoves(leg.parts[0]!), after: partMoves(leg.parts.at(-1)!) } : undefined;
 
+/**
+ * The mode state at the start of leg `i` of a trip. `requests` are those of the run of legs on one map that starts at
+ * leg `from`. In the run, the state after a leg that moves on the ground is the one that `startJourney` found, because
+ * a later read of the terrain can differ.
+ */
 async function activeAfter(
   plan: NativePlan,
   terrain: Terrain,
@@ -440,15 +445,18 @@ async function activeAfter(
   requests: readonly { request: LegRequest; moves: boolean }[],
   active: boolean,
 ): Promise<boolean> {
-  const before = walks(i - 1);
-  const moved = before ? before.after : i > from && requests[i - 1 - from]!.moves;
-  if (!moved) return !before && i > from && active;
-  if (i > from) return requests[i - from]!.request.active!;
-  const leg = plan.legs[i - 1]!;
-  return !leg.followTerrain || !(await inWater(terrain, plan.stops[i]!, maxSlope, leg.hazards));
+  const rides = walks(i - 1);
+  if (rides ? !rides.after : i === from) return false;
+  if (!rides && !requests[i - 1 - from]!.moves) return active;
+  return i > from ? requests[i - from]!.request.active! : activeAtEnd(plan, terrain, maxSlope, i - 1);
 }
 
-function continuesAfter(plan: NativePlan, walks: (k: number) => RideWalks, moves: (k: number) => boolean, i: number): boolean {
+async function activeAtEnd(plan: NativePlan, terrain: Terrain, maxSlope: number, k: number): Promise<boolean> {
+  const leg = plan.legs[k]!;
+  return !leg.followTerrain || !(await inWater(terrain, plan.stops[k + 1]!, maxSlope, leg.hazards));
+}
+
+function continuesAfter(plan: NativePlan, i: number, moves: (k: number) => boolean, walks: (k: number) => RideWalks = () => undefined) {
   for (let k = i + 1; k < plan.legs.length && plan.maps[k] === plan.maps[k + 1]; k++) {
     const rides = walks(k);
     if (rides) return rides.before;
@@ -521,21 +529,21 @@ async function startJourney(
       const entry = requestOf(
         i,
         active,
-        continues(plan, i, (k) => moving[k] ?? moves(plan, k)),
+        continuesAfter(plan, i, (k) => moving[k] ?? moves(plan, k)),
       );
       const result = await find(entry, i);
       early[i] = { request: entry.request, result };
       moving[i] = !(result.kind === "route" && result.points.length === 1);
       if (!moving[i]) continue;
     }
-    active = !leg.followTerrain || !(await inWater(terrain, to, maxSlope, leg.hazards));
+    active = await activeAtEnd(plan, terrain, maxSlope, i);
   }
 
   const requests = settings.map((_, i) => ({
     ...requestOf(
       i,
       actives[i]!,
-      continues(plan, i, (k) => moving[k]!),
+      continuesAfter(plan, i, (k) => moving[k]!),
     ),
     moves: moving[i]!,
   }));
@@ -608,11 +616,6 @@ function moves(plan: NativePlan, k: number): boolean {
   const a = plan.stops[k],
     b = plan.stops[k + 1];
   return !!a && !!b && (plan.legs[k]?.followTerrain ? cell(a) !== cell(b) || changesFloor(plan, k) : !same(a, b));
-}
-
-function continues(plan: NativePlan, i: number, moves: (k: number) => boolean): boolean {
-  for (let k = i + 1; k < plan.legs.length && plan.maps[k] === plan.maps[k + 1]; k++) if (moves(k)) return true;
-  return false;
 }
 
 /**
@@ -690,7 +693,8 @@ export function keptLegs(
   const sameContinues = (i: number) => {
     for (let k = i + 1; ; k++) {
       const end = (p: NativePlan) => runEnds(p, k);
-      if (end(before) || end(plan)) return [before, plan].every((p) => end(p) || !continues(p, k - 1, (j) => movement(p, j) !== "still"));
+      if (end(before) || end(plan))
+        return [before, plan].every((p) => end(p) || !continuesAfter(p, k - 1, (j) => movement(p, j) !== "still"));
       if (rideWalks(journey[k]) || movement(before, k) !== "still" || movement(plan, k) !== "still") return sameRun(k);
       if (!sameRides(k)) return false;
     }

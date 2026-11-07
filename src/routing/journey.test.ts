@@ -254,6 +254,22 @@ describe("journeys through water", () => {
     expect(activations(line)).toEqual([0, 3]);
     expect(line.seconds).toBeCloseTo(4 + 3 + (2 * CELL_SPACING) / 14);
   });
+
+  it("keeps the mode active after a straight leg that ends in water", async () => {
+    const j = await journey(
+      channel(),
+      plan(
+        [
+          [0, 0],
+          [3, 0],
+          [6, 0],
+        ],
+        [straight, straight],
+        true,
+      ),
+    );
+    expect(activations(j)).toEqual([3, 0]);
+  });
 });
 
 describe("one search for all modes", () => {
@@ -781,6 +797,51 @@ describe("trips with rides", () => {
     const kept = (after: RoutePlan) => keptLegs(p, mounted.legs, after, FRAMES).flatMap((leg, i) => (leg ? [i] : []));
     expect(kept(p)).toEqual([0, 1]);
     expect(kept(setLeg(p, 0, { shipPaths: false }))).toEqual([]);
+  });
+
+  it("keeps the mode state through a still leg, after a ride that arrives at a waypoint or after a walk", async () => {
+    const p = plan([
+      [0, 1],
+      [30, 1],
+      [30, 1],
+      [35, 1],
+    ]);
+    const mounted = async (average: number) => {
+      const ship = southshore({ map: 0, point: native([0, 1]) }, { map: 0, point: native([30, 1]) }, average);
+      const trip = await routeTrip(p, () => ({ terrain: whole(flat(40, 3)), groundKey: "flat" }), { ...options, rides: { links: [ship] } });
+      return trip.journeys.find((j) => j.mode === mount)!.legs.map((leg) => [leg.kind, "activation" in leg ? leg.activation : undefined]);
+    };
+    expect(await mounted(1)).toEqual([
+      ["transport", undefined],
+      ["route", 0],
+      ["route", 3],
+    ]);
+    expect(await mounted(1000)).toEqual([
+      ["route", 3],
+      ["route", 0],
+      ["route", 0],
+    ]);
+  });
+
+  it("keeps the mode state that the journey found at a stop when a later read of its tile differs", async () => {
+    const p = plan(
+      [
+        [0, 0],
+        [3, 0],
+        [6, 0],
+      ],
+      [normal, straight],
+      true,
+    );
+    // A tile that fails to load reads as dry, and a later region reads it again.
+    const dry = { ...channel(), water: new Float32Array(7).fill(Number.NaN) };
+    let loaded = false;
+    const terrain: Terrain = { ...whole(channel()), region: async () => (loaded ? channel() : dry) };
+    const unused = southshore({ map: 0, point: native([0, 0]) }, { map: 0, point: native([6, 0]) }, 1000);
+    const trip = await routeTrip(p, () => ({ terrain }), { ...options, rides: { links: [unused] }, onLegs: () => (loaded = true) });
+    const mounted = trip.journeys.find((j) => j.mode === mount)!;
+    expect(mounted.legs.map((leg) => leg.kind)).toEqual(["route", "straight"]);
+    expect(mounted.legs[1]).toMatchObject({ activation: 0 });
   });
 
   it("gives a debug search after a ride the movement state of the selected trip", async () => {
