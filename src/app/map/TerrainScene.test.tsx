@@ -300,3 +300,52 @@ describe("terrain marker order", () => {
     ]);
   });
 });
+
+describe("terrain marker names", () => {
+  const published = {
+    ...worldMap,
+    places: [],
+    pois: [{ ...worldMap.pois.find((p) => p.category === "dungeon")!, level: 3 }],
+    categories: worldMap.categories.map((c) => (c.key === "dungeon" ? { ...c, labelMinZoom: 4 } : c)),
+  };
+  const placed = placeFeatures(published);
+  const at = placed.pois[0]!.at;
+  const pxPerPercent = (canvasSize(published).width / 100) * 2 ** (5 - published.nativeZoom);
+  const aspect = canvasSize(published).width / canvasSize(published).height;
+  // 6px right of the point, a quest marker covers where its name ends and leaves its start clear.
+  const atEnd = { x: at.x + 6 / pxPerPercent, y: at.y };
+  const scene = (frame: Frame, quests: { x: number; y: number }[]) => (
+    <StoresContext.Provider value={{ ...createStores(), map: new MapSettingsStore({ ...DEFAULT_MAP_SETTINGS, allFactions: true }) }}>
+      <TerrainMarkers
+        map={published}
+        features={placed}
+        shows={() => true}
+        marked={{ pois: [], places: [] }}
+        onPick={() => {}}
+        frame={frame}
+        pxPerPercent={pxPerPercent}
+        quests={quests}
+      />
+    </StoresContext.Provider>
+  );
+  const around: Frame = { left: at.x - 5, top: at.y - 5 * aspect, width: 10, height: 10 * aspect };
+  const sides = (container: HTMLElement) => [...container.querySelectorAll(".poi-name")].map((el) => el.hasAttribute("data-start"));
+
+  it("moves a name to the start of its point while a quest marker covers its end", () => {
+    const { container, rerender } = render(scene(around, []));
+    expect(sides(container)).toEqual([false]);
+    rerender(scene(around, [atEnd]));
+    expect(sides(container)).toEqual([true]);
+    rerender(scene(around, []));
+    expect(sides(container)).toEqual([false]);
+  });
+
+  it("places the name of a point that a pan brings into view", () => {
+    const away: Frame = { ...around, left: at.x + 50 };
+    const quests = [atEnd];
+    const { container, rerender } = render(scene(away, quests));
+    expect(sides(container)).toEqual([]);
+    rerender(scene(around, quests));
+    expect(sides(container)).toEqual([true]);
+  });
+});
