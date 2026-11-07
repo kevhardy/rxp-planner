@@ -1949,12 +1949,12 @@ function straightLegs(acts: readonly Act[], from: WorldLocation | null, mode: Tr
 
 /**
  * The last step of each label's `#completewith` window, by label. RXP makes
- * every `#completewith` step sticky (`addon:LoadGuide` in GuideWindow.lua),
- * and a window that names a sticky step ends only when that step completes
- * (`addon.UpdateStepCompletion`). So a window that names a `#completewith`
- * step lasts through that step's own window. `next` skips a step that its
- * `step <<` condition drops, because RXP drops the step before it numbers
- * the steps (`addon.ParseGuide` in GuideLoader.lua).
+ * every `#completewith` step that is not `#tip` sticky (`addon:LoadGuide` in
+ * GuideWindow.lua), and a window that names a sticky step ends only when that
+ * step completes (`addon.UpdateStepCompletion`). So a window that names a
+ * `#completewith` step lasts through that step's own window. `next` skips a
+ * step that its `step <<` condition drops, because RXP drops the step before
+ * it numbers the steps (`addon.ParseGuide` in GuideLoader.lua).
  */
 export function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
   const labels = stepLabels(steps, profile);
@@ -1981,9 +1981,9 @@ export const windowOpen = (end: number, s: number): boolean => s <= end;
  * The end of a `#completewith next` window that reaches shown step `s`: still
  * `next` at a `#completewith next` step, the label's `windowEnds` end at a
  * `#completewith <label>` step, else `s`. RXP makes every `#completewith`
- * step sticky, and ends a window that names a sticky step when that step
- * completes (`addon:LoadGuide` and `addon.UpdateStepCompletion` in
- * GuideWindow.lua). A lone `#sticky` step ends the window, because the
+ * step that is not `#tip` sticky, and ends a window that names a sticky step
+ * when that step completes (`addon:LoadGuide` and `addon.UpdateStepCompletion`
+ * in GuideWindow.lua). A lone `#sticky` step ends the window, because the
  * simulation completes its lines at the step.
  */
 export function nextWindowEnd(s: number, preview: StepPreview, ends: ReadonlyMap<string, number>): number | "next" {

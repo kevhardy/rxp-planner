@@ -228,8 +228,9 @@ or for `next`, the next step. RXP drops a step whose `step <<` condition
 fails before it numbers the steps (`addon.ParseGuide` in `GuideLoader.lua`),
 so `next` skips that step.
 
-RXP makes each `#completewith` step sticky, and it ends a window that names
-a sticky step only when that step completes. So when the window names a
+RXP makes each `#completewith` step that is not `#tip` sticky, and it ends
+a window that names a sticky step only when that step completes. The
+simulation does not model `#tip`. So when the window names a
 `#completewith` step, the window also lasts through that step's window. When
 the window names a lone `#sticky` step, RXP ends the window when that step's
 lines are done. The simulation completes those lines at the `#sticky` step,
