@@ -38,6 +38,21 @@ describe("DraftField", () => {
     expect(onCommit.mock.calls).toEqual([["Old name"]]);
   });
 
+  it("commits when focus leaves its tools for another control in the dialog that holds the field", async () => {
+    const user = userEvent.setup();
+    const onCommit = vi.fn((_text: string) => null);
+    render(
+      <dialog open>
+        <DraftField label="Name" draftName="Name" value="Old" onCommit={onCommit} tools={() => <button type="button">Tool</button>} />
+        <button type="button">Elsewhere</button>
+      </dialog>,
+    );
+    await user.type(screen.getByRole("textbox", { name: "Name" }), " name");
+    await user.click(screen.getByRole("button", { name: "Tool" }));
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(onCommit.mock.calls).toEqual([["Old name"]]);
+  });
+
   it("drops the draft before onCommit runs", async () => {
     const user = userEvent.setup();
     const owner: DraftOwner = { object: { unscoped: true }, guide: "guide" };
