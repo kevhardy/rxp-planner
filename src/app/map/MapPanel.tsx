@@ -270,6 +270,18 @@ export function useGuideMap(
   const interiors = useInteriorView(terrain?.map, view.mapView, extras.interior);
   const [plans, setPlans] = useState(false);
   const zoneGrids = useZoneGrids(terrain?.map, visible("zone-borders"));
+  const referencesOn = visible("references");
+  const marked = useMemo(() => {
+    const byPoi = terrain?.byPoi ?? new Map<WorldMapPoi, PlacedPoi>();
+    const referenced = referencesOn && stepObject && index ? stepEntities(stepObject).flatMap((e) => index.entity(e)?.locations ?? []) : [];
+    const references = [...new Set(referenced.flatMap((l) => l.pois.flatMap((p) => byPoi.get(p) ?? [])))];
+    const marks = focused?.marks ?? [];
+    const shown: PlacedPoi[] = marks.flatMap((m) => m.pois.map((p) => ({ ...byPoi.get(p)!, at: m.at })));
+    return {
+      pois: [...references, ...shown.filter((s) => !references.some((r) => r.poi === s.poi && r.at.x === s.at.x && r.at.y === s.at.y))],
+      places: marks.flatMap((m) => (m.place ? [{ place: m.place, at: m.at }] : [])),
+    };
+  }, [terrain, referencesOn, stepObject, index, focused]);
   if (!data || !guide) return null;
   const doc = guide.doc;
 
@@ -399,17 +411,9 @@ export function useGuideMap(
   const selectedPoint =
     step === null || selection.line === null ? undefined : surface.place(doc.steps[step]!).points.find((p) => p.line === selection.line);
   const readoutPoints: ReadoutPoint[] = selectedPoint ? [{ label: "Point", at: selectedPoint.world }] : [];
-  const referenced =
-    visible("references") && step !== null && index ? stepEntities(doc.steps[step]!).flatMap((e) => index.entity(e)?.locations ?? []) : [];
-  const references = [...new Set(referenced.flatMap((l) => l.pois.flatMap((p) => terrain.byPoi.get(p) ?? [])))];
   const marks = focused?.marks ?? [];
   const spawnsOn = visible("guide") && visible("objective-spawns");
   const rings = focused?.objective && spawnsOn ? [] : marks.filter((m) => !m.place);
-  const shown: PlacedPoi[] = marks.flatMap((m) => m.pois.map((p) => ({ ...terrain.byPoi.get(p)!, at: m.at })));
-  const marked = {
-    pois: [...references, ...shown.filter((s) => !references.some((r) => r.poi === s.poi && r.at.x === s.at.x && r.at.y === s.at.y))],
-    places: marks.flatMap((m) => (m.place ? [{ place: m.place, at: m.at }] : [])),
-  };
   const scene = (frame: Frame, pxPerPercent: number) => (
     <>
       <TerrainScene
