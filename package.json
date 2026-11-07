@@ -34,7 +34,8 @@
     "agent:mcp": "node scripts/agent/mcp.ts",
     "bench:routing": "node scripts/bench/routing.ts",
     "bench:playback": "node scripts/bench/playback.ts",
-    "bench:compare": "node scripts/bench/compare.ts"
+    "bench:compare": "node scripts/bench/compare.ts",
+    "bench:ab": "node scripts/bench/ab.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

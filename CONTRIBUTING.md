@@ -46,6 +46,60 @@ Some changes need more checks:
 CI runs `pnpm check` on the generic dataset and `pnpm test:release` on the
 pinned release file. Run `pnpm check` locally only to reproduce a CI failure.
 
+## Measure performance
+
+The benchmarks run on the installed release file. Each one writes JSON
+Lines to stdout. The header of each script lists its scenarios and options.
+
+```sh
+timeout 1800s pnpm bench:routing --runs 5
+timeout 1800s pnpm bench:playback --runs 5
+pnpm bench:routing --case boat --runs 5 > boat.jsonl
+```
+
+To show that a change makes code faster or slower, compare the change with
+its base. Measure both on the same machine at the same time.
+
+1. Make a worktree of the base, and install it:
+
+   ```sh
+   git worktree add --detach ../rxp-base origin/main
+   pnpm --dir ../rxp-base install
+   ```
+
+2. From your checkout, run the benchmark on both sides:
+
+   ```sh
+   pnpm bench:ab --base ../rxp-base --head . --runs 5 --out /tmp/ab -- bench:playback --case northshire-1 --runs 1
+   ```
+
+   `bench:ab` runs each side once and discards the result. Then it runs
+   base and head in turn, saves each run in `--out`, and prints a table.
+   A run that fails stops the comparison. Give the benchmark `--runs 1`, so
+   that each sample comes from a separate process, in turn with the other side.
+
+3. Remove the worktree with `git worktree remove ../rxp-base`.
+
+To compare saved runs again, use
+`pnpm bench:compare --base FILE... --head FILE...`. With `--fail-on-slower`,
+it exits nonzero when a row is `slower`.
+
+Every metric is lower-is-better. Each row of the table gives a verdict:
+
+- **`faster`.** Every head sample is below every base sample.
+- **`slower`.** Every head sample is above every base sample.
+- **`no measurable difference`.** The two ranges overlap. The change in the
+  medians is then noise, even when it is large.
+
+A row can also have a note:
+
+- **`output changed`.** The head computes another result, so the times do
+  not measure the same work.
+- **`fewer than 5 samples`.** Add runs before you trust the verdict.
+
+`bench:compare` refuses to compare runs of different benchmarks or on
+different datasets.
+
 ## Commits and pull requests
 
 - Make one change per pull request, with a focused test for each change in
