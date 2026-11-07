@@ -4,7 +4,6 @@ import { classifyStop } from "./indoor.ts";
 import { nativePlan, noArtifact, resolvedOn, type MapPoint, type NativeFrame, type NativePlan, type Point } from "./frame.ts";
 import type { Leg, MovementMode, RoutePlan } from "./plan.ts";
 import { GROUND_SETTINGS, noPathKey, searchKey } from "./reuse.ts";
-import { routeOf } from "./result.ts";
 import {
   SNAP,
   coarseBound,
@@ -83,6 +82,9 @@ interface Crossing {
 }
 
 export type JourneyLeg = LegResult | TransportLeg | Crossing;
+
+/** The route of a leg: its terrain route, or a failed leg's provisional route. */
+export const routeOf = (leg: JourneyLeg): TerrainRoute | undefined => (leg.kind === "route" ? leg : "route" in leg ? leg.route : undefined);
 
 export interface Journey<Leg = JourneyLeg> {
   mode: MovementMode;

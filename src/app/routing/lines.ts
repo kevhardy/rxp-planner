@@ -1,8 +1,7 @@
 import { canvasToWorld, worldToCanvas, type InstanceId, type WorldLocation, type WorldMapData } from "../../data/index.ts";
 import { frameOf, insideFrame, nativeToCanvas, type NativeFrame, type Point } from "../../routing/frame.ts";
-import type { Journey, JourneyLeg } from "../../routing/journey.ts";
+import { routeOf, type Journey, type JourneyLeg } from "../../routing/journey.ts";
 import type { RoutePlan } from "../../routing/plan.ts";
-import { routeOf } from "../../routing/result.ts";
 import type { TerrainRoute } from "../../routing/search.ts";
 import { transportSteps, type TransportLink } from "../../routing/transport.ts";
 import type { ViewPoint } from "../map/points.ts";

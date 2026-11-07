@@ -1,5 +1,6 @@
 import type { RoutePlan } from "../../routing/plan.ts";
-import { floorLines, measureLabel, routeOf } from "../../routing/result.ts";
+import { routeOf } from "../../routing/journey.ts";
+import { floorLines, measureLabel } from "../../routing/result.ts";
 import type { MapMenuItem } from "../map/MapCanvas.tsx";
 import { MapPopover } from "../map/MapPopover.tsx";
 import { Button } from "../ui/Button.tsx";

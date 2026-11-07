@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from "react";
-import type { Journey, JourneyLeg } from "../../routing/journey.ts";
+import { routeOf, type Journey, type JourneyLeg } from "../../routing/journey.ts";
 import type { Leg } from "../../routing/plan.ts";
 import {
   fallLines,
@@ -10,7 +10,6 @@ import {
   rideKinds,
   rideLabel,
   rideTime,
-  routeOf,
   shownTotal,
   summarizeJourney,
   type FloorLine,
