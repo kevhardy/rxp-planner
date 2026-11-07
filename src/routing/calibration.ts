@@ -1,6 +1,7 @@
 import type { Point } from "./frame.ts";
-import { fail, fields, json, list, parseScope, scopeName, type ArtifactScope, type RoutingArtifact } from "./artifact.ts";
+import { json, parseScope, scopeName, type ArtifactScope, type RoutingArtifact } from "./artifact.ts";
 import type { LegResult } from "./search.ts";
+import { fail, fields, list } from "./shape.ts";
 
 /** The producer's travel modes, as observations and corridor cases name them. */
 export const MODES = ["run", "mount", "epic-mount", "ghost-wolf", "travel-form"] as const;

@@ -2,6 +2,7 @@
 // Hashes use WebCrypto so the browser and Node installer share this module.
 
 import type { InstanceId, UiMapId } from "../data/index.ts";
+import { count, fail, fields, list } from "./shape.ts";
 
 const ARTIFACT_SCHEMA = "restedxp-routing-artifact";
 export const TILE_PIXELS = 512;
@@ -374,29 +375,6 @@ export function fetchAssets(base: string): ReadAsset {
     if (!response.ok) fail(path, `HTTP ${response.status}`);
     return new Uint8Array(await response.arrayBuffer());
   };
-}
-
-export function fail(path: string, message: string): never {
-  throw new Error(`${path}: ${message}`);
-}
-
-/** An object with exactly the required keys and any of the optional keys. */
-export function fields(value: unknown, path: string, required: string[], optional: string[] = []): Record<string, unknown> {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) fail(path, "expected an object");
-  for (const key of required) if (!(key in value)) fail(`${path}.${key}`, "missing");
-  for (const key of Object.keys(value)) if (!required.includes(key) && !optional.includes(key)) fail(`${path}.${key}`, "unknown field");
-  return value as Record<string, unknown>;
-}
-
-export function list(value: unknown, path: string, max = 10_000): unknown[] {
-  if (!Array.isArray(value)) fail(path, "expected a list");
-  if (value.length > max) fail(path, `expected at most ${max} items`);
-  return value;
-}
-
-export function count(value: unknown, path: string, min: number): number {
-  if (!Number.isSafeInteger(value) || (value as number) < min) fail(path, `expected an integer of at least ${min}`);
-  return value as number;
 }
 
 export function sha256(value: unknown, path: string): string {

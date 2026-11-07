@@ -1,6 +1,6 @@
 import type { Point } from "./frame.ts";
 import { TILE_PIXELS, TILE_WORLD_UNITS } from "./artifact.ts";
-import type { Journey, JourneyLeg } from "./journey.ts";
+import { routeOf, type Journey, type JourneyLeg } from "./journey.ts";
 import { DAMAGE_FALL, FATAL_FALL, type LegResult, type LegStop, type TerrainRoute } from "./search.ts";
 import { rideCost, transportSteps, type TransportLeg, type TransportLink } from "./transport.ts";
 
@@ -51,9 +51,6 @@ export interface JourneySummary {
 const WORLD_PER_PIXEL = TILE_WORLD_UNITS / TILE_PIXELS;
 const length = (points: readonly Point[]) =>
   points.reduce((sum, p, i) => (i ? sum + Math.hypot(p[0] - points[i - 1]![0], p[1] - points[i - 1]![1]) : 0), 0) * WORLD_PER_PIXEL;
-
-/** The route of a leg: its terrain route, or a failed leg's provisional route. */
-export const routeOf = (leg: JourneyLeg): TerrainRoute | undefined => (leg.kind === "route" ? leg : "route" in leg ? leg.route : undefined);
 
 const CROSSING: LegSummary = {
   kind: "crossing",

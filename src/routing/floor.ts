@@ -2,7 +2,8 @@
 // section of its routing artifact format. Keep the decoder checks the same
 // as the producer's.
 
-import { fail, floorPath, type RoutingArtifact, type Tile } from "./artifact.ts";
+import { floorPath, type RoutingArtifact, type Tile } from "./artifact.ts";
+import { fail } from "./shape.ts";
 
 const MAGIC = "RXRF";
 const VERSION = 3;

@@ -1,8 +1,9 @@
 import type { InstanceId } from "../data/index.ts";
 import type { Point } from "./frame.ts";
-import { count, fail, fields, list, sha256 } from "./artifact.ts";
+import { sha256 } from "./artifact.ts";
 import { DEFAULT_LEG, DEFAULT_MAX_SLOPE } from "./plan.ts";
 import { keepStopKeys, stopKeys, type ReachRequest, type StopKeys } from "./search.ts";
+import { count, fail, fields, list } from "./shape.ts";
 import type { Terrain } from "./terrain.ts";
 
 export const STOP_TABLE_FORMAT = "restedxp-stop-keys";

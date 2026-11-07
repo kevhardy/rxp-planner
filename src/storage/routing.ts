@@ -1,5 +1,6 @@
 import type { RoutePlan } from "../routing/plan.ts";
-import { fail, fields, list, readPlanParts } from "../routing/records.ts";
+import { readPlanParts } from "../routing/records.ts";
+import { fail, fields, list } from "../routing/shape.ts";
 import { done, openDb, result, ROUTE_PLANS } from "./db.ts";
 
 function readSavedPlan(value: unknown, path: string): RoutePlan {

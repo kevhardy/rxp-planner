@@ -23,9 +23,9 @@ import {
   type Walk,
 } from "../rules/index.ts";
 import { frameOf, nativeStop, nativeToWorld, type NativeFrame } from "./frame.ts";
-import type { Journey, JourneyLeg, Journeys } from "./journey.ts";
+import { routeOf, type Journey, type JourneyLeg, type Journeys } from "./journey.ts";
 import { createPlan, DEFAULT_LEG, withHeight, type MovementMode, type RoutePlan } from "./plan.ts";
-import { rideText, routeOf } from "./result.ts";
+import { rideText } from "./result.ts";
 import type { LegStop, TerrainRoute } from "./search.ts";
 import { STOREY } from "./terrain.ts";
 import type { Rides, TransportLink } from "./transport.ts";
