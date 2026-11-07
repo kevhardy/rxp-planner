@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode, type Ref } from "react";
+import type { FocusEvent, RefObject } from "react";
 import { createPortal } from "react-dom";
 import { conditionRows, conditionRowsText, type Condition, type ConditionLiteral } from "../guide/index.ts";
 import { Described } from "./Described.tsx";
@@ -17,6 +18,33 @@ export function useDraft(name: string): [DraftState, (state: DraftState) => void
   const owner = scope ?? local;
   const state = useSyncExternalStore(subscribeDrafts, () => readDraft(owner, name));
   return [state, (next) => writeDraft(owner, name, next)];
+}
+
+export function useDraftCommit(name: string, value: string, onCommit: (value: string) => string | null) {
+  const [state, setState] = useDraft(name);
+  const commit = () => {
+    const { draft } = state;
+    if (draft === null) return;
+    setState(NO_DRAFT);
+    const error = draft === value ? null : onCommit(draft);
+    if (error) setState({ draft, error });
+  };
+  return [state, setState, commit] as const;
+}
+
+const inToolDialog = (next: Element, control: Element | null) => {
+  const dialog = next.closest("dialog");
+  return !!dialog && !dialog.contains(control);
+};
+
+export function commitOnLeave(control: RefObject<Element | null>, commit: () => void) {
+  return (e: FocusEvent) => {
+    // Ignore blurs inside a tool's dialog, which React passes up from its portal.
+    if (!e.currentTarget.contains(e.target)) return;
+    const next = e.relatedTarget;
+    const stays = !!next && (e.currentTarget.contains(next) || !!control.current?.contains(next) || inToolDialog(next, control.current));
+    if (!stays) commit();
+  };
 }
 
 export interface Suggestion {
@@ -86,7 +114,7 @@ export function DraftField(props: {
   tools?: (field: FieldText) => ReactNode;
 }) {
   const { label, value, onCommit, suggest } = props;
-  const [{ draft, error }, setState] = useDraft(props.draftName);
+  const [{ draft, error }, setState, commit] = useDraftCommit(props.draftName, value, onCommit);
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const tools = useRef<HTMLSpanElement>(null);
@@ -130,13 +158,6 @@ export function DraftField(props: {
     }
   });
 
-  const commit = () => {
-    if (draft === null) return;
-    setState(NO_DRAFT);
-    const message = draft === value ? null : onCommit(draft);
-    if (message) setState({ draft, error: message });
-  };
-
   const choose = (option: Suggestion) => {
     setListed(false);
     setActive(-1);
@@ -155,8 +176,6 @@ export function DraftField(props: {
       pendingCaret.current = to;
     },
   };
-
-  const staysIn = (next: Element | null) => !!next && (next === input.current || !!tools.current?.contains(next));
 
   const listId = `${id}-options`;
   const combobox = suggest && {
@@ -189,7 +208,7 @@ export function DraftField(props: {
       }}
       onBlur={(e) => {
         setListed(false);
-        if (!staysIn(e.relatedTarget)) commit();
+        if (!tools.current?.contains(e.relatedTarget)) commit();
       }}
       onKeyDown={(e) => {
         const moved = !!suggest && e.currentTarget.selectionStart !== at;
@@ -233,17 +252,7 @@ export function DraftField(props: {
         {control}
       </Field>
       {props.tools && (
-        <span
-          className="field-tools"
-          ref={tools}
-          onBlur={(e) => {
-            // Ignore blurs inside a tool's dialog, which React passes up from its portal.
-            if (!e.currentTarget.contains(e.target)) return;
-            const next = e.relatedTarget;
-            const dialog = next?.closest("dialog");
-            if (!staysIn(next) && !(dialog && !dialog.contains(input.current))) commit();
-          }}
-        >
+        <span className="field-tools" ref={tools} onBlur={commitOnLeave(input, commit)}>
           {props.tools(field)}
         </span>
       )}

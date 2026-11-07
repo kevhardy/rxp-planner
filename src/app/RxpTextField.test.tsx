@@ -122,6 +122,19 @@ describe("RxpTextField", () => {
     expect(commits).toEqual(["Go now", "Go now fastEagan Peltskinner (npc #196)"]);
   });
 
+  it("keeps the draft while focus is in a tool's dialog, and commits once focus leaves the field after the dialog closes", async () => {
+    const { user, box, commits } = mount("Go", undefined, ICONS);
+    select(box, "Go", 2);
+    await user.keyboard(" now");
+    await user.click(screen.getByRole("button", { name: "Insert icon" }));
+    const dialog = screen.getByRole("dialog", { name: "Insert icon" });
+    await user.click(within(dialog).getByRole("heading", { name: "Insert icon" }));
+    expect(commits).toEqual([]);
+    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(commits).toEqual(["Go now"]);
+  });
+
   it("keeps a draft that fails to commit, with the error", async () => {
     const { user, box, commits } = mount("Go", (value) => (value.includes("--") ? "No comments here." : null));
     select(box, "Go", 2);
