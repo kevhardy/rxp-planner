@@ -140,7 +140,7 @@ describe("Playback following", () => {
       return [zoom(), ...markerCenter()];
     });
     expect(moves).toEqual([
-      [zoomed, 480, 500],
+      [zoomed, ...CENTER],
       [zoomed, ...CENTER],
     ]);
 
@@ -152,6 +152,42 @@ describe("Playback following", () => {
     expect([follow().getAttribute("aria-pressed"), zoom()]).toEqual(["false", 1]);
     fireEvent.click(follow());
     expect([follow().getAttribute("aria-pressed"), zoom(), markerCenter()]).toEqual(["true", followed, CENTER]);
+  });
+
+  it("keeps the character centered on every frame while it walks", async () => {
+    await mount();
+    act(() => stores.playback.seekStep(2));
+    vi.useFakeTimers({ toFake: ["requestAnimationFrame", "cancelAnimationFrame", "performance"] });
+    try {
+      act(() => stores.playback.play());
+      const frames = [0, 1, 2, 3].map(() => {
+        act(() => {
+          vi.advanceTimersToNextFrame();
+        });
+        return [transform(), ...markerCenter()];
+      });
+      expect([new Set(frames.map(([pan]) => pan)).size, ...frames.map(([, x, y]) => [x, y])]).toEqual([4, CENTER, CENTER, CENTER, CENTER]);
+    } finally {
+      act(() => stores.playback.pause());
+      vi.useRealTimers();
+    }
+  });
+
+  it("zooms about the character after it has moved from where following began", async () => {
+    await mount();
+    next();
+    const followed = zoom();
+    fireEvent.click(screen.getByRole("button", { name: "Zoom out" }));
+    expect([(zoom() / followed).toFixed(4), markerCenter()]).toEqual([(1 / 1.5).toFixed(4), CENTER]);
+  });
+
+  it("stops moving the camera after a pan while the character walks on", async () => {
+    await mount();
+    pan();
+    const panned = transform();
+    next();
+    next();
+    expect([follow().getAttribute("aria-pressed"), transform()]).toEqual(["false", panned]);
   });
 
   it("keeps the user's zoom when following resumes before the character moves", async () => {

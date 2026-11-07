@@ -10,6 +10,7 @@ import { Icon } from "../icons.tsx";
 import { Button } from "../ui/Button.tsx";
 import { useGuideMap, type MapExtras, type MapFocus, type GuideMapView } from "../map/MapPanel.tsx";
 import type { ViewPoint } from "../map/points.ts";
+import { useMapView } from "../map/view.ts";
 import { jumpTo, usePlaybackRoute } from "../preview/route.ts";
 import { previewDoc, type Activity } from "../../rules/index.ts";
 import { insideOf, levelChip, levelOf, useSurfaces } from "../routing/Interiors.tsx";
@@ -54,7 +55,6 @@ function routedStops({ plan, journey }: WayView, frames: readonly NativeFrame[])
 }
 
 const FOLLOW_WIDTH = 1.2;
-const FOLLOW_SLACK = 8;
 
 interface Follow {
   on: boolean;
@@ -96,6 +96,8 @@ export function PlaybackStage() {
   }, [step, record, route, playback, store, character, index]);
   const [follow, setFollow] = useState<Follow>({ on: true, again: 0, zoomIn: true });
   const here = useRef<ViewPoint>(undefined);
+  const following = follow.on && !!follow.at;
+  const cameraMoving = usePlayback((s) => s.playing) && following;
   const pauseFollow = () => setFollow((f) => (f.on ? { ...zoomShown(f), on: false } : f));
   const ways = useMemo(() => (playback ? playback.ways(index) : []), [playback, index]);
   const interiors = useContext(DatasetContext)?.data?.worldMap?.interiors;
@@ -132,15 +134,10 @@ export function PlaybackStage() {
         {layers.mobs && <MobMarkers view={view} />}
         <CharacterMarker
           view={view}
+          follows={following}
           onAt={(at) => {
             here.current = at;
-            if (!at) return;
-            const far = (from: ViewPoint | undefined) => {
-              if (!from) return true;
-              const [dx, dy] = toScreen({ x: at.x - from.x, y: at.y - from.y }, view.pxPerPercent, view.surface.aspect);
-              return Math.max(Math.abs(dx), Math.abs(dy)) > FOLLOW_SLACK;
-            };
-            if (follow.on && far(follow.at)) setFollow((f) => (f.on && far(f.at) ? { ...zoomShown(f), at } : f));
+            if (at && follow.on && !follow.at) setFollow((f) => (f.on && !f.at ? { ...f, at } : f));
           }}
         />
       </>
@@ -163,7 +160,7 @@ export function PlaybackStage() {
   const map = useGuideMap(data, focus, extras);
   const notice = usePlaybackNotice();
   return (
-    <section className="panel map-panel playback-stage" aria-label="Map">
+    <section className={`panel map-panel playback-stage${cameraMoving ? " camera-moving" : ""}`} aria-label="Map">
       <div className="panel-head">
         <h2>Map</h2>
         {map?.controls}
@@ -289,11 +286,14 @@ const walks = (activity: Activity | undefined) =>
   activity?.kind === "flight" ||
   ((activity?.kind === "kill" || activity?.kind === "grind") && !!activity.walk);
 
-function CharacterMarker(props: { view: GuideMapView; onAt: (at: ViewPoint | undefined) => void }) {
-  const { view, onAt } = props;
+function CharacterMarker(props: { view: GuideMapView; follows: boolean; onAt: (at: ViewPoint | undefined) => void }) {
+  const { view, follows, onAt } = props;
+  const { surface } = view;
+  const store = usePlaybackStore();
+  const camera = useMapView();
   const moment = useMoment();
   const place = moment?.place;
-  const at = place && view.surface.projectOutline(place);
+  const at = place && surface.projectOutline(place);
   const interiors = view.map.interiors;
   useSurfaces(interiors, NO_STOPS, place && interiors && interiorAt(interiors.list, place));
   const where = place && levelOf(interiors, withHeight(place, place.height ?? null));
@@ -301,6 +301,16 @@ function CharacterMarker(props: { view: GuideMapView; onAt: (at: ViewPoint | und
   useLayoutEffect(() => {
     onAt(at);
   });
+  // Centering from the store's listener, before React renders the moment, moves the camera and the marker in one commit
+  // and measures the map's covers on a clean layout.
+  useLayoutEffect(() => {
+    if (!follows) return;
+    return store.subscribe(() => {
+      const place = store.moment()?.place;
+      const at = place && surface.projectOutline(place);
+      if (at) camera.center(at);
+    });
+  }, [follows, store, camera, surface]);
   if (!at) return null;
   const [x, y] = toScreen(at, view.pxPerPercent, view.surface.aspect);
   return (

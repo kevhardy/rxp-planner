@@ -80,9 +80,9 @@ export interface MapViewSource {
   readonly getSnapshot: () => ViewSnapshot;
 }
 
-export const MapViewContext = createContext<MapViewSource | null>(null);
+export const MapViewContext = createContext<MapView | null>(null);
 
-export function useMapView(): MapViewSource {
+export function useMapView(): MapView {
   const mapView = useContext(MapViewContext);
   if (!mapView) throw new Error("useMapView needs a MapCanvas");
   return mapView;
@@ -145,6 +145,7 @@ export class MapView implements MapViewSource {
   #pan: { x: number; y: number; pointerId: number; grabbed: ViewPoint; moved: boolean } | null = null;
   #pointer: ClientPoint | null = null;
   #reported: ViewSnapshot | null = null;
+  #centered: { at: ViewPoint; zoom: Zoom } | null = null;
 
   constructor(kept?: KeptFrame) {
     this.#kept = kept;
@@ -241,6 +242,16 @@ export class MapView implements MapViewSource {
     this.#set(panLimit({ s, tx: x - (x - z.tx) * k, ty: y - (y - z.ty) * k }, { vw: v.width, vh: v.height, w, h }, cover), box);
   }
 
+  /** Moves the camera to put `at` in the middle of the uncovered view at the current zoom. Until a request moves the camera, a zoom keeps `at` in place. */
+  center(at: ViewPoint): void {
+    const { zoom, box, maxZoom } = this.#snapshot;
+    const was = this.#centered;
+    if (!box || (was?.zoom === zoom && was.at.x === at.x && was.at.y === at.y)) return;
+    const cover = this.#props?.cover;
+    this.#set(zoomTo({ ...at, ...(cover && { inset: cover }) }, box, maxZoom, zoom.s), box);
+    this.#centered = { at, zoom: this.#snapshot.zoom };
+  }
+
   reset(): void {
     this.#props!.onUserMove?.("reset");
     this.#set({ s: 1, tx: 0, ty: 0 }, this.#snapshot.box);
@@ -248,7 +259,7 @@ export class MapView implements MapViewSource {
 
   #lock(): ViewPoint | null {
     const { fit, hold, zoomKeepsPoint } = this.#props!.request;
-    return fit && !hold && !("left" in fit) && (zoomKeepsPoint || fit.width === undefined) ? fit : null;
+    return fit && !hold && !("left" in fit) && (zoomKeepsPoint || fit.width === undefined) ? (this.#centered?.at ?? fit) : null;
   }
 
   #measure(): void {
@@ -262,6 +273,7 @@ export class MapView implements MapViewSource {
     if (!box) return this.#set(zoom, null);
     const move = this.#requests!.move(props.request);
     if (move) {
+      this.#centered = null;
       const now = sameOr(box, sizeOf(this.#attachment!.viewport, props.aspect)) ?? box;
       this.#measured = now;
       const max = Math.max(1, props.maxZoom(now.w));
