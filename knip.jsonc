@@ -6,10 +6,10 @@
       // config that package.json names. The Vite plugin still reads the test settings in vite.config.ts.
       "vitest": false,
       "entry": [
-        "scripts/playback-performance.ts",
+        "scripts/bench/playback.ts",
         "scripts/guides/simulation-diff.ts",
         "scripts/routing/cli.ts",
-        "scripts/routing/transport-benchmark.ts",
+        "scripts/bench/routing.ts",
         "scripts/data-contract/consumer.ts",
         "{src,scripts}/**/*.test-d.{ts,tsx}",
       ],

@@ -1,5 +1,5 @@
 /**
- * Run with `node scripts/playback-performance.ts --guides 1 --runs 5`.
+ * Run with `node scripts/bench/playback.ts --guides 1 --runs 5`.
  * Use an external timeout.
  * Data loading is excluded. Cold means empty Playback ways and terrain search caches,
  * not an empty OS file cache. Warm retains Playback ways on the same instance.
@@ -18,16 +18,16 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Session } from "node:inspector/promises";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { guideNamed } from "../src/rules/registration.ts";
-import { routeTrip, type Journeys } from "../src/routing/journey.ts";
-import { PlaybackRouting, type Playback, type WayRouter } from "../src/routing/playback.ts";
-import { DEFAULT_MAX_SLOPE } from "../src/routing/plan.ts";
-import { recentRecords, SEARCH_RECORDS } from "../src/routing/reuse.ts";
-import { placeTransports, tripRides, type Rides } from "../src/routing/transport.ts";
-import { createProfile, factionData, previewDoc, simulateRoute, timelineNpcs } from "../src/rules/index.ts";
-import { datasetDir, installedDataset, installedRouting } from "./dataset/local.ts";
-import { BUILTIN_FILE, loadGuides } from "./guides/load-guides.ts";
-import { openInstalled } from "./routing/installed.ts";
+import { guideNamed } from "../../src/rules/registration.ts";
+import { routeTrip, type Journeys } from "../../src/routing/journey.ts";
+import { PlaybackRouting, type Playback, type WayRouter } from "../../src/routing/playback.ts";
+import { DEFAULT_MAX_SLOPE } from "../../src/routing/plan.ts";
+import { recentRecords, SEARCH_RECORDS } from "../../src/routing/reuse.ts";
+import { placeTransports, tripRides, type Rides } from "../../src/routing/transport.ts";
+import { createProfile, factionData, previewDoc, simulateRoute, timelineNpcs } from "../../src/rules/index.ts";
+import { datasetDir, installedDataset, installedRouting } from "../dataset/local.ts";
+import { BUILTIN_FILE, loadGuides } from "../guides/load-guides.ts";
+import { openInstalled } from "../routing/installed.ts";
 
 const { values } = parseArgs({
   options: {

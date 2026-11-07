@@ -1,7 +1,7 @@
 /**
  * Real routeTrip workloads, using the installed release and seeded stop keys.
  * Run each case in a fresh process, with an external wall-clock limit:
- *   timeout 180s node scripts/routing/transport-benchmark.ts --case boat --runs 5 --cache cold
+ *   timeout 180s node scripts/bench/routing.ts --case boat --runs 5 --cache cold
  * Cases: boat, elevator, flight, long-flight. Cache: cold creates terrain per request;
  * warm retains terrain but does not supply exact ground results through `known`.
  * --mode selects a DEFAULT_MODES name, with Epic mount as the default.
@@ -27,8 +27,8 @@ import { parseStopTable, seedStopKeys, STOP_TABLE_FILE } from "../../src/routing
 import { createTerrain } from "../../src/routing/terrain.ts";
 import { groundSeconds, placeTransports, usableLinks, type TransportAccess } from "../../src/routing/transport.ts";
 import { DATA_DIR, installedMaps, installedTransports } from "../dataset/local.ts";
-import { installedArtifact } from "./installed.ts";
-import { transportsHash } from "./stop-keys.ts";
+import { installedArtifact } from "../routing/installed.ts";
+import { transportsHash } from "../routing/stop-keys.ts";
 
 const { values } = parseArgs({
   options: {
