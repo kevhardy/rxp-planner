@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useSyncExternalStore, type ReactNode } from "react";
 import type { LoadedWorldMap, WorldMapData } from "../../data/index.ts";
 import type { Faction } from "../../rules/index.ts";
 import { Described } from "../Described.tsx";
@@ -25,7 +25,7 @@ import {
 import type { ViewPoint } from "./points.ts";
 import type { PlacedMarker } from "./questMarkers.ts";
 import { iconOf, showsSide, type TerrainFeatures } from "./terrain.ts";
-import { useFrame, type MapViewSource } from "./view.ts";
+import type { MapViewSource } from "./view.ts";
 import { canvasToView } from "./viewport.ts";
 import { wholeRowsHeight } from "../ui/wholeRows.ts";
 
@@ -38,6 +38,8 @@ function countsIn(
   frame: Frame,
   faction: Faction,
   allFactions: boolean,
+  quests: readonly PlacedMarker[] | null,
+  spawns: readonly Spawn[],
 ): Map<CategoryId, number> {
   const counts = new Map<CategoryId, number>();
   const add = (id: CategoryId) => counts.set(id, (counts.get(id) ?? 0) + 1);
@@ -46,6 +48,12 @@ function countsIn(
   }
   for (const p of features.places) if (inFrame(p.at, frame)) add(p.place.kind === "landmark" ? "landmarks" : "zones");
   for (const r of routes) if (r.some((at) => inFrame(at, frame))) add("routes");
+  for (const { marker, at } of quests ?? []) {
+    if (!inFrame(at, frame)) continue;
+    if (marker.available.length > 0) add("quest-available");
+    if (marker.turnIns.length > 0) add("quest-turn-in");
+  }
+  for (const s of spawns) if (inFrame(s.at, frame)) add("objective-spawns");
   return counts;
 }
 
@@ -60,11 +68,17 @@ export function MapLegend(props: {
   const store = useMapSettingsStore();
   const settings = useMapSettings();
   const profile = useMapProfile();
-  const frame = useFrame(props.mapView);
   const routes = useMemo(() => terrain.map.routes.map((r) => r.points.map(([x, y]) => canvasToView(terrain.map, { x, y }))), [terrain]);
-  const counts = frame ? countsIn(terrain.features, routes, frame, profile.faction, settings.allFactions) : undefined;
-  const questCounts = quests && frame ? countQuests(quests, frame) : undefined;
-  const spawnCount = frame ? props.spawns.filter((s) => inFrame(s.at, frame)).length : undefined;
+  const { faction } = profile;
+  const { allFactions } = settings;
+  const { spawns } = props;
+  const inView = useInView(
+    props.mapView,
+    useCallback(
+      (frame: Frame) => countsIn(terrain.features, routes, frame, faction, allFactions, quests, spawns),
+      [terrain.features, routes, faction, allFactions, quests, spawns],
+    ),
+  );
   const categories = useMemo(() => new Map(terrain.map.categories.map((c) => [c.key, c])), [terrain]);
   const shows = (id: CategoryId) => showsCategory(settings, id, profile);
 
@@ -101,9 +115,9 @@ export function MapLegend(props: {
       name={name}
       icon={categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
       iconClass={SWATCHES[id]}
-      count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
+      inView={id !== "guide" && id !== "references" ? inView : undefined}
       on={shows(id)}
-      onToggle={() => store.setCategories([id], !shows(id))}
+      category={id}
     />
   );
   return (
@@ -162,22 +176,15 @@ export function MapLegend(props: {
                   name="Objective spawns"
                   icon={undefined}
                   iconClass="spawn-swatch"
-                  count={spawnCount}
+                  inView={inView}
                   on={shows("objective-spawns")}
-                  onToggle={() => store.setCategories(["objective-spawns"], !shows("objective-spawns"))}
+                  category="objective-spawns"
                 />
               </LegendGroup>
             );
           if (layer.id === "quests") {
-            const questRow = (id: CategoryId, name: string, icon: string, count: number | undefined) => (
-              <LegendRow
-                name={name}
-                icon={icon}
-                count={count}
-                on={shows(id)}
-                disabled={!quests}
-                onToggle={() => store.setCategories([id], !shows(id))}
-              />
+            const questRow = (id: CategoryId, name: string, icon: string) => (
+              <LegendRow name={name} icon={icon} inView={quests ? inView : undefined} on={shows(id)} disabled={!quests} category={id} />
             );
             return (
               <LegendGroup
@@ -187,8 +194,8 @@ export function MapLegend(props: {
                 disabled={!quests}
                 onToggle={() => store.setCategories(ids, on < ids.length)}
               >
-                {questRow("quest-available", "Available", "quest-giver", questCounts?.available)}
-                {questRow("quest-turn-in", "Turn-ins", "quest-turn-in", questCounts?.turnIns)}
+                {questRow("quest-available", "Available", "quest-giver")}
+                {questRow("quest-turn-in", "Turn-ins", "quest-turn-in")}
                 <LegendFilter
                   name="All quests"
                   icon="quest-giver"
@@ -215,9 +222,8 @@ export function MapLegend(props: {
                   name={LAYER_NAMES.zoneBorders}
                   icon={undefined}
                   iconClass="zone-border-swatch"
-                  count={undefined}
                   on={shows("zone-borders")}
-                  onToggle={() => store.setCategories(["zone-borders"], !shows("zone-borders"))}
+                  category="zone-borders"
                 />
                 {row("landmarks", LAYER_NAMES.landmarks)}
               </LegendGroup>
@@ -277,20 +283,33 @@ const SWATCHES: Partial<Record<CategoryId, string>> = {
   routes: "route-swatch",
 };
 
+const noSubscribe = () => () => {};
+
 const markRowsBelow = (body: HTMLElement) =>
   body.toggleAttribute("data-clipped", body.scrollTop + body.clientHeight < body.scrollHeight - 1);
 
 // Leaves out headings, so the legend never ends on a heading with none of its rows.
 const LEGEND_ROWS = ".legend-row, .legend-step, .legend-filter, .legend-body > button";
-function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
-  let available = 0;
-  let turnIns = 0;
-  for (const { marker, at } of quests) {
-    if (!inFrame(at, frame)) continue;
-    if (marker.available.length > 0) available++;
-    if (marker.turnIns.length > 0) turnIns++;
-  }
-  return { available, turnIns };
+interface InView {
+  readonly subscribe: (listener: () => void) => () => void;
+  /** Undefined until the map shows a frame. */
+  readonly count: (id: CategoryId) => number | undefined;
+}
+
+/** Counts once for each frame that the map shows. Each row reads its own count, so a pan renders only the rows whose count changes. */
+function useInView(mapView: MapViewSource, countIn: (frame: Frame) => Map<CategoryId, number>): InView {
+  return useMemo(() => {
+    let last: { frame: Frame; counts: Map<CategoryId, number> } | undefined;
+    return {
+      subscribe: mapView.subscribe,
+      count: (id) => {
+        const frame = mapView.getSnapshot().shown?.frame;
+        if (!frame) return undefined;
+        if (frame !== last?.frame) last = { frame, counts: countIn(frame) };
+        return last.counts.get(id) ?? 0;
+      },
+    };
+  }, [mapView, countIn]);
 }
 
 function LegendGroup(
@@ -335,23 +354,26 @@ function LegendGroup(
   );
 }
 
-function LegendRow(props: {
+const LegendRow = memo(function LegendRow(props: {
   name: string;
   icon: string | undefined;
   iconClass?: string | undefined;
-  count: number | undefined;
+  /** Where the row reads how many of its category show in the frame. Undefined for a row with no count. */
+  inView?: InView | undefined;
   on: boolean;
   disabled?: boolean;
-  onToggle: () => void;
+  category: CategoryId;
 }) {
-  const { name, count } = props;
+  const { name, inView, category } = props;
+  const store = useMapSettingsStore();
+  const count = useSyncExternalStore(inView?.subscribe ?? noSubscribe, () => inView?.count(category));
   return (
     <ItemButton
       className="legend-row"
       pressed={props.on}
       aria-label={count === undefined ? name : `${name}, ${count} in view`}
       disabled={props.disabled}
-      onClick={props.onToggle}
+      onClick={() => store.setCategories([category], !props.on)}
     >
       <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
       <span className="legend-name">{name}</span>
@@ -359,7 +381,7 @@ function LegendRow(props: {
       <Icon name={props.on ? "eye" : "eyeOff"} />
     </ItemButton>
   );
-}
+});
 
 const SHOW_NAMES: Record<StepShow, string> = { hidden: "Hidden", dimmed: "Dimmed", shown: "Shown" };
 

@@ -1,5 +1,6 @@
 import {
   memo,
+  useCallback,
   useEffect,
   useEffectEvent,
   useId,
@@ -55,6 +56,16 @@ export function TerrainScene(props: { map: LoadedWorldMap; frame: Frame; pxPerPe
   const zoom = tileZoom(map, detail(map, pxPerPercent) * (globalThis.devicePixelRatio || 1));
   const tiles = visibleTiles(map, map.minZoom, FULL);
   if (zoom !== map.minZoom) tiles.push(...visibleTiles(map, zoom, frame));
+  // Callers pass a new `onTileError` on each render, so the tiles read the latest one and keep their props through a pan.
+  const notify = useRef(onTileError);
+  notify.current = onTileError;
+  const failTile = useCallback(
+    (path: string) => {
+      setFailed((f) => ({ map, attempt, paths: new Set(f.map === map && f.attempt === attempt ? f.paths : []).add(path) }));
+      notify.current();
+    },
+    [map, attempt],
+  );
   return (
     <>
       {zoomLevel(map, detail(map, pxPerPercent)) >= SEA_LEVEL && <span className="terrain-sea" hidden />}
@@ -66,11 +77,11 @@ export function TerrainScene(props: { map: LoadedWorldMap; frame: Frame; pxPerPe
             key={`${t.area}/${t.zoom}/${t.y}/${t.x}`}
             map={map}
             path={path}
-            onTileError={() => {
-              setFailed((f) => ({ map, attempt, paths: new Set(f.map === map && f.attempt === attempt ? f.paths : []).add(path) }));
-              onTileError();
-            }}
-            rect={t}
+            onTileError={failTile}
+            left={t.left}
+            top={t.top}
+            width={t.width}
+            height={t.height}
           />
         );
       })}
@@ -78,13 +89,21 @@ export function TerrainScene(props: { map: LoadedWorldMap; frame: Frame; pxPerPe
   );
 }
 
-function TerrainTile(props: { map: LoadedWorldMap; path: string; onTileError: () => void; rect: Frame }) {
-  const { path, onTileError, rect } = props;
+const TerrainTile = memo(function TerrainTile(props: {
+  map: LoadedWorldMap;
+  path: string;
+  onTileError: (path: string) => void;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}) {
+  const { path, onTileError } = props;
   const [tile] = useAssets(
     mapTiles(props.map),
     useMemo(() => [path], [path]),
   );
-  const notifyTileError = useEffectEvent(onTileError);
+  const notifyTileError = useEffectEvent(() => onTileError(path));
   useEffect(() => {
     if (tile?.kind === "failed") notifyTileError();
   }, [tile]);
@@ -93,14 +112,14 @@ function TerrainTile(props: { map: LoadedWorldMap; path: string; onTileError: ()
     <img
       className="tile"
       src={tile.value}
-      style={{ "--at-x": `${rect.left}%`, "--at-y": `${rect.top}%`, "--size-w": `${rect.width}%`, "--size-h": `${rect.height}%` }}
+      style={{ "--at-x": `${props.left}%`, "--at-y": `${props.top}%`, "--size-w": `${props.width}%`, "--size-h": `${props.height}%` }}
       alt=""
       draggable={false}
       decoding="async"
-      onError={onTileError}
+      onError={() => onTileError(path)}
     />
   );
-}
+});
 
 export function TerrainMarkers(props: {
   map: WorldMapData;
@@ -209,12 +228,21 @@ export function TerrainMarkers(props: {
     });
   }, [labels, places, map, pxPerPercent, iconsAt]);
   const [names] = useState(() => new Map<HTMLElement, ViewPoint>());
-  // No dependencies: names mount and unmount with the rows of every frame.
+  const [sided] = useState(() => ({ quests: props.quests, pxPerPercent, at: new WeakMap<HTMLElement, ViewPoint>() }));
+  // No dependencies: names mount and unmount with the rows of every frame. A row keeps its `at` while its point stays, so
+  // a name is measured again only when it mounts or moves, or when the quest markers or the scale change. A name measured
+  // while the web fonts load gets measured again on a later frame, because its width can still change.
   useLayoutEffect(() => {
+    const fontsLoaded = !("fonts" in document) || document.fonts.status === "loaded";
+    if (sided.quests !== props.quests || sided.pxPerPercent !== pxPerPercent) {
+      Object.assign(sided, { quests: props.quests, pxPerPercent, at: new WeakMap() });
+    }
     const aspect = canvasSize(map).width / canvasSize(map).height;
     const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
     const quests = (props.quests ?? []).map((at) => ({ ...screen(at), width: QUEST_ICON_PX, height: QUEST_ICON_PX }));
     for (const [name, at] of names) {
+      if (sided.at.get(name) === at) continue;
+      if (fontsLoaded) sided.at.set(name, at);
       const icon = { ...screen(at), width: name.parentElement!.offsetWidth, height: name.parentElement!.offsetHeight };
       const side = nameSide(icon, { width: name.offsetWidth, height: name.offsetHeight }, quests);
       name.toggleAttribute("data-start", side === "start");

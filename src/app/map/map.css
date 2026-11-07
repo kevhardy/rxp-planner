@@ -104,6 +104,7 @@
 }
 
 /* Limit layer reuse to pans because promoted layers at fractional positions soften settled markers and labels. */
+.map-viewport.panning .map-stage,
 .map-viewport.panning .map-overlay {
   will-change: transform;
 }

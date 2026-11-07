@@ -368,6 +368,36 @@ describe("MapCanvas", () => {
     ]);
   });
 
+  it("moves a start mark beside the character once the character stands on it", () => {
+    const pins = [{ key: "start", at: { x: 50, y: 50 }, kind: "start" as const, label: "Start" }];
+    const scene = (stand?: ViewPoint) => (
+      <MapCanvas
+        mapView={mapView}
+        aspect={1}
+        maxZoom={() => 40}
+        scene={() => null}
+        pins={pins}
+        shapes={[]}
+        areas={[]}
+        spawns={[]}
+        label="Map"
+        describe={() => ""}
+        menu={() => undefined}
+        stand={stand}
+      />
+    );
+    const place = () => {
+      const pin = screen.getByRole("button", { name: "Start" });
+      return [pin.style.getPropertyValue("--at-x"), pin.style.getPropertyValue("--at-y")];
+    };
+    const { rerender } = render(scene());
+    expect(place()).toEqual(["50%", "50%"]);
+    rerender(scene({ x: 50, y: 50 }));
+    // At 4px per percent, the ring moves 28px up and to the left, to clear the character's disc.
+    const beside = `${50 - (28 * Math.SQRT1_2) / 4}%`;
+    expect(place()).toEqual([beside, beside]);
+  });
+
   it("fades each line with its casing as one layer, and draws stronger lines above fainter ones", () => {
     const at = (x: number, y: number): ViewPoint => ({ x, y });
     render(

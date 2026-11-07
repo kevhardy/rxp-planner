@@ -254,7 +254,7 @@ export function MapCanvas(props: {
     return <Line key={key} className={className} points={polyline(s.points)} />;
   };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
-  const looks = pinLooks(pins, pxPerPercent, aspect, props.stand);
+  const looks = useMemo(() => pinLooks(pins, pxPerPercent, aspect, props.stand), [pins, pxPerPercent, aspect, props.stand]);
   const drawn = pins.filter((p) => looks.get(p.key) !== null);
   const [paths, shared] = useMemo(
     () => [props.spawns.filter((s) => s.colors.length === 1), props.spawns.filter((s) => s.colors.length > 1)],
