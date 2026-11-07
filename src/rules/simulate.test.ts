@@ -267,6 +267,55 @@ describe("simulateRoute", () => {
     });
   });
 
+  describe("at the step after a #completewith window's run of steps", () => {
+    const data = {
+      ...simData(
+        {
+          456: { objectives: [{ index: 1, kind: "monster", ids: [2031], count: 2, name: "Young Nightsaber" }] },
+          458: { baseXp: 100 },
+          3519: {},
+        },
+        { "Teldrassil,1,1": shadowglen(0, 0), "Teldrassil,2,2": shadowglen(200, 0) },
+        { 2031: { levels: { min: 1, max: 1 }, elite: false, zoneIds: [] } },
+      ),
+      spawns: () => [{ ...shadowglen(100, 20), id: "nightsaber" }],
+    };
+    const passByKills = (steps: string) =>
+      simulate(`step\n.goto Teldrassil,1,1\n.accept 456\n.accept 458\n${steps}\nstep\n#label End\n.goto Teldrassil,2,2\n.turnin 458`, data)
+        .guides[0]!.steps.at(-1)!
+        .kills.map((k) => k.count);
+    const hunt = "step\n#completewith next\n.complete 456,1\n.mob Young Nightsaber::2031";
+    const huntUntil = (label: string) => `step\n#completewith ${label}\n.complete 456,1\n.mob Young Nightsaber::2031`;
+
+    // `addon.UpdateStepCompletion` in GuideWindow.lua ends a window that names a sticky step when that step completes,
+    // and the simulation completes a lone #sticky step's lines at the step.
+    it.each([
+      ["#completewith next", `${hunt}\nstep\n#sticky\n.accept 3519`],
+      [
+        "#completewith next through a label",
+        `${huntUntil("Lead")}\nstep\n#label Lead\n#completewith next\n+Look\nstep\n#sticky\n.accept 3519`,
+      ],
+    ])("kills nothing once a %s window reaches a lone #sticky step", (_, steps) => {
+      expect(passByKills(steps)).toEqual([]);
+    });
+
+    it.each([
+      ["a #completewith next step", `${hunt}\nstep\n#completewith next\n.accept 3519`],
+      [
+        "a #completewith <label> step, past a step that is not #completewith,",
+        `${hunt}\nstep\n#completewith End\n+Look\nstep\n.accept 3519`,
+      ],
+      ["a #completewith <label> step, past a #sticky step,", `${hunt}\nstep\n#completewith End\n+Look\nstep\n#sticky\n.accept 3519`],
+    ])("kills on the walk through a #completewith next window that names %s", (_, steps) => {
+      expect(passByKills(steps)).toEqual([1]);
+    });
+
+    // `addon.ParseGuide` in GuideLoader.lua drops a step whose `step <<` condition fails, so `next` names the step after.
+    it("runs a labeled #completewith next window past a step that the character's step condition drops", () => {
+      expect(passByKills(`${huntUntil("Lead")}\nstep\n#label Lead\n#completewith next\n+Look\nstep << Orc\n.accept 3519`)).toEqual([1]);
+    });
+  });
+
   it("kills one pass-by mob at each of two spawns at one spot", () => {
     const rows = [
       { ...shadowglen(100, 20), id: "npc:2031:286" },
