@@ -1,4 +1,5 @@
 import { DEFAULT_MODES, LEG_KEYS, type Leg, type MovementMode, type PlanSettings, type RoutePlan, type WorldStop } from "./plan.ts";
+import { fail, fields, isObject, list } from "./shape.ts";
 
 export function parse(text: string): unknown {
   try {
@@ -6,24 +7,6 @@ export function parse(text: string): unknown {
   } catch (error) {
     throw new Error(`Not valid JSON: ${(error as Error).message}`, { cause: error });
   }
-}
-
-export function fail(path: string, problem: string): never {
-  throw new Error(`${path}: ${problem}`);
-}
-
-/** Checks that `value` is an object with every `required` key and no key outside `required` and `optional`. */
-export function fields(value: unknown, path: string, required: string[], optional: string[] = []): Record<string, unknown> {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) fail(path, "expected an object");
-  for (const key of Object.keys(value)) if (!required.includes(key) && !optional.includes(key)) fail(`${path}.${key}`, "unknown field");
-  for (const key of required) if (!(key in value)) fail(`${path}.${key}`, "missing");
-  return value as Record<string, unknown>;
-}
-
-export function list(value: unknown, path: string, max: number): unknown[] {
-  if (!Array.isArray(value)) fail(path, "expected a list");
-  if (value.length > max) fail(path, `expected at most ${max} entries`);
-  return value;
 }
 
 function positive(value: unknown, path: string, max: number): number {
@@ -52,8 +35,6 @@ function readSwimming(value: unknown, path: string): PlanSettings["swimming"] {
   if (typeof swim.enabled !== "boolean") fail(`${path}.enabled`, "expected true or false");
   return { enabled: swim.enabled, speed: positive(swim.speed, `${path}.speed`, 100) };
 }
-
-const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
 function readStop(value: unknown, path: string): WorldStop {
   if (!isObject(value)) fail(path, "expected a world stop { instance, x, y, height }");

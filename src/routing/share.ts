@@ -1,8 +1,9 @@
 import type { Tile } from "./artifact.ts";
 import type { JourneyLeg } from "./journey.ts";
 import { DEFAULT_LEG, LEG_KEYS, type Leg, type RoutePlan } from "./plan.ts";
-import { fail, fields, parse, readPlanParts } from "./records.ts";
+import { parse, readPlanParts } from "./records.ts";
 import { summarizeLeg } from "./result.ts";
+import { fail, fields, isObject } from "./shape.ts";
 import type { RideSeconds } from "../../packages/data-contract/transports.ts";
 
 const ROUTE_FORMAT = "restedxp-route";
@@ -82,8 +83,6 @@ export function writeRoute(plan: RoutePlan, context: RouteContext): string {
     context,
   });
 }
-
-const isObject = (value: unknown) => typeof value === "object" && value !== null && !Array.isArray(value);
 
 function layout(value: unknown, indent = ""): string {
   const inner = `${indent}  `;
