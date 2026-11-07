@@ -12,6 +12,7 @@ import {
   refKey,
   windowEnds,
   windowOpen,
+  nextWindowEnd,
   type ObjectiveRef,
   type QuestProgress,
   type RouteSimulation,
@@ -252,13 +253,11 @@ function stepWork(step: Step, preview: StepPreview, data: OpportunityData): Step
 
 const asYouGo = (preview: StepPreview) => preview.tags.has("completewith") || preview.tags.has("sticky");
 
-// `#completewith next` lasts through a run of `#completewith` and `#sticky`
-// steps to the next other step. `#sticky` alone covers each objective until
-// its line is done, as RXP keeps the step active until each line is done
-// (`addon.UpdateStepCompletion` in GuideWindow.lua). The simulation credits
-// such a step's objectives at the step itself, so the finder estimates the
-// end from the guide: the first later step, not as you go, that needs at least
-// as many of the objective.
+// `#sticky` alone covers each objective until its line is done, as RXP keeps
+// the step active until each line is done (`addon.UpdateStepCompletion` in
+// GuideWindow.lua). The simulation credits such a step's objectives at the
+// step itself, so the finder estimates the end from the guide: the first later
+// step, not as you go, that needs at least as many of the objective.
 function firstCoverSteps(
   snaps: readonly { preview: StepPreview }[],
   work: readonly (StepWork | undefined)[],
@@ -275,12 +274,19 @@ function firstCoverSteps(
     const covers = (key: string) =>
       until === undefined
         ? !work.slice(p + 1, s).some((q) => q && !asYouGo(q.preview) && (q.needs.get(key) ?? -1) >= w.needs.get(key)!)
-        : until === "next"
-          ? snaps.slice(p + 1, s).every((q) => !q.preview.shown || asYouGo(q.preview))
-          : windowOpen(ends.get(until) ?? -1, s);
+        : windowOpen(until === "next" ? nextEnd(snaps, p, s, ends) : (ends.get(until) ?? -1), s);
     for (const ref of w.targets) if (covers(refKey(ref))) firstCover.set(refKey(ref), firstNamed.get(refKey(ref))!);
   }
   return firstCover;
+}
+
+function nextEnd(snaps: readonly { preview: StepPreview }[], p: number, s: number, ends: ReadonlyMap<string, number>): number {
+  for (let q = p + 1; q < s; q++) {
+    if (!snaps[q]!.preview.shown) continue;
+    const end = nextWindowEnd(q, snaps[q]!.preview, ends);
+    if (end !== "next") return end;
+  }
+  return s;
 }
 
 function stepArea(spawns: readonly Spawn[], places: readonly WorldLocation[], focus: number) {

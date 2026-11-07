@@ -720,8 +720,7 @@ const carry = (faction: Faction, settings: PlaybackSettings): Carried => ({
 /**
  * An objective that a `#completewith` step's `.collect` or `.complete`
  * line works on while RXP shows the step: through its label's step, or for
- * `next`, through the next step that is not `#completewith` or `#sticky`
- * (`addon.UpdateStepCompletion` and `addon:LoadGuide` in GuideWindow.lua).
+ * `next`, through the end that `nextWindowEnd` gives at the steps after it.
  */
 interface BackgroundKills {
   guide: number;
@@ -956,12 +955,14 @@ function collectSkipped(collect: NonNullable<ReturnType<typeof collectLine>>, st
 }
 
 function expireBackground(route: Carried, guide: number, step: number, preview: StepPreview): void {
-  const asYouGo = preview.tags.has("completewith") || preview.tags.has("sticky");
-  route.background = route.background.filter((w) => {
-    const owed = route.owed.get(w.ref.questId)?.get(w.ref.row);
-    const open = w.guide === guide && (w.until === "next" ? asYouGo : windowOpen(w.until, step + 1));
-    return open && !!owed && !owed.closed && owed.counted < w.to;
-  });
+  const next = nextWindowEnd(step, preview, route.windowEnds);
+  route.background = route.background
+    .map((w) => (w.until === "next" ? { ...w, until: next } : w))
+    .filter((w) => {
+      const owed = route.owed.get(w.ref.questId)?.get(w.ref.row);
+      const open = w.guide === guide && (w.until === "next" || windowOpen(w.until, step + 1));
+      return open && !!owed && !owed.closed && owed.counted < w.to;
+    });
 }
 
 type GrindOverride = Extract<SimDirective, { key: "grind" }> & { ids: readonly number[] };
@@ -1947,18 +1948,24 @@ function straightLegs(acts: readonly Act[], from: WorldLocation | null, mode: Tr
 }
 
 /**
- * The last step of each label's `#completewith` window, by label. RXP keeps
- * every `#completewith` step showing (`addon:LoadGuide` in GuideWindow.lua),
- * and a window that names a showing step ends only when that step completes
+ * The last step of each label's `#completewith` window, by label. RXP makes
+ * every `#completewith` step sticky (`addon:LoadGuide` in GuideWindow.lua),
+ * and a window that names a sticky step ends only when that step completes
  * (`addon.UpdateStepCompletion`). So a window that names a `#completewith`
- * step lasts through that step's own window.
+ * step lasts through that step's own window. `next` skips a step that its
+ * `step <<` condition drops, because RXP drops the step before it numbers
+ * the steps (`addon.ParseGuide` in GuideLoader.lua).
  */
 export function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
   const labels = stepLabels(steps, profile);
+  const after = (i: number) => {
+    const next = steps.findIndex((step, j) => j > i && holds(step.line.condition, profile));
+    return next < 0 ? undefined : next;
+  };
   const end = (i: number, seen: Set<number>): number => {
     const tag = steps[i]!.body.find((l) => l.kind === "tag" && l.name === "completewith" && holds(l.condition, profile));
-    const next = tag?.kind !== "tag" || seen.has(i) ? undefined : tag.value === "next" ? i + 1 : labels.get(tag.value);
-    return next === undefined || next >= steps.length ? i : end(next, seen.add(i));
+    const next = tag?.kind !== "tag" || seen.has(i) ? undefined : tag.value === "next" ? after(i) : labels.get(tag.value);
+    return next === undefined ? i : end(next, seen.add(i));
   };
   return new Map([...labels].map(([label, i]) => [label, end(i, new Set())]));
 }
@@ -1969,6 +1976,20 @@ export function windowEnds(steps: readonly Step[], profile: Profile): Map<string
  * (`addon.UpdateStepCompletion` in GuideWindow.lua).
  */
 export const windowOpen = (end: number, s: number): boolean => s <= end;
+
+/**
+ * The end of a `#completewith next` window that reaches shown step `s`: still
+ * `next` at a `#completewith next` step, the label's `windowEnds` end at a
+ * `#completewith <label>` step, else `s`. RXP makes every `#completewith`
+ * step sticky, and ends a window that names a sticky step when that step
+ * completes (`addon:LoadGuide` and `addon.UpdateStepCompletion` in
+ * GuideWindow.lua). A lone `#sticky` step ends the window, because the
+ * simulation completes its lines at the step.
+ */
+export function nextWindowEnd(s: number, preview: StepPreview, ends: ReadonlyMap<string, number>): number | "next" {
+  const until = preview.tags.get("completewith")?.value;
+  return until === "next" ? "next" : until === undefined ? s : (ends.get(until) ?? s);
+}
 
 function passing(legs: readonly WalkLeg[], p: WorldLocation): { off: number; along: number; leg: number } | undefined {
   let best: { off: number; along: number; leg: number } | undefined;
