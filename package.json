@@ -31,7 +31,8 @@
     "guides:textures": "node scripts/guides/export-textures.ts",
     "contract:build": "pnpm --filter @rxp-planner/data-contract build",
     "contract:check": "node scripts/data-contract/check.ts",
-    "agent:mcp": "node scripts/agent/mcp.ts"
+    "agent:mcp": "node scripts/agent/mcp.ts",
+    "bench:compare": "node scripts/bench/compare.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
