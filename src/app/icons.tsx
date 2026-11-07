@@ -5,6 +5,13 @@ const PATHS = {
       <circle cx="8" cy="8" r="2" />
     </>
   ),
+  eyeMixed: (
+    <>
+      <path d="M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" />
+      {/* A dash as wide as the shown pupil, and heavier than the outline, reads as a pupil state. A thin dash reads as a minus sign, and round caps read as a pill. */}
+      <path d="M5.125 8h5.75" strokeWidth={2.75} strokeLinecap="butt" />
+    </>
+  ),
   eyeOff: (
     <>
       <path d="M2 2l12 12" />
@@ -72,6 +79,7 @@ const PATHS = {
       <path d="m10.5 10.5 3 3" />
     </>
   ),
+  map: <path d="M1.5 4 5.5 2.5l5 1.5 4-1.5V12l-4 1.5-5-1.5-4 1.5zM5.5 2.5V12M10.5 4v9.5" />,
   pin: (
     <>
       <path d="M8 14s4-4.2 4-7.5a4 4 0 0 0-8 0C4 9.8 8 14 8 14z" />

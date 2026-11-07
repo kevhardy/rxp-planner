@@ -143,7 +143,6 @@ export interface FooterItem extends Skippable {
   text: TextPart[];
   /** What the item means in RestedXP, for the tooltip. */
   hint?: string;
-  tone?: "warn";
 }
 
 export interface StepRowModel {
@@ -181,8 +180,7 @@ export function stepRow(step: Step, view: RowView): StepRowModel {
   const zones: (string | undefined)[] = [];
   const { character } = view;
   if (step.line.condition) {
-    const { text, tone } = conditionPhrase(step.line.condition);
-    row.footer.push({ kind: "condition", line: "step", text: [text], ...(tone && { tone }) });
+    row.footer.push({ kind: "condition", line: "step", text: [conditionPhrase(step.line.condition)] });
   }
 
   for (const [name, { value, line }] of character?.preview.tags ?? firstTags(step)) {
@@ -369,11 +367,10 @@ const CLASS_NAMES = new Set<string>(CLASSES);
 
 /**
  * The footer phrase of a step condition. A condition that names only
- * classes, or only negated classes, is `warn`: "Warrior only", "Warrior,
- * Rogue only", "Not Priest, Mage". Other names read the same way without the
- * tone: "Human only". Any other shape reads "Only for <text>".
+ * names, or only negated names, lists them: "Warrior, Rogue only", "Not
+ * Priest, Mage", "Human only". Any other shape reads "Only for <text>".
  */
-export function conditionPhrase(condition: Condition): { text: string; tone?: "warn" } {
+export function conditionPhrase(condition: Condition): string {
   const { expr } = condition;
   const token = (e: ConditionExpr) => (e.type === "token" ? e.value : undefined);
   const negated = (e: ConditionExpr) => (e.type === "not" ? token(e.item) : undefined);
@@ -384,10 +381,9 @@ export function conditionPhrase(condition: Condition): { text: string; tone?: "w
   const any = listed(expr.type === "or" ? expr.items : [expr], token);
   const none = listed(expr.type === "and" ? expr.items : [expr], negated);
   const names = any ?? none;
-  if (!names) return { text: `Only for ${condition.text}` };
+  if (!names) return `Only for ${condition.text}`;
   const shown = names.map((n) =>
     CLASS_NAMES.has(n.toUpperCase()) ? n[0]!.toUpperCase() + n.slice(1).toLowerCase() : luaNumber(n) === undefined ? n : `level ${n}+`,
   );
-  const text = any ? `${shown.join(", ")} only` : `Not ${shown.join(", ")}`;
-  return names.every((n) => CLASS_NAMES.has(n.toUpperCase())) ? { text, tone: "warn" } : { text };
+  return any ? `${shown.join(", ")} only` : `Not ${shown.join(", ")}`;
 }

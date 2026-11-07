@@ -87,9 +87,9 @@
   align-items: center;
   gap: var(--space-2);
   margin: 0 0 var(--space-2);
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   white-space: nowrap;
 }
 
@@ -123,10 +123,10 @@
   min-height: var(--head-height);
   padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 /* A sticky band can cover its own focused step. The band's height changes as
@@ -138,14 +138,14 @@
 
 .playback-guide h3 {
   margin: 0;
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
 }
 
 .playback-step > .ui-item {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
   width: 100%;
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
   border-bottom: 1px solid var(--line);
@@ -155,14 +155,13 @@
   display: flex;
   flex: none;
   flex-direction: column;
-  justify-content: space-between;
   gap: var(--space-1);
-  width: 52px;
+  /* `--clock-chars` is the length of the longest start clock. A colon is narrower than its ch, so the column runs a few pixels wide. */
+  width: calc(var(--clock-chars) * 1ch);
   padding: 2px 0;
   color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-align: right;
 }
 
@@ -187,12 +186,21 @@
 
 .playback-title-text {
   display: -webkit-box;
+  font-weight: var(--font-weight-regular);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow-wrap: anywhere;
+}
+
+.playback-actions .row-text {
+  font-weight: var(--font-weight-regular);
+}
+
+.playback-head + .playback-actions {
+  margin-top: 2px;
 }
 
 .playback-kills-text {
@@ -204,6 +212,10 @@
 
 .playback-step.current :is(.playback-title-text, .playback-kills-text) {
   display: block;
+}
+
+.playback-step.current .playback-title-text {
+  font-weight: var(--font-weight-medium);
 }
 
 .playback-warnings {
@@ -222,27 +234,43 @@
 .playback-duo {
   flex: none;
   color: var(--text);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .playback-length {
-  display: flex;
+  position: relative;
   flex: none;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-1);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  text-align: right;
+  /* Two more ch hold the estimate mark, so a row with it keeps the same width. */
+  min-width: calc((var(--length-chars) + 2) * 1ch);
+  color: var(--text);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
   white-space: nowrap;
 }
 
+.playback-length > :first-child {
+  position: relative;
+}
+
+/* The mark hangs left of the clock, so every clock's digits share one column. */
+.playback-length .estimate-mark {
+  position: absolute;
+  right: 100%;
+  padding-inline-end: var(--space-1);
+}
+
+/* The bars hang below the length, so the head is only as tall as the title
+   and the first action starts right under it. */
 .step-bars {
+  position: absolute;
+  top: 100%;
+  right: 0;
   display: flex;
   width: 40px;
-  height: 2px;
+  height: 3px;
+  margin-top: calc(var(--space-1) - 1px);
   overflow: hidden;
   border-radius: var(--radius-control);
   background: var(--line);
@@ -280,9 +308,9 @@
   align-items: center;
   gap: var(--space-2);
   min-height: var(--head-height);
-  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+  padding: var(--space-1) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--surface);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
@@ -322,16 +350,15 @@
 }
 
 .character-xp {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--raised-label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .character-stats {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0 var(--space-3);
+  gap: var(--space-1) var(--space-3);
   margin: 0;
 }
 
@@ -340,7 +367,7 @@
 }
 
 .character-stats dt {
-  color: var(--muted);
+  color: var(--raised-label);
 }
 
 .character-stats dd {
@@ -351,24 +378,32 @@
 }
 
 .character-card .state-log {
-  padding-top: var(--space-1);
-  border-top: 1px solid var(--line);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--raised-line);
 }
 
 .character-card summary {
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  color: var(--raised-label);
 }
 
 .character-count {
   margin-left: auto;
 }
 
+.character-count .ui-mono {
+  font-family: var(--font-sans);
+}
+
 .playback-dock {
-  display: flex;
+  display: grid;
+  grid-template:
+    "transport clock track speed settings routing" auto
+    ". . chain . . routing" auto / auto auto minmax(160px, 1fr) auto auto auto;
   align-items: center;
-  gap: var(--space-3);
+  gap: 0 var(--space-3);
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
   background: var(--surface);
   grid-column: 1 / -1;
@@ -376,9 +411,9 @@
 
 .playback-transport {
   display: flex;
-  flex: none;
   align-items: center;
   gap: 2px;
+  grid-area: transport;
 }
 
 .playback-play svg {
@@ -386,25 +421,90 @@
 }
 
 .playback-scrubber {
-  flex: 1;
-  min-width: 160px;
-  padding: var(--space-2) 0 var(--space-1);
+  display: contents;
 }
 
 .playback-track {
   position: relative;
-  padding-bottom: var(--space-2);
+  grid-area: track;
 }
 
+/* `--played`, set on the track, is the played fraction, 0 to 1. The thumb's center travels from
+   half a thumb in from each end, so the fill ends there too. Each browser's
+   pseudo-elements get their own rules, because a browser drops a whole rule
+   that names a pseudo-element it does not know. */
 .playback-scrubber .ui-slider {
+  --thumb: 16px;
+  --fill-end: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--played));
   display: block;
   width: 100%;
+  appearance: none;
+  background: none;
 }
 
+.playback-scrubber .ui-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-round);
+  /* stylelint-disable-next-line function-disallowed-list -- split: played and still to play */
+  background: linear-gradient(90deg, var(--text) var(--fill-end), var(--control-border) var(--fill-end));
+}
+
+.playback-scrubber .ui-slider::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+}
+
+.playback-scrubber .ui-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: var(--radius-round);
+  background: var(--text);
+}
+
+.playback-scrubber .ui-slider::-webkit-slider-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc(-1 * var(--space-1) - 1px);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-round);
+  background: var(--text);
+  appearance: none;
+}
+
+.playback-scrubber .ui-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--thumb);
+  height: var(--thumb);
+  border: 2px solid var(--surface);
+  border-radius: var(--radius-round);
+  background: var(--text);
+}
+
+.playback-scrubber .ui-slider:disabled::-webkit-slider-runnable-track {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-track {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-progress {
+  background: var(--disabled-bg);
+}
+
+.playback-scrubber .ui-slider:disabled::-webkit-slider-thumb {
+  background: var(--disabled-fg);
+}
+
+.playback-scrubber .ui-slider:disabled::-moz-range-thumb {
+  background: var(--disabled-fg);
+}
+
+/* The marks sit 2px under the 6px track, which is centered in the slider. */
 .playback-marks {
   position: absolute;
+  top: calc(var(--control-small) / 2 + 3px + 2px);
   right: 0;
-  bottom: 0;
   left: 0;
   height: 3px;
   pointer-events: none;
@@ -412,7 +512,8 @@
 
 .playback-mark,
 .estimate-swatch {
-  border-top: 2px dashed var(--text);
+  border-radius: var(--radius-round);
+  background: var(--bar-travel);
 }
 
 .playback-mark {
@@ -437,6 +538,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  grid-area: chain;
 }
 
 .playback-chain-guide {
@@ -469,8 +571,8 @@
   min-width: 0;
   padding: 0 var(--space-1);
   overflow-x: clip;
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .playback-chain-name {
@@ -489,8 +591,7 @@
 }
 
 .playback-clock {
-  flex: none;
-  font-family: var(--font-mono);
+  grid-area: clock;
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   font-weight: var(--font-weight-bold);
@@ -498,17 +599,19 @@
 }
 
 .playback-speed {
-  flex: none;
+  grid-area: speed;
 }
 
 .playback-routing {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: subgrid;
+  align-items: center;
   min-width: 0;
   max-width: 240px;
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--label);
+  grid-area: routing;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .playback-routing > * {
@@ -521,12 +624,13 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--muted);
+  color: var(--label);
 }
 
 .estimate-swatch {
   flex: none;
   width: 14px;
+  height: 3px;
 }
 
 .character-marker {
@@ -552,8 +656,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade);
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   transform: translateX(-50%);
 }
@@ -598,8 +702,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade);
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   transform: translateY(-50%);
 }
 
@@ -620,7 +724,12 @@
 
 .playback-settings {
   display: inline-flex;
-  flex: none;
+  grid-area: settings;
+}
+
+/* min-height, because the button primitive pins its height with !important. */
+.playback-settings > .ui-button {
+  min-height: var(--control-field);
 }
 
 .playback-settings .popover:not([hidden]) {

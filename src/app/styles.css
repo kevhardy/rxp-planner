@@ -3,7 +3,7 @@
 }
 
 ::placeholder {
-  color: var(--muted);
+  color: var(--placeholder);
   font-family: var(--font-sans);
   opacity: 1;
 }
@@ -84,9 +84,9 @@ a {
   right: -2px;
   bottom: -2px;
   color: var(--art-paper);
-  font-size: var(--font-size-micro);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
   text-shadow: var(--art-text-halo);
 }
 
@@ -116,7 +116,7 @@ a {
 }
 
 .count {
-  color: var(--muted);
+  color: var(--label);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
@@ -124,7 +124,7 @@ a {
 }
 
 .count.warn {
-  color: var(--warn);
+  color: var(--pop-ink);
 }
 
 .count:empty {
@@ -148,8 +148,8 @@ strong {
 }
 
 small {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 :focus-visible {
@@ -212,11 +212,17 @@ label {
   min-height: var(--head-height);
   padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
   border-bottom: 1px solid var(--line);
+  background: var(--pane-head);
 }
 
 .panel-head h2 {
   margin-right: auto;
   white-space: nowrap;
+}
+
+.panel-head .count {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .region-steps > .panel-head,
@@ -236,15 +242,22 @@ label {
   flex: none;
   width: 16px;
   height: 16px;
-  margin-top: 2px;
   border-radius: var(--radius-control);
   background: var(--kind-tint);
+  /* Centers the mark on the first line of its row. The row, not its text, sets the type size, so 1lh is the text's line height. */
+  translate: 0 calc((1lh - 100%) / 2);
   color: var(--kind);
 }
 
 .mk > svg,
 .mk .guide-icon {
   display: block;
+  margin-inline-end: 0;
+}
+
+/* The weight of the 16px interface icons, such as the trash can. */
+.mk > svg {
+  stroke-width: 1.75;
 }
 
 .mk.tex {
@@ -271,14 +284,9 @@ label {
   --kind: var(--kind-equip);
 }
 .mk-target {
-  background: none;
-  color: var(--kind-target);
-}
-.mk-target > svg {
-  width: 13px;
-  height: 13px;
-  margin: 1.5px;
-  stroke-width: 1.75;
+  border-radius: 0;
+  background: url("./guideIcons/target.svg") center / 100% 100% no-repeat;
+  filter: var(--ring-guide-icon-target);
 }
 .mk-cast {
   --kind: var(--kind-train);
@@ -292,9 +300,11 @@ label {
 .mk-checkpoint {
   --kind: var(--warn);
 }
+/* The sheet draws its lines on whole pixels at 16px, so they stay sharp. */
 .mk-note {
-  background: none;
-  color: var(--muted);
+  border-radius: 0;
+  background: url("./guideIcons/note.svg") center / 100% 100% no-repeat;
+  filter: var(--ring-guide-icon);
 }
 
 .app {
@@ -328,11 +338,15 @@ label {
   line-height: var(--line-height-body);
 }
 
+.narrow-notice svg {
+  color: var(--warn);
+}
+
 .region-character {
   position: relative;
   flex: none;
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--guide-strip);
 }
 
 .body {
@@ -395,6 +409,10 @@ label {
   border-radius: var(--radius-float);
   box-shadow: var(--elevation-2);
   container-type: inline-size;
+}
+
+.editor-dock > .panel-head {
+  border-radius: var(--radius-float) var(--radius-float) 0 0;
 }
 
 .region-map {
@@ -517,7 +535,7 @@ label {
   padding: var(--space-2) var(--space-4);
   border: 1px solid var(--text);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   pointer-events: none;
 }
@@ -544,7 +562,7 @@ label {
   max-height: 86vh;
   padding: var(--space-4);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
   overflow: auto;
 }
@@ -803,7 +821,7 @@ label {
   height: 50px;
   padding: 0 var(--space-3) var(--ruler-band) var(--space-4);
   border-bottom: 1px solid var(--line);
-  background: var(--surface);
+  background: var(--topbar);
   white-space: nowrap;
 }
 
@@ -816,19 +834,31 @@ label {
 }
 
 .ruler-minor {
-  stroke: var(--line);
+  stroke: var(--tick-minor);
 }
 
 .ruler-major {
-  stroke: var(--control-border);
+  stroke: var(--tick-major);
 }
 
-.topbar .popover {
-  top: calc(100% + 8px + var(--ruler-band));
+/* Library opens a pane, not a popover, so it is not a popover trigger and
+   takes its open look here. It shares the bold label of the current mode,
+   with a wash and no bar or ring, so it reads quieter than the mode beside
+   it. */
+.library-toggle[aria-expanded="true"] {
+  background: var(--pressed-wash);
+  font-weight: var(--font-weight-bold);
 }
 
-.topbar .split-menu {
-  top: calc(100% + 6px + var(--ruler-band));
+.library-toggle[aria-expanded="true"] svg {
+  color: var(--accent);
+}
+
+/* The top bar's controls end 6.5px above the ruler band. 4px more leaves a
+   4px gap below the guide strip's top edge, so a float's edge clears it. */
+.topbar :is(.popover, .split-menu) {
+  top: calc(100% + 10.5px + var(--ruler-band));
+  outline: 1px solid var(--float-edge);
 }
 
 .brand {
@@ -851,7 +881,7 @@ label {
 }
 
 .logo-paper-fill {
-  fill: var(--surface);
+  fill: var(--topbar);
 }
 
 .wordmark b {
@@ -900,12 +930,6 @@ label {
   overflow-y: auto;
 }
 
-.preview-controls {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3) var(--space-6);
-}
-
 .preview-field {
   display: grid;
   grid-template-columns: 80px minmax(0, 1fr);
@@ -913,12 +937,23 @@ label {
   gap: var(--space-2);
 }
 
-.preview-field > .ui-field-error,
-.preview-note {
+.preview-field > .ui-field-error {
   grid-column: 2;
 }
 
+.preview-controls {
+  display: grid;
+  grid-template-columns: repeat(2, auto minmax(0, 1fr));
+  gap: var(--space-3) var(--space-8);
+}
+
+.preview-controls > .preview-field {
+  grid-column: span 2;
+  grid-template-columns: subgrid;
+}
+
 .preview-note {
+  grid-column: 4;
   color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
@@ -959,6 +994,13 @@ label {
 
 .split-more[data-variant="secondary"] {
   margin-left: -1px;
+}
+
+/* The live half takes the fill and border of a disabled main half, so the
+   pair reads as one button. */
+.split:has(.split-main:is(:disabled, [aria-disabled="true"])) > .split-more {
+  border-color: var(--disabled-border);
+  background: transparent;
 }
 
 .split-menu {
@@ -1003,13 +1045,24 @@ label {
   color: var(--text);
 }
 
-.lib-row:hover,
-.lib-row:focus-within {
-  background: var(--selection);
+.lib-row:hover {
+  background: var(--lib-row-hover);
+}
+
+/* Only the open guide takes the selection fill. A row with keyboard focus
+   takes the hover fill. A click leaves no fill, because a fill on a group
+   that was just folded open reads as a selection. */
+.lib-row:has(:focus-visible):not(.current) {
+  background: var(--lib-row-hover);
 }
 
 .lib-row.current {
   background: var(--selection);
+  box-shadow: var(--ink-bar-start);
+}
+
+:is(.lib-group + .lib-group:not(.lib-builtins), .lib-builtin-group + .lib-builtin-group) > .lib-group-head {
+  margin-top: var(--space-2);
 }
 
 .lib-toggle,
@@ -1032,8 +1085,11 @@ label {
   color: var(--muted);
 }
 
-.lib-guide {
-  padding-left: calc(var(--space-8) + var(--space-2));
+/* One tree level is the 12px disclosure chevron and its --space-2 gap, so a
+   child row starts under its parent folder's label. */
+.lib-guide,
+.lib-toggle.depth-1 {
+  padding-left: calc(var(--space-4) + var(--space-3) + var(--space-2));
 }
 
 .lib-name {
@@ -1048,6 +1104,9 @@ label {
 
 .lib-toggle > .count {
   margin-left: auto;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Where the pointer can hover, a group's actions share the toggle's cell, so at
@@ -1070,7 +1129,7 @@ label {
   .lib-group-head > .row-actions {
     justify-self: end;
     padding-left: var(--space-1);
-    background: var(--selection);
+    background: inherit;
     pointer-events: none;
   }
 
@@ -1115,20 +1174,22 @@ label {
   border-top: 1px solid var(--line);
 }
 
-.lib-toggle.depth-1 {
-  padding-left: var(--space-8);
+.lib-builtins > .lib-group-head .lib-name,
+.lib > .ui-empty .ui-empty-title {
+  font-size: var(--font-size-pane-title);
+  line-height: var(--line-height-pane-title);
 }
 
 .lib-toggle.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-4));
+  font-weight: var(--font-weight-medium);
 }
 
-.lib-guide.depth-2 {
-  padding-left: calc(var(--space-8) + var(--space-6));
+:is(.lib-toggle, .lib-guide).depth-2 {
+  padding-left: calc(var(--space-4) + 2 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-guide.depth-3 {
-  padding-left: calc(2 * var(--space-8) + var(--space-2));
+  padding-left: calc(var(--space-4) + 3 * (var(--space-3) + var(--space-2)));
 }
 
 .lib-builtins .lib-guide {
@@ -1147,10 +1208,10 @@ label {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1) var(--space-2);
-  padding: 0 var(--space-4) var(--space-2) calc(var(--space-8) + var(--space-2));
+  padding: 0 var(--space-4) var(--space-2) calc(var(--space-4) + var(--space-3) + var(--space-2));
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .lib-credit p {
@@ -1166,8 +1227,24 @@ label {
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+.lib-credit .ui-button,
+.lib-about .ui-button {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+/* A ghost button shows no padding at rest, so its text lines up with the
+   row's end and sits one gap after "Source". */
+.lib-credit .ui-button {
+  margin-right: calc(-1 * var(--space-2));
+}
+
+.lib-about .ui-button {
+  margin-left: calc(-1 * var(--space-2));
 }
 
 .lib-credit a,
@@ -1242,7 +1319,7 @@ label {
 }
 
 .step-row:hover {
-  background: var(--bg);
+  background: var(--hover);
 }
 
 .step-row.selected {
@@ -1263,9 +1340,19 @@ label {
   grid-column: 1;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-step-no);
+  line-height: var(--line-height-step-no);
   text-align: center;
+}
+
+.step-row.selected .step-no {
+  justify-self: center;
+  min-width: 22px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-control);
+  background: var(--pop-ink);
+  color: var(--pop-fg);
+  font-weight: var(--font-weight-bold);
 }
 
 .step-list.simulated {
@@ -1298,9 +1385,9 @@ label {
   width: 24px;
   height: 24px;
   border: 0;
-  color: var(--text);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  color: var(--label);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-bold);
 }
 
@@ -1313,21 +1400,21 @@ label {
 
 .sim-ring circle {
   fill: none;
-  stroke-width: 3;
+  stroke-width: 2.5;
 }
 
-/* Below 1.5px, antialiasing at 1x pales the track under 3:1. */
+/* Below 1.5px, antialiasing at 1x pales the dark track under 3:1. */
 .sim-ring .track {
-  stroke: var(--control-border);
+  stroke: var(--level-track);
   stroke-width: 1.5;
 }
 
 .sim-ring .before {
-  stroke: var(--control-border);
+  stroke: var(--level-before);
 }
 
 .sim-ring .earned {
-  stroke: var(--text);
+  stroke: var(--level-earned);
 }
 
 .sim-ring .jump {
@@ -1394,8 +1481,8 @@ label {
   padding: 0 var(--space-3) 0 calc(var(--space-8) + var(--space-4));
   border-bottom: 1px solid var(--line);
   background: var(--surface);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .band-head {
@@ -1413,6 +1500,10 @@ label {
   color: var(--muted);
 }
 
+.level-band .ui-mono {
+  font-family: var(--font-sans);
+}
+
 .band-bar {
   display: flex;
   gap: 2px;
@@ -1424,7 +1515,7 @@ label {
   flex-basis: 0;
   min-width: 2px;
   border-radius: var(--radius-control);
-  background: var(--text);
+  background: var(--accent);
 }
 
 .band-part.before {
@@ -1480,20 +1571,54 @@ label {
   overflow-wrap: anywhere;
 }
 
-.row-text .guide-icon {
+:is(.row-text, .playback-title-text) .guide-icon {
   vertical-align: -2px;
 }
 
-.step-does .row-text {
-  color: var(--text);
+/* As in an inventory mark, the art draws at 19/16 of the box so its dark
+   frame falls outside, and the outline gives the art a light edge. */
+:is(.row-text, .playback-title-text) .guide-icon.framed {
+  --crop-w: calc(var(--box-w) * 19 / 16);
+  --crop-h: calc(var(--box-h) * 19 / 16);
+  background-image: var(--guide-icon-outline), var(--rxp-guide-icons, none);
+  background-size:
+    100% 100%,
+    calc(var(--crop-w) * var(--sheet-w)) calc(var(--crop-h) * var(--sheet-h));
+  background-position:
+    0 0,
+    calc(var(--crop-w) * var(--cell-x) - var(--box-w) * 3 / 32) calc(var(--crop-h) * var(--cell-y) - var(--box-h) * 3 / 32);
+  box-shadow: none;
+}
+
+.step-does {
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
 }
 
-.step-notes .row-text {
+.step-does + :is(.step-where, .step-notes),
+.step-where + .step-notes {
+  margin-top: calc(var(--space-1) + 2px);
+}
+
+/* Prose lines wrap, so a narrow gap runs a step's notes into one block. */
+.step-notes {
+  gap: var(--space-1);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.step-does .row-text {
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+}
+
+.step-notes .row-text {
+  color: var(--label);
+}
+
+/* Only a step's first action line takes the heavier weight, so a step of
+   several quest lines does not read as one heavy block. */
+.step-main > .step-does > :first-child > .row-text {
+  font-weight: var(--font-weight-medium);
 }
 
 .act-xp {
@@ -1507,15 +1632,31 @@ label {
   flex-direction: column;
   gap: 1px;
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
+}
+
+/* Mono runs wider and heavier than the place name before it. Tabular
+   figures keep a coordinate's width steady as its digits change. */
+.step-where .ui-mono,
+.outline-summary .ui-mono {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.where-item .ui-mono {
+  white-space: nowrap;
 }
 
 .where-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 18px;
+  height: 1lh;
+}
+
+.where-mark > .mk {
+  translate: none;
 }
 
 .where-text,
@@ -1533,34 +1674,21 @@ label {
 
 .step-footer {
   margin-top: 1px;
-  color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .foot-text {
   grid-column: 2;
 }
 
-.foot-condition {
-  color: var(--text);
-}
-
-.foot-warn {
-  color: var(--warn);
-}
-
 .foot-tag {
   color: var(--foot-tag);
 }
 
-/* On the selected row's `--selection` background, the plain warn and tag
-   colors fall below WCAG AA contrast in both themes. The warn color mixes in
-   the text color, and the tag uses the text color. */
-.step-row.selected .foot-warn {
-  color: var(--warn-on-selection);
-}
-
+/* On the selected row's `--selection` background, the plain tag color
+   falls below WCAG AA contrast in both themes. */
 .step-row.selected .foot-tag {
   color: var(--text);
 }
@@ -1578,9 +1706,9 @@ label {
 .step-note,
 .step-skip {
   overflow: hidden;
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1591,21 +1719,20 @@ label {
   padding: 0 var(--space-2);
   border-radius: var(--radius-control);
   background: var(--primary-bg);
-  color: var(--surface);
-  font-size: var(--font-size-micro);
+  color: var(--primary-fg);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-micro);
+  line-height: var(--line-height-small);
 }
 
 .step-side .level-mark {
   margin: 0;
   padding: 0 var(--space-1);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
 }
 
-.step-skip {
-  color: var(--muted);
+.header-row .step-no {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .header-row .step-skip {
@@ -1655,13 +1782,17 @@ label {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-}
 
-@container (max-width: 600px) {
   .dock-tabs {
     gap: 2px;
   }
 
+  .dock-tabs > .ui-tab {
+    padding-inline: var(--space-2);
+  }
+}
+
+@container (max-width: 600px) {
   .dock-tabs > .ui-tab {
     padding-inline: var(--space-1);
   }
@@ -1757,7 +1888,7 @@ label {
   display: block;
   overflow: auto;
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
 }
 
@@ -1768,7 +1899,7 @@ label {
 }
 
 .options [role="option"]:hover {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .options [role="option"][aria-selected="true"] {
@@ -1811,11 +1942,49 @@ label {
   display: flex;
   flex-basis: 100%;
   flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
   margin-left: calc(-1 * var(--space-1));
 }
 
 .rxp-swatch {
+  gap: var(--space-1);
   padding-inline: var(--space-1);
+}
+
+/* One row of the colors and Clear takes 442px, or 422px with the closer gap
+   of a form narrower than 450px. A form too narrow for that row sets the
+   colors three to a row in even columns, where a wrapped row would leave
+   the last color and Clear alone on a line. */
+@container (width >= 450px) {
+  .rxp-colors {
+    gap: var(--space-2);
+  }
+}
+
+@container (width < 430px) {
+  .rxp-colors {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-items: start;
+    row-gap: var(--space-1);
+    margin-bottom: var(--space-3);
+  }
+}
+
+/* The last color holds Clear and its rule on its line, so a wrap never
+   starts a line with the rule. */
+.rxp-clear {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.rxp-clear-rule {
+  width: 1px;
+  height: var(--line-height-caption);
+  background: var(--line);
 }
 
 .rxp-swatch-color {
@@ -1836,11 +2005,11 @@ label {
 .rxp-text {
   flex: 1;
   min-width: 70px;
-  min-height: var(--control-small);
-  padding: 1px var(--space-2);
+  min-height: var(--control-field);
+  padding: calc(var(--space-1) - 1px) var(--space-2);
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--field);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   white-space: pre-wrap;
@@ -1875,9 +2044,16 @@ label {
 :is(.rxp-colored, .rxp-swatch-color)[data-color="PICK"] {
   --rxp: var(--rxp-pick);
 }
+.rxp-swatch-color[data-color="BUY"] {
+  --rxp: var(--rxp-buy-swatch);
+}
 
 .rxp-colored {
   color: var(--rxp);
+}
+
+.rxp-colored a {
+  color: inherit;
 }
 
 .rxp-chip {
@@ -1889,8 +2065,8 @@ label {
   border-radius: var(--radius-control);
   background: var(--bg);
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   vertical-align: 1px;
   cursor: default;
   user-select: all;
@@ -1904,6 +2080,7 @@ label {
   display: inline-block;
   width: var(--box-w);
   height: var(--box-h);
+  margin-inline-end: 2px;
   vertical-align: middle;
   background-image: var(--rxp-guide-icons, none, var(--guide-icon-outline));
   background-size:
@@ -1915,10 +2092,24 @@ label {
   background-repeat: no-repeat;
 }
 
+/* `scripts/guide-icon-ink.ts` sizes the vector art within its view box. */
 .guide-icon.vector {
+  filter: var(--ring-guide-icon);
   background-image: var(--icon-url);
   background-size: 100% 100%;
-  background-position: 0 0;
+  background-position: center;
+}
+
+.guide-icon.vector.vivid {
+  filter: var(--ring-guide-icon-vivid);
+}
+
+.guide-icon.vector.deep {
+  filter: var(--ring-guide-icon-deep);
+}
+
+.guide-icon:not(.vector, .missing) {
+  box-shadow: var(--ring-guide-sprite);
 }
 
 .guide-icon.missing {
@@ -1983,28 +2174,40 @@ label {
   border-radius: 0;
 }
 
+.step-form {
+  max-width: 880px;
+}
+
+/* 9px between rows is the most that leaves 12px below "Add filter" in the
+   dock at a 960px-tall window. */
 .form-grid {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
-  gap: var(--space-4);
+  gap: calc(var(--space-2) + 1px) var(--space-4);
   align-items: baseline;
 }
 
-.form-label {
-  color: var(--muted);
+.form-label,
+.sim-settings legend,
+.line-title {
+  color: var(--label);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-bold);
 }
 
+.editor-dock .ui-field-label {
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
+}
+
+/* Centering the label's line on the first field label's line puts the two
+   baselines within half a pixel. Baseline alignment would push the fields
+   down by the difference instead. -1px is half of the 2px by which the body
+   line is taller than the detail line. */
 .form-label:has(+ .tag-values) {
   align-self: start;
-}
-
-.form-label:has(+ .tag-values)::before {
-  content: "";
-  display: block;
-  height: calc(var(--line-height-small) + var(--space-1) + (var(--control-small) - var(--line-height-body)) / 2);
+  margin-top: -1px;
 }
 
 .condition {
@@ -2017,6 +2220,10 @@ label {
 .condition-text {
   display: flex;
   align-items: center;
+  gap: var(--space-1);
+}
+
+.condition:not(.compact) {
   gap: var(--space-1);
 }
 
@@ -2096,10 +2303,17 @@ label {
 .sim-settings legend {
   margin-bottom: var(--space-2);
   padding: 0;
-  color: var(--text);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-  font-weight: var(--font-weight-bold);
+}
+
+.sim-settings > .tag-values {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: 128px;
+  justify-content: start;
+}
+
+.sim-settings > .tag-values > * {
+  grid-column: auto;
 }
 
 .sim-settings p {
@@ -2110,8 +2324,17 @@ label {
 
 .sim-kills {
   display: grid;
-  gap: var(--space-1);
-  margin-top: var(--space-3);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* The columns of the fields above: 128px wide, 16px apart. Mob spans two. */
+.sim-kill-fields {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 272px) auto;
+  justify-content: start;
+  align-items: start;
+  gap: var(--space-3) var(--space-4);
 }
 
 .sim-kill-xp {
@@ -2125,11 +2348,11 @@ label {
   margin-left: 0;
 }
 
-.sim-kill-fields {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1) var(--space-3);
+/* Lines up with the inputs below the field labels: one 18px
+   --line-height-detail label line and the --space-1 gap of a stacked field. */
+.sim-kill-fields > :not(.ui-field) {
+  justify-self: start;
+  margin-top: calc(var(--space-4) + var(--space-1) + 2px);
 }
 
 fieldset {
@@ -2142,8 +2365,8 @@ fieldset {
 legend {
   padding: 0 var(--space-1);
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .dock-body.lines-view {
@@ -2158,7 +2381,7 @@ legend {
 
 .outline {
   overflow: auto;
-  padding: var(--space-4) 0;
+  padding: 0 0 var(--space-4);
   border-right: 1px solid var(--line);
 }
 
@@ -2187,12 +2410,13 @@ legend {
   gap: var(--space-1);
   min-width: 0;
   color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-detail);
+  line-height: var(--line-height-detail);
 }
 
 .outline-summary > .guide-icon {
   flex: none;
+  margin-inline-end: 0;
 }
 
 .outline-text {
@@ -2232,6 +2456,11 @@ legend {
   opacity: 0;
 }
 
+/* The list has no top padding, so the first button moves down into the scroll box. */
+.outline li:first-child .outline-gap button[aria-controls] {
+  top: 2px;
+}
+
 .outline-gap::after {
   position: absolute;
   top: 2px;
@@ -2265,9 +2494,10 @@ legend {
   opacity: 1;
 }
 
+/* The start margin leaves room for the button's padding and border, so its text sits on the rows' 16px text edge. */
 .outline-add {
   display: block;
-  margin: var(--space-2) var(--space-3) 0;
+  margin: var(--space-2) var(--space-3) 0 calc(var(--space-4) - var(--space-2) - 1px);
 }
 
 .outline-gap .popover,
@@ -2303,12 +2533,15 @@ legend {
   flex-direction: column;
   gap: var(--space-2);
   min-width: 0;
+  max-width: 880px;
 }
 
 .line-heading {
+  container: line-heading / inline-size;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-1) var(--space-3);
 }
 
 .line-title {
@@ -2317,14 +2550,11 @@ legend {
   align-items: baseline;
   gap: var(--space-2);
   margin: 0;
-  color: inherit;
-  font-size: var(--font-size-pane-title);
-  line-height: var(--line-height-pane-title);
 }
 
 .line-title .mk {
   align-self: center;
-  margin-top: 0;
+  translate: none;
 }
 
 .line-editor > button {
@@ -2335,6 +2565,22 @@ legend {
   flex: 1;
   min-width: 0;
   margin: 0;
+}
+
+/* Below 520px the title, the helper text, and the line tools share too little
+   room, so the helper text takes its own line under the title. It starts
+   under the title's text, past the .mk, as wide as --space-4, and the
+   title's gap. */
+@container line-heading (width < 520px) {
+  .line-title {
+    flex: 1;
+  }
+
+  .line-description {
+    order: 1;
+    flex-basis: 100%;
+    padding-inline-start: calc(var(--space-4) + var(--space-2));
+  }
 }
 
 .line-pane-empty {
@@ -2384,22 +2630,56 @@ legend {
   gap: var(--space-3) var(--space-4);
 }
 
-:is(.command-form, .tag-checks, .tag-values) > *,
+.command-form > *,
 .arg-run > * {
   --span: 3;
   grid-column: span var(--span);
 }
 
-/* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 13 Mono characters of 8px each where glyph widths round to whole pixels, 17px for the picker, and 18px of padding and border. */
+/* Three to a row until five fields of 139px fit with their four gaps. A 139px field holds the placeholder "next or label" beside Chromium's datalist picker: 78px of Plex Sans at the body size, 17px for the picker, and 18px of padding and border. */
 @container (width < 759px) {
-  :is(.command-form, .tag-checks, .tag-values) > *,
+  .command-form > *,
   .arg-run > * {
     --span: 5;
   }
 }
 
+/* The checks sit three to a row on the lines of the fields below, so each
+   check needs a field as wide as its label. The widest, "Not in Season of
+   Mastery", needs 178px, which four fields to a row hold from 760px. */
+.tag-checks,
+.tag-values {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.tag-checks > *,
+.tag-values > * {
+  --span: 4;
+  grid-column: span var(--span);
+}
+
+@container (width >= 760px) {
+  .tag-checks > *,
+  .tag-values > * {
+    --span: 3;
+  }
+}
+
+.tag-checks > :nth-child(3n + 1) {
+  grid-column: 1 / span var(--span);
+}
+
+/* The negative top margin takes back the 2px that each Checkbox pads above
+   its line, so "Add filter" still fits in the dock. The bottom margin puts
+   Values as far below the last check as Condition sits below the last value
+   field. */
 .tag-checks {
   row-gap: 0;
+  margin-block: -2px var(--space-1);
+}
+
+.tag-values {
+  row-gap: calc(var(--space-1) + 2px);
 }
 
 .command-form > :is(.arg-grow, .ui-select) {
@@ -2422,6 +2702,9 @@ legend {
 .shows-as {
   display: block;
   margin-top: var(--space-1);
+}
+
+.comment {
   color: var(--muted);
 }
 
@@ -2502,13 +2785,22 @@ legend {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: var(--font-mono);
   font-weight: var(--font-weight-bold);
 }
 
+.warnings-total.warn {
+  color: var(--pop-ink);
+}
+
+/* The open trigger keeps the alert color it has when closed, and takes only
+   the border and wash of an open toggle. */
+.warnings-menu .ui-button[aria-expanded="true"] .warnings-total.warn svg {
+  color: inherit;
+}
+
 .warnings.popover {
-  width: min(480px, 100vw - 16px);
-  max-height: calc(100vh - 76px);
+  width: min(660px, var(--warnings-room, 100vw - 16px));
+  max-height: calc(100vh - 78px);
   padding: 0;
 }
 
@@ -2517,17 +2809,54 @@ legend {
   flex-direction: column;
 }
 
+/* The indent lines each warning up with its kind's mark, past the summary's padding, chevron, and gap.
+   The place width holds "Step 999, line 999", so every message starts at one edge. */
 .warnings {
-  --warnings-indent: 52px;
-  --warnings-place-width: 110px;
+  --warnings-indent: 44px;
+  --warnings-place-width: 112px;
+}
+
+/* On a raised card, the --pane-head of a docked pane reads as a sunken band. */
+.warnings .panel-head {
+  border-bottom-color: var(--raised-line);
+  background: var(--raised);
 }
 
 .warnings .panel-head h2 {
   margin-right: 0;
 }
 
+/* A scroller paints no content in its border, so the bottom border is a
+   gutter under the last whole row that the cue of more rows covers. */
 .warnings-body {
-  padding: var(--space-1) var(--space-2) var(--space-3);
+  padding: var(--space-1) var(--space-2) 0;
+  border-bottom: var(--space-4) solid transparent;
+  border-radius: 0 0 var(--radius-float) var(--radius-float);
+}
+
+/* A styled scrollbar stays in view where the platform would hide an overlay
+   one until the list scrolls. */
+.warnings-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.warnings-body::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-round);
+  background: var(--control-border);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .warnings-body {
+    scrollbar-color: var(--control-border) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+/* Matches .legend-body[data-clipped]. */
+.warnings-body[data-clipped] {
+  background:
+    var(--more-chevron) center bottom 1px / 14px no-repeat border-box,
+    var(--more-fade) bottom / 100% var(--space-4) no-repeat border-box;
 }
 
 .warnings summary {
@@ -2540,16 +2869,49 @@ legend {
 }
 
 .warnings summary:hover {
-  background: var(--selection);
+  background: var(--hover);
 }
 
 .warn-guide > summary {
   font-weight: var(--font-weight-bold);
 }
 
+.warnings summary .count {
+  color: var(--muted);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+.warn-guide + .warn-guide {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--raised-line);
+}
+
+.warn-kind {
+  margin-top: var(--space-2);
+}
+
+.warn-kind + .warn-kind {
+  margin-top: var(--space-4);
+}
+
 .warn-kind > summary {
+  margin-bottom: var(--space-1);
   padding-left: var(--space-6);
+  color: var(--overlay-heading);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-medium);
+}
+
+.warn-kind-mark {
+  flex: none;
   color: var(--warn);
+}
+
+.warn-kind-mark.data-note {
+  color: var(--muted);
 }
 
 .warn-kind ul {
@@ -2560,22 +2922,50 @@ legend {
 
 .warn-item {
   display: flex;
+  align-items: baseline;
   gap: var(--space-3);
   width: 100%;
   padding: var(--space-1) var(--space-3) var(--space-1) var(--warnings-indent);
+}
+
+.warn-kind li:nth-child(even):has(> .warn-item) {
+  background: var(--warn-stripe);
 }
 
 .warn-item[aria-disabled] {
   cursor: progress;
 }
 
+.warn-message {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.warn-message .ui-mono {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
 .warn-place {
   flex: none;
   min-width: var(--warnings-place-width);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+/* Matches .legend-count. */
+.warn-place .ui-mono {
+  font-family: var(--font-sans);
 }
 
 .warn-more {
   margin-left: calc(var(--warnings-indent) - var(--space-2));
+  text-decoration: underline var(--accent);
+  text-underline-offset: 3px;
+}
+
+.warn-more svg {
+  color: var(--accent);
 }

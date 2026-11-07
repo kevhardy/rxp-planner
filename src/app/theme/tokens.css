@@ -1,41 +1,133 @@
 :root {
   color-scheme: light;
 
-  --bg: #ececec;
-  --surface: #f7f7f7;
-  --line: #d6d6d6;
-  --control-border: #7e7e7e;
-  --text: #1d1d1d;
-  --muted: #616161;
+  /* In both themes the top bar is the lightest band and the guide strip the
+     darkest, so the strip parts the top bar from the pane heads below it. */
+  --topbar: #f1f5fa;
+  --bg: #cbd5e1;
+  --surface: #ebf0f6;
+  --pane-head: #d3dde9;
+  /* --bg sits under 3 L* below --pane-head, so the strip and the pane heads
+     read as one band. 4% --text is about the most that keeps --muted at
+     4.5:1 on the strip. */
+  --guide-strip: color-mix(in srgb, var(--text) 4%, var(--bg));
+  /* --muted falls under 5:1 on the light strip, the darkest band, so the
+     strip's secondary text takes some --text. */
+  --guide-strip-muted: color-mix(in srgb, var(--text) 30%, var(--muted));
+  --raised: #fff;
+  --field: var(--raised);
+  /* The least share of --muted, with a small margin, that keeps 4.5:1 on
+     --field, so a placeholder reads as a hint and not as a value. */
+  --placeholder: color-mix(in srgb, var(--muted) 84%, var(--field));
+  --hover: #e3e9f1;
+  --line: #c3ccd7;
+  /* A divider inside a float on --raised. */
+  --raised-line: var(--line);
+  --control-border: #6d7a8b;
+  --text: #17202b;
+  --muted: #4c5868;
+  /* A pale steel sea, so the world map is not a heavy block on a light
+     page. Labels on it read against --art-label-outline, not the sea. */
+  --map-backdrop: #a1b3c7;
+  /* On the pale sea, a solid diagonal rim thickens each stem into a black
+     stencil, so the corners of --art-label-outline draw softer. */
+  --art-label-rim-diagonal: color-mix(in srgb, var(--art-ink) 46%, transparent);
+  /* A third, 3px blur thickens place names on the pale map into a dark band. */
+  --art-label-halo: 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
+  /* A rim of --art-ink on each side and --art-label-rim-diagonal at each
+     corner, so a label reads against the rim at any sea color. A rim offset
+     between device pixels blurs into a grey edge, so the rim is a whole 1px.
+     On the pale sea, a blur outside the rim only thickens the stroke. */
+  --art-label-outline:
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
+    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal);
+  /* Halfway to --surface, so an empty map does not draw the eye as the
+     darkest block on the page. A faint tint of the sea reads as a map with
+     no guide, not as a blank pane, and stays lighter than --pane-head. */
+  --map-empty: color-mix(in srgb, var(--map-backdrop) 6%, color-mix(in srgb, var(--bg) 50%, var(--surface)));
+  /* A hidden legend row keeps a readable name, so its dimmed swatch and
+     crossed eye carry the off state. */
+  --map-legend-hidden: var(--muted);
+  --map-legend-shown: var(--text);
+  /* A shown eye takes the color of an open toggle, and a crossed eye fades
+     toward the legend, so in a long list the shown rows draw the eye first. */
+  --map-legend-eye-shown: var(--accent);
+  --map-legend-eye-hidden: color-mix(in srgb, var(--muted) 75%, var(--raised));
+  /* The heading of a group of rows in a float list, such as the legend and
+     Warnings. */
+  --overlay-heading: var(--raised-label);
+  /* Shown names take --text, so a lighter heading reads quieter than the
+     rows under it. The heavier weight carries the step. */
+  --map-legend-heading: var(--text);
+  --map-legend-step-outline: var(--control-border);
+  /* The chevron under a list that scrolls on, in --text at 70%. A data URL
+     cannot read a token, so it repeats this theme's `--text`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2317202b' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 
-  --selection: #e6e6e6;
-  --press: #e0e0e0;
+  /* A data URL cannot read a token, so it repeats this theme's
+     `--control-border`. */
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%236d7a8b' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  /* The outline color of the art in `guideIcons/`, in both themes. */
+  --guide-icon-ink: #1d1408;
+  /* A dark rim around the icon's own dark outline thickens it into a frame
+     and dulls the yellow quest marks, so the yellow marks take a steel edge.
+     The blur thins the shadow, so its color sits halfway to --text to reach
+     about 3:1 on --surface and --selection. Two half-pixel shadows stay
+     crisp, where one 1px shadow blurs into a halo. */
+  --guide-icon-edge: color-mix(in srgb, var(--control-border) 50%, var(--text));
+  --ring-guide-icon: none;
+  --ring-guide-icon-vivid: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  /* Brightening lightens a deep icon's dark fills, such as the book and
+     the flag, so the icon weighs less on a light page and more on a dark
+     page. The colors stay full, where a lower opacity reads as disabled. */
+  --ring-guide-icon-deep: brightness(1.3);
+  --ring-guide-icon-target: var(--ring-guide-icon);
+  --ring-guide-sprite: none;
 
-  --primary-bg: #1d1d1d;
-  --primary-fg: #f7f7f7;
-  --primary-hover: #373737;
-  --primary-press: #000;
+  --selection: #d4e4f9;
+  /* The current segment or tab, on a bar that a selected row never sits on. */
+  --selection-on-bar: var(--selection);
+  --press: #d7e1ed;
+  /* --hover sits too close to --surface for the band of a hovered or
+     focused Library row to show on a light page. */
+  --lib-row-hover: var(--press);
+
+  /* The progress arcs carry the level, so a pale track keeps the ring
+     below the step title in weight. */
+  --level-track: #b6bfca;
+  --level-before: var(--control-border);
+  --level-earned: var(--accent);
+
+  --accent: #3f6690;
+  --pop: #d9473a;
+  --pop-ink: #b22f23;
+  --pop-fg: #fff;
+
+  --primary-bg: var(--accent);
+  --primary-fg: #fff;
+  --primary-hover: #36597e;
+  --primary-press: #2c4a6a;
 
   --danger-hover: #c4382c;
   --danger-press: #8f1b12;
 
-  --disabled-bg: #e0e0e0;
-  --disabled-fg: #979797;
+  --disabled-bg: #dde3ea;
+  --disabled-fg: #7b8694;
+  --disabled-border: #b3bbc5;
 
-  --warn: #8f5603;
+  --warn: #915500;
   --danger: #b42318;
   --danger-fg: #fff;
   --ok: #13703a;
 
-  --kind-accept: #a16207;
-  --kind-turnin: #15803d;
-  --kind-complete: #c2410c;
+  --kind-accept: #9c5f07;
+  --kind-turnin: #147c3b;
+  --kind-complete: #bd3f0c;
   --kind-goto: #0369a1;
-  --kind-target: #b5177a;
   --kind-train: #7042c8;
   --kind-vendor: #6d3c0c;
   --kind-command: #6b645b;
-  --kind-use: #0f766e;
+  --kind-use: #0e716a;
   --kind-equip: #2f55c7;
 
   /* Tuned to 4.5:1 on surface. `addon.guideTextColors` in Themes.lua sets
@@ -44,72 +136,178 @@
   --rxp-enemy: #b42318;
   --rxp-friendly: #13703a;
   --rxp-loot: #1f5fc2;
-  --rxp-warn: #8a5406;
-  --rxp-buy: #334c00;
+  --rxp-warn: var(--warn);
+  --rxp-buy: #375602;
   --rxp-pick: #a3218f;
+  /* Text needs the dark BUY above, which reads as black in an 8px dot. */
+  --rxp-buy-swatch: #5a8a00;
 
-  --elevation-1: 0 0 0 1px rgb(29 29 29 / 0.16), 0 1px 2px rgb(29 29 29 / 0.14);
-  --elevation-2: 0 0 0 1px rgb(29 29 29 / 0.14), 0 10px 28px -6px rgb(29 29 29 / 0.3);
-  --scrim: rgb(29 29 29 / 0.45);
+  --elevation-1: 0 0 0 1px rgb(23 32 43 / 0.14), 0 1px 2px rgb(23 32 43 / 0.12);
+  --elevation-2: 0 0 0 1px var(--float-edge), 0 12px 30px -8px rgb(23 32 43 / 0.3);
+  /* A translucent ring takes the tone of what lies behind it, and fades over
+     pale map tiles such as snow. A float's solid edge keeps one tone on all
+     four sides, over the guide strip and the map alike. */
+  --float-edge: #9fabba;
+  --scrim: rgb(23 32 43 / 0.45);
 
-  --objective-1: #ef356b;
-  --objective-2: #009828;
-  --objective-3: #0085e2;
-  --objective-4: #009293;
-  --objective-5: #bb55e4;
-  --objective-6: #878700;
+  --objective-1: #ed346a;
+  --objective-2: #009527;
+  --objective-3: #0084e0;
+  --objective-4: #008f90;
+  --objective-5: #b753df;
+  --objective-6: #848400;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #131313;
-  --surface: #1a1a1a;
-  --line: #313131;
-  --control-border: #797979;
-  --text: #e8e8e8;
-  --muted: #9f9f9f;
+  --topbar: #37404f;
+  --bg: #141a22;
+  --surface: #222a35;
+  --pane-head: #2f3946;
+  /* --bg reads as a trough under the top bar, so the strip sits halfway
+     between --field and --surface, which steps the top bar, strip, and pane
+     heads about as far apart as in the light theme. */
+  --guide-strip: color-mix(in srgb, var(--field) 50%, var(--surface));
+  --guide-strip-muted: var(--muted);
+  /* --surface all but matches the strip, so a guide card lifts toward --text
+     to draw its shape with its fill. */
+  --chain-card: color-mix(in srgb, var(--text) 8%, var(--surface));
+  --chain-edge: color-mix(in srgb, var(--text) 28%, var(--line));
+  /* As light as --control-border allows at 3:1, so a secondary button on the
+     top bar reads as a control. */
+  --raised: #3c4856;
+  /* Darker than every surface it sits on, so a field reads as a well, even
+     in a float on --raised. */
+  --field: #1b222b;
+  --placeholder: color-mix(in srgb, var(--muted) 74%, var(--field));
+  --hover: #29323b;
+  --line: #364252;
+  --tick-minor: var(--line);
+  /* One step past --line, so a major tick reads apart from a minor one but
+     stays quieter than the coral bar of the current mode. */
+  --tick-major: color-mix(in srgb, var(--text) 15%, var(--line));
+  /* --line all but vanishes on the dark --raised, so this mix brings a
+     divider there to the contrast of the light one. */
+  --raised-line: color-mix(in srgb, var(--text) 20%, var(--line));
+  /* --label falls from 9:1 on the dark page to under 6:1 on the dark
+     --raised, so a label on a float such as the Character card takes more
+     --text. */
+  --raised-label: color-mix(in srgb, var(--text) 75%, var(--muted));
+  --control-border: #8797ae;
+  --text: #e3e8ee;
+  --muted: #aab6c5;
+  /* A muted steel sea, so the world map does not read as a hole in the page.
+     Map labels keep 4.5:1 on it. */
+  --map-backdrop: #1b2633;
+  --map-empty: color-mix(in srgb, var(--bg) 50%, var(--surface));
+  --art-label-rim-diagonal: var(--art-ink);
+  --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
+  /* The wider blurs of --art-label-halo read as a soft dark band outside the
+     crisp rim on world names. */
+  --art-label-outline-halo: 0 0 1px var(--art-ink);
+  --art-label-outline:
+    1px 0 var(--art-ink), -1px 0 var(--art-ink), 0 1px var(--art-ink), 0 -1px var(--art-ink), 1px 1px var(--art-label-rim-diagonal),
+    -1px -1px var(--art-label-rim-diagonal), 1px -1px var(--art-label-rim-diagonal), -1px 1px var(--art-label-rim-diagonal),
+    var(--art-label-outline-halo);
+  /* The dark --accent reads dim beside the names of shown rows. */
+  --map-legend-eye-shown: color-mix(in srgb, var(--accent) 70%, var(--text));
+  /* --raised-label on the dark --raised reads too close to the rows below it. */
+  --overlay-heading: var(--text);
+  /* Shown names take --text, so a heading in white reads a step above them. */
+  --map-legend-heading: #fff;
+  /* On the map, a dark step pin reads by its ink rim on lit terrain. The
+     dark --raised is too close to the ink, so a light ring stands in for
+     the terrain. */
+  --map-legend-step-outline: var(--text);
+  /* A data URL cannot read a token, so it repeats this theme's `--text`. */
+  --more-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23e3e8ee' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 4.5 4 4 4-4'/%3E%3C/svg%3E");
 
-  --selection: #2b2b2b;
-  --press: #303030;
+  /* A data URL cannot read a token, so it repeats this theme's
+     `--control-border`. */
+  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%238797ae' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  /* A mid-tone rim gives the icon art's dark outline, and a dark icon such
+     as the book or a dark spell sprite, an edge on the dark surface. Two
+     half-pixel shadows stay crisp, where one 1px shadow blurs into a halo. */
+  --guide-icon-edge: color-mix(in srgb, var(--control-border) 40%, var(--surface));
+  --ring-guide-icon: drop-shadow(0 0 0.5px var(--guide-icon-edge)) drop-shadow(0 0 0.5px var(--guide-icon-edge));
+  --ring-guide-icon-vivid: var(--ring-guide-icon);
+  /* On the dark page, a deep icon's dark fills and outline sit near the page
+     color, so a lift brings out its shape, and the contrast step keeps its
+     lifted fills apart, such as a book's cover and its panel. At 1.6 the
+     book's panel keeps the brown of its art, and the shape still stands off
+     the page. A greater lift clips the red channel first, so the flag turns
+     pink and the book tan. */
+  --ring-guide-icon-deep: brightness(1.6) contrast(1.1) var(--ring-guide-icon);
+  /* The target person's plum base sits near --surface. 1.12 is the least
+     lift that puts it at 3:1, and its light top still holds the plum hue. */
+  --ring-guide-icon-target: brightness(1.12) var(--ring-guide-icon);
+  --ring-guide-sprite: 0 0 0 1px var(--guide-icon-edge);
 
-  --primary-bg: #e8e8e8;
-  --primary-fg: #1a1a1a;
-  --primary-hover: #d1d1d1;
-  --primary-press: #bcbcbc;
+  --selection: #233a54;
+  /* --selection's hue, lifted above --topbar and --raised, so the current
+     segment or tab sits above its bar and not below it. The coral bar under
+     it needs 3:1, which caps how light it goes. */
+  --selection-on-bar: #314d6b;
+  --press: #1e2c3f;
+  --lib-row-hover: var(--hover);
+
+  /* On a dark page a ring in --text reads as a bright circle beside the
+     title, so the arcs stay well below --text, and the track sits dark
+     enough under the earned arc for 3:1. */
+  --level-track: #44526a;
+  --level-before: #75859b;
+
+  --accent: #82a6cd;
+  --pop: #ff6b5a;
+  /* Tuned to 4.5:1 under the open-toggle wash on the top bar, where the
+     Warnings count keeps it. */
+  --pop-ink: #ffa397;
+  --pop-fg: #1a2028;
+
+  --primary-bg: #4a73a0;
+  --primary-hover: #4f78a4;
+  --primary-press: #3f668f;
 
   --danger-hover: #e86a55;
   --danger-press: #dc5f4c;
 
-  --disabled-bg: #272727;
-  --disabled-fg: #656565;
+  --disabled-bg: #28313c;
+  --disabled-fg: #808c9d;
+  --disabled-border: #515b69;
 
-  --warn: #e3a33b;
-  --danger: #f2735f;
-  --danger-fg: #1a1a1a;
+  /* One gold for warnings, RXP's WARN text, and the accept mark, since golds
+     a few degrees apart read as near misses. */
+  --warn: #e2ae3c;
+  --danger: #f38170;
+  --danger-fg: #1a2028;
   --ok: #4cc472;
 
-  --kind-accept: #dcae2f;
+  --kind-accept: var(--warn);
   --kind-turnin: #4cc472;
   --kind-complete: #f0874a;
   --kind-goto: #4fb3e8;
-  --kind-target: #ee72bb;
-  --kind-train: #ae8ff2;
-  --kind-vendor: #bc8253;
-  --kind-command: #a59e93;
+  --kind-train: #b091f2;
+  --kind-vendor: #a87c62;
+  --kind-command: #a8a297;
   --kind-use: #3fc7b0;
-  --kind-equip: #7c9cf5;
+  --kind-equip: #81a0f5;
 
   --rxp-enemy: #ff7b6b;
   --rxp-friendly: #5ccf7f;
   --rxp-loot: #79abff;
-  --rxp-warn: #e5b53c;
+  --rxp-warn: var(--warn);
   --rxp-buy: #b6ea3a;
   --rxp-pick: #e77ad8;
+  --rxp-buy-swatch: var(--rxp-buy);
 
-  --elevation-1: 0 0 0 1px rgb(0 0 0 / 0.6), 0 1px 2px rgb(0 0 0 / 0.5);
-  --elevation-2: 0 0 0 1px rgb(0 0 0 / 0.7), 0 12px 32px -6px rgb(0 0 0 / 0.7);
-  --scrim: rgb(0 0 0 / 0.6);
+  /* A light rim outlines a float on a dark page, where a shadow does not show. */
+  --elevation-1: 0 0 0 1px #586782, 0 1px 2px rgb(8 11 16 / 0.5);
+  --elevation-2: 0 0 0 1px #586782, 0 14px 34px -8px rgb(8 11 16 / 0.8);
+  --float-edge: #586782;
+  --scrim: rgb(8 11 16 / 0.6);
+  /* Dark --hover sits far below --raised, so half of it bands the list. */
+  --warn-stripe: color-mix(in srgb, var(--hover) 25%, var(--raised));
 
   --objective-1: #ffa8b5;
   --objective-2: #4ee75f;
@@ -123,15 +321,18 @@
   --warn-tint: color-mix(in srgb, var(--warn) 10%, var(--surface));
   --danger-tint: color-mix(in srgb, var(--danger) 10%, var(--surface));
   --add-done-bg: color-mix(in srgb, var(--ok) 10%, var(--surface));
-  /* 80% clears 77%, the least share at which the border reaches 3:1 on its
-     tint and on the light selection. */
-  --warn-border: color-mix(in srgb, var(--warn) 80%, var(--surface));
-  --danger-border: color-mix(in srgb, var(--danger) 80%, var(--surface));
-  --add-done-border: color-mix(in srgb, var(--ok) 80%, var(--surface));
-  --warn-on-selection: color-mix(in srgb, var(--warn) 90%, var(--text));
+  /* 85% is the least share at which the border reaches 3:1 on the light
+     page background. */
+  --warn-border: color-mix(in srgb, var(--warn) 85%, var(--surface));
+  --danger-border: color-mix(in srgb, var(--danger) 85%, var(--surface));
+  /* Part of --hover, so a hovered row still reads over the stripe. */
+  --warn-stripe: color-mix(in srgb, var(--hover) 50%, var(--raised));
+  --add-done-border: color-mix(in srgb, var(--ok) 85%, var(--surface));
   --primary-divider: color-mix(in srgb, var(--primary-fg) 32%, transparent);
   --sim-card-divider: color-mix(in srgb, var(--surface) 25%, transparent);
   --foot-tag: color-mix(in srgb, var(--text) 65%, var(--muted));
+  --label: color-mix(in srgb, var(--text) 50%, var(--muted));
+  --raised-label: var(--label);
   --outline-gap-line: color-mix(in srgb, var(--line) 80%, transparent);
 
   --token-faction-border: color-mix(in srgb, var(--kind-accept) 50%, var(--control-border));
@@ -139,52 +340,100 @@
   --token-class-border: color-mix(in srgb, var(--kind-train) 50%, var(--control-border));
   --token-mode-border: color-mix(in srgb, var(--kind-turnin) 50%, var(--control-border));
 
-  --chain-link-ink: color-mix(in srgb, var(--text) 45%, var(--line));
+  /* On the light top bar, ticks at --line and a step past it read as a
+     second dense pattern beside the strip's arrows, so both ticks sit a step
+     nearer the bar. A major tick still reads apart from a minor one. */
+  --tick-minor: color-mix(in srgb, var(--line) 75%, var(--topbar));
+  --tick-major: color-mix(in srgb, var(--text) 8%, var(--line));
+
+  --chain-link-ink: color-mix(in srgb, var(--text) 36%, var(--line));
   --chain-sea-ink: color-mix(in srgb, var(--text) 62%, var(--line));
-  --chain-edge: color-mix(in srgb, var(--text) 22%, var(--line));
+  /* A guide card other than the current one has no edge, so its fill alone
+     draws it as a step of the route and not as a field. */
+  --chain-card: var(--surface);
+  --chain-edge: color-mix(in srgb, var(--text) 12%, var(--line));
 
-  --map-step: color-mix(in srgb, var(--kind-goto) 80%, var(--text));
+  --ink-bar-start: inset 4px 0 0 -1px var(--pop);
+  --ink-bar-top: inset 0 3px 0 -1px var(--pop);
+  --ink-bar-bottom: inset 0 -3px 0 -1px var(--pop);
+  --ink-bar-open: inset 0 -3px 0 -1px var(--accent);
 
-  --ink-bar-start: inset 2px 0 0 var(--text);
-  --ink-bar-top: inset 0 2px 0 var(--text);
-  --ink-bar-bottom: inset 0 -2px 0 var(--text);
-
-  --focus-ring: 2px solid var(--text);
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --focus-offset-inside: -4px;
   --ring-focus-gap: inset 0 0 0 6px var(--surface);
   --ring-gap-end: inset -2px 0 var(--surface);
-  --ink-bar-start-inside: inset 8px 0 0 var(--text);
+  --ink-bar-start-inside: inset 9px 0 0 -1px var(--pop);
 
   --ring-line: 0 0 0 1px var(--line);
   --ring-control: inset 0 0 0 1px var(--control-border);
+  /* A wash over the element's own fill, so a pressed toggle reads as on
+     against whatever surface it sits on. */
+  --pressed-wash: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* The second shadow is the wash: a spread wider than any control fills the
+     whole padding box. */
+  --ring-pressed: inset 0 0 0 1px var(--accent), inset 0 0 0 100vmax var(--pressed-wash);
   --ring-warn: 0 0 0 1px var(--warn);
   --ring-moving: 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+
+  /* A mask reads only alpha, so the opaque stop needs no theme color. */
 
   --bar-travel: var(--kind-goto);
   --bar-kill: var(--danger);
   --bar-interact: var(--muted);
   --bar-wait: var(--control-border);
-
-  /* A data URL cannot read a token, so it holds the light `--control-border`,
-     which is 3:1 on the surface, selection, and press of both themes. */
-  --guide-icon-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3Crect width='1' height='1' fill='none' stroke='%237e7e7e' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 }
 
 :root {
-  --art-backdrop: #07080a;
   --art-ink: #0b0f17;
   --art-paper: #fff;
+  /* A dark steel slate behind a map point's sprite, softer than --art-ink so a
+     city's many points do not read as a pile of holes. */
+  --map-icon-backing: #2b3746;
   --map-label: #f3ecd8;
   --map-label-strong: #ffe8a3;
   --map-border: #fff4d6;
   --map-interior: #2a2622;
   --map-terrain: #2c3a2a;
+  /* The water that the terrain tiles bake in along each coast. */
+  --map-sea: #09150a;
   --map-transport: #9bd0ff;
   --map-character: #c8102e;
   --map-enemy: #ff7b6b;
   --map-enemy-dead: #a59e93;
+  /* The map's art keeps one look in both themes, so the selected step and the
+     objective colors on it take the dark theme's values. */
+  --map-step: #6dbee9;
+  --map-objective-1: #ffa8b5;
+  --map-objective-2: #4ee75f;
+  --map-objective-3: #95c9ff;
+  --map-objective-4: #2decd6;
+  --map-objective-5: #e4a9ff;
+  --map-objective-6: #cccd00;
   --map-step-upcoming: #4cc472;
+  /* Lighter than --map-step-upcoming, so a thin dashed path stands out on grass and roofs. */
+  --map-step-upcoming-path: #8cf5a5;
+  /* A numbered pin of a step before or after the selected one. A dark fill
+     and a solid ink rim keep it apart from green terrain and quieter than the
+     selected step's pin. Its light numeral needs no halo, which would blur it,
+     so the fill keeps 4.5:1 under it. */
+  --map-step-previous-fill: color-mix(in srgb, var(--kind-command) 65%, var(--art-ink));
+  --map-step-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming) 55%, var(--art-ink));
+  --map-step-rim: var(--art-ink);
+  /* A chip by the selected step's marks draws quieter: a grayer fill and a
+     softer numeral, still opaque so terrain does not show through. */
+  --map-step-near-previous-fill: color-mix(in srgb, var(--map-step-previous-fill) 50%, var(--map-icon-backing));
+  --map-step-near-upcoming-fill: color-mix(in srgb, var(--map-step-upcoming-fill) 50%, var(--map-icon-backing));
+  --map-step-near-text: var(--map-label);
+  --more-fade: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--raised-line) 12%, transparent) 50%,
+    color-mix(in srgb, var(--raised-line) 40%, transparent)
+  );
+  --font-size-map-step: 12px;
+  --line-height-map-step: 1;
+  --font-size-map-label: 13px;
+  --line-height-map-label: 16px;
 
   --stack-two: #36c3dc;
   --stack-more: #ee72bb;
@@ -206,12 +455,12 @@
   --route-label-bg: color-mix(in srgb, var(--art-ink) 75%, transparent);
   --route-crossing: color-mix(in srgb, var(--route-pending) 85%, transparent);
   --route-focus: color-mix(in srgb, var(--route-end) 50%, transparent);
-  --ride-mark-border: color-mix(in srgb, var(--route-stop) 85%, transparent);
   --ride-mark-bg: color-mix(in srgb, var(--route-chip) 92%, transparent);
   --skipped-tiles-fill: color-mix(in srgb, var(--route-pending) 12%, transparent);
   --skipped-tiles-line: color-mix(in srgb, var(--route-pending) 70%, transparent);
   --layer-swatch-border: color-mix(in srgb, var(--art-paper) 40%, transparent);
-  --transport-line: color-mix(in srgb, var(--map-transport) 70%, transparent);
+  --transport-line: color-mix(in srgb, var(--map-transport) 55%, transparent);
+  --map-transport-casing: color-mix(in srgb, var(--art-ink) 75%, transparent);
 
   --zone-border-line: color-mix(in srgb, var(--map-border) 75%, transparent);
   --zone-border-halo: color-mix(in srgb, var(--art-ink) 40%, transparent);
@@ -234,12 +483,15 @@
     drop-shadow(0 -1px var(--art-ink));
   --art-focus-halo:
     0 0 0 2px color-mix(in srgb, var(--art-paper) 85%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--art-paper) 85%, transparent);
-  --art-icon-halo:
-    0 0 0 1.5px var(--art-ink), 0 0 0 2.5px color-mix(in srgb, var(--art-paper) 75%, transparent), 0 1px 4px var(--art-shade-soft);
+  --art-icon-halo: 0 0 0 1px color-mix(in srgb, var(--art-ink) 45%, transparent);
   --art-icon-halo-marked: 0 0 0 1.5px var(--art-ink), 0 0 0 3px var(--art-paper), 0 0 0 4.5px var(--art-ink);
+  /* The selection coral on the map, which draws the same in both modes. It
+     is the dark --pop lifted toward paper until it keeps 3:1 on terrain dark
+     enough to hide the ink casing around it. */
+  --art-pop: #ff958a;
+  --art-selected-ring: 0 0 0 1px var(--art-ink), 0 0 0 3px var(--art-pop), 0 0 0 4.5px var(--art-ink);
   --art-enemy-burst: 0 0 0 6px color-mix(in srgb, var(--map-enemy) 60%, transparent);
   --art-text-halo: 0 0 2px var(--art-ink), 0 0 2px var(--art-ink);
-  --art-label-halo: 0 0 3px var(--art-ink), 0 0 2px var(--art-ink), 0 1px 1px var(--art-ink);
   --art-drop-shade: drop-shadow(0 0 2px var(--art-shade));
   --art-icon-gray: grayscale(1) brightness(1.1);
 }
@@ -251,8 +503,8 @@
 }
 
 .ui-item[data-objective] {
-  --objective-tint: color-mix(in srgb, var(--objective) 14%, var(--surface));
-  --ink-bar-objective: inset -3px 0 0 var(--objective);
+  --objective-tint: color-mix(in srgb, var(--objective) 10%, var(--surface));
+  --ink-bar-objective: inset -4px 0 0 -1px var(--objective);
 }
 
 .step-swatch {
@@ -265,19 +517,30 @@
 
   --font-size-micro: 11px;
   --font-size-small: 12px;
-  --font-size-body: 13px;
-  --font-size-pane-title: 15px;
+  --font-size-caption: 13px;
+  --font-size-body: 14px;
+  --font-size-pane-title: 16px;
   --font-size-title: 20px;
   --line-height-micro: 16px;
   --line-height-small: 16px;
+  --line-height-caption: 16px;
   --line-height-body: 20px;
+  /* Secondary lines that a user reads for a long session: a step's places,
+     the editor's line summaries, and its field labels. */
+  --font-size-detail: 14px;
+  --line-height-detail: 18px;
   --line-height-pane-title: 20px;
   --line-height-title: 28px;
   --font-weight-regular: 400;
+  /* Renders as regular unless the 500 face of Plex Sans is loaded. */
+  --font-weight-medium: 500;
   --font-weight-bold: 600;
 
   --font-size-mark: 8px;
   --line-height-mark: 1;
+  /* A step's number, centered on the first line of its title. */
+  --font-size-step-no: var(--font-size-caption);
+  --line-height-step-no: var(--line-height-body);
 
   --space-1: 4px;
   --space-2: 8px;
@@ -291,6 +554,7 @@
   --radius-round: 999px;
 
   --control-small: 24px;
+  --control-field: 28px;
   --control-large: 32px;
   --choice-box: 14px;
 

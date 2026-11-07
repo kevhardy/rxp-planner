@@ -64,8 +64,8 @@
   border: 1px solid transparent;
   border-radius: var(--radius-control);
   color: var(--text);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   font-weight: var(--font-weight-regular);
   white-space: nowrap;
 }
@@ -76,6 +76,10 @@
   padding: 0 var(--space-3);
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
+}
+
+.ui-button[data-size="28"] {
+  height: var(--control-field) !important;
 }
 
 .ui-button[data-wrap] {
@@ -89,6 +93,10 @@
 .ui-button[data-icon-only] {
   width: var(--control-small) !important;
   padding: 0;
+}
+
+.ui-button[data-icon-only][data-size="28"] {
+  width: var(--control-field) !important;
 }
 
 .ui-button[data-icon-only][data-size="32"] {
@@ -111,12 +119,12 @@
 
 .ui-button[data-variant="secondary"] {
   border-color: var(--control-border);
-  background: var(--surface);
+  background: var(--raised);
 }
 
 .ui-button:is([data-variant="secondary"], [data-variant="ghost"]):hover {
   border-color: var(--control-border) !important;
-  background: var(--selection) !important;
+  background: var(--hover) !important;
   color: var(--text) !important;
 }
 
@@ -124,28 +132,33 @@
   background: var(--press) !important;
 }
 
-.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"] {
-  border-color: transparent !important;
-  border-end-start-radius: 0 !important;
-  border-end-end-radius: 0 !important;
-  box-shadow: var(--ink-bar-bottom) !important;
+/* A pressed toggle and an open trigger share one look, apart from the
+   selection fill and coral bar of the current mode. Accent text falls under
+   4.5:1 on the dark top bar, so only the icon takes the accent. The inset ring
+   doubles the border, which a secondary toggle already draws in
+   --control-border when off. */
+.ui-button:is([aria-pressed="true"], [data-popover][aria-expanded="true"]):not(
+    :disabled,
+    [aria-disabled="true"],
+    [data-icon-shows-pressed]
+  ) {
+  border-color: var(--accent) !important;
+  box-shadow: var(--ring-pressed) !important;
   color: var(--text) !important;
 }
 
-.ui-button[data-popover]:is([data-variant="primary"], [data-variant="secondary"], [data-variant="ghost"])[aria-expanded="true"]:where(
-    :not(:active)
-  ) {
-  background: var(--selection) !important;
+.ui-button:is([aria-pressed="true"], [data-popover][aria-expanded="true"]):not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed])
+  svg {
+  color: var(--accent);
+}
+
+/* The accent fill would hide the accent ring and icon. */
+.ui-button[data-variant="primary"][data-popover][aria-expanded="true"]:where(:not(:active)) {
+  background: var(--raised) !important;
 }
 
 .ui-button[aria-expanded="true"]:where([data-popover]):active {
   background: var(--press) !important;
-}
-
-.ui-button[aria-pressed="true"]:not(:disabled, [aria-disabled="true"], [data-icon-shows-pressed]) {
-  border-color: var(--text) !important;
-  background: var(--press) !important;
-  color: var(--text) !important;
 }
 
 .ui-button[data-variant="danger"] {
@@ -164,8 +177,8 @@
 
 .ui-button:is(:disabled, [aria-disabled="true"]),
 .ui-button:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
-  border-color: transparent !important;
-  background: var(--disabled-bg) !important;
+  border-color: var(--disabled-border) !important;
+  background: transparent !important;
   box-shadow: none !important;
   color: var(--disabled-fg) !important;
   font-weight: var(--font-weight-regular) !important;
@@ -175,8 +188,8 @@
 
 .ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]),
 .ui-button[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]):is(:hover, :active) {
+  border-color: transparent !important;
   background: none !important;
-  color: var(--disabled-fg) !important;
 }
 
 .ui-disclosure {
@@ -200,14 +213,14 @@ progress {
   height: 6px;
   border: none;
   border-radius: var(--radius-round);
-  background: var(--line);
+  background: var(--raised-line);
   accent-color: var(--text);
   appearance: none;
 }
 
 progress::-webkit-progress-bar {
   border-radius: var(--radius-round);
-  background: var(--line);
+  background: var(--raised-line);
 }
 
 progress::-webkit-progress-value {
@@ -237,8 +250,8 @@ summary::-webkit-details-marker {
   padding: 0 var(--space-2);
   border-block: 1px solid var(--control-border);
   border-inline-start: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--muted);
+  background: var(--raised);
+  color: var(--text);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
   white-space: nowrap;
@@ -263,7 +276,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-segment:hover {
-  background: var(--selection) !important;
+  background: var(--hover) !important;
   color: var(--text) !important;
 }
 
@@ -272,6 +285,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-segment[aria-pressed="true"] {
+  border-block-end-color: var(--pop) !important;
   border-end-start-radius: 0 !important;
   border-end-end-radius: 0 !important;
   box-shadow: var(--ink-bar-bottom) !important;
@@ -280,7 +294,27 @@ summary::-webkit-details-marker {
 }
 
 .ui-segment[aria-pressed="true"]:where(:not(:active)) {
-  background: var(--selection) !important;
+  background: var(--selection-on-bar) !important;
+}
+
+/* In a quiet group, another control in the bar is the active one, so the
+   current segment looks like the others. */
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"] {
+  border-block-end-color: var(--control-border) !important;
+  box-shadow: none !important;
+  font-weight: var(--font-weight-regular) !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:where(:not(:active)) {
+  background: var(--raised) !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:first-child {
+  border-end-start-radius: var(--radius-control) !important;
+}
+
+.ui-segmented[data-quiet] > .ui-segment[aria-pressed="true"]:last-child {
+  border-end-end-radius: var(--radius-control) !important;
 }
 
 .ui-segment:focus-visible {
@@ -300,7 +334,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-menu-item:is(:hover, :focus-visible) {
-  background: var(--selection) !important;
+  background: var(--hover) !important;
 }
 
 .ui-menu-item:active {
@@ -332,7 +366,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-tab:hover {
-  background: var(--selection) !important;
+  background: var(--hover) !important;
   color: var(--text) !important;
 }
 
@@ -348,7 +382,7 @@ summary::-webkit-details-marker {
 
 /* :where() adds no specificity, so a disabled tab's look still wins over the selected fill. */
 .ui-tab[aria-selected="true"]:where(:not(:active)) {
-  background: var(--selection) !important;
+  background: var(--selection-on-bar) !important;
 }
 
 .ui-tab:focus-visible {
@@ -364,7 +398,7 @@ summary::-webkit-details-marker {
 }
 
 .ui-item:hover {
-  background: var(--selection) !important;
+  background: var(--hover) !important;
 }
 
 .ui-item:active {
@@ -466,11 +500,19 @@ summary::-webkit-details-marker {
   gap: var(--space-1);
 }
 
-.ui-field-label,
 .ui-field-hint {
-  color: var(--muted);
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
+}
+
+.ui-field-label {
+  color: var(--label);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+.ui-field-hint {
+  color: var(--muted);
 }
 
 .ui-field-error {
@@ -487,7 +529,7 @@ summary::-webkit-details-marker {
   margin: 0;
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--field);
   color: var(--text);
   font-family: inherit;
   font-size: var(--font-size-body);
@@ -500,7 +542,7 @@ summary::-webkit-details-marker {
 
 .ui-input,
 .ui-select > select {
-  height: var(--control-small);
+  height: var(--control-field);
   padding: 0 var(--space-2);
 }
 
@@ -524,6 +566,12 @@ summary::-webkit-details-marker {
   border-color: var(--text);
 }
 
+/* The ring covers the field's own border, so focus shows one edge. An invalid
+   field keeps its danger border beside the ring. */
+:is(.ui-input, .ui-select > select, .ui-textarea):focus-visible:not([aria-invalid="true"]) {
+  outline-offset: -1px;
+}
+
 :is(.ui-input, .ui-select > select, .ui-textarea)[aria-invalid="true"] {
   border-color: var(--danger);
 }
@@ -537,7 +585,8 @@ summary::-webkit-details-marker {
 }
 
 :is(.ui-input, .ui-textarea)::placeholder {
-  font-family: inherit;
+  color: var(--placeholder);
+  font-family: var(--font-sans);
 }
 
 :is(.ui-input, .ui-textarea):disabled::placeholder {
@@ -611,7 +660,7 @@ summary::-webkit-details-marker {
   padding: 0;
   border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--field);
   appearance: none;
   cursor: pointer;
   transition:
@@ -691,11 +740,6 @@ summary::-webkit-details-marker {
 
 :is(.ui-heading, .ui-text)[data-tone="muted"] {
   color: var(--muted);
-}
-
-:is(.ui-heading, .ui-text)[data-size="micro"] {
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
 }
 
 :is(.ui-heading, .ui-text)[data-size="small"] {
@@ -781,7 +825,7 @@ p.ui-text {
 
 .ui-card {
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
 }
 
@@ -797,6 +841,11 @@ p.ui-text {
 
 .ui-empty > p {
   margin: 0;
+}
+
+.ui-empty-icon {
+  margin-bottom: var(--space-1);
+  color: var(--muted);
 }
 
 .ui-empty-title {

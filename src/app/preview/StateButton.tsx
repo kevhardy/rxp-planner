@@ -98,7 +98,7 @@ function StateWindow(props: { id: string; anchor: HTMLElement; simulation: Guide
         <dl className="state-stats">
           <div className="state-level">
             <dt>Level</dt>
-            <dd className="mono">
+            <dd>
               {need > 0
                 ? `${state.level} · ${state.xp.toLocaleString("en-US")}/${need.toLocaleString("en-US")} xp`
                 : `${state.level} · max level`}
@@ -107,7 +107,7 @@ function StateWindow(props: { id: string; anchor: HTMLElement; simulation: Guide
           </div>
           <div>
             <dt>Quest log</dt>
-            <dd className="mono">
+            <dd>
               {state.log.size}/{QUEST_LOG_SIZE}
             </dd>
           </div>

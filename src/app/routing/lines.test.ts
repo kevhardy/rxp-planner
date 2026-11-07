@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import type { WorldLocation } from "../../data/index.ts";
+import type { WorldLocation, WorldMapData } from "../../data/index.ts";
 import { worldMap } from "../../data/terrainFixture.ts";
 import { at, testFrame } from "../../routing/fixtures/region.ts";
 import { nativeToWorld, worldToNative, type NativeFrame, type Point } from "../../routing/frame.ts";
 import type { JourneyLeg } from "../../routing/journey.ts";
 import { createPlan, DEFAULT_LEG, type MovementMode, type RoutePlan } from "../../routing/plan.ts";
 import type { TerrainRoute } from "../../routing/search.ts";
-import { insetBeside, legLines, projection } from "./lines.ts";
+import { insetBeside, landFrame, legLines, projection } from "./lines.ts";
 
 const run: MovementMode = { name: "Run", speed: 7, activation: 0 };
 
@@ -235,4 +235,18 @@ describe("inset beside a panel", () => {
     ];
     expect(insetBeside(inset, whole, map, box, 40, [wide])).toEqual(inset);
   });
+});
+
+it("bounds the land by the full-detail tiles, not the coarser ones", () => {
+  const map = {
+    tileSize: 256,
+    minZoom: 0,
+    nativeZoom: 1,
+    canvas: { left: 0, width: 1024, height: 1024 },
+    areas: [
+      { key: "west", canvasX: 0, canvasY: 0, tiles: { 0: [[0, 0, 0]], 1: [[1, 1, 2]] } },
+      { key: "east", canvasX: 512, canvasY: 512, tiles: { 1: [[0, 0, 0]] } },
+    ],
+  } as unknown as WorldMapData;
+  expect(landFrame(map)).toEqual({ left: 25, top: 25, width: 50, height: 50 });
 });

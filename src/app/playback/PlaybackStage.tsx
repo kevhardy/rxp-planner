@@ -11,7 +11,7 @@ import { Button } from "../ui/Button.tsx";
 import { useGuideMap, type MapExtras, type MapFocus, type GuideMapView } from "../map/MapPanel.tsx";
 import type { ViewPoint } from "../map/points.ts";
 import { jumpTo, usePlaybackRoute } from "../preview/route.ts";
-import { previewDoc } from "../../rules/index.ts";
+import { previewDoc, type Activity } from "../../rules/index.ts";
 import { insideOf, levelChip, levelOf, useSurfaces } from "../routing/Interiors.tsx";
 import { legLines, lineView, projection, round, toScreen } from "../routing/lines.ts";
 import { LayersMenu, RouterLayers, tileRects, type TileRect } from "../routing/MapLayers.tsx";
@@ -91,6 +91,7 @@ export function PlaybackStage() {
         if (i >= 0) store.seekStep(i);
       },
       edit: null,
+      numberedAhead: 1,
     };
   }, [step, record, route, playback, store, character, index]);
   const [follow, setFollow] = useState<Follow>({ on: true, again: 0, zoomIn: true });
@@ -107,6 +108,10 @@ export function PlaybackStage() {
     () => place() && insideOf(interiors, withHeight(place()!, place()!.height ?? null)),
   );
   useSurfaces(interiors, routed, near);
+  const stand = useSyncExternalStore(store.subscribe, () => {
+    const moment = store.moment();
+    return moment && !walks(moment.activity) ? moment.place : undefined;
+  });
   const extras: MapExtras = {
     scene: (view, frame) =>
       engine &&
@@ -153,6 +158,7 @@ export function PlaybackStage() {
     },
     foot: <CalculateRouting />,
     panel: <CharacterCard />,
+    stand,
   };
   const map = useGuideMap(data, focus, extras);
   const notice = usePlaybackNotice();
@@ -163,6 +169,7 @@ export function PlaybackStage() {
         {map?.controls}
         <Button
           variant="ghost"
+          size={28}
           pressed={follow.on}
           onClick={() => {
             const at = here.current;
@@ -274,6 +281,13 @@ const WayLines = memo(function WayLines(props: { view: GuideMapView; ways: reado
 });
 
 const NO_STOPS: readonly WorldStop[] = [];
+
+// The character moves through these activities, so its place is new on each frame. Playback keeps one place for each
+// other activity.
+const walks = (activity: Activity | undefined) =>
+  activity?.kind === "travel" ||
+  activity?.kind === "flight" ||
+  ((activity?.kind === "kill" || activity?.kind === "grind") && !!activity.walk);
 
 function CharacterMarker(props: { view: GuideMapView; onAt: (at: ViewPoint | undefined) => void }) {
   const { view, onAt } = props;

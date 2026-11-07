@@ -12,7 +12,7 @@ import { Button, DisclosureIcon } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
 import { EmptyState } from "../ui/EmptyState.tsx";
 import { ItemButton } from "../ui/ItemButton.tsx";
-import { Mono } from "../ui/Text.tsx";
+import { wholeRowsHeight } from "../ui/wholeRows.ts";
 import { isCurrent, jumpTo, useRoute } from "./route.ts";
 import { markDoneParts, placeParts, prerequisiteFixes, warningParts, type RouteView } from "../../rules/index.ts";
 import { KIND_LABELS, KIND_ORDER, routeWarnings } from "./warnings.ts";
@@ -30,6 +30,11 @@ interface GuideWarnings {
 }
 
 const ITEM_LIMIT = 10;
+
+const ROWS = ".warn-guide > summary, .warn-kind > summary, .warn-kind li";
+
+/** Kinds that mean the quest data is incomplete, not that the guide is wrong. */
+const DATA_NOTES: ReadonlySet<WarningKind> = new Set(["unknownQuest", "noQuestXp", "noKillTarget", "noKillCount"]);
 
 export function WarningsPanel() {
   const route = useRoute();
@@ -72,6 +77,29 @@ export function WarningsPanel() {
     (items?.[Math.min(at, items.length - 1)] ?? button.current)?.focus();
   }, [groups, button]);
 
+  useEffect(() => {
+    const el = body.current;
+    if (!open || !el || typeof ResizeObserver === "undefined") return;
+    const mark = () => el.toggleAttribute("data-clipped", el.scrollHeight - el.scrollTop - el.clientHeight > 1);
+    const fit = () => {
+      // The popover hangs left from the button's right edge, so it keeps 8px from the window's left edge.
+      el.parentElement!.style.setProperty("--warnings-room", `${el.closest(".warnings-menu")!.getBoundingClientRect().right - 8}px`);
+      el.style.maxHeight = "";
+      if (el.scrollHeight - el.clientHeight > 1) el.style.maxHeight = `${wholeRowsHeight(el, ROWS, el.getBoundingClientRect().height)}px`;
+      mark();
+    };
+    const observer = new ResizeObserver(fit);
+    observer.observe(el);
+    for (const child of el.children) observer.observe(child);
+    el.addEventListener("scroll", mark, { passive: true });
+    window.addEventListener("resize", fit);
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("scroll", mark);
+      window.removeEventListener("resize", fit);
+    };
+  }, [open, groups]);
+
   const applyFix = (button: HTMLElement, guide: number, fix: Fix) => {
     const items = [...body.current!.querySelectorAll(".warn-item")];
     refocus.current = items.indexOf(button.closest("li")!.querySelector(".warn-item")!);
@@ -103,7 +131,7 @@ export function WarningsPanel() {
       <Card as="section" layer id={panelId} className="warnings popover" aria-label="Warnings" hidden={!open}>
         <div className="panel-head">
           <h2>Warnings</h2>
-          <span className={`count${total > 0 ? " warn" : ""}`}>{groups && <Mono>{total}</Mono>}</span>
+          <span className={`count${total > 0 ? " warn" : ""}`}>{groups && total}</span>
         </div>
         <div ref={body} className="panel-body warnings-body" data-tip-bounds>
           {message ? (
@@ -115,22 +143,22 @@ export function WarningsPanel() {
               <details key={group.guide} className="warn-guide" open>
                 <summary>
                   <DisclosureIcon />
-                  {route.names[group.guide]}{" "}
-                  <span className="count">
-                    <Mono>{group.total}</Mono>
-                  </span>
+                  {route.names[group.guide]} <span className="count">{group.total}</span>
                 </summary>
                 {group.kinds.map(({ kind, items }) => {
                   const key = `${group.guide}:${kind}`;
                   const shown = expanded.has(key) ? items : items.slice(0, ITEM_LIMIT);
+                  const dataNote = DATA_NOTES.has(kind);
                   return (
                     <details key={kind} className="warn-kind" open>
                       <summary>
                         <DisclosureIcon />
-                        {KIND_LABELS[kind]}{" "}
-                        <span className="count">
-                          <Mono>{items.length}</Mono>
-                        </span>
+                        <Icon
+                          name={dataNote ? "info" : "warning"}
+                          size={14}
+                          className={dataNote ? "warn-kind-mark data-note" : "warn-kind-mark"}
+                        />
+                        {KIND_LABELS[kind]} <span className="count">{items.length}</span>
                       </summary>
                       <ul>
                         {shown.map((item, i) => (
@@ -166,7 +194,7 @@ export function WarningsPanel() {
                                 list.querySelectorAll<HTMLElement>(".warn-item")[ITEM_LIMIT]?.focus();
                               }}
                             >
-                              {items.length - shown.length} more
+                              {items.length - shown.length} more <Icon name="chevronDown" />
                             </Button>
                           </li>
                         )}
@@ -212,7 +240,7 @@ function WarningItem(props: { route: RouteView; guide: number; warning: Warning;
             </span>
           )}
         </span>{" "}
-        <span>
+        <span className="warn-message">
           <GuideText parts={props.text} links="plain" />
         </span>
       </ItemButton>

@@ -35,8 +35,8 @@ export const noLabel: IconButtonProps = { icon: "x" };
 export const noVariant: ButtonProps = { children: "Save" };
 // @ts-expect-error A button picks one of the variants.
 export const unknownVariant: ButtonProps = { variant: "link", children: "Save" };
-// @ts-expect-error A control is 24px or 32px tall.
-export const oddSize: ButtonProps = { variant: "ghost", size: 28, children: "Save" };
+// @ts-expect-error A button is 24px, 28px, or 32px tall.
+export const oddSize: ButtonProps = { variant: "ghost", size: 30, children: "Save" };
 // @ts-expect-error A primitive takes no inline style.
 export const styled: ButtonProps = { variant: "ghost", style: { margin: 0 }, children: "Save" };
 // @ts-expect-error The label is the accessible name, so there is no second one.

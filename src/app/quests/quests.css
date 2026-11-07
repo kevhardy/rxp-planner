@@ -65,8 +65,8 @@
 
 .quest-sources dl {
   margin: 2px 0 var(--space-1) var(--space-3);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .quest-sources dt {

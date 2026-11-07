@@ -41,15 +41,20 @@ afterEach(() => {
 
 function measure(height: number): (height: number) => void {
   let body = height;
-  let observed: () => void = () => {};
+  const observers = new Set<() => void>();
   vi.stubGlobal(
     "ResizeObserver",
     class {
+      readonly callback: () => void;
       constructor(callback: () => void) {
-        observed = callback;
+        this.callback = callback;
       }
-      observe() {}
-      disconnect() {}
+      observe() {
+        observers.add(this.callback);
+      }
+      disconnect() {
+        observers.delete(this.callback);
+      }
     },
   );
   vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockImplementation(function (this: HTMLElement) {
@@ -60,7 +65,7 @@ function measure(height: number): (height: number) => void {
   });
   return (next) => {
     body = next;
-    observed();
+    for (const observed of observers) observed();
   };
 }
 
@@ -398,11 +403,11 @@ describe("editor panel", () => {
   it("keeps a field's draft that the close cannot apply, and shows it when the editor opens again", async () => {
     await openGuide();
     const user = await mount();
-    const field = () => screen.getByRole("textbox", { name: ">> text" });
+    const field = () => screen.getByRole("textbox", { name: ">> Text" });
     await user.clear(field());
     await user.type(field(), "Hello -- there");
     await user.click(screen.getByRole("button", { name: "Close editor" }));
-    expect(screen.queryByRole("textbox", { name: ">> text" })).toBeNull();
+    expect(screen.queryByRole("textbox", { name: ">> Text" })).toBeNull();
 
     await user.click(screen.getByRole("button", { name: "Open editor" }));
     expect(shownText(field())).toBe("Hello -- there");

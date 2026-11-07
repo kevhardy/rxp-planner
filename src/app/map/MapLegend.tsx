@@ -18,6 +18,7 @@ import {
   useMapSettings,
   useMapSettingsStore,
   type CategoryId,
+  type LayerId,
   type MapSettings,
   type StepShow,
 } from "./mapSettings.ts";
@@ -26,7 +27,7 @@ import type { PlacedMarker } from "./questMarkers.ts";
 import { iconOf, showsSide, type TerrainFeatures } from "./terrain.ts";
 import { useFrame, type MapViewSource } from "./view.ts";
 import { canvasToView } from "./viewport.ts";
-import { wholeRowsHeight } from "./wholeRows.ts";
+import { wholeRowsHeight } from "../ui/wholeRows.ts";
 
 export const inFrame = (at: ViewPoint, f: Frame): boolean =>
   at.x >= f.left && at.x <= f.left + f.width && at.y >= f.top && at.y <= f.top + f.height;
@@ -77,9 +78,8 @@ export function MapLegend(props: {
     const panelPadding = panel.getBoundingClientRect().bottom - box.bottom;
     const room = Math.max(0, strip.getBoundingClientRect().bottom - box.top - panelPadding);
     el.style.maxHeight = `${room}px`;
-    const clipped = el.scrollHeight > el.clientHeight;
-    el.toggleAttribute("data-clipped", clipped);
-    if (clipped) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, box.top, room)}px`;
+    if (el.scrollHeight > el.clientHeight) el.style.maxHeight = `${wholeRowsHeight(el, LEGEND_ROWS, room)}px`;
+    markRowsBelow(el);
   };
   useLayoutEffect(fit);
   useEffect(() => {
@@ -100,6 +100,7 @@ export function MapLegend(props: {
       key={id}
       name={name}
       icon={categories.has(id) ? iconOf(categories.get(id)!, terrain.map.icons) : undefined}
+      iconClass={SWATCHES[id]}
       count={counts && id !== "guide" && id !== "references" ? (counts.get(id) ?? 0) : undefined}
       on={shows(id)}
       onToggle={() => store.setCategories([id], !shows(id))}
@@ -117,7 +118,7 @@ export function MapLegend(props: {
       <summary>
         Legend <Icon name="chevronDown" size={12} />
       </summary>
-      <div ref={body} className="legend-body">
+      <div ref={body} className="legend-body" onScroll={(e) => markRowsBelow(e.currentTarget)}>
         {LAYERS.map((layer) => {
           const ids = layerCategories(layer.id);
           const on = ids.filter(shows).length;
@@ -127,6 +128,7 @@ export function MapLegend(props: {
               <LegendGroup
                 key={layer.id}
                 name={layer.name}
+                ringed
                 pressed={pressed}
                 onToggle={() => store.setCategories(ids, on < ids.length)}
                 action={
@@ -189,6 +191,7 @@ export function MapLegend(props: {
                 {questRow("quest-turn-in", "Turn-ins", "quest-turn-in", questCounts?.turnIns)}
                 <LegendFilter
                   name="All quests"
+                  icon="quest-giver"
                   description="Also show gray and not yet available quests, dimmed"
                   on={settings.allQuests}
                   disabled={!quests}
@@ -197,21 +200,39 @@ export function MapLegend(props: {
               </LegendGroup>
             );
           }
-          if (layer.id === "zoneBorders")
+          if (layer.id === "zones") {
+            const labelIds = MAP_LABELS.flatMap(layerCategories);
+            const labelsOn = labelIds.filter(shows).length;
             return (
-              <LegendRow
-                key={layer.id}
-                name={layer.name}
-                icon={undefined}
-                iconClass="zone-border-swatch"
-                count={undefined}
-                on={shows("zone-borders")}
-                onToggle={() => store.setCategories(["zone-borders"], !shows("zone-borders"))}
-              />
+              <LegendGroup
+                key="labels"
+                name="Map labels"
+                pressed={labelsOn === labelIds.length ? true : labelsOn === 0 ? false : "mixed"}
+                onToggle={() => store.setCategories(labelIds, labelsOn < labelIds.length)}
+              >
+                {row("zones", layer.name)}
+                <LegendRow
+                  name={LAYER_NAMES.zoneBorders}
+                  icon={undefined}
+                  iconClass="zone-border-swatch"
+                  count={undefined}
+                  on={shows("zone-borders")}
+                  onToggle={() => store.setCategories(["zone-borders"], !shows("zone-borders"))}
+                />
+                {row("landmarks", LAYER_NAMES.landmarks)}
+              </LegendGroup>
             );
+          }
+          if (MAP_LABELS.includes(layer.id)) return null;
           if (ids.length === 1) return row(ids[0]!, layer.name);
           return (
-            <LegendGroup key={layer.id} name={layer.name} pressed={pressed} onToggle={() => store.setCategories(ids, on < ids.length)}>
+            <LegendGroup
+              key={layer.id}
+              layer={layer.id}
+              name={layer.name}
+              pressed={pressed}
+              onToggle={() => store.setCategories(ids, on < ids.length)}
+            >
               {ids.map((id) => categories.has(id) && row(id, categories.get(id)!.name))}
             </LegendGroup>
           );
@@ -244,8 +265,23 @@ export function MapLegend(props: {
   );
 }
 
-const LEGEND_ROWS = ".legend-heading, .legend-row, .legend-step, .legend-filter, .legend-body > button";
+const MAP_LABELS: readonly LayerId[] = ["zones", "zoneBorders", "landmarks"];
 
+const LAYER_NAMES = Object.fromEntries(LAYERS.map((l) => [l.id, l.name])) as Record<LayerId, string>;
+
+// The map draws these layers as text or lines, not as game icons.
+const SWATCHES: Partial<Record<CategoryId, string>> = {
+  references: "reference-swatch",
+  zones: "label-swatch",
+  landmarks: "label-swatch landmark",
+  routes: "route-swatch",
+};
+
+const markRowsBelow = (body: HTMLElement) =>
+  body.toggleAttribute("data-clipped", body.scrollTop + body.clientHeight < body.scrollHeight - 1);
+
+// Leaves out headings, so the legend never ends on a heading with none of its rows.
+const LEGEND_ROWS = ".legend-row, .legend-step, .legend-filter, .legend-body > button";
 function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available: number; turnIns: number } {
   let available = 0;
   let turnIns = 0;
@@ -260,6 +296,9 @@ function countQuests(quests: readonly PlacedMarker[], frame: Frame): { available
 function LegendGroup(
   props: {
     name: string;
+    layer?: string;
+    /** Draws the selected step's ring before the name. */
+    ringed?: boolean;
     disabled?: boolean;
     action?: ReactNode;
     children: ReactNode;
@@ -267,13 +306,21 @@ function LegendGroup(
 ) {
   const id = useId();
   return (
-    <div role="group" aria-labelledby={id} className="legend-group">
+    <div role="group" aria-labelledby={id} className="legend-group" data-layer={props.layer}>
       <div className="legend-heading">
-        <h3 id={id}>{props.name}</h3>
+        <h3 id={id}>
+          {props.ringed && <span className="group-mark" aria-hidden="true" />}
+          {props.name}
+        </h3>
         {props.action}
+        {props.pressed === "mixed" && (
+          <span className="legend-state" aria-hidden="true">
+            Some
+          </span>
+        )}
         {props.onToggle && (
           <IconButton
-            icon={props.pressed === false ? "eyeOff" : "eye"}
+            icon={props.pressed === "mixed" ? "eyeMixed" : props.pressed ? "eye" : "eyeOff"}
             label={props.name}
             description={`Show or hide all ${props.name}`}
             pressed={props.pressed}
@@ -291,7 +338,7 @@ function LegendGroup(
 function LegendRow(props: {
   name: string;
   icon: string | undefined;
-  iconClass?: string;
+  iconClass?: string | undefined;
   count: number | undefined;
   on: boolean;
   disabled?: boolean;
@@ -306,7 +353,7 @@ function LegendRow(props: {
       disabled={props.disabled}
       onClick={props.onToggle}
     >
-      <MapIconImage icon={props.icon} size={18} {...(props.iconClass && { className: props.iconClass })} />
+      <MapIconImage icon={props.icon} size={16} {...(props.iconClass && { className: props.iconClass })} />
       <span className="legend-name">{name}</span>
       {count !== undefined && <span className="legend-count">{count}</span>}
       <Icon name={props.on ? "eye" : "eyeOff"} />
@@ -323,10 +370,11 @@ const STEP_SIDES = [
 
 function StepRow(props: { side: "previous" | "selected" | "upcoming" | "optional"; name: string; show?: StepShow }) {
   return (
-    <div className="legend-step">
+    <div className={`legend-step${props.show === "hidden" ? " off" : ""}`}>
       <span className={`step-swatch ${props.side}`} aria-hidden="true" />
       <span className="legend-name">{props.name}</span>
-      {props.show && <span className="legend-count">{SHOW_NAMES[props.show]}</span>}
+      {props.show && <span className="legend-state">{SHOW_NAMES[props.show]}</span>}
+      {props.show === "hidden" ? <Icon name="eyeOff" className="off" /> : <Icon name="eye" />}
     </div>
   );
 }
@@ -352,10 +400,17 @@ function StackRow(props: { kind: "two" | "more"; name: string }) {
   );
 }
 
-function LegendFilter(props: { name: string; description: string; on: boolean; disabled?: boolean; onToggle: () => void }) {
+/** `icon` draws the map icon, dimmed as the filter shows it, in the swatch column of rows with marks. */
+function LegendFilter(props: { name: string; icon?: string; description: string; on: boolean; disabled?: boolean; onToggle: () => void }) {
   return (
     <Described text={props.description}>
-      <ItemButton className="legend-filter" pressed={props.on} disabled={props.disabled} onClick={props.onToggle}>
+      <ItemButton
+        className={props.icon ? "legend-row" : "legend-filter"}
+        pressed={props.on}
+        disabled={props.disabled}
+        onClick={props.onToggle}
+      >
+        {props.icon && <MapIconImage icon={props.icon} size={16} className="dim" />}
         <span className="legend-name">{props.name}</span>
         <Icon name={props.on ? "eye" : "eyeOff"} />
       </ItemButton>

@@ -144,8 +144,8 @@
   border-radius: var(--radius-control);
   background: var(--route-label-bg);
   color: var(--route-label);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -176,8 +176,8 @@
   border-radius: var(--radius-control);
   background: var(--art-shade-soft);
   color: var(--route-pending);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   white-space: nowrap;
   pointer-events: none;
 }
@@ -230,7 +230,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-2);
+  padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line);
   background: var(--surface);
   font-size: var(--font-size-body);
@@ -272,6 +272,24 @@
   max-width: 160px;
 }
 
+/* min-height, because the button primitive pins its height with !important. */
+.route-bar > .ui-button,
+.route-bar > .route-menu > .ui-button {
+  min-height: var(--control-field);
+}
+
+.route-bar > .ui-choice {
+  padding-block: calc((var(--control-field) - 1lh) / 2);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+}
+
+/* Matches the space that a ghost button's border, its padding, and the bar's gap leave on the other side of each divider. */
+.route-bar > .route-slope {
+  padding-inline: calc(1px + var(--space-4));
+  border-inline: 1px solid var(--line);
+}
+
 .dialog.route-text-dialog {
   width: min(680px, 94vw);
 }
@@ -280,10 +298,6 @@
   font-size: var(--font-size-small);
   line-height: var(--line-height-small);
   white-space: pre;
-}
-
-.route-slope {
-  column-gap: var(--space-1);
 }
 
 .slope-degrees {
@@ -387,6 +401,8 @@
   margin-left: 0;
   /* `hidden` would let Tab scroll the header away. */
   overflow: clip;
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-workspace .route-strip > .map-top-bound {
@@ -493,10 +509,10 @@
   margin: 0;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-float);
-  background: var(--surface);
+  background: var(--raised);
   box-shadow: var(--elevation-2);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-chip {
@@ -618,10 +634,10 @@
 .legend-row .zone-border-swatch {
   /* stylelint-disable function-disallowed-list -- stripe: zone border line */
   background:
-    linear-gradient(90deg, transparent 7px, var(--zone-swatch-line) 7px 8px, transparent 8px),
-    linear-gradient(90deg, transparent 6px, var(--zone-swatch-halo) 6px 9px, transparent 9px), var(--map-terrain);
+    linear-gradient(90deg, transparent 7px, var(--zone-swatch-line) 7px 9px, transparent 9px),
+    linear-gradient(90deg, transparent 6px, var(--zone-swatch-halo) 6px 10px, transparent 10px), var(--map-terrain);
   /* stylelint-enable function-disallowed-list */
-  box-shadow: var(--ring-line);
+  box-shadow: var(--ring-control);
 }
 
 .route-steps,
@@ -675,8 +691,8 @@
   display: flex;
   flex-direction: column;
   color: var(--muted);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
   font-weight: var(--font-weight-regular);
 }
 
@@ -687,7 +703,7 @@
 }
 
 .route-legs > ol > li + li {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--raised-line);
 }
 
 .route-leg-row {
@@ -744,8 +760,8 @@
 .route-legs .route-leg-steps {
   margin: 0 var(--space-6) var(--space-2) calc(var(--space-8) + var(--space-2));
   color: var(--text);
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .route-leg-steps .route-step-time {
@@ -772,13 +788,32 @@
   place-items: center;
   width: 18px;
   height: 18px;
-  border: 1px solid var(--ride-mark-border);
+  border: 1px solid var(--transport-line);
   border-radius: var(--radius-control);
   translate: -50% -50%;
   background: var(--ride-mark-bg);
   color: var(--route-stop);
   box-shadow: var(--art-outline);
   pointer-events: auto;
+}
+
+/* The default stroke breaks up on the teal at the small size, where the glyph
+   fills the mark inside its border. */
+.map-overlay .ride-mark svg {
+  stroke-width: 2;
+}
+
+@container map-overlay (width < 2400px) {
+  .map-overlay .ride-mark {
+    width: 14px;
+    height: 14px;
+    box-shadow: none;
+  }
+
+  .map-overlay .ride-mark svg {
+    width: 12px;
+    height: 12px;
+  }
 }
 
 .map-overlay .ride-mark:focus-visible {
@@ -840,8 +875,8 @@
 
 .ride-popover p.muted {
   margin: var(--space-2) 0 0;
-  font-size: var(--font-size-micro);
-  line-height: var(--line-height-micro);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
 }
 
 .ride-steps li {

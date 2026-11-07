@@ -45,7 +45,7 @@ export function SlopeField(props: { value: number; onChange: (maxSlope: number) 
     setText(null);
   };
   return (
-    <Field label="Max slope" description="Steepest ground a route walks on, 1° to 89°" className="route-slope">
+    <Field label="Max slope (°)" description="Steepest ground a route walks on, 1° to 89°" className="route-slope">
       <Input
         type="number"
         mono
@@ -61,7 +61,6 @@ export function SlopeField(props: { value: number; onChange: (maxSlope: number) 
           if (e.key === "Enter") apply();
         }}
       />
-      °
     </Field>
   );
 }

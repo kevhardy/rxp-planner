@@ -105,6 +105,8 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
   const data = useGameData();
   const [count, setCount] = useDraft("staged extra count");
   const [mob, setMob] = useDraft("staged extra mob");
+  const [countTyped] = useDraft("new extra count");
+  const [mobTyped] = useDraft("new extra mob");
   const stage = (set: (state: DraftState) => void, text: string) => (set(text ? { draft: text, error: null } : NO_DRAFT), null);
   const [error, setError] = useState<string | null>(null);
   const simulation = filter?.simulation;
@@ -120,12 +122,13 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
 
   const extras = directives.filter((d): d is Extract<SimDirective, { key: "extra" }> => d.key === "extra");
 
-  const add = () => {
-    const kills = wholeNumber(count.draft?.trim() ?? "");
-    const npc = wholeNumber(mob.draft?.trim() ?? "");
-    if (kills === undefined) return setError(`Count: ${COUNT_ERROR}`);
-    if (!npc) return setError("Mob: choose an NPC.");
-    const line = extraKillsLine(kills, npc, bodyIndent(doc));
+  // Typed text counts before it commits, so Add turns on while the caret is
+  // still in Mob. A disabled button takes no focus, so a click on it would
+  // not commit the field.
+  const extraKills = wholeNumber((countTyped.draft ?? count.draft ?? "").trim());
+  const extraMob = wholeNumber((mobTyped.draft ?? mob.draft ?? "").trim());
+  const newLine = extraKills !== undefined && extraMob ? extraKillsLine(extraKills, extraMob, bodyIndent(doc)) : undefined;
+  const add = (line: BodyLine) => {
     setCount(NO_DRAFT);
     setMob(NO_DRAFT);
     const failed = commit((d) => insertLine(d, { step, index: d.steps[step]!.body.length }, line));
@@ -169,6 +172,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
               <div className="sim-kill-fields">
                 <DraftField
                   label="Kills here"
+                  layout="stacked"
                   draftName="kills"
                   className="arg-short"
                   mono
@@ -205,6 +209,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
       })}
       <div className="sim-kills" role="group" aria-label="Extra kills">
         <span className="form-label">Extra kills</span>
+        {extras.length === 0 && <span className="muted">Add mobs killed beyond quest goals, so the simulation counts their XP.</span>}
         {extras.map((e) => {
           const line = e.at.line;
           const owner = line === undefined ? sectionOwner(doc, step) : doc.steps[step]!.body[line]!;
@@ -217,6 +222,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
               >
                 <DraftField
                   label="Count"
+                  layout="stacked"
                   draftName="extra count"
                   className="arg-short"
                   mono
@@ -232,7 +238,7 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
                   description="The NPC killed."
                   onCommit={(id) => (id === undefined ? "Extra kills need a mob." : set(line, "mob", id))}
                 />
-                <Button variant="secondary" onClick={() => remove(line)}>
+                <Button variant="secondary" size={28} onClick={() => remove(line)}>
                   Remove
                 </Button>
               </div>
@@ -242,19 +248,22 @@ function KillFields(props: { doc: GuideDocument; step: number; directives: reado
         <div className="sim-kill-fields" role="group" aria-label="New extra kills">
           <DraftField
             label="Count"
+            layout="stacked"
             draftName="new extra count"
             className="arg-short"
             mono
             value={count.draft ?? ""}
+            placeholder="such as 10"
             onCommit={(text) => stage(setCount, text)}
           />
           <MobField
             draftName="new extra mob"
             value={mob.draft ?? ""}
+            placeholder="such as Young Wolf"
             description="The NPC killed."
             onCommit={(id) => stage(setMob, id === undefined ? "" : String(id))}
           />
-          <Button variant="secondary" onClick={add}>
+          <Button variant="secondary" size={28} disabled={!newLine} onClick={() => newLine && add(newLine)}>
             Add
           </Button>
         </div>
@@ -281,6 +290,7 @@ function MobField(props: {
   return (
     <DraftField
       label="Mob"
+      layout="stacked"
       draftName={props.draftName}
       className="arg-grow"
       mono

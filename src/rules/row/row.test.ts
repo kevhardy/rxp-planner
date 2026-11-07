@@ -106,7 +106,7 @@ describe("stepRow on Northshire", () => {
       { line: 4, mark: { kind: "vendor" }, text: [{ text: "Vendor trash", color: "WARN" }] },
       { line: 8, mark: { kind: "train" }, text: ["Train ", icon("132333:0"), "[Battle Shout]"] },
     ]);
-    expect(step.footer).toEqual([{ kind: "condition", line: "step", text: ["Warrior only"], tone: "warn" }]);
+    expect(step.footer).toEqual([{ kind: "condition", line: "step", text: ["Warrior only"] }]);
     expect(step.where.targets).toEqual([
       { line: 5, label: "Brother Danil" },
       { line: 9, label: "Llane Beshere" },
@@ -178,7 +178,7 @@ describe("stepRow on Elwynn Forest", () => {
   it("phrases the checks and puts the setting last", () => {
     const step = row("Elwynn", 14);
     expect(step.footer).toEqual([
-      { kind: "condition", line: "step", text: ["Warrior only"], tone: "warn" },
+      { kind: "condition", line: "step", text: ["Warrior only"] },
       { kind: "check", line: 6, text: ["Skip with less than 5s 36c"] },
       { kind: "check", line: 7, text: ["While main-hand DPS is below 3.8"] },
       { kind: "setting", line: 4, text: ["Hide checkbox"], hint: "No checkbox on the line above" },
@@ -370,11 +370,11 @@ describe("conditionPhrase", () => {
   const phrase = (text: string) => conditionPhrase(parseGuide(`#name T\n#group T\nstep << ${text}`).steps[0]!.line.condition!);
 
   it.each([
-    ["Warrior", { text: "Warrior only", tone: "warn" }],
-    ["Warrior/Rogue", { text: "Warrior, Rogue only", tone: "warn" }],
-    ["!Priest !Mage", { text: "Not Priest, Mage", tone: "warn" }],
-    ["Human", { text: "Human only" }],
-    ["Alliance Warrior", { text: "Only for Alliance Warrior" }],
+    ["Warrior", "Warrior only"],
+    ["Warrior/Rogue", "Warrior, Rogue only"],
+    ["!Priest !Mage", "Not Priest, Mage"],
+    ["Human", "Human only"],
+    ["Alliance Warrior", "Only for Alliance Warrior"],
   ])("%s", (text, expected) => {
     expect(phrase(text)).toEqual(expected);
   });

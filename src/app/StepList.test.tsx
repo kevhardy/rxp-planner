@@ -12,7 +12,7 @@ import { EntityContext, GameDataContext, GuideIconsContext, StoresContext } from
 import { RouteStrip } from "./preview/RouteStrip.tsx";
 import { DEFAULT_SETTINGS, type PreviewSettings } from "./preview/settings.ts";
 import { unrelatedEntities } from "./renderPlanner.tsx";
-import { StepList } from "./StepList.tsx";
+import { ringArcs, StepList } from "./StepList.tsx";
 import { createStores, DEFAULT_SAVED_SETTINGS } from "./stores.ts";
 import { cascade } from "./ui/testing.ts";
 
@@ -92,7 +92,7 @@ describe("step row", () => {
       return [mark.getAttribute("class") ?? mark.tagName, p.textContent];
     });
     expect(where).toEqual([
-      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 → 47.6, 36.7"],
+      ["mk mk-goto tex", "Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7"],
       ["svg", "2 waypoints"],
       ["mk mk-target", "Target Eagan Peltskinner"],
       ["mk mk-kill tex", "Mobs Young Wolf, Timber Wolf"],
@@ -100,10 +100,21 @@ describe("step row", () => {
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Kill Young Wolves"]]);
 
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
     ]);
     expect(description(row.querySelector(".foot-tag")!)).toBe("Stays on screen until done");
+  });
+
+  it("draws a step's first action line at medium weight and the later ones at the regular weight", () => {
+    mount();
+    const texts = [...document.getElementById("step-0")!.querySelectorAll(".step-does .row-text")];
+    expect(texts.map((t) => cascade(t, "font-weight")?.value)).toEqual(["var(--font-weight-medium)", undefined, undefined]);
+  });
+
+  it("binds each arrow of a coordinate chain to the point after it, so a wrap starts the line with the arrow", () => {
+    mount();
+    expect(document.querySelector("#step-0 .where-part")!.textContent).toBe("Go to Elwynn Forest 49.1, 38.3 →\u00a047.6, 36.7");
   });
 
   it("draws a mark's vector icon, else its guide icon when the icon sheet holds it, else its shape", () => {
@@ -124,17 +135,17 @@ describe("step row", () => {
       return [mark.className, shown.className, shown.style.getPropertyValue("--icon-url") || shown.style.getPropertyValue("--cell-y")];
     });
     expect(marks).toEqual([
-      ["mk mk-accept tex", "guide-icon vector", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
+      ["mk mk-accept tex", "guide-icon vector vivid", 'url("/src/app/guideIcons/accept.svg?no-inline")'],
       ["mk mk-equip", "svg"],
-      ["mk mk-hs item", "guide-icon", "-1.09375"],
-      ["mk mk-deathskip tex", "guide-icon vector", 'url("/src/app/guideIcons/deathskip.svg?no-inline")'],
+      ["mk mk-hs item", "guide-icon framed", "-1.09375"],
+      ["mk mk-deathskip tex", "guide-icon vector deep", 'url("/src/app/guideIcons/deathskip.svg?no-inline")'],
     ]);
   });
 
   it("puts settings last in who and when, and marks a footer of only settings", () => {
     mount("#group G\n#name Settings\nstep << Warrior\n    .disablecheckbox\n    #sticky\nstep\n    .disablecheckbox\n");
     expect(footer(document.getElementById("step-0")!)).toEqual([
-      ["foot-item foot-condition foot-warn", "Warrior only"],
+      ["foot-item foot-condition", "Warrior only"],
       ["foot-item foot-tag", ", ·Sticky"],
       ["foot-item foot-setting", ", ·Hide checkbox"],
     ]);
@@ -226,7 +237,7 @@ step
     expect(row.querySelector(".where-part .ui-mono")!.textContent).toBe("40.0, 50.0");
     expect(lines(row, "step-notes")).toEqual([["mk mk-note", "Mage note"]]);
     expect(footer(row)).toEqual([
-      ["foot-item foot-condition foot-warn", "Mage only"],
+      ["foot-item foot-condition", "Mage only"],
       ["foot-item foot-tag", ", ·Optional"],
     ]);
     expect(description(row.querySelector(".step-no")!)).toBe("Skipped: Only for Mage");
@@ -355,6 +366,55 @@ step
     await user.click(screen.getByRole("button", { name: "Show skipped steps" }));
     expect(document.querySelector(".step-fold")).toBeNull();
     expect(shownRows()).toHaveLength(6);
+  });
+});
+
+describe("ringArcs", () => {
+  it("lengthens a short arc back from its true end, so the ring's total stays true", () => {
+    expect(
+      ringArcs([
+        ["before", 0.25],
+        ["earned", 0.015625],
+        ["jump", 0],
+      ]),
+    ).toEqual([
+      { kind: "before", from: 0, to: 20.5625 },
+      { kind: "earned", from: 20.5625, to: 26.5625 },
+    ]);
+  });
+
+  it("keeps arcs that are long enough at their shares", () => {
+    expect(
+      ringArcs([
+        ["before", 0.25],
+        ["earned", 0.5],
+        ["jump", 0.125],
+      ]),
+    ).toEqual([
+      { kind: "before", from: 0, to: 25 },
+      { kind: "earned", from: 25, to: 75 },
+      { kind: "jump", from: 75, to: 87.5 },
+    ]);
+  });
+
+  it("joins a first arc squeezed below the shortest arc to the arc after it", () => {
+    expect(
+      ringArcs([
+        ["before", 0.03125],
+        ["earned", 0.03125],
+        ["jump", 0],
+      ]),
+    ).toEqual([{ kind: "earned", from: 0, to: 6.25 }]);
+  });
+
+  it("grows a total below the shortest arc to that length from the ring's start", () => {
+    expect(
+      ringArcs([
+        ["before", 0],
+        ["earned", 0.015625],
+        ["jump", 0],
+      ]),
+    ).toEqual([{ kind: "earned", from: 0, to: 6 }]);
   });
 });
 

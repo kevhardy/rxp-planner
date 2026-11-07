@@ -173,6 +173,12 @@ describe("guideLayout", () => {
       const laid = guideLayout(surface, input(steps, { selection: { step: null, line: null } }));
       expect(side(laid)).toEqual(FADES.map((fade, i) => [String(i + 1), "upcoming", fade]));
     });
+
+    it("numbers only the given count of upcoming steps, and draws later ones faint, without numbers", () => {
+      const laid = guideLayout(surface, input(steps, { selection: { step: 2, line: null }, numberedAhead: 1 }));
+      expect(side(laid)).toEqual([["4", "upcoming", 0.8], ...Array.from({ length: 9 }, () => [undefined, "upcoming", 0.5])]);
+      expect(laid.shapes.map((s) => round(s.fade))).toEqual([0.8, ...Array<number>(9).fill(0.5)]);
+    });
   });
 });
 

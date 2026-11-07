@@ -1,6 +1,6 @@
 import { useContext, useCallback, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { Interior } from "../../../packages/data-contract/interiors.ts";
-import type { Continent, GameData, MapLocation, WorldMapPoi, Zone } from "../../data/index.ts";
+import type { Continent, GameData, MapLocation, WorldLocation, WorldMapPoi, Zone } from "../../data/index.ts";
 import { insertionState, type Profile, type SimState } from "../../rules/index.ts";
 import { insertIndex, type PointProblem, type StepPoints } from "../../rules/points.ts";
 import { insertQuest } from "../../rules/questInsertion.ts";
@@ -11,6 +11,7 @@ import { Dialog } from "../Dialog.tsx";
 import { Icon } from "../icons.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
+import { EmptyState } from "../ui/EmptyState.tsx";
 import { Select } from "../ui/Field.tsx";
 import { OpenEditorButton } from "../EditorDock.tsx";
 import { useLayoutStore } from "../layout.ts";
@@ -35,7 +36,7 @@ import type { LoadedWorldMap } from "../../data/index.ts";
 import { MapLegend } from "./MapLegend.tsx";
 import { showsCategory, useMapProfile, useMapSettings, type CategoryId } from "./mapSettings.ts";
 import { movedArgs, questSpots, type AddCommand, type Placed, type QuestSpot, type ViewPoint } from "./points.ts";
-import { questMarkers, type PlacedMarker, type QuestAction, type QuestMarker } from "./questMarkers.ts";
+import { questMarkers, shownMarkers, type PlacedMarker, type QuestAction, type QuestMarker } from "./questMarkers.ts";
 import { QuestCard, QuestMarkers } from "./QuestMarkers.tsx";
 import { followedMap, guideLayout, projectAreas, type StepPoint } from "./guideLayout.ts";
 import { terrainSurface, type Surface } from "./surfaces.ts";
@@ -107,15 +108,14 @@ function MapPanel() {
         {routes && data ? (
           <RouteMap closed={closedRoute} />
         ) : (
-          (map?.body ?? (
-            <p className="empty">
-              {data
-                ? "Without a guide, use Search to find a quest, NPC, or place, or Routes to plan a route."
-                : dataset?.error
-                  ? "Game data unavailable."
-                  : "Loading game data…"}
-            </p>
-          ))
+          (map?.body ??
+          (data ? (
+            <EmptyState icon="map" title="No guide open" className="map-empty">
+              Use Search to find a quest, NPC, or place, or Routes to plan a route.
+            </EmptyState>
+          ) : (
+            <p className="empty">{dataset?.error ? "Game data unavailable." : "Loading game data…"}</p>
+          )))
         )}
       </div>
     </section>
@@ -130,6 +130,8 @@ export interface MapFocus {
   profile: Profile | undefined;
   select: (selection: Selection) => void;
   edit: { store: EditorStore; skipped: boolean } | null;
+  /** How many steps after the selected one print their number, as in `guideLayout`. Undefined numbers every step. */
+  numberedAhead?: number | undefined;
 }
 
 export interface GuideMapView {
@@ -148,6 +150,8 @@ export interface MapExtras {
   interior?: Interior | undefined;
   foot?: ReactNode;
   panel?: ReactNode;
+  /** Where the character stands still, which the guide's quest marks clear. */
+  stand?: WorldLocation | undefined;
 }
 
 export interface SearchActions {
@@ -378,6 +382,7 @@ export function useGuideMap(
     showGuide: visible("guide"),
     previousSteps: settings.previousSteps,
     upcomingSteps: settings.upcomingSteps,
+    numberedAhead: focus?.numberedAhead,
   });
   const pins = laid.pins.map(({ target, ...pin }): Pin => {
     if ("spot" in target) {
@@ -420,6 +425,8 @@ export function useGuideMap(
       {extras.scene?.({ map, surface, pxPerPercent, interiors }, frame)}
     </>
   );
+  const shownPlaced = placed && (showQuests.available || showQuests.turnIns) ? placed : null;
+  const questIcons = shownPlaced && lockNames ? shownMarkers(shownPlaced, showQuests).map((p) => p.at) : [];
   const terrainOverlay = (frame: Frame, pxPerPercent: number) => (
     <TerrainMarkers
       map={map}
@@ -429,6 +436,7 @@ export function useGuideMap(
       onPick={pickPoi}
       frame={frame}
       pxPerPercent={pxPerPercent}
+      quests={questIcons}
     />
   );
   const options = (
@@ -449,7 +457,6 @@ export function useGuideMap(
       </optgroup>
     </>
   );
-  const shownPlaced = placed && (showQuests.available || showQuests.turnIns) ? placed : null;
   const questLayer =
     shownPlaced &&
     lockNames &&
@@ -529,6 +536,7 @@ export function useGuideMap(
           menu={(at) => (edit ? addMenu(laid.describe(at), (command) => addPoint(surface.locate(at), command)) : undefined)}
           {...view.canvas(surface)}
           onUserMove={extras.onUserMove}
+          stand={extras.stand && surface.projectOutline(extras.stand)}
         />
         <div ref={view.mapTop} className="map-top">
           {extras.panel}

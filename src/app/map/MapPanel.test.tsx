@@ -211,7 +211,7 @@ describe("map panel", () => {
   it("shows the route workspace from Routes with no guide open", async () => {
     noRouting();
     const { user } = await mount();
-    expect(screen.getByText("Without a guide, use Search to find a quest, NPC, or place, or Routes to plan a route.")).toBeTruthy();
+    expect(screen.getByText("No guide open")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Routes" }));
     expect(screen.getByRole("button", { name: "Routes" }).getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("group", { name: /^Route map/ })).toBeTruthy();
@@ -301,10 +301,10 @@ describe("map panel", () => {
         Number(p.style.getPropertyValue("--fade")),
       ]);
     const routes = () =>
-      [...mapArea().querySelectorAll("polyline.route")].map((l) => [
+      [...mapArea().querySelectorAll("polyline.route:not(.casing)")].map((l) => [
         l.getAttribute("class"),
         l.getAttribute("points"),
-        Number(l.getAttribute("opacity")),
+        Number(l.parentElement!.getAttribute("opacity") ?? 1),
       ]);
     const show = async (side: "Previous" | "Upcoming", state: "Hidden" | "Dimmed" | "Shown") => {
       const menu = screen.getByRole("button", { name: "Step display" });
@@ -333,6 +333,24 @@ describe("map panel", () => {
         [shapePoints(ELWYNN, [50, 50], [60, 60]), "var(--step-upcoming)"],
         [shapePoints(ELWYNN, [30, 30], [40, 30], [40, 40]), "var(--pin)"],
       ]);
+    });
+
+    it("draws an upcoming route no wider than the selected step's route, so the selected step leads", async () => {
+      const style = document.head.appendChild(document.createElement("style"));
+      style.textContent = mapStyles;
+      onTestFinished(() => style.remove());
+      await mountWith({ map: { previousSteps: "shown", upcomingSteps: "shown" }, step: 2 }, guide);
+      const widths = Object.fromEntries(
+        [...mapArea().querySelectorAll("polyline.route")].map((l) => [l.getAttribute("class"), getComputedStyle(l).strokeWidth]),
+      );
+      expect(widths).toEqual({
+        "route previous casing": "4.5px",
+        "route previous": "2.5px",
+        "route selected casing": "4.5px",
+        "route selected": "2.5px",
+        "route upcoming casing": "4.5px",
+        "route upcoming": "2.5px",
+      });
     });
 
     it("sets each side hidden, dimmed, or shown from the legend", async () => {
@@ -377,7 +395,7 @@ describe("map panel", () => {
     const icons = [...marker!.querySelectorAll<HTMLElement>(".map-icon")].map(
       (i) => `${i.style.getPropertyValue("--image-x")} ${i.style.getPropertyValue("--image-y")}`,
     );
-    expect(icons).toEqual(["-18px -36px", "-36px -36px"]);
+    expect(icons).toEqual(["-24 -48", "-48 -48"]);
     expect(route.compareDocumentPosition(marker!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
@@ -391,10 +409,7 @@ describe("map panel", () => {
     expect(areas()).toEqual([O1, O3, O2]);
     for (const path of mapArea().querySelectorAll(".areas path")) expect(path.getAttribute("d")).toMatch(/^(M[^MZ]+Z)+$/);
     expect(spawnDots()).toEqual([]);
-    expect(markers.map((m) => m.style.getPropertyValue("--fill"))).toEqual([
-      "conic-gradient(var(--objective-1) 0% 50%, var(--objective-3) 50% 100%)",
-      "var(--objective-2)",
-    ]);
+    expect(markers.map((m) => m.style.getPropertyValue("--fill"))).toEqual([`conic-gradient(${O1} 0% 50%, ${O3} 50% 100%)`, O2]);
 
     await user.click(markers[0]!);
     await user.click(screen.getByRole("menuitem", { name: "Add .goto" }));
@@ -576,13 +591,13 @@ describe("terrain", () => {
       await user.selectOptions(mapShown(), "t0");
       expect(mapArea().querySelectorAll(".place-capital")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-instances, .poi-transport, .place-zone")).toHaveLength(3);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(within(mapArea()).getByRole("button", { name: "Selected step 1, line 1: .goto Elwynn Forest 48.94, 40.16" })).toBeTruthy();
 
       await user.selectOptions(mapShown(), "t1429");
       expect(mapArea().querySelectorAll(".poi-instances")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-transport")).toHaveLength(0);
-      expect(mapArea().querySelectorAll(".routes polyline")).toHaveLength(1);
+      expect(mapArea().querySelectorAll(".routes g")).toHaveLength(1);
       expect(mapArea().querySelectorAll(".poi-name")).toHaveLength(1);
       expect(await loadSetting("map")).toEqual(settings);
     } finally {
@@ -791,6 +806,57 @@ describe("terrain", () => {
       expect(await saved()).toEqual(DEFAULT_MAP_SETTINGS);
     });
 
+    it("says Some beside a partly shown group's eye, out of the accessible names that already say mixed", async () => {
+      const { user } = await mountGuide();
+      const services = within(legend()).getByRole("group", { name: "Services" });
+      const stateWord = () => services.querySelector(".legend-heading .legend-state");
+      expect([stateWord()?.textContent, stateWord()?.getAttribute("aria-hidden")]).toEqual(["Some", "true"]);
+      expect(within(services).getByRole("button", { name: "Services" }).getAttribute("aria-pressed")).toBe("mixed");
+
+      await user.click(within(services).getByRole("button", { name: "Services" }));
+      expect(stateWord()).toBeNull();
+    });
+
+    it("sets shown names at regular weight, under the bold group heading", async () => {
+      await mountGuide();
+      const weight = (el: Element | null): string | undefined =>
+        el ? (cascade(el, "font-weight")?.value ?? weight(el.parentElement)) : undefined;
+      expect([
+        weight(screen.getByRole("heading", { name: "Services" })),
+        weight(row("Innkeepers").querySelector(".legend-name")),
+        weight(row("Battlemasters").querySelector(".legend-name")),
+      ]).toEqual(["var(--font-weight-bold)", "var(--font-weight-regular)", "var(--font-weight-regular)"]);
+    });
+
+    it("draws each service row with its game icon, and rings only the Guide points heading", async () => {
+      await mountGuide();
+      expect(row("Innkeepers").querySelector(".map-icon")!.className).toBe("map-icon");
+      expect(row("Battlemasters").querySelector(".map-icon")!.className).toBe("map-icon");
+      expect(screen.getByRole("heading", { name: "Guide points" }).querySelector(".group-mark")).not.toBeNull();
+      expect(screen.getByRole("heading", { name: "Services" }).querySelector(".group-mark")).toBeNull();
+    });
+
+    it("groups the zone labels, zone borders, and landmark labels under Map labels, which shows or hides all three", async () => {
+      const { user } = await mountGuide();
+      const labels = within(legend()).getByRole("group", { name: "Map labels" });
+      expect(
+        within(labels)
+          .getAllByRole("button")
+          .map((b) => b.getAttribute("aria-label") ?? b.textContent),
+      ).toEqual(["Map labels", "Zone and capital labels, 1 in view", "Zone borders", "Landmark labels, 0 in view"]);
+      const eye = within(labels).getByRole("button", { name: "Map labels" });
+      expect(isPressed(eye)).toBe("mixed");
+      await user.click(eye);
+      expect([row("Zone and capital labels"), row("Zone borders"), row("Landmark labels")].map(isPressed)).toEqual([
+        "true",
+        "true",
+        "true",
+      ]);
+      await user.click(eye);
+      expect(isPressed(eye)).toBe("false");
+      expect((await saved()).categories).toMatchObject({ zones: false, "zone-borders": false, landmarks: false });
+    });
+
     it("sets previous steps to Shown from the Step display popover, and the Previous row names the choice", async () => {
       const { user } = await mount("#group T\n#name Two\nstep\n.goto Elwynn Forest,10,50\nstep\n.goto Elwynn Forest,20,50\n");
       const stepRows = () =>
@@ -819,14 +885,29 @@ describe("terrain", () => {
       expect(reached).toEqual(["Step display", "Guide points"]);
     });
 
-    it("shows a group eye's on state on its icon only, as the eyes of its rows do", async () => {
+    it("shows the on state of a group eye and a row eye on the icon only, with no fill", async () => {
       await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,10,50\n");
       const eye = within(legend()).getByRole("button", { name: "Guide points" });
+      const rowEye = row("Objective spawns");
       expect([
         eye.getAttribute("aria-pressed"),
+        rowEye.getAttribute("aria-pressed"),
         cascade(eye, "background")?.value,
         cascade(eye.querySelector("svg")!, "background")?.value,
-      ]).toEqual(["true", "none", "var(--press)"]);
+        cascade(rowEye.querySelector("svg:last-child")!, "background")?.value,
+      ]).toEqual(["true", "true", "none", undefined, undefined]);
+    });
+
+    it("draws a shown eye in a heavier stroke than a crossed eye", async () => {
+      await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,10,50\n");
+      const stroke = (svg: Element) => Number(cascade(svg, "stroke-width")?.value ?? svg.getAttribute("stroke-width"));
+      const crossed = stroke(legend().querySelector(".legend-step svg.off")!);
+      const shown = [
+        within(legend()).getByRole("button", { name: "Guide points" }).querySelector("svg")!,
+        row("Objective spawns").querySelector("svg:last-child")!,
+        legend().querySelector(".legend-step:not(.off) svg")!,
+      ].map(stroke);
+      expect(shown.map((width) => width > crossed)).toEqual([true, true, true]);
     });
 
     it("closes the Step display popover from its close button and returns focus to the button", async () => {
@@ -1205,7 +1286,7 @@ describe("terrain", () => {
       await waitFor(async () => expect((await saved()).legendOpen).toBe(true));
     });
 
-    it("ends the open body and the panel's padding above the strip's bottom, and marks the body while its rows scroll", async () => {
+    it("ends the open body above the strip's bottom, and marks the body only while rows sit below its end", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1228,22 +1309,28 @@ describe("terrain", () => {
         if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 600 });
         if (this.matches(".map-legend")) return DOMRect.fromRect({ y: 60, width: 280, height: 448 });
         if (this.matches(".legend-body")) return DOMRect.fromRect({ y: 100, width: 280, height: 400 });
-        if (this.matches(".legend-heading")) return DOMRect.fromRect({ y: 100, width: 280, height: 600 - 100 - 8 });
-        return DOMRect.fromRect({ y: 100, width: 280, height: 600 - 100 - 7 });
+        return DOMRect.fromRect({ y: 100, width: 280, height: 0 });
       });
       const scrollHeight = vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
       const body = legend().querySelector<HTMLElement>(".legend-body")!;
       act(() => resized.forEach((fit) => fit()));
-      expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
+      expect(body.hasAttribute("data-clipped")).toBe(true);
+
+      body.scrollTop = 800 - 492;
+      fireEvent.scroll(body);
+      expect(body.hasAttribute("data-clipped")).toBe(false);
+      body.scrollTop = 0;
+      fireEvent.scroll(body);
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
       scrollHeight.mockReturnValue(492);
       act(() => resized.forEach((fit) => fit()));
+      expect(body.style.maxHeight).toBe(`${600 - 100 - 8}px`);
       expect(body.hasAttribute("data-clipped")).toBe(false);
     });
 
-    it("ends an overflowing body on its last whole row, and keeps a body that fits at its full height without a rule", async () => {
+    it("ends an overflowing body on its last whole row, and keeps a body that fits at its full height", async () => {
       const resized: (() => void)[] = [];
       vi.stubGlobal(
         "ResizeObserver",
@@ -1276,26 +1363,61 @@ describe("terrain", () => {
       const scrollHeight = vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
       vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
 
+      // Row 15 ends at 481 px, and row 16 at 511 px, past the 492 px of room.
       act(() => resized.forEach((fit) => fit()));
       expect(body.style.maxHeight).toBe("481px");
       expect(body.hasAttribute("data-clipped")).toBe(true);
 
-      const ends = rows.map((_, i) => {
-        stripHeight = 108 + 31 + 30 * i + 10;
+      // Row 1 ends at 61 px, and row 2 at 91 px.
+      const ends = [5, 29, 30].map((past) => {
+        stripHeight = 108 + 61 + past;
         act(() => resized.forEach((fit) => fit()));
         return body.style.maxHeight;
       });
-      expect(ends).toEqual(rows.map((_, i) => `${31 + 30 * i}px`));
-
-      stripHeight = 120;
-      act(() => resized.forEach((fit) => fit()));
-      expect([body.style.maxHeight, body.style.minHeight]).toEqual(["0px", ""]);
+      expect(ends).toEqual(["61px", "61px", "91px"]);
 
       stripHeight = 600;
       scrollHeight.mockReturnValue(400);
       act(() => resized.forEach((fit) => fit()));
       expect(body.style.maxHeight).toBe("492px");
       expect(body.hasAttribute("data-clipped")).toBe(false);
+    });
+
+    it("ends the body before a heading whose first row does not fit", async () => {
+      const resized: (() => void)[] = [];
+      vi.stubGlobal(
+        "ResizeObserver",
+        class {
+          private readonly callback: () => void;
+          constructor(callback: () => void) {
+            this.callback = callback;
+          }
+          observe() {
+            resized.push(this.callback);
+          }
+          disconnect() {}
+        },
+      );
+      onTestFinished(() => {
+        vi.unstubAllGlobals();
+      });
+      await mountGuide({ map: { legendOpen: true } });
+      const body = legend().querySelector<HTMLElement>(".legend-body")!;
+      const lines = [...body.querySelectorAll(".legend-heading, .legend-row, .legend-step, .legend-filter")];
+      const labels = lines.indexOf(screen.getByRole("heading", { name: "Map labels" }).parentElement!);
+      vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+        if (this.matches(".map-top")) return DOMRect.fromRect({ width: 1000, height: 108 + 30 * (labels + 1) + 10 });
+        if (this.matches(".map-legend")) return DOMRect.fromRect({ y: 60, width: 280, height: 448 });
+        if (this === body) return DOMRect.fromRect({ y: 100, width: 280, height: 400 });
+        const line = lines.indexOf(this);
+        if (line >= 0) return DOMRect.fromRect({ y: 100 + 30 * line, width: 280, height: 30 });
+        return DOMRect.fromRect({ y: 100, width: 280, height: 0 });
+      });
+      vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(800);
+      vi.spyOn(Element.prototype, "clientHeight", "get").mockReturnValue(492);
+
+      act(() => resized.forEach((fit) => fit()));
+      expect(body.style.maxHeight).toBe(`${30 * labels}px`);
     });
   });
 });

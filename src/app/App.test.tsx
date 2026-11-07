@@ -135,11 +135,11 @@ describe("editor", () => {
     const { user } = await mount();
 
     const line = await showLine(user, 4);
-    const questId = within(line).getByLabelText("questId");
+    const questId = within(line).getByLabelText("Quest ID");
     expect(questId).toHaveProperty("value", "5261");
     await user.clear(questId);
     await user.type(questId, "5262{Enter}");
-    const text = within(line).getByLabelText(">> text");
+    const text = within(line).getByLabelText(">> Text");
     selectText(text, "Accept ".length, "Accept Eagan Peltskinner".length);
     await user.click(within(line).getByRole("button", { name: "Friendly" }));
     await user.keyboard("{Enter}");
@@ -164,10 +164,10 @@ describe("editor", () => {
       await importGuide(user, "#group T\n#name One\nstep\n.accept 1 >> First\n");
       await user.click(screen.getByRole("tab", { name: "Lines" }));
       const line = () => screen.getByRole("group", { name: "Line 1, Accept quest" });
-      const questId = () => within(line()).getByLabelText("questId");
+      const questId = () => within(line()).getByLabelText("Quest ID");
       await user.clear(questId());
       await user.type(questId(), "10{Enter}");
-      const text = within(line()).getByLabelText(">> text");
+      const text = within(line()).getByLabelText(">> Text");
       selectText(text, "First".length);
       await user.keyboard("!");
       await user.keyboard("{Control>}z{/Control}");
@@ -292,7 +292,7 @@ describe("editor", () => {
     });
     const first = await mount();
     const saveFailed = () => within(screen.getByRole("banner")).queryByRole("alert")?.textContent;
-    const text = () => within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> text");
+    const text = () => within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> Text");
 
     selectText(text(), "Hello".length);
     await first.user.keyboard("abc{Enter}");
@@ -487,9 +487,15 @@ describe("top bar", () => {
     const more = screen.getByRole<HTMLButtonElement>("button", { name: "More guide actions" });
     expect([more.disabled, cascade(more, "background")?.value, cascade(more, "border-color")?.value]).toEqual([
       false,
-      "var(--surface)",
-      "var(--control-border)",
+      "transparent",
+      "var(--disabled-border)",
     ]);
+  });
+
+  it("gives Import guide in the library the field height of the buttons beside fields", async () => {
+    await mount();
+    const library = screen.getByRole("navigation", { name: "Library" });
+    expect(cascade(within(library).getByRole("button", { name: "Import guide" }), "height")?.value).toBe("var(--control-field)");
   });
 
   it.each(["{Enter}", " ", "{ArrowDown}"])("opens the guide actions menu with %s, and Escape closes it to the arrow", async (key) => {
@@ -550,16 +556,26 @@ describe("top bar", () => {
     expect(document.activeElement).toBe(button);
   });
 
-  it("shows the open-trigger look on Library, Preview as, and Warnings while the drawer or popover each one opened is open", async () => {
+  it("draws open Preview as and Warnings as pressed toggles, and the open Library as a quieter wash with a bold label", async () => {
     await twoGuides();
     const { user } = await mount();
+    const look = (button: HTMLElement) => [
+      button.getAttribute("aria-expanded") ?? button.getAttribute("aria-pressed"),
+      cascade(button, "border-color")?.value,
+      cascade(button, "box-shadow")?.value,
+      cascade(button, "background")?.value,
+      cascade(button, "font-weight")?.value,
+    ];
     const looks = [];
-    for (const name of [/^Library$/, /^Preview as /, /^Warnings/]) {
+    for (const name of [/^Preview as /, /^Warnings/, /^Library$/]) {
       const trigger = screen.getByRole("button", { name });
       await user.click(trigger);
-      looks.push([trigger.getAttribute("aria-expanded"), cascade(trigger, "background")?.value, cascade(trigger, "box-shadow")?.value]);
+      looks.push(look(trigger));
     }
-    expect(looks).toEqual(Array(3).fill(["true", "var(--selection)", "var(--ink-bar-bottom)"]));
+    const pressed = ["true", "var(--accent)", "var(--ring-pressed)"];
+    expect(looks.slice(0, 2).map((l) => l.slice(0, 3))).toEqual([pressed, pressed]);
+    expect(looks[2]).toEqual(["true", "1px solid transparent", undefined, "var(--pressed-wash)", "var(--font-weight-bold)"]);
+    expect(look(screen.getByRole("button", { name: "Edit" })).slice(0, 3)).not.toEqual(pressed);
   });
 
   it("closes the Preview as popover on the first Escape and the library drawer on the second", async () => {
@@ -735,7 +751,7 @@ describe("built-in guides", () => {
   it("copies a built-in on the first edit and keeps typing in the same field", async () => {
     await saveLibrary([], [], { guideId: "rxp:test.lua#1", step: 0, line: null });
     const { user } = await mount(builtins);
-    const text = within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> text");
+    const text = within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> Text");
     selectText(text, "Hello".length);
     await user.keyboard("abc{Enter}def{Enter}");
 

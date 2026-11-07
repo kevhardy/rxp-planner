@@ -807,6 +807,76 @@ describe("warnings", () => {
     "#name B\n#group G\nstep\n    .complete 33,1\nstep\n    .turnin 33\n",
   ];
 
+  /** Opens the panel on one warning, in a body 200 high that holds 500 of rows. */
+  async function overflowingPanel() {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        readonly callback: () => void;
+        constructor(callback: () => void) {
+          this.callback = callback;
+        }
+        observe() {
+          this.callback();
+        }
+        disconnect() {}
+      },
+    );
+    onTestFinished(() => void vi.unstubAllGlobals());
+    const user = userEvent.setup();
+    const view = { scrollTop: 0 };
+    const inBody = (el: HTMLElement, value: number) => (el.classList.contains("warnings-body") ? value : 0);
+    vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return inBody(this, 500);
+    });
+    vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return inBody(this, 200);
+    });
+    vi.spyOn(Element.prototype, "scrollTop", "get").mockImplementation(function (this: Element) {
+      return inBody(this as HTMLElement, view.scrollTop);
+    });
+    const stores = createStores({
+      guides: [{ id: "a", text: "#name A\n#group G\nstep\n    .turnin 7\n", order: 0 }],
+      session: { guideId: "a", step: null, line: null },
+    });
+    render(
+      <StoresContext.Provider value={stores}>
+        <GameDataContext.Provider value={data}>
+          <WarningsPanel />
+        </GameDataContext.Provider>
+      </StoresContext.Provider>,
+    );
+    await user.click(await screen.findByRole("button", { name: "Warnings, 1" }));
+    return { body: screen.getByRole("region", { name: "Warnings" }).querySelector<HTMLElement>(".warnings-body")!, view };
+  }
+
+  it("marks the list clipped only while rows sit below its scrolled view", async () => {
+    const { body, view } = await overflowingPanel();
+    const clipped = (top: number) => {
+      view.scrollTop = top;
+      fireEvent.scroll(body);
+      return body.hasAttribute("data-clipped");
+    };
+
+    expect([body.hasAttribute("data-clipped"), clipped(300), clipped(280)]).toEqual([true, false, true]);
+  });
+
+  it("ends a clipped list its bottom border below its last whole row", async () => {
+    const style = window.getComputedStyle;
+    vi.spyOn(window, "getComputedStyle").mockImplementation((el) =>
+      el.classList.contains("warnings-body") ? ({ borderBottomWidth: "6px" } as CSSStyleDeclaration) : style(el),
+    );
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const rows = [...document.querySelectorAll(".warn-guide > summary, .warn-kind > summary, .warn-kind li")];
+      const i = rows.indexOf(this);
+      return DOMRect.fromRect({ y: i < 0 ? 40 : 44 + 80 * i, width: 600, height: i < 0 ? 200 : 80 });
+    });
+    const { body } = await overflowingPanel();
+
+    // The rows end 84, 164, and 244 below the body's top, and only 164 leaves room for the border in 200.
+    expect([body.style.maxHeight, body.hasAttribute("data-clipped")]).toEqual(["170px", true]);
+  });
+
   it("shows the count on a top bar button that opens the panel, and closes on Escape, on focus leaving, and on a press outside", async () => {
     const { user } = await mount(routeOfThree, "A");
     const button = await within(screen.getByRole("banner")).findByRole("button", { name: "Warnings, 3" });
@@ -857,6 +927,20 @@ describe("warnings", () => {
       ["Step 1, line 1 Turns in Kobold Camp Cleanup (7) before accepting it", null],
       ["Step 1, line 1 Completes Wolves Across the Border (33) before accepting it", "location"],
       ["Step 2, line 1 Turns in Wolves Across the Border (33) before accepting it", null],
+    ]);
+  });
+
+  it("marks a guide problem with the warning mark and a quest data gap with the info mark", async () => {
+    const { user } = await mount(["#name A\n#group G\nstep\n    .turnin 7\n    .accept 999999\n"], "A");
+    const panel = await warnings(user);
+    await within(panel).findAllByRole("button", { name: /^Step / });
+    const kinds = [...panel.querySelectorAll(".warn-kind > summary")].map((summary) => [
+      summary.textContent,
+      summary.querySelector(".warn-kind-mark")!.classList.contains("data-note") ? "info" : "warning",
+    ]);
+    expect(kinds).toEqual([
+      ["Completed before accepted 1", "warning"],
+      ["Unknown quest data 1", "info"],
     ]);
   });
 

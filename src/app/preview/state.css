@@ -9,6 +9,8 @@
 
 .state-panel > .panel-head {
   min-height: 44px;
+  border-bottom-color: var(--raised-line);
+  background: var(--raised);
 }
 
 .state-body {

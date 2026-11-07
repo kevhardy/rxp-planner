@@ -7,7 +7,7 @@ import type { Selection } from "../store.ts";
 import type { AreaRing } from "./areas.ts";
 import { slices, type Area, type Pin, type Shape, type Spawn } from "./MapCanvas.tsx";
 import type { StepShow } from "./mapSettings.ts";
-import { DRAG_COMMANDS, objectiveColor, questSpots, type Placed, type QuestSpot, type SpotObjective, type ViewPoint } from "./points.ts";
+import { DRAG_COMMANDS, mapObjectiveColor, questSpots, type Placed, type QuestSpot, type SpotObjective, type ViewPoint } from "./points.ts";
 import type { Surface } from "./surfaces.ts";
 
 const NEARBY = 10;
@@ -26,13 +26,18 @@ function pinKind(command: string): "waypoint" | "goto" {
 interface StepLook {
   side: "previous" | "selected" | "upcoming";
   fade: number;
+  dot?: boolean;
 }
 
-function stepLook(d: number, steps: { previousSteps: StepShow; upcomingSteps: StepShow }): StepLook | undefined {
+// Faint under the next step's 0.8, but strong enough that a later path still shows on green terrain.
+const BEYOND_FADE = 0.5;
+
+function stepLook(d: number, steps: Pick<LayoutInput, "previousSteps" | "upcomingSteps" | "numberedAhead">): StepLook | undefined {
   if (d === 0) return { side: "selected", fade: 1 };
   const side = d < 0 ? "previous" : "upcoming";
   const show = d < 0 ? steps.previousSteps : steps.upcomingSteps;
   if (show === "hidden") return undefined;
+  if (d > (steps.numberedAhead ?? Infinity)) return { side, fade: BEYOND_FADE, dot: true };
   if (show === "shown") return { side, fade: 1 };
   return { side, fade: d < 0 ? 0.4 : 0.8 - (d - 1) * 0.06 };
 }
@@ -52,6 +57,8 @@ export interface LayoutInput {
   showGuide: boolean;
   previousSteps: StepShow;
   upcomingSteps: StepShow;
+  /** How many steps after the selected one print their number. Later steps draw faint, with dots for pins. Undefined numbers every step. */
+  numberedAhead?: number | undefined;
 }
 
 type LaidPin = Omit<Pin, "activate" | "menu" | "move" | "drag"> & {
@@ -88,7 +95,7 @@ function objectiveSpawns(surface: Surface, spots: QuestSpot[], highlight: string
   const spawns: Spawn[] = [];
   const dots: Spawn[] = [];
   for (const [key, { at, objectives }] of places) {
-    const spawn = { key, at, colors: objectives.map((o) => objectiveColor(o.color)) };
+    const spawn = { key, at, colors: objectives.map((o) => mapObjectiveColor(o.color)) };
     spawns.push(spawn);
     if (objectives.some((o) => o.key === highlight)) dots.push(spawn);
   }
@@ -108,7 +115,7 @@ export function projectAreas(surface: Surface, areas: { key: string; color: numb
       })
       .map((ats) => `M${ats.map((at) => `${round(at.x)} ${round(at.y)}`).join("L")}Z`)
       .join("");
-    return d ? [{ key, color: objectiveColor(color), d }] : [];
+    return d ? [{ key, color: mapObjectiveColor(color), d }] : [];
   });
 }
 
@@ -141,7 +148,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
       if (stops.length > 0) last = look && stops.at(-1);
       if (!look) continue;
       const into = look.side === "selected" ? shapes : faintShapes;
-      const route = { className: `route ${look.side}`, fade: look.fade };
+      const route = { className: `route ${look.side}`, fade: look.fade, cased: true };
       if (loop && stops.length > 2) {
         if (from) into.push({ key: `link${i}`, points: [from, stops[0]!], closed: false, ...route });
         into.push({ key: `loop${i}`, points: stops, closed: true, ...route });
@@ -159,6 +166,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
             at,
             kind: pinKind(p.command),
             text: String(i + 1),
+            rank: 0,
             label: `Selected step ${i + 1}, line ${p.line + 1}: .${p.command} ${where}`,
             fade,
             selected: selection.line === p.line,
@@ -169,7 +177,8 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
             key: `p${i}:${p.line}`,
             at,
             kind: look.side,
-            text: String(i + 1),
+            ...(!look.dot && { text: String(i + 1) }),
+            rank: Math.abs(i - origin),
             label: `${look.side === "previous" ? "Previous" : "Upcoming"} step ${i + 1}: .${p.command} ${where}`,
             fade,
             target: { step: i, line: null },
@@ -199,7 +208,7 @@ export function guideLayout(surface: Surface, input: LayoutInput): Layout {
           at,
           kind: spot.kind,
           label: title,
-          ...(objectives.length > 0 && { fill: slices(objectives.map((o) => objectiveColor(o.color))) }),
+          ...(objectives.length > 0 && { fill: slices(objectives.map((o) => mapObjectiveColor(o.color))) }),
           ...(highlight !== null && objectives.length > 0 && !objectives.some((o) => o.key === highlight) && { fade: 0.12 }),
           ...(spot.kind !== "objective" && { icons: QUEST_ICONS[spot.kind] }),
           target: { spot, title },

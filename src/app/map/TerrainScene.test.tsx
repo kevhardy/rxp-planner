@@ -268,3 +268,35 @@ describe("terrain marker thresholds", () => {
     expect(container.querySelectorAll(".poi-name")).toHaveLength(2);
   });
 });
+
+describe("terrain marker order", () => {
+  it("draws a named marker after the unnamed markers, so its name paints over them", () => {
+    const published = {
+      ...worldMap,
+      places: [],
+      pois: [
+        { ...worldMap.pois.find((p) => p.category === "dungeon")!, level: 3 },
+        { ...worldMap.pois[0]!, level: 3 },
+      ],
+      categories: worldMap.categories.map((c) => (c.key === "dungeon" ? { ...c, labelMinZoom: 4 } : c)),
+    };
+    const stores = { ...createStores(), map: new MapSettingsStore({ ...DEFAULT_MAP_SETTINGS, allFactions: true }) };
+    const { container } = render(
+      <StoresContext.Provider value={stores}>
+        <TerrainMarkers
+          map={published}
+          features={placeFeatures(published)}
+          shows={() => true}
+          marked={{ pois: [], places: [] }}
+          onPick={() => {}}
+          frame={{ left: 0, top: 0, width: 100, height: 100 }}
+          pxPerPercent={(canvasSize(published).width / 100) * 2 ** (5 - published.nativeZoom)}
+        />
+      </StoresContext.Provider>,
+    );
+    expect([...container.querySelectorAll(".poi")].map((el) => el.className)).toEqual([
+      "ui-mark poi poi-services",
+      "ui-mark poi poi-instances named",
+    ]);
+  });
+});

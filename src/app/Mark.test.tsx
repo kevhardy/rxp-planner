@@ -17,7 +17,10 @@ it("draws every kind as an icon or a shape, not text, when the icon sheet lacks 
   );
   const marks = [...container.querySelectorAll(".mk")].map((mark) => [
     mark.textContent,
-    mark.querySelector(":scope > .guide-icon.vector") !== null || mark.querySelectorAll("svg > *").length > 0,
+    mark.querySelector(":scope > .guide-icon.vector") !== null ||
+      mark.querySelectorAll("svg > *").length > 0 ||
+      // The note's sheet and the target's person are CSS backgrounds.
+      mark.matches(".mk-note, .mk-target"),
   ]);
   expect(marks).toEqual(kinds.map(() => ["", true]));
 });
@@ -33,7 +36,7 @@ it("draws a kind's vector icon without a catalog row, and the shape of a kind wi
   const icon = accept!.firstElementChild as HTMLElement;
   expect([accept!.className, icon.className, icon.style.getPropertyValue("--icon-url")]).toEqual([
     "mk mk-accept tex",
-    "guide-icon vector",
+    "guide-icon vector vivid",
     'url("/src/app/guideIcons/accept.svg?no-inline")',
   ]);
   expect([equip!.className, equip!.firstElementChild!.tagName]).toEqual(["mk mk-equip", "svg"]);

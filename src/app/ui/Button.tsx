@@ -13,6 +13,9 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 /** The height in px: 24 in panes, popovers, and menus; 32 in the banner, in dialogs, and over the map. */
 export type ControlSize = 24 | 32;
 
+/** A button can also be 28, the height of the fields in a row beside it. */
+export type ButtonSize = ControlSize | 28;
+
 /**
  * The primitive owns its height, its 24px hit area, and its state looks, such
  * as hover, press, and focus, which win over any rule of the caller.
@@ -41,7 +44,7 @@ export function Button(
     Toggle &
     Expands & {
       "aria-expanded"?: never;
-      size?: ControlSize;
+      size?: ButtonSize;
       type?: "button" | "submit";
       /** Lets a long label wrap, so the button grows taller than `size`. */
       wrap?: boolean;
@@ -84,7 +87,7 @@ export function IconButton(
       "aria-expanded"?: never;
       description?: ReactNode;
       pin?: boolean;
-      size?: ControlSize;
+      size?: ButtonSize;
     } & (
       | { variant: "primary"; pressed?: never; iconShowsPressed?: never }
       | { variant?: "secondary" | "ghost"; pressed?: boolean | "mixed" | undefined; iconShowsPressed?: never }

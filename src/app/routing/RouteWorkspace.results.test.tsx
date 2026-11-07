@@ -580,7 +580,7 @@ describe("route workspace", () => {
     let user = await mount(plan(A, B));
     await waitFor(() => expect(chip()).not.toBe("Finding walking paths…"));
     expect(lastSlope()).toBe(DEFAULT_MAX_SLOPE);
-    expect(screen.getByRole("region", { name: "Route tools" }).querySelector(".route-slope")!.textContent).toBe("Max slope°");
+    expect(screen.getByRole("region", { name: "Route tools" }).querySelector(".route-slope")!.textContent).toBe("Max slope (°)");
     expect(slopeField().value).toBe("50");
 
     let open = () => {};

@@ -248,7 +248,7 @@ export function ImportGuideButton() {
   const open = useContext(OpenImportContext);
   return (
     open && (
-      <Button variant="secondary" onClick={open}>
+      <Button variant="secondary" size={28} onClick={open}>
         <Icon name="import" />
         Import guide
       </Button>

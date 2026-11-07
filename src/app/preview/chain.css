@@ -12,9 +12,9 @@
   min-width: 3em;
   max-width: 190px;
   overflow: hidden;
-  color: var(--muted);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  color: var(--guide-strip-muted);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
   text-overflow: ellipsis;
 }
 
@@ -85,9 +85,17 @@
   width: var(--strip-card);
   height: calc(var(--control-small) + 2px);
   padding: 0 var(--space-2);
-  border: 1px solid var(--control-border);
+  border: 1px solid var(--chain-edge);
   border-radius: var(--radius-control);
-  background: var(--surface);
+  background: var(--chain-card);
+}
+
+.chain-card:not([aria-current], :has(> [aria-current])) {
+  border-color: transparent;
+}
+
+.chain-card:hover {
+  border-color: var(--chain-link-ink);
 }
 
 .chain-card.inactive {
@@ -99,6 +107,7 @@
 }
 
 .chain-card:is([aria-current], :has(> [aria-current])) {
+  border-inline-start-color: var(--pop);
   border-start-start-radius: 0;
   border-end-start-radius: 0;
   background: var(--selection);
@@ -112,13 +121,12 @@
   align-items: baseline;
   gap: var(--space-2);
   min-width: 0;
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
 }
 
 .chain-card-range {
   flex: none;
-  font-family: var(--font-mono);
   font-weight: var(--font-weight-bold);
 }
 

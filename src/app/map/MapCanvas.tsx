@@ -17,6 +17,7 @@ import { Card } from "../ui/Card.tsx";
 import { MarkButton } from "../ui/ItemButton.tsx";
 import { MenuItem } from "../ui/MenuItem.tsx";
 import type { ViewPoint } from "./points.ts";
+import { pinLooks } from "./pinNumbers.ts";
 import { MapViewContext, type MapView, type UserMove, type ViewRequest } from "./view.ts";
 import { clamp, mapCover, type Frame, type Inset } from "./viewport.ts";
 
@@ -42,6 +43,8 @@ export interface Pin {
   kind: PinKind;
   label: string;
   text?: string;
+  /** How many steps the pin's step is from the selected step, with `text` as its step number. Where ranked pins of a kind overlap, the lowest rank prints their step range. */
+  rank?: number;
   chip?: string;
   selected?: boolean;
   fade?: number;
@@ -79,6 +82,21 @@ export interface Shape {
   closed: boolean;
   className: string;
   fade?: number;
+  /** Draws a dark edge under the line, beneath every shape of the same fade. */
+  cased?: boolean;
+}
+
+/**
+ * Shapes grouped by fade, faintest first, so a stronger step draws on top. A layer fades its casings and lines as one
+ * image, so a faded line keeps its color instead of showing its dark casing through it.
+ */
+function fadeLayers(shapes: Shape[]): [number, Shape[]][] {
+  const layers = new Map<number, Shape[]>();
+  for (const s of shapes) {
+    const fade = s.fade ?? 1;
+    layers.set(fade, [...(layers.get(fade) ?? []), s]);
+  }
+  return [...layers].sort(([a], [b]) => a - b);
 }
 
 export interface Spawn {
@@ -162,6 +180,8 @@ export function MapCanvas(props: {
   view?: ViewRequest | undefined;
   cover?: () => Inset;
   onUserMove?: ((move: UserMove) => void) | undefined;
+  /** Where the character stands still, which the guide's quest marks clear. */
+  stand?: ViewPoint | undefined;
 }) {
   const { mapView, aspect, pins, shapes } = props;
   const snapshot = useSyncExternalStore(mapView.subscribe, mapView.getSnapshot);
@@ -229,7 +249,13 @@ export function MapCanvas(props: {
   );
   const menu = opened?.menu ?? (opened?.at ? props.menu(opened.at, pxPerPercent) : pins.find((p) => p.key === opened?.pin)?.menu);
   const polyline = (points: ViewPoint[]) => points.map((p) => `${p.x},${p.y}`).join(" ");
+  const outline = (s: Shape, className: string, key: string) => {
+    const Line = s.closed ? "polygon" : "polyline";
+    return <Line key={key} className={className} points={polyline(s.points)} />;
+  };
   const movingPin = moving && pins.find((p) => p.key === moving.key);
+  const looks = pinLooks(pins, pxPerPercent, aspect, props.stand);
+  const drawn = pins.filter((p) => looks.get(p.key) !== null);
   const [paths, shared] = useMemo(
     () => [props.spawns.filter((s) => s.colors.length === 1), props.spawns.filter((s) => s.colors.length > 1)],
     [props.spawns],
@@ -262,23 +288,29 @@ export function MapCanvas(props: {
             <span key={s.key} className="spawn" style={{ "--at-x": `${s.at.x}%`, "--at-y": `${s.at.y}%`, "--fill": slices(s.colors) }} />
           ))}
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {shapes.map((s) =>
-              s.closed ? (
-                <polygon key={s.key} className={s.className} opacity={s.fade} points={polyline(s.points)} />
-              ) : (
-                <polyline key={s.key} className={s.className} opacity={s.fade} points={polyline(s.points)} />
-              ),
-            )}
+            {fadeLayers(shapes).map(([fade, layer]) => (
+              <g key={fade} opacity={fade < 1 ? fade : undefined}>
+                {layer.filter((s) => s.cased).map((s) => outline(s, `${s.className} casing`, `casing:${s.key}`))}
+                {layer.map((s) => outline(s, s.className, s.key))}
+              </g>
+            ))}
           </svg>
-          {pins.map((pin) => {
-            const at = moving?.key === pin.key ? moving.at : pin.at;
+          {drawn.map((pin) => {
+            const look = looks.get(pin.key);
+            const at = moving?.key === pin.key ? moving.at : (look?.at ?? pin.at);
+            const text = look ? look.text : pin.text;
             return (
               <Fragment key={pin.key}>
                 <MarkButton
                   label={pin.label}
                   at={at}
-                  vars={{ "--fade": pin.fade, "--fill": pin.fill }}
-                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}`}
+                  vars={{
+                    "--fade": pin.fade,
+                    "--fill": pin.fill,
+                    "--badge-x": look?.badge && `${look.badge.x}px`,
+                    "--badge-y": look?.badge && `${look.badge.y}px`,
+                  }}
+                  className={`pin pin-${pin.kind}${pin.selected ? " selected" : ""}${moving?.key === pin.key ? " moving" : ""}${look?.near ? " near" : ""}${pin.rank && !text ? " dot" : ""}`}
                   aria-describedby={pin.move ? hintId : undefined}
                   aria-haspopup={!pin.activate && pin.menu ? "menu" : undefined}
                   tabIndex={pin.kind === "previous" || pin.kind === "upcoming" ? -1 : 0}
@@ -344,7 +376,7 @@ export function MapCanvas(props: {
                     if (mine) place(pin, mine.at);
                   }}
                 >
-                  {pin.text && <span aria-hidden="true">{pin.text}</span>}
+                  {text && <span aria-hidden="true">{text}</span>}
                   {pin.icons?.map((icon, i) => (
                     <MapIconImage key={i} icon={icon} size={18} />
                   ))}

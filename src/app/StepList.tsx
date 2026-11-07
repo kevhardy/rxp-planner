@@ -512,7 +512,7 @@ const StepRow = memo(function StepRow(props: {
             {where.places.length > 0 && (
               <WherePart mark={<Mark mark={{ kind: "goto" }} />} verb="Go to ">
                 {where.places.map((place, i) => [
-                  i > 0 && " → ",
+                  i > 0 && " →\u00a0",
                   <Skippable
                     key={place.line}
                     className="where-item"
@@ -618,7 +618,7 @@ function StepFooter({ items }: { items: readonly FooterItem[] }) {
         {items.map((item, i) => (
           <Skippable
             key={`${item.kind}-${item.line}`}
-            className={`foot-item foot-${item.kind}${item.tone ? ` foot-${item.tone}` : ""}`}
+            className={`foot-item foot-${item.kind}`}
             item={item}
             description={item.hint}
             content={
@@ -655,11 +655,11 @@ function XpRing(props: { step: Step; before: SimState; snapshot: StepSnapshot; n
   const rules = useGameData()?.rules;
   if (!rules) return null;
   const xp = stepXp(rules, props.before, props.snapshot, props.names, props.step);
-  const arcs = [
-    ["before", 0, xp.before],
-    ["earned", xp.before, xp.earned],
-    ["jump", xp.before + xp.earned, xp.jump],
-  ] as const;
+  const arcs = ringArcs([
+    ["before", xp.before],
+    ["earned", xp.earned],
+    ["jump", xp.jump],
+  ]);
   return (
     <>
       <Described text={<SimCards cards={[xp.card, ...xp.notes]} />} open={props.cardOpen} pin>
@@ -671,23 +671,20 @@ function XpRing(props: { step: Step; before: SimState; snapshot: StepSnapshot; n
           onClick={(e) => e.stopPropagation()}
         >
           <svg className="sim-arcs" viewBox="0 0 24 24">
-            <circle className="track" cx="12" cy="12" r="10.5" />
-            {xp.dinged && <circle className="fill" cx="12" cy="12" r="7.5" />}
-            {arcs.map(
-              ([kind, from, length]) =>
-                length > 0 && (
-                  <circle
-                    key={kind}
-                    className={kind}
-                    cx="12"
-                    cy="12"
-                    r="10.5"
-                    pathLength={100}
-                    strokeDasharray={`${length * 100} 100`}
-                    strokeDashoffset={-from * 100}
-                  />
-                ),
-            )}
+            <circle className="track" cx="12" cy="12" r="9" />
+            {xp.dinged && <circle className="fill" cx="12" cy="12" r="7" />}
+            {arcs.map(({ kind, from, to }) => (
+              <circle
+                key={kind}
+                className={kind}
+                cx="12"
+                cy="12"
+                r="9"
+                pathLength={100}
+                strokeDasharray={`${to - from} 100`}
+                strokeDashoffset={-from}
+              />
+            ))}
           </svg>
           <span className="sim-level">{xp.level}</span>
           {xp.checkpoint && <Icon name="upToBar" size={12} className="sim-jump" />}
@@ -699,6 +696,41 @@ function XpRing(props: { step: Step; before: SimState; snapshot: StepSnapshot; n
       <LevelMark level={xp.dinged ? xp.level : undefined} showLevel={false} />
     </>
   );
+}
+
+type ArcKind = "before" | "earned" | "jump";
+
+/** The tuned shortest arc, in percent of the ring: shorter arcs read as a notch. */
+const MIN_ARC = 6;
+
+/**
+ * Lays the ring's arcs end to end, in percent of the ring, from their shares
+ * of the level. An arc shorter than `MIN_ARC` keeps its end and takes the
+ * length from the arc before it, so the ring's total stays true and never
+ * drops from one step to the next. Only a total below `MIN_ARC` grows. A
+ * first arc left shorter than `MIN_ARC` joins the arc after it.
+ */
+export function ringArcs(shares: readonly (readonly [ArcKind, number])[]) {
+  const arcs: { kind: ArcKind; from: number; to: number }[] = [];
+  let at = 0;
+  for (const [kind, share] of shares) {
+    if (share > 0) arcs.push({ kind, from: at * 100, to: (at + share) * 100 });
+    at += share;
+  }
+  let next = Infinity;
+  for (let i = arcs.length - 1; i >= 0; i--) {
+    const arc = arcs[i]!;
+    arc.to = Math.min(Math.max(arc.to, MIN_ARC), next);
+    arc.from = Math.max(0, Math.min(arc.from, arc.to - MIN_ARC));
+    next = arc.from;
+  }
+  const shown = arcs.filter((arc) => arc.to > arc.from);
+  const [first, second] = shown;
+  if (first && second && first.to - first.from < MIN_ARC) {
+    second.from = first.from;
+    shown.shift();
+  }
+  return shown;
 }
 
 function BandRow({ band }: { band: LevelBand }) {

@@ -69,6 +69,21 @@ const VECTOR_ICONS: ReadonlyMap<GuideIconKey, string> = new Map([
   [textureKey("interface/cursor/crosshair/interact")!, interact],
 ]);
 
+// Yellow fills fade into a light page, so light mode edges them. A deep
+// icon's dark fills weigh at least twice as much on a light page as on a dark
+// one, so both themes lift them toward the other icons.
+const VECTOR_TONES: ReadonlyMap<string, "vivid" | "deep"> = new Map([
+  [accept, "vivid"],
+  [turnin, "vivid"],
+  [abandon, "deep"],
+  [collect, "deep"],
+  [deathskip, "deep"],
+  [destroy, "deep"],
+  [goto, "deep"],
+  [train, "deep"],
+  [vendor, "deep"],
+]);
+
 const vectorsByCatalog = new WeakMap<GuideIconCatalog, Map<GuideIconEntry, string>>();
 
 function vectorByCatalogEntry(catalog: GuideIconCatalog) {
@@ -106,14 +121,20 @@ const length = (pixels: number) => (pixels === 0 ? "1em" : `${pixels}px`);
  * The class and CSS variables of an icon drawn at `size`, where 0 is the text
  * height. `icon` is a catalog icon, or a key, which draws its vector redraw
  * even when the catalog has no row for it. `drawn` is false when no icon
- * shows, and the outline shows in its place.
+ * shows, and the outline shows in its place. A game icon from
+ * `interface/icons/` takes the class `framed`, since its art has a dark frame.
  */
 export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | GuideIconKey | undefined, size: Size): IconLook {
   const box: IconVars = { "--icon-w": length(size.width), "--icon-h": length(size.height) };
   if (size.width > 0 && size.height > 0) box["--icon-ratio"] = String(size.width / size.height);
   const entry = typeof icon === "string" ? catalog.get(icon) : icon;
   const vector = (typeof icon === "string" ? VECTOR_ICONS.get(icon) : undefined) ?? (entry && vectorByCatalogEntry(catalog).get(entry));
-  if (vector) return { className: "guide-icon vector", vars: { ...box, "--icon-url": `url("${vector}")` }, drawn: true };
+  if (vector)
+    return {
+      className: ["guide-icon vector", VECTOR_TONES.get(vector)].filter(Boolean).join(" "),
+      vars: { ...box, "--icon-url": `url("${vector}")` },
+      drawn: true,
+    };
   if (!entry) return { className: "guide-icon missing", vars: box, drawn: false };
   const { cell } = entry;
   const vars = {
@@ -123,7 +144,7 @@ export function iconLook(catalog: GuideIconCatalog, icon: GuideIconEntry | Guide
     "--cell-x": String(-cell.x / cell.width),
     "--cell-y": String(-cell.y / cell.height),
   };
-  return { className: "guide-icon", vars, drawn: true };
+  return { className: entry.path.startsWith("interface/icons/") ? "guide-icon framed" : "guide-icon", vars, drawn: true };
 }
 
 /**

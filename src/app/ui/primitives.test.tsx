@@ -161,6 +161,9 @@ describe("each primitive", () => {
         <Button variant="ghost">Ghost</Button>
         <Button variant="primary">Primary</Button>
         <Button variant="danger">Danger</Button>
+        <Button variant="secondary" size={28}>
+          Field height
+        </Button>
         <Button variant="secondary" size={32}>
           Large
         </Button>
@@ -177,6 +180,7 @@ describe("each primitive", () => {
           Disabled ghost
         </Button>
         <IconButton icon="x" label="Icon" />
+        <IconButton icon="x" label="Field height icon" size={28} />
         <IconButton icon="x" label="Large icon" size={32} />
         <IconButton icon="plus" label="Open" popoverOpen />
         <IconButton icon="plus" label="Open primary" variant="primary" popoverOpen />
@@ -191,6 +195,7 @@ describe("each primitive", () => {
           onChange={() => {}}
         />
         <Segmented label="Size" size={32} value={null} options={[{ value: "a", label: "Large segment" }]} onChange={() => {}} />
+        <Segmented label="Quiet" quiet value="a" options={[{ value: "a", label: "Quiet on segment" }]} onChange={() => {}} />
         <MenuItem>Menu item</MenuItem>
         <MenuItem disabled>Disabled menu item</MenuItem>
         <Tab selected={false} controls="p">
@@ -232,10 +237,12 @@ describe("each primitive", () => {
   const ROWS: Array<[name: string, look: keyof typeof LOOKS, property: string, value: string]> = [
     ["Secondary", "rest", "height", small],
     ["Secondary", "rest", "min-width", small],
+    ["Field height", "rest", "height", "var(--control-field)"],
     ["Large", "rest", "height", large],
     ["Wrap", "rest", "height", "auto"],
     ["Wrap", "rest", "min-height", small],
     ["Icon", "rest", "width", small],
+    ["Field height icon", "rest", "width", "var(--control-field)"],
     ["Large icon", "rest", "width", large],
     ["Segment", "rest", "height", small],
     ["Segment", "rest", "min-width", small],
@@ -262,61 +269,70 @@ describe("each primitive", () => {
     ["Primary", "hover", "background", "var(--primary-hover)"],
     ["Primary", "press", "background", "var(--primary-press)"],
     ["Secondary", "hover", "border-color", "var(--control-border)"],
-    ["Secondary", "hover", "background", "var(--selection)"],
+    ["Secondary", "hover", "background", "var(--hover)"],
     ["Secondary", "hover", "color", "var(--text)"],
     ["Secondary", "press", "background", "var(--press)"],
-    ["Ghost", "hover", "background", "var(--selection)"],
+    ["Ghost", "hover", "background", "var(--hover)"],
     ["Ghost", "press", "background", "var(--press)"],
     ["Danger", "hover", "background", "var(--danger-hover)"],
     ["Danger", "press", "background", "var(--danger-press)"],
-    ["Pressed", "rest", "border-color", "var(--text)"],
-    ["Pressed", "rest", "background", "var(--press)"],
+    ["Pressed", "rest", "border-color", "var(--accent)"],
+    ["Pressed", "rest", "box-shadow", "var(--ring-pressed)"],
+    ["Pressed", "press", "background", "var(--press)"],
     ["Pressed", "rest", "color", "var(--text)"],
-    ["Open", "rest", "border-color", "transparent"],
-    ["Open", "rest", "border-end-start-radius", "0"],
-    ["Open", "rest", "border-end-end-radius", "0"],
-    ["Open", "rest", "box-shadow", "var(--ink-bar-bottom)"],
+    ["Open", "rest", "border-color", "var(--accent)"],
+    ["Open", "rest", "box-shadow", "var(--ring-pressed)"],
     ["Open", "rest", "color", "var(--text)"],
-    ["Open", "rest", "background", "var(--selection)"],
     ["Open", "press", "background", "var(--press)"],
-    ["Open primary", "rest", "background", "var(--selection)"],
+    ["Open primary", "rest", "box-shadow", "var(--ring-pressed)"],
+    ["Open primary", "rest", "background", "var(--raised)"],
+    ["Open primary", "hover", "background", "var(--raised)"],
     ["Open primary", "press", "background", "var(--press)"],
     ["Closed primary", "press", "background", "var(--primary-press)"],
-    ["Disabled", "rest", "border-color", "transparent"],
-    ["Disabled", "hover", "background", "var(--disabled-bg)"],
+    ["Disabled", "rest", "border-color", "var(--disabled-border)"],
+    ["Disabled", "hover", "background", "transparent"],
     ["Disabled", "rest", "box-shadow", "none"],
     ["Disabled", "rest", "color", "var(--disabled-fg)"],
     ["Disabled", "rest", "font-weight", "var(--font-weight-regular)"],
     ["Disabled", "rest", "opacity", "1"],
     ["Disabled", "rest", "filter", "none"],
+    ["Disabled ghost", "hover", "border-color", "transparent"],
     ["Disabled ghost", "hover", "background", "none"],
     ["Disabled ghost", "rest", "color", "var(--disabled-fg)"],
     ["Disabled ghost", "rest", "opacity", "1"],
     ["Disabled ghost", "rest", "filter", "none"],
 
-    ["Segment", "hover", "background", "var(--selection)"],
+    ["Segment", "hover", "background", "var(--hover)"],
     ["Segment", "hover", "color", "var(--text)"],
     ["Segment", "press", "background", "var(--press)"],
-    ["On segment", "rest", "background", "var(--selection)"],
+    ["On segment", "rest", "background", "var(--selection-on-bar)"],
     ["On segment", "press", "background", "var(--press)"],
+    ["On segment", "rest", "border-block-end-color", "var(--pop)"],
     ["On segment", "rest", "border-end-start-radius", "0"],
     ["On segment", "rest", "border-end-end-radius", "0"],
     ["On segment", "rest", "box-shadow", "var(--ink-bar-bottom)"],
     ["On segment", "rest", "color", "var(--text)"],
     ["On segment", "rest", "font-weight", "var(--font-weight-bold)"],
+    ["Quiet on segment", "rest", "background", "var(--raised)"],
+    ["Quiet on segment", "press", "background", "var(--press)"],
+    ["Quiet on segment", "rest", "border-block-end-color", "var(--control-border)"],
+    ["Quiet on segment", "rest", "border-end-start-radius", "var(--radius-control)"],
+    ["Quiet on segment", "rest", "border-end-end-radius", "var(--radius-control)"],
+    ["Quiet on segment", "rest", "box-shadow", "none"],
+    ["Quiet on segment", "rest", "font-weight", "var(--font-weight-regular)"],
 
-    ["Menu item", "hover", "background", "var(--selection)"],
-    ["Menu item", "focus", "background", "var(--selection)"],
+    ["Menu item", "hover", "background", "var(--hover)"],
+    ["Menu item", "focus", "background", "var(--hover)"],
     ["Menu item", "press", "background", "var(--press)"],
     ["Disabled menu item", "hover", "background", "none"],
     ["Disabled menu item", "rest", "color", "var(--disabled-fg)"],
     ["Disabled menu item", "rest", "opacity", "1"],
     ["Disabled menu item", "rest", "filter", "none"],
 
-    ["Tab", "hover", "background", "var(--selection)"],
+    ["Tab", "hover", "background", "var(--hover)"],
     ["Tab", "hover", "color", "var(--text)"],
     ["Tab", "press", "background", "var(--press)"],
-    ["Selected tab", "rest", "background", "var(--selection)"],
+    ["Selected tab", "rest", "background", "var(--selection-on-bar)"],
     ["Selected tab", "press", "background", "var(--press)"],
     ["Selected tab", "rest", "box-shadow", "var(--ink-bar-bottom)"],
     ["Selected tab", "rest", "color", "var(--text)"],
@@ -327,7 +343,7 @@ describe("each primitive", () => {
     ["Disabled selected tab", "rest", "opacity", "1"],
     ["Disabled selected tab", "rest", "filter", "none"],
 
-    ["Item", "hover", "background", "var(--selection)"],
+    ["Item", "hover", "background", "var(--hover)"],
     ["Item", "press", "background", "var(--press)"],
     ["Current item", "rest", "background", "var(--selection)"],
     ["Current item", "press", "background", "var(--press)"],
@@ -367,6 +383,11 @@ describe("each primitive", () => {
     gallery();
     const winners = new Set(ROWS.map(([name, look, property]) => owned(name, look, property)?.from));
     expect(winners).toEqual(new Set(important));
+  });
+
+  it("labels an unpressed segment in --text, like the other available buttons, so it does not read as disabled", () => {
+    gallery();
+    expect(["Segment", "Secondary"].map((name) => cascade(named(name), "color")?.value)).toEqual(["var(--text)", "var(--text)"]);
   });
 
   it("positions each item and art, so its ::after hit area sizes on the button and not on a pane", () => {
@@ -471,6 +492,19 @@ describe("Checkbox", () => {
     render(<Checkbox aria-label="Import all" checked={false} indeterminate onChange={() => {}} />);
     const box = screen.getByRole<HTMLInputElement>("checkbox", { name: "Import all" });
     expect([box.indeterminate, cascade(box.nextElementSibling!, "visibility")?.value]).toEqual([true, "visible"]);
+  });
+
+  it("fills an unchecked box like a text field", () => {
+    render(
+      <>
+        <Checkbox aria-label="Off" checked={false} onChange={() => {}} />
+        <Input aria-label="Name" />
+      </>,
+    );
+    const fills = [screen.getByRole("checkbox", { name: "Off" }), screen.getByRole("textbox", { name: "Name" })].map(
+      (field) => cascade(field, "background")?.value,
+    );
+    expect(fills).toEqual(["var(--field)", "var(--field)"]);
   });
 
   it("keeps the disabled border while it is checked", () => {

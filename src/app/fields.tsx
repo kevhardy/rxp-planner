@@ -412,12 +412,13 @@ export function ConditionEditor(props: {
           value={condition?.text ?? ""}
           onCommit={commitText}
           description={props.description}
-          placeholder="none"
+          placeholder="such as Dwarf/Gnome"
           hideLabel
           mono
         />
         {props.compact && (
           <IconButton
+            size={28}
             icon="sliders"
             label={`${open ? "Hide" : "Show"} ${props.label.toLowerCase()} filters`}
             description="Condition filters"

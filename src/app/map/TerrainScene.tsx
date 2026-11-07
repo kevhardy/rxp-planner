@@ -28,13 +28,21 @@ import {
   type PlacedPoi,
   type TerrainFeatures,
 } from "./terrain.ts";
-import { clearLabels, labelShows } from "./labels.ts";
+import { clearLabels, labelShows, nameSide, pickLabels } from "./labels.ts";
+import type { ViewPoint } from "./points.ts";
 import { useMapView } from "./view.ts";
 import { canvasSize, mapCover } from "./viewport.ts";
 
 const CULL_MARGIN_PX = 128;
 const LABEL_FONT_PX = 11;
 const ICON_AND_GAP_PX = 32;
+// The largest icon a caller passes in `icons`: the ride mark in a wide map.
+const ICON_PX = 18;
+const QUEST_ICON_PX = 16;
+
+// A continent fills the map near level 1.5 and a zone near levels 4 to 6. From about level 3, the water that the tiles
+// bake in along each coast shows as dark blocks against a lighter backdrop.
+const SEA_LEVEL = 3;
 
 const FULL: Frame = { left: 0, top: 0, width: 100, height: 100 };
 
@@ -49,6 +57,7 @@ export function TerrainScene(props: { map: LoadedWorldMap; frame: Frame; pxPerPe
   if (zoom !== map.minZoom) tiles.push(...visibleTiles(map, zoom, frame));
   return (
     <>
+      {zoomLevel(map, detail(map, pxPerPercent)) >= SEA_LEVEL && <span className="terrain-sea" hidden />}
       {tiles.map((t) => {
         const path = worldMapTilePath(t.area, t.zoom, t.x, t.y);
         if (hidden?.has(path)) return null;
@@ -101,8 +110,12 @@ export function TerrainMarkers(props: {
   onPick: (poi: WorldMapPoi) => void;
   frame: Frame;
   pxPerPercent: number;
+  /** Where the caller draws map icons that zone labels move clear of, at a given scale. */
+  icons?: (pxPerPercent: number) => readonly ViewPoint[];
+  /** Where quest markers draw. A point's name moves to the other side of its icon to clear them. */
+  quests?: readonly ViewPoint[];
 }) {
-  const { map, features, shows, frame, pxPerPercent } = props;
+  const { map, features, shows, frame, pxPerPercent, icons } = props;
   const { allFactions } = useMapSettings();
   const { faction } = useMapProfile();
   const k = detail(map, pxPerPercent);
@@ -117,20 +130,24 @@ export function TerrainMarkers(props: {
     );
     const aspect = canvasSize(map).width / canvasSize(map).height;
     const marginY = (CULL_MARGIN_PX * aspect) / pxPerPercent;
-    return groupMarkers<Shown>(map, [...marked.map((p) => ({ ...p, marked: true as const })), ...pois], k).map((row) => {
-      const leader = row[0]!;
-      const named = row.length === 1 && level >= (leader.category.labelMinZoom ?? 7);
-      return {
-        row,
-        key: keyOf(leader),
-        marked: row.some((p) => p.marked),
-        named,
-        marginX:
-          Math.max(CULL_MARGIN_PX, named ? (leader.poi.label ?? leader.poi.name).length * LABEL_FONT_PX + ICON_AND_GAP_PX : 0) /
-          pxPerPercent,
-        marginY,
-      };
-    });
+    // A mark paints over the marks before it, so named points come last and
+    // their names read over unnamed points, while guide points still come later.
+    return groupMarkers<Shown>(map, [...marked.map((p) => ({ ...p, marked: true as const })), ...pois], k)
+      .map((row) => {
+        const leader = row[0]!;
+        const named = row.length === 1 && level >= (leader.category.labelMinZoom ?? 7);
+        return {
+          row,
+          key: keyOf(leader),
+          marked: row.some((p) => p.marked),
+          named,
+          marginX:
+            Math.max(CULL_MARGIN_PX, named ? (leader.poi.label ?? leader.poi.name).length * LABEL_FONT_PX + ICON_AND_GAP_PX : 0) /
+            pxPerPercent,
+          marginY,
+        };
+      })
+      .sort((a, b) => Number(a.named) - Number(b.named));
   }, [map, features.pois, marked, on, k, level, pxPerPercent, faction, allFactions]);
   const [retained, retain] = useState<string | null>(null);
   const [hovered, hover] = useState<string | null>(null);
@@ -145,26 +162,75 @@ export function TerrainMarkers(props: {
     [features.places, zonesOn, landmarksOn, level],
   );
   const [labels] = useState(() => new Map<PlacedPlace, HTMLElement>());
+  const iconsAt = useMemo(() => icons?.(pxPerPercent) ?? [], [icons, pxPerPercent]);
   useLayoutEffect(() => {
+    const aspect = canvasSize(map).width / canvasSize(map).height;
+    const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
     const box = (p: PlacedPlace) => ({
-      x: p.place.x * k,
-      y: p.place.y * k,
+      ...screen(p.at),
       width: labels.get(p)!.offsetWidth,
       height: labels.get(p)!.offsetHeight,
     });
+    const parts = (p: PlacedPlace) => {
+      const whole = box(p);
+      const rank = p.place.kind === "capital" ? 0 : 1;
+      const small = labels.get(p)!.querySelector("small");
+      if (!small) return { rank, name: whole };
+      const top = whole.y - whole.height / 2;
+      const nameHeight = whole.height - small.offsetHeight;
+      return {
+        rank,
+        name: { ...whole, y: top + nameHeight / 2, height: nameHeight },
+        levels: { x: whole.x, y: top + nameHeight + small.offsetHeight / 2, width: small.offsetWidth, height: small.offsetHeight },
+      };
+    };
     const zones = places.filter((p) => p.place.kind !== "landmark");
-    const moves = clearLabels(zones.map(box), places.filter((p) => p.place.kind === "landmark").map(box));
+    const zoneParts = zones.map(parts);
+    const picked = pickLabels(zoneParts);
+    const kept = zones.flatMap((p, i) => (picked[i]!.name ? [{ p, box: picked[i]!.levels ? box(p) : zoneParts[i]!.name }] : []));
+    const moves = clearLabels(
+      kept.map((z) => ({ ...z.box, mustShow: z.p.place.kind === "capital" })),
+      [
+        ...places.filter((p) => p.place.kind === "landmark").map(box),
+        ...iconsAt.map((at) => ({ ...screen(at), width: ICON_PX, height: ICON_PX })),
+      ],
+    );
     zones.forEach((p, i) => {
-      const { x, y } = moves[i]!;
-      labels.get(p)!.style.translate = x || y ? `calc(${x}px - 50%) calc(${y}px - 50%)` : "";
+      const el = labels.get(p)!;
+      el.style.visibility = picked[i]!.name ? "" : "hidden";
+      const small = el.querySelector("small");
+      if (small) small.style.visibility = picked[i]!.levels ? "" : "hidden";
     });
-  }, [labels, places, k]);
+    kept.forEach(({ p }, i) => {
+      const el = labels.get(p)!;
+      const move = moves[i];
+      if (!move) el.style.visibility = "hidden";
+      el.style.translate = move && (move.x || move.y) ? `calc(${move.x}px - 50%) calc(${move.y}px - 50%)` : "";
+    });
+  }, [labels, places, map, pxPerPercent, iconsAt]);
+  const [names] = useState(() => new Map<HTMLElement, ViewPoint>());
+  // No dependencies: names mount and unmount with the rows of every frame.
+  useLayoutEffect(() => {
+    const aspect = canvasSize(map).width / canvasSize(map).height;
+    const screen = (at: ViewPoint) => ({ x: at.x * pxPerPercent, y: (at.y * pxPerPercent) / aspect });
+    const quests = (props.quests ?? []).map((at) => ({ ...screen(at), width: QUEST_ICON_PX, height: QUEST_ICON_PX }));
+    for (const [name, at] of names) {
+      const icon = { ...screen(at), width: name.parentElement!.offsetWidth, height: name.parentElement!.offsetHeight };
+      const side = nameSide(icon, { width: name.offsetWidth, height: name.offsetHeight }, quests);
+      name.toggleAttribute("data-start", side === "start");
+    }
+  });
   return (
     <>
       {shows("routes") && (
         <svg className="routes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {features.routes.map((r, i) => (
-            <polyline key={i} className={`route-${r.vessel}`} points={r.points} />
+            <g key={i}>
+              <polyline className="transport-casing" points={r.points} />
+              <path className="transport-casing transport-end" d={r.ends} />
+              <polyline className={`route-${r.vessel}`} points={r.points} />
+              <path className="transport-end" d={r.ends} />
+            </g>
           ))}
         </svg>
       )}
@@ -173,9 +239,9 @@ export function TerrainMarkers(props: {
       ))}
       {visibleRows.map(({ row, key, named }) =>
         row.length === 1 ? (
-          <Marker key={key} placed={row[0]!} named={named} onPick={props.onPick} retain={retain} />
+          <Marker key={key} placed={row[0]!} at={row[0]!.at} named={named} names={names} onPick={props.onPick} retain={retain} />
         ) : (
-          <MarkerRow key={key} row={row} onPick={props.onPick} retain={retain} hover={hover} />
+          <MarkerRow key={key} row={row} at={row[0]!.at} onPick={props.onPick} retain={retain} hover={hover} />
         ),
       )}
       {props.marked.places.map((p, i) => (
@@ -188,6 +254,8 @@ export function TerrainMarkers(props: {
 type Shown = PlacedPoi & { marked?: true };
 
 const keyOf = ({ poi, at, marked }: Shown) => `${marked ? "marked:" : ""}${poi.category}:${poi.entity?.id ?? poi.name}:${at.x},${at.y}`;
+
+const rowIcons = (row: Shown[]) => [...new Map(row.map((p) => [p.marked ? keyOf(p) : p.category.icon, p])).values()];
 
 const labelOf = ({ poi, category }: PlacedPoi) => `${poi.name}: ${category.name}${poi.levels ? ` (${poi.levels})` : ""}`;
 
@@ -212,12 +280,15 @@ const PlaceLabel = memo(function PlaceLabel({ placed, labels }: { placed: Placed
 
 const Marker = memo(function Marker(props: {
   placed: Shown;
+  /** Where the point draws, which can move off `placed.at` to clear a mark. */
+  at: ViewPoint;
   named: boolean;
+  names: Map<HTMLElement, ViewPoint>;
   onPick: (poi: WorldMapPoi) => void;
   retain: (key: string) => void;
 }) {
-  const { placed, named } = props;
-  const { poi, layer, category, at, marked } = placed;
+  const { placed, at, named, names } = props;
+  const { poi, layer, category, marked } = placed;
   const label = labelOf(placed);
   const withName = marked || named;
   return (
@@ -235,7 +306,15 @@ const Marker = memo(function Marker(props: {
     >
       <MapIconImage icon={placed.icon} className="poi-icon" />
       {withName && (
-        <span className="poi-name" aria-hidden="true">
+        <span
+          ref={(el) => {
+            if (!el) return;
+            names.set(el, at);
+            return () => void names.delete(el);
+          }}
+          className="poi-name"
+          aria-hidden="true"
+        >
           {poi.label ?? poi.name}
         </span>
       )}
@@ -251,17 +330,18 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 
 const MarkerRow = memo(function MarkerRow(props: {
   row: Shown[];
+  /** Where the row draws, which can move off its first point to clear a mark. */
+  at: ViewPoint;
   onPick: (poi: WorldMapPoi) => void;
   retain: (key: string) => void;
   hover: (key: string | null) => void;
 }) {
-  const { row } = props;
+  const { row, at } = props;
   const rowButton = useRef<HTMLButtonElement>(null);
   const list = useRef<HTMLUListElement>(null);
   const listId = useId();
-  const icons = [...new Map(row.map((p) => [p.marked ? keyOf(p) : p.category.icon, p])).values()];
+  const icons = rowIcons(row);
   const named = row.filter((p) => p.marked);
-  const at = row[0]!.at;
   const key = keyOf(row[0]!);
   const items = () => [...list.current!.querySelectorAll("button")];
   const mapView = useMapView();
@@ -373,7 +453,7 @@ const MarkerRow = memo(function MarkerRow(props: {
         }}
       >
         {icons.slice(0, ROW_ICONS).map((p, i) => (
-          <MapIconImage key={i} icon={p.icon} className={`poi-icon${p.marked ? " marked" : ""}`} />
+          <MapIconImage key={i} icon={p.icon} className={`poi-icon poi-${p.layer}${p.marked ? " marked" : ""}`} />
         ))}
         {icons.length > ROW_ICONS && (
           <span className="poi-more" aria-hidden="true">
