@@ -5,10 +5,6 @@ export function fail(path: string, problem: string): never {
 export const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-/**
- * Checks that `value` is an object with every `required` key and no key outside `required` and `optional`.
- * A missing key fails before an unknown one, so a file of another kind names the key that it lacks.
- */
 export function fields(value: unknown, path: string, required: string[], optional: string[] = []): Record<string, unknown> {
   if (!isObject(value)) fail(path, "expected an object");
   for (const key of required) if (!(key in value)) fail(`${path}.${key}`, "missing");

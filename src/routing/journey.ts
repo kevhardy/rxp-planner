@@ -83,7 +83,6 @@ interface Crossing {
 
 export type JourneyLeg = LegResult | TransportLeg | Crossing;
 
-/** The route of a leg: its terrain route, or a failed leg's provisional route. */
 export const routeOf = (leg: JourneyLeg): TerrainRoute | undefined => (leg.kind === "route" ? leg : "route" in leg ? leg.route : undefined);
 
 export interface Journey<Leg = JourneyLeg> {
