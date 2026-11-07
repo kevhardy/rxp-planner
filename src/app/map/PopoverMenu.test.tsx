@@ -244,12 +244,27 @@ describe("PopoverMenu closing", () => {
     const { user, toggle, shown } = mount();
     const outside = screen.getByRole("button", { name: "Outside" });
     await user.click(toggle);
+    await user.tab();
+    const done = document.activeElement;
     fireEvent.pointerDown(screen.getByText("Outside text"));
-    expect(shown()).toBe(false);
+    expect([shown(), document.activeElement]).toEqual([false, done]);
 
     await user.click(toggle);
     await user.tab();
     await user.tab();
     expect([shown(), document.activeElement]).toEqual([false, outside]);
+  });
+
+  it("stays open when focus leaves for no element, as when the window loses focus", async () => {
+    const { user, toggle, shown } = mount();
+    await user.click(toggle);
+    fireEvent.blur(toggle, { relatedTarget: null });
+    expect(shown()).toBe(true);
+  });
+
+  it("cancels the Escape that closes it, so a dialog that holds it stays open", async () => {
+    const { user, toggle } = mount();
+    await user.click(toggle);
+    expect(fireEvent.keyDown(screen.getByRole("button", { name: "Done" }), { key: "Escape" })).toBe(false);
   });
 });
