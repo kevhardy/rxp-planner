@@ -35,7 +35,8 @@
     "bench:routing": "node scripts/bench/routing.ts",
     "bench:playback": "node scripts/bench/playback.ts",
     "bench:compare": "node scripts/bench/compare.ts",
-    "bench:ab": "node scripts/bench/ab.ts"
+    "bench:ab": "node scripts/bench/ab.ts",
+    "bench:map": "node scripts/bench/map.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
@@ -59,6 +60,7 @@
     "oxlint": "1.90.0",
     "oxlint-plugin-rxpplanner": "workspace:*",
     "oxlint-tsgolint": "7.0.2005",
+    "playwright-core": "1.65.0",
     "postcss": "^8.5.32",
     "stylelint": "^17.16.0",
     "typescript": "^7.0.2",
