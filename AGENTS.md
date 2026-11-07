@@ -96,6 +96,9 @@ such as line numbers, counts, or versions.
   `pnpm test <file>` for the changed behavior.
 - CI runs `pnpm check` and `pnpm test:release` on every pull request. Run
   `pnpm check` locally only to reproduce a CI failure.
+- To measure a performance change, run the area's `pnpm bench:*` through
+  `pnpm bench:ab` against a worktree of the pull request's base. See
+  [Measure performance](CONTRIBUTING.md#measure-performance).
 
 ### Focused tests for each area
 
