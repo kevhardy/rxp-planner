@@ -88,21 +88,14 @@ export function InteriorImage(props: { map: LoadedWorldMap; placed: PlacedInteri
   const { width, height, masks } = edge;
   const px = width / (props.pxPerPercent * rect.width);
   const stripes = (kind: "two" | "more") => (
-    <>
-      <pattern id={`${id}${kind}-stripes`} patternUnits="userSpaceOnUse" width={6 * px} height={6 * px} patternTransform="rotate(45)">
-        <rect className={`interior-stack-${kind}`} width={2 * px} height={6 * px} />
-      </pattern>
-      {([kind, `${kind}Edge`] as const).map((mask) => (
-        <mask key={mask} id={`${id}${mask}`} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height}>
-          <image className="interior-mask" href={masks[mask]} width={width} height={height} preserveAspectRatio="none" />
-        </mask>
-      ))}
-    </>
+    <pattern id={`${id}${kind}-stripes`} patternUnits="userSpaceOnUse" width={6 * px} height={6 * px} patternTransform="rotate(45)">
+      <rect className={`interior-stack-${kind}`} width={2 * px} height={6 * px} />
+    </pattern>
   );
   const patch = (kind: "two" | "more") => (
     <g key={kind} className={`interior-stack-${kind}`}>
-      <rect width={width} height={height} fill={`url(#${id}${kind}-stripes)`} mask={`url(#${id}${kind})`} />
-      <rect width={width} height={height} mask={`url(#${id}${kind}Edge)`} />
+      <path className="interior-stack-pixels" d={masks[kind]} fill={`url(#${id}${kind}-stripes)`} />
+      <path className="interior-stack-pixels" d={masks[`${kind}Edge`]} />
     </g>
   );
   return (

@@ -249,10 +249,21 @@ describe("the inside map", () => {
         (path) => path.getAttribute("d"),
       );
     await waitFor(() => expect(edge()).toEqual(["M0,0L32,0L32,32L0,32Z", "M0,0L32,0L32,32L0,32Z"]));
-    const masks = [...document.querySelectorAll("mask image")].map((mask) => mask.getAttribute("href"));
+    const masks = [...document.querySelectorAll("svg.interior-outline g path")].map((path) => [
+      path.getAttribute("d"),
+      document.querySelector(`${path.getAttribute("fill")?.slice(4, -1)} rect`)?.getAttribute("class"),
+    ]);
     const period = (pxPerPercent: number) =>
       (Number(document.querySelector("pattern")!.getAttribute("width")) * pxPerPercent * rect.width) / 32;
-    expect([masks, period(pxPerPercentAt(5))]).toEqual([["two", "twoEdge", "more", "moreEdge"], 6]);
+    expect([masks, period(pxPerPercentAt(5))]).toEqual([
+      [
+        ["two", "interior-stack-two"],
+        ["twoEdge", undefined],
+        ["more", "interior-stack-more"],
+        ["moreEdge", undefined],
+      ],
+      6,
+    ]);
     rerender(<MapPart map={map} frame={viewAt(...HARBOR)} pxPerPercent={pxPerPercentAt(8)} />);
     expect(period(pxPerPercentAt(8))).toBeCloseTo(6);
   });

@@ -5,21 +5,15 @@ import { TERRAIN_ASPECT_ZOOM } from "./viewport.ts";
 
 export type StackMask = "two" | "more" | "twoEdge" | "moreEdge";
 
-export const eachMask = <A, B>(masks: Record<StackMask, A>, f: (mask: A) => B): Record<StackMask, B> => ({
-  two: f(masks.two),
-  more: f(masks.more),
-  twoEdge: f(masks.twoEdge),
-  moreEdge: f(masks.moreEdge),
-});
-
-export interface InteriorOutline<Image = string> {
+export interface InteriorOutline {
   width: number;
   height: number;
   path: string;
-  masks: Record<StackMask, Image>;
+  /** The SVG path of each mask's pixels, in height-map pixels. */
+  masks: Record<StackMask, string>;
 }
 
-export type OutlineReply = InteriorOutline<Blob> | { error: string };
+export type OutlineReply = InteriorOutline | { error: string };
 
 export interface OutlineRequest {
   ground: HeightMap;
@@ -79,24 +73,48 @@ function segmentDistanceSquared(p: PixelLoop[number], a: PixelLoop[number], b: P
   return (p[0] - a[0] - t * dx) ** 2 + (p[1] - a[1] - t * dy) ** 2;
 }
 
-export function stackMasks(stacks: Uint8Array, width: number): Record<StackMask, Uint8ClampedArray<ArrayBuffer>> {
+interface PixelRect {
+  mask: StackMask;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+// Rectangles of pixels instead of a mask image, because the browser decodes and uploads a full-size image again each time the
+// zoom crosses a mip level, which stalls the frame.
+export function stackMasks(stacks: Uint8Array, width: number): Record<StackMask, string> {
   const height = stacks.length / width;
-  const blank = () => new Uint8ClampedArray(stacks.length * 4);
-  const masks = { two: blank(), more: blank(), twoEdge: blank(), moreEdge: blank() };
-  for (let y = 0; y < height; y++)
-    for (let x = 0; x < width; x++) {
-      const i = y * width + x;
-      const n = stacks[i]!;
-      if (n === 0) continue;
-      const other = (dx: number, dy: number) => {
-        const [nx, ny] = [x + dx, y + dy];
-        return nx < 0 || ny < 0 || nx >= width || ny >= height || stacks[ny * width + nx] !== n;
-      };
-      const edge = other(1, 0) || other(-1, 0) || other(0, 1) || other(0, -1);
-      const mask = n === 2 ? (edge ? masks.twoEdge : masks.two) : edge ? masks.moreEdge : masks.more;
-      mask.fill(255, i * 4, i * 4 + 4);
+  const maskAt = (x: number, y: number): StackMask | undefined => {
+    const n = stacks[y * width + x]!;
+    if (n === 0) return undefined;
+    const other = (dx: number, dy: number) => {
+      const [nx, ny] = [x + dx, y + dy];
+      return nx < 0 || ny < 0 || nx >= width || ny >= height || stacks[ny * width + nx] !== n;
+    };
+    const edge = other(1, 0) || other(-1, 0) || other(0, 1) || other(0, -1);
+    return n === 2 ? (edge ? "twoEdge" : "two") : edge ? "moreEdge" : "more";
+  };
+  const paths: Record<StackMask, string> = { two: "", more: "", twoEdge: "", moreEdge: "" };
+  const draw = (r: PixelRect) => (paths[r.mask] += `M${r.x},${r.y}h${r.width}v${r.height}h-${r.width}z`);
+  let above = new Map<string, PixelRect>();
+  for (let y = 0; y < height; y++) {
+    const row = new Map<string, PixelRect>();
+    for (let x = 0, end = 1; x < width; x = end++) {
+      const mask = maskAt(x, y);
+      while (end < width && maskAt(end, y) === mask) end++;
+      if (!mask) continue;
+      const key = `${mask} ${x} ${end}`;
+      const rect = above.get(key);
+      above.delete(key);
+      if (rect) rect.height++;
+      row.set(key, rect ?? { mask, x, y, width: end - x, height: 1 });
     }
-  return masks;
+    above.forEach(draw);
+    above = row;
+  }
+  above.forEach(draw);
+  return paths;
 }
 
 function traceInWorker(request: OutlineRequest): Promise<InteriorOutline> {
@@ -105,7 +123,7 @@ function traceInWorker(request: OutlineRequest): Promise<InteriorOutline> {
     worker.onmessage = ({ data }: MessageEvent<OutlineReply>) => {
       worker.terminate();
       if ("error" in data) reject(new Error(data.error));
-      else resolve({ ...data, masks: eachMask(data.masks, (blob) => URL.createObjectURL(blob)) });
+      else resolve(data);
     };
     worker.onerror = (event) => {
       worker.terminate();
