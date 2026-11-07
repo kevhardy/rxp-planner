@@ -194,3 +194,77 @@ describe("PopoverMenu placement", () => {
     }
   });
 });
+
+describe("PopoverMenu closing", () => {
+  let heard = new AbortController();
+  afterEach(() => heard.abort());
+
+  function mount() {
+    const escapes: string[] = [];
+    heard = new AbortController();
+    document.body.addEventListener("keydown", (e) => e.key === "Escape" && escapes.push(e.key), { signal: heard.signal });
+    render(
+      <>
+        <PopoverMenu className="menu" label="Menu" description="A menu">
+          {(close) => (
+            <button type="button" onClick={close}>
+              Done
+            </button>
+          )}
+        </PopoverMenu>
+        <button type="button">Outside</button>
+        <p>Outside text</p>
+      </>,
+    );
+    const toggle = screen.getByRole("button", { name: "Menu" });
+    const shown = () => screen.queryByRole("region", { name: "Menu" }) !== null;
+    return { user: userEvent.setup(), toggle, shown, escapes };
+  }
+
+  it("closes on Escape or its close function and focuses its button, and keeps Escape from its parent only while open", async () => {
+    const { user, toggle, shown, escapes } = mount();
+    await user.click(toggle);
+    await user.tab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Done" }));
+    await user.keyboard("{Escape}");
+    expect([shown(), document.activeElement, escapes]).toEqual([false, toggle, []]);
+    await user.keyboard("{Escape}");
+    expect(escapes).toEqual(["Escape"]);
+
+    await user.click(toggle);
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    expect([shown(), document.activeElement]).toEqual([false, toggle]);
+
+    await user.click(toggle);
+    await user.click(toggle);
+    expect(shown()).toBe(false);
+  });
+
+  it("closes without focusing its button on a press outside or on focus moving outside", async () => {
+    const { user, toggle, shown } = mount();
+    const outside = screen.getByRole("button", { name: "Outside" });
+    await user.click(toggle);
+    await user.tab();
+    const done = document.activeElement;
+    fireEvent.pointerDown(screen.getByText("Outside text"));
+    expect([shown(), document.activeElement]).toEqual([false, done]);
+
+    await user.click(toggle);
+    await user.tab();
+    await user.tab();
+    expect([shown(), document.activeElement]).toEqual([false, outside]);
+  });
+
+  it("stays open when focus leaves for no element, as when the window loses focus", async () => {
+    const { user, toggle, shown } = mount();
+    await user.click(toggle);
+    fireEvent.blur(toggle, { relatedTarget: null });
+    expect(shown()).toBe(true);
+  });
+
+  it("cancels the Escape that closes it, so a dialog that holds it stays open", async () => {
+    const { user, toggle } = mount();
+    await user.click(toggle);
+    expect(fireEvent.keyDown(screen.getByRole("button", { name: "Done" }), { key: "Escape" })).toBe(false);
+  });
+});

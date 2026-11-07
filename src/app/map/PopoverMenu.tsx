@@ -1,6 +1,6 @@
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Described } from "../Described.tsx";
-import { useOutsidePress } from "../effects.ts";
+import { useDisclosure } from "../effects.ts";
 import { Icon, type IconName } from "../icons.tsx";
 import { Button, IconButton } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
@@ -13,20 +13,15 @@ export function PopoverMenu(props: {
   beside?: string;
   icon?: IconName | undefined;
   disabled?: boolean;
+  onOpen?: () => void;
   children: ReactNode | ((close: () => void) => ReactNode);
 }) {
-  const [open, setOpen] = useState(false);
+  const { open, toggle, close, dismiss, button, wrap } = useDisclosure({ onOpen: props.onOpen });
   const popoverId = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
   const popover = useRef<HTMLElement>(null);
   const [place, setPlace] = useState<Place>({});
   const align = props.align ?? "end";
   const { beside } = props;
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -35,7 +30,7 @@ export function PopoverMenu(props: {
       const next = fitPopover(button.current!, el, align, beside);
       setPlace((old) => (JSON.stringify(old) === JSON.stringify(next) ? old : next));
     };
-    const refit = () => (outOfView(button.current!.getBoundingClientRect()) ? setOpen(false) : fit());
+    const refit = () => (outOfView(button.current!.getBoundingClientRect()) ? dismiss() : fit());
     fit();
     const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(fit);
     observer?.observe(el);
@@ -46,26 +41,10 @@ export function PopoverMenu(props: {
       window.removeEventListener("resize", refit);
       window.removeEventListener("scroll", refit, true);
     };
-  }, [open, align, beside]);
-
-  useOutsidePress(open, wrap, () => setOpen(false));
+  }, [open, align, beside, button, dismiss]);
 
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the button and popover inside.
-    <span
-      ref={wrap}
-      className={props.className}
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        close();
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) setOpen(false);
-      }}
-    >
+    <span {...wrap} className={props.className}>
       {props.icon ? (
         <IconButton
           ref={button}
@@ -75,18 +54,11 @@ export function PopoverMenu(props: {
           popoverOpen={open}
           aria-controls={popoverId}
           disabled={props.disabled}
-          onClick={() => setOpen(!open)}
+          onClick={toggle}
         />
       ) : (
         <Described text={props.description} popoverOpen={open}>
-          <Button
-            ref={button}
-            variant="ghost"
-            popoverOpen={open}
-            aria-controls={popoverId}
-            disabled={props.disabled}
-            onClick={() => setOpen(!open)}
-          >
+          <Button ref={button} variant="ghost" popoverOpen={open} aria-controls={popoverId} disabled={props.disabled} onClick={toggle}>
             {props.label}
             <Icon name="chevronDown" />
           </Button>

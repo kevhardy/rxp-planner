@@ -1,8 +1,9 @@
-import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useId, useLayoutEffect, useState, type ReactNode } from "react";
 import { QUEST_LOG_SIZE, type GuideSimulation, type QuestProgress, type SimData, type SimQuest, type SimState } from "../../rules/index.ts";
 import type { GameRules } from "../../data/index.ts";
 import { xpToNextLevel } from "../../rules/xp.ts";
 import { useEditor } from "../context.ts";
+import { useDisclosure } from "../effects.ts";
 import { useLayout } from "../layout.ts";
 import { useSimData } from "./route.ts";
 import { usePreviewSettings } from "./settings.ts";
@@ -20,26 +21,12 @@ export function levelPercent(rules: GameRules, state: Pick<SimState, "level" | "
 export function StateButton() {
   const filter = useStepFilter();
   const sim = useSimData(usePreviewSettings());
-  const [open, setOpen] = useState(false);
+  const { open, toggle, close, button, wrap } = useDisclosure({ lightDismiss: false });
   const windowId = useId();
-  const button = useRef<HTMLButtonElement>(null);
   if (!filter?.simulation || !sim) return null;
 
-  const close = () => {
-    setOpen(false);
-    button.current?.focus();
-  };
-
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape from the button and window inside.
-    <span
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        close();
-      }}
-    >
+    <span {...wrap}>
       <IconButton
         ref={button}
         icon="user"
@@ -47,7 +34,7 @@ export function StateButton() {
         description="Simulated character after the selected step"
         popoverOpen={open}
         aria-controls={open ? windowId : undefined}
-        onClick={() => setOpen(!open)}
+        onClick={toggle}
       />
       {open && <StateWindow id={windowId} anchor={button.current!} simulation={filter.simulation} sim={sim} onClose={close} />}
     </span>

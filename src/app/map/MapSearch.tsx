@@ -2,7 +2,7 @@ import { useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useStat
 import type { GameData, Quest } from "../../data/index.ts";
 import { DatasetContext, useGameData } from "../context.ts";
 import { Described } from "../Described.tsx";
-import { useOutsidePress } from "../effects.ts";
+import { useDisclosure } from "../effects.ts";
 import { EntityLink } from "../EntityLink.tsx";
 import { Icon } from "../icons.tsx";
 import { Button, DisclosureIcon } from "../ui/Button.tsx";
@@ -38,7 +38,8 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
   const dataset = useContext(DatasetContext);
   const faction = useFaction();
   const worldMap = useWorldMapStore();
-  const [open, setOpen] = useState(false);
+  const field = useRef<HTMLInputElement>(null);
+  const { open, toggle, close, button, wrap } = useDisclosure({ focus: () => field.current });
   const [filters, setFilters] = useState(NO_FILTERS);
   const [chosen, setChosen] = useState<SearchResult | null>(null);
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
@@ -48,22 +49,8 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
     setChosen(null);
   }
   const panelId = useId();
-  const wrap = useRef<HTMLSpanElement>(null);
-  const button = useRef<HTMLButtonElement>(null);
-  const field = useRef<HTMLInputElement>(null);
   const panel = useRef<HTMLElement>(null);
   const back = useRef<HTMLButtonElement>(null);
-  const restore = useRef(false);
-
-  const close = (focusButton: boolean) => {
-    setOpen(false);
-    restore.current = focusButton;
-  };
-  useEffect(() => {
-    if (open) field.current?.focus();
-    else if (restore.current) button.current?.focus();
-    restore.current = false;
-  }, [open]);
   useEffect(() => {
     if (chosen) back.current?.focus();
   }, [chosen]);
@@ -86,8 +73,6 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
       window.removeEventListener("resize", fit);
     };
   }, [open]);
-
-  useOutsidePress(open, wrap, () => close(false));
 
   const levels = filters.minLevel !== "" || filters.maxLevel !== "";
   const index = search?.index ?? null;
@@ -117,22 +102,7 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
   };
 
   return (
-    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Catches Escape and focus leaving from the field and panel inside.
-    <span
-      ref={wrap}
-      className="map-search"
-      hidden={props.hidden}
-      onKeyDown={(e) => {
-        if (e.key !== "Escape" || !open) return;
-        e.preventDefault();
-        e.stopPropagation();
-        close(true);
-      }}
-      onBlur={(e) => {
-        const to = e.relatedTarget;
-        if (to && !e.currentTarget.contains(to)) close(false);
-      }}
-    >
+    <span {...wrap} className="map-search" hidden={props.hidden}>
       {open ? (
         <span className="search-field">
           <Icon name="search" />
@@ -151,7 +121,7 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
         </span>
       ) : (
         <Described text="Find quests, NPCs, items, dungeons, transports, and places">
-          <Button ref={button} variant="ghost" popoverOpen={false} aria-controls={panelId} onClick={() => setOpen(true)}>
+          <Button ref={button} variant="ghost" popoverOpen={false} aria-controls={panelId} onClick={toggle}>
             <Icon name="search" /> Search
           </Button>
         </Described>
@@ -172,7 +142,7 @@ export function MapSearch(props: { search: SearchActions | undefined; hidden: bo
                     feature={feature}
                     area={search.area}
                     onShow={(location) => {
-                      close(true);
+                      close();
                       worldMap.focus({ kind: "feature", feature, location });
                     }}
                     add={{ step: search.step, onAdd: search.onAdd }}

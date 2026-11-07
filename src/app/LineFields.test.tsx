@@ -44,3 +44,19 @@ describe("line errors", () => {
     expect(within(line()).queryByRole("alert")).toBeNull();
   });
 });
+
+describe("AddLineMenu", () => {
+  it("shows no error from an earlier Insert when it opens again", async () => {
+    const { user } = mountBuiltinWithCopy();
+    await user.click(screen.getByRole("tab", { name: "Lines" }));
+    const addLine = () => screen.getByRole("button", { name: "Add line" });
+    const menu = () => screen.getByRole("region", { name: "Add line" });
+    await user.click(addLine());
+    await user.click(within(menu()).getByRole("button", { name: "Insert" }));
+    expect(within(menu()).getByRole("alert").textContent).toBe(OPENED);
+
+    await user.keyboard("{Escape}");
+    await user.click(addLine());
+    expect(within(menu()).queryByRole("alert")).toBeNull();
+  });
+});

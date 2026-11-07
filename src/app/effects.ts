@@ -1,4 +1,16 @@
-import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useSyncExternalStore, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type FocusEvent,
+  type KeyboardEvent,
+  type RefObject,
+} from "react";
 import type { AssetMap, Retains, Status } from "./async.ts";
 
 type Listener<E> = (event: E) => void;
@@ -75,6 +87,59 @@ export function useOutsidePress(
     },
     { enabled: open },
   );
+}
+
+/**
+ * The open state of a popover that `button` toggles, with the props of the element that wraps both. `onOpen` runs
+ * on each toggle that opens it, and then the element that `focus` finds in the wrapper takes focus. Escape and
+ * `close` close it and focus `button`. With `lightDismiss`, a press or focus outside the wrapper closes it without
+ * focusing `button`.
+ */
+export function useDisclosure(
+  options: { focus?: (wrap: HTMLElement) => HTMLElement | null; lightDismiss?: boolean; onOpen?: (() => void) | undefined } = {},
+) {
+  const { focus, lightDismiss = true, onOpen } = options;
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLSpanElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  const focusAfterCommit = useRef<true | null>(null);
+  usePendingAction(focusAfterCommit, () => button.current?.focus());
+  const dismiss = useCallback(() => setOpen(false), []);
+  const close = () => {
+    setOpen(false);
+    // Focus moves now, so that a later handler or effect can move it on.
+    if (button.current) button.current.focus();
+    else focusAfterCommit.current = true;
+  };
+  useOutsidePress(
+    open,
+    wrap,
+    () => lightDismiss && dismiss(),
+    () => (focus && wrap.current ? focus(wrap.current) : null),
+  );
+  return {
+    open,
+    toggle: () => {
+      if (!open) onOpen?.();
+      setOpen(!open);
+    },
+    close,
+    dismiss,
+    button,
+    wrap: {
+      ref: wrap,
+      onKeyDown: (e: KeyboardEvent) => {
+        if (e.key !== "Escape" || !open) return;
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+      },
+      onBlur: (e: FocusEvent) => {
+        const to = e.relatedTarget;
+        if (lightDismiss && to && !e.currentTarget.contains(to)) dismiss();
+      },
+    },
+  };
 }
 
 /** Retains `key` of `owner` while mounted; `null` retains nothing. */
