@@ -51,7 +51,7 @@ export function benchMeta(area: BenchArea, dataset: string, options: Record<stri
   };
 }
 
-export function emit(record: BenchMeta | BenchSample | { event: string }) {
+export function emit(record: BenchMeta | BenchSample | ({ event: string } & Record<string, unknown>)) {
   process.stdout.write(`${JSON.stringify(record)}\n`);
 }
 

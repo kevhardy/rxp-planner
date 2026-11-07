@@ -39,6 +39,10 @@ async function readAll(base: string, paths: string[]) {
 const notInstalled = (dir: string, cause: unknown) =>
   new Error(`Could not load the dataset in ${dir}. Install it with pnpm data:install. ${errorText(cause)}`, { cause });
 
+const hashManifest = (bytes: Uint8Array) => `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+
+export const installedManifestHash = async (dir = datasetDir()) => hashManifest(await readFile(join(dir, "manifest.json")));
+
 export async function validateInstalled(dir = datasetDir()) {
   try {
     const manifestBytes = await readFile(join(dir, "manifest.json"));
@@ -49,7 +53,7 @@ export async function validateInstalled(dir = datasetDir()) {
       manifest.assets.map((a) => a.path),
     );
     const { quests, transports } = await validateDataset(manifest, files);
-    const manifestHash = `sha256:${createHash("sha256").update(manifestBytes).digest("hex")}`;
+    const manifestHash = hashManifest(manifestBytes);
     const location: DatasetLocation = { manifest: join(dir, "manifest.json"), base: dir, manifestHash };
     return { manifest, manifestBytes, manifestHash, files, location, quests, transports };
   } catch (cause) {

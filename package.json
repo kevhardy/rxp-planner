@@ -32,6 +32,8 @@
     "contract:build": "pnpm --filter @rxp-planner/data-contract build",
     "contract:check": "node scripts/data-contract/check.ts",
     "agent:mcp": "node scripts/agent/mcp.ts",
+    "bench:routing": "node scripts/bench/routing.ts",
+    "bench:playback": "node scripts/bench/playback.ts",
     "bench:compare": "node scripts/bench/compare.ts"
   },
   "dependencies": {
