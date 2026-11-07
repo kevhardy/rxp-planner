@@ -100,6 +100,22 @@ describe("compare", () => {
     ]);
   });
 
+  it("gives no change percent when the base median is 0", () => {
+    expect(compare(side([0, 0, 0, 0, 0]), side([1, 1, 1, 1, 1]))).toEqual([
+      {
+        scenario: "boat",
+        metric: "routeMs",
+        unit: "ms",
+        verdict: "slower",
+        base: { median: 0, min: 0, max: 0, count: 5 },
+        head: { median: 1, min: 1, max: 1, count: 5 },
+        changePercent: undefined,
+        outputChanged: false,
+        fewSamples: false,
+      },
+    ]);
+  });
+
   it("refuses to compare runs on different datasets", () => {
     expect(() => compare([meta("sha256:a"), ...samples([1])], [meta("sha256:b"), ...samples([1])])).toThrow(
       "Refusing to compare runs with different dataset: sha256:a, sha256:b",

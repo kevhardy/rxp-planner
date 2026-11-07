@@ -19,8 +19,8 @@ export type CompareRow = { scenario: string; metric: string; unit: BenchSample["
       verdict: Verdict;
       base: Spread;
       head: Spread;
-      /** The change from the base median to the head median, in percent of the base median. */
-      changePercent: number;
+      /** The change from the base median to the head median, in percent of the base median. `undefined` when the base median is 0. */
+      changePercent: number | undefined;
       /** The sides give different signatures, so the head computes another output. */
       outputChanged: boolean;
       fewSamples: boolean;
@@ -65,7 +65,7 @@ export function compare(base: BenchRecords, head: BenchRecords): CompareRow[] {
       verdict: h.min > b.max ? "slower" : h.max < b.min ? "faster" : "no measurable difference",
       base: b,
       head: h,
-      changePercent: ((h.median - b.median) / b.median) * 100,
+      changePercent: b.median ? ((h.median - b.median) / b.median) * 100 : undefined,
       outputChanged: signatures(base) !== signatures(head),
       fewSamples: b.count < MIN_SAMPLES || h.count < MIN_SAMPLES,
     };
@@ -96,7 +96,7 @@ export function formatTable(rows: readonly CompareRow[]): string {
       return [...name, row.verdict === "only in base" ? samples : "", row.verdict === "only in head" ? samples : "", "", row.verdict, ""];
     }
     const notes = [row.outputChanged && "output changed", row.fewSamples && `fewer than ${MIN_SAMPLES} samples`].filter(Boolean);
-    const change = `${row.changePercent > 0 ? "+" : ""}${row.changePercent.toFixed(1)}%`;
+    const change = row.changePercent === undefined ? "n/a" : `${row.changePercent > 0 ? "+" : ""}${row.changePercent.toFixed(1)}%`;
     return [...name, side(row.base), side(row.head), change, row.verdict, notes.join(", ")];
   });
   const table = [["scenario", "metric", "base median (min..max)", "head median (min..max)", "change", "verdict", "notes"], ...lines];
