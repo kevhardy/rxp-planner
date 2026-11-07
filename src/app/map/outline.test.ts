@@ -141,21 +141,22 @@ it("keeps the exact loop when a one-pixel diagonal would collapse to two corners
 });
 
 it("puts each stacked pixel in the mask of its count, and on the edge mask where a pixel beside it or the border has another count", () => {
-  const masks = stackMasks(Uint8Array.of(2, 2, 2, 0, 3, 2, 2, 2, 0, 0, 2, 2, 2, 0, 0), 5);
-  const held = (mask: Uint8ClampedArray) => Array.from({ length: 15 }, (_, i) => mask[i * 4 + 3]! / 255);
-  expect([held(masks.two), held(masks.twoEdge), held(masks.more), held(masks.moreEdge)]).toEqual([
-    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  expect(stackMasks(Uint8Array.of(2, 2, 2, 0, 3, 2, 2, 2, 0, 0, 2, 2, 2, 0, 0), 5)).toEqual({
+    two: "M1,1h1v1h-1z",
+    twoEdge: "M0,0h3v1h-3zM0,1h1v1h-1zM2,1h1v1h-1zM0,2h3v1h-3z",
+    more: "",
+    moreEdge: "M4,0h1v1h-1z",
+  });
+});
+
+it("draws a run of pixels that repeats in the rows below as one rectangle", () => {
+  expect(stackMasks(Uint8Array.of(0, 3, 3, 0, 3, 3, 0, 3, 3), 3).moreEdge).toBe("M1,0h2v3h-2z");
 });
 
 describe("the outline of an interior", () => {
   const f = interiorsFixture();
   const cave = f.interiors.interiors[0]!;
   const surfaces = fromSurfaces(cave, f.surfaces);
-  const blank = new Blob();
   const posted: unknown[] = [];
   beforeEach(() => {
     posted.length = 0;
@@ -167,7 +168,7 @@ describe("the outline of an interior", () => {
           posted.push(request);
           queueMicrotask(() =>
             this.onmessage?.({
-              data: { width: 4, height: 2, path: "", masks: { two: blank, more: blank, twoEdge: blank, moreEdge: blank } },
+              data: { width: 4, height: 2, path: "", masks: { two: "", more: "", twoEdge: "", moreEdge: "" } },
             }),
           );
         }
