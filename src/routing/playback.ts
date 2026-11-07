@@ -74,17 +74,11 @@ export interface WayView {
   estimate: EstimateReason | undefined;
 }
 
-/** Why a way's seconds are an estimate. A leg that the search does not route gives its own kind. */
-export type EstimateReason =
-  | "pending"
-  | "unavailable"
-  | "off-map"
-  | "failed"
-  | "door-line"
-  | "steep-line"
-  | "interior-path-missing"
-  | "flight-unknown"
-  | Exclude<JourneyLeg["kind"], "route" | "transport" | "straight">;
+export type EstimateReason = "pending" | "unavailable" | LineReason | StraightReason | "flight-unknown";
+
+type StraightReason = "off-map" | "failed" | "interior-path-missing" | Exclude<JourneyLeg["kind"], "route" | "transport" | "straight">;
+
+type LineReason = "door-line" | "steep-line";
 
 /** How many of the legs that the timeline asks for have a routed way. */
 export interface RoutingProgress {
@@ -244,8 +238,9 @@ export class PlaybackRouting {
     return (leg) => {
       const estimate = straightTravel(leg);
       const { key, way } = this.#ground(asks, last, leg);
-      if (way?.seconds !== undefined) return { seconds: way.seconds, source: "routing", way: key };
-      const reason = this.#router ? (way?.straight ?? "pending") : "unavailable";
+      const status = statusOf(way, this.#router !== null);
+      if (status.seconds !== undefined) return { seconds: status.seconds, source: "routing", way: key };
+      const reason = status.estimate;
       return { seconds: estimate.seconds, source: reason === "crossing" ? "crossing" : `${estimate.source} (${reason})`, way: key };
     };
   }
@@ -256,9 +251,9 @@ export class PlaybackRouting {
       if (!asks.has(ask.key)) asks.set(ask.key, ask);
       const way = this.#ways.get(ask.key);
       if (way?.journey && !way.journey.legs.some(flies)) return undefined;
-      if (way?.seconds !== undefined) return { seconds: way.seconds, source: "routing", way: ask.key };
-      const reason = this.#router ? (way?.straight ?? "pending") : "unavailable";
-      return { seconds: flightLeg(leg).seconds, source: `flight (${reason})`, way: ask.key };
+      const status = statusOf(way, this.#router !== null);
+      if (status.seconds !== undefined) return { seconds: status.seconds, source: "routing", way: ask.key };
+      return { seconds: flightLeg(leg).seconds, source: `flight (${status.estimate})`, way: ask.key };
     };
   }
 
@@ -408,7 +403,7 @@ interface Pin {
 
 function pinOf(way: Way, height: number): Pin | undefined {
   const h = Math.round(height);
-  if (way.straight === "no-path") return { from: h, to: h };
+  if (way.estimate === "no-path") return { from: h, to: h };
   const leg = way.journey?.legs[0];
   const first = leg?.kind === "transport" ? leg.parts[0] : undefined;
   const route = leg?.kind === "route" ? leg : first?.kind === "ground" && first.result.kind === "route" ? first.result : undefined;
@@ -463,13 +458,15 @@ export function ridesFor(ask: Pick<Ask, "kind" | "learned">, rides: Rides | unde
   return { ...rides, links: rides.links.filter((link) => link.mode === "flight" && knows(link, "from") && knows(link, "to")) };
 }
 
-interface Way {
-  plan?: RoutePlan;
-  journey?: Journey;
-  seconds?: number;
-  straight?: EstimateReason;
-  motion: Motion;
-}
+type Routed = { seconds: number; estimate?: LineReason };
+
+type Straight = { seconds?: undefined; estimate: StraightReason };
+
+type Way = { plan?: RoutePlan; journey?: Journey; motion: Motion } & (Routed | Straight);
+
+type WayStatus = Routed | Straight | { seconds?: undefined; estimate: "pending" | "unavailable" };
+
+const statusOf = (way: Way | undefined, routable: boolean): WayStatus => way ?? { estimate: routable ? "pending" : "unavailable" };
 
 interface Motion {
   runs: MotionRun[];
@@ -485,8 +482,8 @@ interface MotionRun {
   ride?: string;
 }
 
-function straightWay(ask: Ask, reason: EstimateReason): Way {
-  return { straight: reason, motion: straightMotion(ask.from, ask.to) };
+function straightWay(ask: Ask, reason: StraightReason): Way & Straight {
+  return { estimate: reason, motion: straightMotion(ask.from, ask.to) };
 }
 
 function straightMotion(from: WorldLocation, to: WorldLocation, start = 0, seconds = 1): Motion {
@@ -585,8 +582,8 @@ function lineWay(
     last.h.push(h1);
     last.t.push(seconds);
   }
-  const straight = start?.floor === "door" || end?.floor === "door" ? "door-line" : "steep-line";
-  return { plan, journey, seconds, straight, motion: { runs: motion.runs, seconds } };
+  const estimate = start?.floor === "door" || end?.floor === "door" ? "door-line" : "steep-line";
+  return { plan, journey, seconds, estimate, motion: { runs: motion.runs, seconds } };
 }
 
 function motionOf(leg: JourneyLeg, ask: Ask, frames: readonly NativeFrame[]): Motion | undefined {
@@ -770,24 +767,20 @@ function makePlayback(
     ends.push(at);
   }
 
-  const again = new Map<string, "routed" | "pending">();
+  const again = new Map<string, WayStatus>();
   for (const ask of asks.values()) {
-    if (ask.plain === undefined || again.get(ask.plain) === "routed") continue;
-    const way = ways.get(ask.key);
-    if (way?.seconds !== undefined) again.set(ask.plain, "routed");
-    else if (!way) again.set(ask.plain, "pending");
+    if (ask.plain === undefined || again.get(ask.plain)?.seconds !== undefined) continue;
+    const status = statusOf(ways.get(ask.key), routable);
+    if (status.seconds !== undefined || status.estimate === "pending") again.set(ask.plain, status);
   }
   const tally = (keys: Iterable<string>): RoutingProgress => {
     const progress = { asked: 0, routed: 0, pending: 0, straight: {} as Partial<Record<EstimateReason, number>> };
     for (const key of keys) {
       progress.asked++;
-      const way = ways.get(key);
-      const state = again.get(key) ?? (way?.seconds !== undefined ? "routed" : way?.straight || !routable ? undefined : "pending");
-      if (state) progress[state]++;
-      else {
-        const reason = way?.straight ?? "unavailable";
-        progress.straight[reason] = (progress.straight[reason] ?? 0) + 1;
-      }
+      const status = again.get(key) ?? statusOf(ways.get(key), routable);
+      if (status.seconds !== undefined) progress.routed++;
+      else if (status.estimate === "pending") progress.pending++;
+      else progress.straight[status.estimate] = (progress.straight[status.estimate] ?? 0) + 1;
     }
     return progress;
   };
@@ -843,10 +836,7 @@ function makePlayback(
           start: a.start,
           seconds: a.seconds,
           source: a.source,
-          estimate:
-            a.kind === "travel" && a.target.kind === "flight"
-              ? "flight-unknown"
-              : (way?.straight ?? (a.source === "routing" ? undefined : routable ? "pending" : "unavailable")),
+          estimate: a.kind === "travel" && a.target.kind === "flight" ? "flight-unknown" : statusOf(way, routable).estimate,
         };
         return a.seconds > 0 ? [view] : [];
       });
