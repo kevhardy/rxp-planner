@@ -223,11 +223,20 @@ warning in Playback.
 
 RXP shows a `#completewith` step alongside the steps after it until its
 window ends (`addon.UpdateStepCompletion` and `addon:LoadGuide` in
-`GuideWindow.lua`). The window lasts through the step that its label names.
-For `next`, it lasts through the next step that is not `#completewith` or
-`#sticky`. When the label names a `#completewith` step, the window also
-lasts through that step's window, because that step shows until its own
-window ends.
+`GuideWindow.lua`). The window lasts through the step that its label names,
+or for `next`, the next step. RXP drops a step whose `step <<` condition
+fails before it numbers the steps (`addon.ParseGuide` in `GuideLoader.lua`),
+so `next` skips that step.
+
+RXP makes each `#completewith` step that is not `#tip` sticky, and it ends
+a window that names a sticky step only when that step completes. The
+simulation does not model `#tip`. So when the window names a
+`#completewith` step, the window also lasts through that step's window. When
+the window names a lone `#sticky` step, RXP ends the window when that step's
+lines are done. The simulation completes those lines at the `#sticky` step,
+so the window ends there. RXP also gives a `#sticky` step a window through a
+later step whose `#requires` names it (`addon:LoadGuide`), but the simulation
+does not model `#requires`.
 
 In the window, the step's `.complete` lines without `kills=`, and its
 `.collect` lines, keep their objectives running. RXP tells the player to
@@ -627,3 +636,6 @@ objective, the finder must suggest that objective.
   because the window covers only the objective. RXP ends the line when the
   game finishes the objective, which can be earlier. With no such step, the
   objective stays covered while its quest is in the log.
+- A `#completewith` window that reaches a lone `#sticky` step ends at that
+  step, as in the simulation. RXP keeps the window until the `#sticky`
+  step's lines are done, which can be later.
