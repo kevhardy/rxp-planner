@@ -54,8 +54,16 @@ Lines to stdout. The header of each script lists its scenarios and options.
 ```sh
 timeout 1800s pnpm bench:routing --runs 5
 timeout 1800s pnpm bench:playback --runs 5
+timeout 3600s pnpm bench:map --runs 5
 pnpm bench:routing --case boat --runs 5 > boat.jsonl
 ```
+
+`pnpm bench:map` measures startup, zoom, pan, a map switch, dense markers,
+interiors, routes, and Playback in a production build. It needs a display and
+a GPU, because a software renderer gives numbers that do not match a player's
+machine. Install its browser once with
+`pnpm exec playwright-core install chromium`. Under WSL, the script sets
+`GALLIUM_DRIVER=d3d12` so that the browser can use the GPU.
 
 To show that a change makes code faster or slower, compare the change with
 its base. Measure both on the same machine at the same time.
