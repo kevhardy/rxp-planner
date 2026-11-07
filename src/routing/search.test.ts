@@ -9,6 +9,7 @@ import type { MovementMode } from "./plan.ts";
 import { fallLines } from "./result.ts";
 import {
   floodLeg,
+  keepStopKeys,
   keptReach,
   routeLeg,
   snapNode,
@@ -17,6 +18,7 @@ import {
   type ExpandedCells,
   type LegRequest,
   type LegResult,
+  type StopKeys,
   type TerrainRoute,
 } from "./search.ts";
 import { CELL_SPACING, createTerrain, nativeToCell, nodeRecord, type CellPoint, type Terrain, type TerrainRegion } from "./terrain.ts";
@@ -673,6 +675,28 @@ describe("unusable endpoint proofs", () => {
     const proof = await keptReach(terrain, target, "to", down, settings);
     expect((await proof?.(outside)) ?? true).toBe(true);
     expect(await routeLeg(terrain, outside, target, down, settings)).toMatchObject({ kind: "route" });
+  });
+});
+describe("stop keys", () => {
+  const leg = { downhill: false };
+  const request = { maxSlope: 35, swimming: { enabled: false } };
+  const stop = native([0, 0]);
+  const seeded: StopKeys = { from: [1], to: [2] };
+  const failedTile: TerrainRegion = { ...flat(1, 1), failed: [{ tile: [0, 0], reason: "offline" }] };
+
+  it.each([
+    ["rejects", () => Promise.reject(new Error("offline"))],
+    ["has a failed tile", async () => failedTile],
+  ])("reads the region again after a read that %s, but keeps keys seeded during that read", async (_, failing) => {
+    let reads = 0;
+    const terrain: Terrain = { ...whole(flat(1, 1)), region: () => (reads++, failing()) };
+    const find = () => stopKeys(terrain, stop, undefined, leg, request).catch(() => undefined);
+    await find();
+    const pending = find();
+    keepStopKeys(terrain, stop, undefined, leg, request, seeded);
+    await pending;
+    expect(await find()).toBe(seeded);
+    expect(reads).toBe(2);
   });
 });
 const lowest = (route: TerrainRoute | undefined) => Math.max(...(route?.points.map((p) => p[1]) ?? []));

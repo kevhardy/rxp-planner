@@ -309,7 +309,7 @@ export interface SimStart {
    * `objectives`. The status follows from the progress.
    */
   log: ReadonlyMap<number, readonly SeededProgress[]>;
-  /** Quests turned in. */
+  /** Quests turned in. A quest in `log` too counts as turned in. */
   done: ReadonlySet<number>;
 }
 
@@ -585,15 +585,18 @@ function simulate(
   const carried = carry(profile.faction, settings);
   const log = new Map<number, QuestProgress>();
   for (const [questId, seeded] of seed?.log ?? []) log.set(questId, withStatus(seeded.map(({ count, complete }) => ({ count, complete }))));
-  progressMade(carried, new Map(), log);
-  const first: SimState = {
-    ...atTotal(rules, totalXp(rules, profile.level, xp)),
-    position: null,
-    log,
-    done: seed ? new Set(seed.done) : priorTurnIns(guides, start, profile, data, settings),
-    bind: null,
-    flightPaths: flightPathsAtCreation(rules, profile),
-  };
+  const first = advance(
+    {
+      ...atTotal(rules, totalXp(rules, profile.level, xp)),
+      position: null,
+      log,
+      done: new Set(),
+      bind: null,
+      flightPaths: flightPathsAtCreation(rules, profile),
+    },
+    { kind: "done", questIds: [...(seed ? seed.done : priorTurnIns(guides, start, profile, data, settings))] },
+  );
+  progressMade(carried, new Map(), first.log);
   let state = first;
   const route: GuideSimulation[] = [];
   const warnings: SimWarning[] = [];
@@ -696,7 +699,6 @@ interface Carried {
   party: PartySize;
   at: SimPosition | null;
   faction: Faction;
-  deferred: Set<number>;
   windowEnds: ReadonlyMap<string, number>;
   background: BackgroundKills[];
   readonly settings: PlaybackSettings;
@@ -710,7 +712,6 @@ const carry = (faction: Faction, settings: PlaybackSettings): Carried => ({
   party: 1,
   at: null,
   faction,
-  deferred: new Set(),
   windowEnds: new Map(),
   background: [],
   settings,
@@ -719,8 +720,7 @@ const carry = (faction: Faction, settings: PlaybackSettings): Carried => ({
 /**
  * An objective that a `#completewith` step's `.collect` or `.complete`
  * line works on while RXP shows the step: through its label's step, or for
- * `next`, through the next step that is not `#completewith` or `#sticky`
- * (`addon.UpdateStepCompletion` and `addon:LoadGuide` in GuideWindow.lua).
+ * `next`, through the end that `nextWindowEnd` gives at the steps after it.
  */
 interface BackgroundKills {
   guide: number;
@@ -738,6 +738,7 @@ export const withParty = (settings: KillXpSettings, party: PartySize): KillXpSet
 interface ObjectiveKills extends KillProgress {
   closed: boolean;
   waiting?: KillsLater[];
+  killedOnTheWay?: true;
 }
 
 function getOrAdd<K, V>(map: Map<K, V>, key: K, create: () => NoInfer<V>): V {
@@ -776,6 +777,7 @@ function progressMade(route: Carried, before: SimState["log"], after: SimState["
         ...(old?.first && { first: old.first }),
         ...(old?.total && { total: old.total }),
         ...(old?.waiting && { waiting: old.waiting }),
+        ...(old?.killedOnTheWay && { killedOnTheWay: old.killedOnTheWay }),
         counted: row.count,
         closed: row.complete,
       });
@@ -785,7 +787,6 @@ function progressMade(route: Carried, before: SimState["log"], after: SimState["
 
 function leaveLog(route: Carried, questId: number): void {
   route.owed.delete(questId);
-  route.deferred.delete(questId);
   route.background = route.background.filter((w) => w.ref.questId !== questId);
 }
 
@@ -801,8 +802,11 @@ function runHeader(
   const checkpoints: Checkpoint[] = [];
   for (const d of directives) {
     if (d.at.step !== undefined || !headerLines[d.at.line!]) continue;
-    if (d.key === "done") state = advance(state, { kind: "done", questIds: d.questIds });
-    else if (d.key === "level") {
+    if (d.key === "done") {
+      const after = advance(state, { kind: "done", questIds: d.questIds });
+      progressMade(route, state.log, after.log);
+      state = after;
+    } else if (d.key === "level") {
       const check = checkpoint(
         state,
         d.at,
@@ -951,12 +955,14 @@ function collectSkipped(collect: NonNullable<ReturnType<typeof collectLine>>, st
 }
 
 function expireBackground(route: Carried, guide: number, step: number, preview: StepPreview): void {
-  const asYouGo = preview.tags.has("completewith") || preview.tags.has("sticky");
-  route.background = route.background.filter((w) => {
-    const owed = route.owed.get(w.ref.questId)?.get(w.ref.row);
-    const open = w.guide === guide && (w.until === "next" ? asYouGo : step < w.until);
-    return open && !!owed && !owed.closed && owed.counted < w.to;
-  });
+  const next = nextWindowEnd(step, preview, route.windowEnds);
+  route.background = route.background
+    .map((w) => (w.until === "next" ? { ...w, until: next } : w))
+    .filter((w) => {
+      const owed = route.owed.get(w.ref.questId)?.get(w.ref.row);
+      const open = w.guide === guide && (w.until === "next" || windowOpen(w.until, step + 1));
+      return open && !!owed && !owed.closed && owed.counted < w.to;
+    });
 }
 
 type GrindOverride = Extract<SimDirective, { key: "grind" }> & { ids: readonly number[] };
@@ -1269,7 +1275,7 @@ function runComplete(
     const later: KillsLater = { kind: "killsLater", at, objective: ref, reason: deferred, countedAt: null };
     notes.push(later);
     (owed.waiting ??= []).push(later);
-    if (deferred === "disablecheckbox") route.deferred.add(ref.questId);
+    if (deferred === "disablecheckbox") owed.killedOnTheWay = true;
   }
   if (deferred && override === undefined && fresh?.mobFrom === "override") owed.first ??= fresh;
   const background = deferred === "completewith" && override === undefined;
@@ -1366,12 +1372,12 @@ function runTurnIn(
   // turn-in (`addon.functions.turnin` in functions.lua).
   if (run.state.done.has(questId)) return;
   if (run.state.log.has(questId) && quest) {
-    const owedKills: KillAssumption[] = [];
-    const credited: ObjectiveRef[] = [];
-    const killEffects: Effect[] = [];
-    const progress = { questId, counted: 0, gained: 0, of: 0 };
+    const walked = turnInKills(questId);
+    const unwalked = turnInKills(questId);
     const bought = route.bought.get(questId);
-    const refs: ObjectiveRef[] = quest.objectives.map((_, row) => ({ questId, row }));
+    // The walked act comes first, so its kills count first too, and `route.mob` ends on the last kill of the acts.
+    const walkedFirst = (ref: ObjectiveRef) => (route.owed.get(questId)?.get(ref.row)?.killedOnTheWay ? 0 : 1);
+    const refs = quest.objectives.map((_, row): ObjectiveRef => ({ questId, row })).sort((a, b) => walkedFirst(a) - walkedFirst(b));
     for (const ref of refs) {
       const owed = owedFor(route, ref);
       const objective = quest.objectives[ref.row]!;
@@ -1382,30 +1388,19 @@ function runTurnIn(
       found?.notes.forEach((n) => addNote(run, n));
       const total = owed.total ?? found?.counts[0];
       const counted = owed.counted;
-      const killed = total && killOwed(run, owed, { to: total.count - paid }, at, total.from, killEffects, found?.kills[0]);
+      const act = owed.killedOnTheWay ? walked : unwalked;
+      const killed = total && killOwed(run, owed, { to: total.count - paid }, at, total.from, act.effects, found?.kills[0]);
       if (!killed) continue;
-      owedKills.push(killed);
-      credited.push(ref);
-      progress.counted += partyCount(killed, counted, route.party);
-      progress.gained += partyCount(killed, owed.counted - counted, route.party);
-      progress.of += partyCount(killed, total.count, route.party);
+      act.kills.push(killed);
+      act.credited.push(ref);
+      act.progress.counted += partyCount(killed, counted, route.party);
+      act.progress.gained += partyCount(killed, owed.counted - counted, route.party);
+      act.progress.of += partyCount(killed, total.count, route.party);
     }
-    for (const ref of credited)
-      applyEffect(run, killEffects, {
-        kind: "objective",
-        ref,
-        progress: completeObjective(quest, run.state.log.get(questId)!, ref, undefined, owedFor(route, ref)),
-      });
-    const count = owedKills.reduce((n, a) => n + a.count, 0);
-    if (count > 0) {
-      notes.push({ kind: "killsAtTurnIn", at, questId, kills: count });
-      // A quest whose kills an earlier line left to later lines was
-      // walked among its mobs there. Otherwise no step shows when the
-      // player made the kills. The game takes only a complete quest, and RXP keeps a turn-in step until the
-      // turn-in (`addon.functions.turnin`). So the kills still give XP and complete their objectives.
-      const unproven = !route.deferred.has(questId) && { unproven: true as const };
-      addAct(run, { kind: "kill", kills: owedKills, progress, ...unproven }, at, killEffects);
-    }
+    // No step shows when the player made the unwalked kills. The game takes only a complete quest, and RXP keeps a
+    // turn-in step until the turn-in (`addon.functions.turnin`). So the kills still give XP and complete their objectives.
+    const count = addTurnInKills(run, quest, walked, at) + addTurnInKills(run, quest, unwalked, at, { unproven: true });
+    if (count > 0) notes.push({ kind: "killsAtTurnIn", at, questId, kills: count });
   }
   leaveLog(route, questId);
   route.collected.delete(questId);
@@ -1419,6 +1414,32 @@ function runTurnIn(
   }
   applyEffect(run, effects, { kind: "turnin", questId });
   run.npc = { places: quest?.enders ?? [], act: firstAct, target: { kind: "quest", questId, role: "turnin" } };
+}
+
+interface TurnInKills {
+  kills: KillAssumption[];
+  credited: ObjectiveRef[];
+  effects: Effect[];
+  progress: { questId: number; counted: number; gained: number; of: number };
+}
+
+const turnInKills = (questId: number): TurnInKills => ({
+  kills: [],
+  credited: [],
+  effects: [],
+  progress: { questId, counted: 0, gained: 0, of: 0 },
+});
+
+function addTurnInKills(run: StepRun, quest: SimQuest, act: TurnInKills, at: Location, flag?: { unproven: true }): number {
+  for (const ref of act.credited)
+    applyEffect(run, act.effects, {
+      kind: "objective",
+      ref,
+      progress: completeObjective(quest, run.state.log.get(ref.questId)!, ref, undefined, owedFor(run.route, ref)),
+    });
+  if (!act.kills.length) return 0;
+  addAct(run, { kind: "kill", kills: act.kills, progress: act.progress, ...flag }, at, act.effects);
+  return act.kills.reduce((n, a) => n + a.count, 0);
 }
 
 function grindOverrides(active: readonly SimDirective[], s: number, data: SimData, warnings: SimWarning[]): GrindOverride[] {
@@ -1520,7 +1541,7 @@ function leaveRunning(run: StepRun, ref: ObjectiveRef, to: number, found: KillAs
 // gives one kill, in the order the walk passes it, and the walk never waits for a respawn.
 function passBy(run: StepRun, legs: readonly WalkLeg[]) {
   const { data, route, guide, s, settings, kills, collecting, credited, passedSpawns, passProgress } = run;
-  const works = route.background.filter((w) => w.guide === guide && (w.until === "next" || s <= w.until));
+  const works = route.background.filter((w) => w.guide === guide && (w.until === "next" || windowOpen(w.until, s)));
   const refs = new Map([...collecting, ...works.map((w) => w.ref)].map((ref) => [refKey(ref), ref]));
   creditSharedDrops(run, [...refs.values()]);
   const mobsOf = (w: BackgroundKills) => (owedFor(route, w.ref).first ?? w.fresh)!;
@@ -1926,18 +1947,48 @@ function straightLegs(acts: readonly Act[], from: WorldLocation | null, mode: Tr
   return legs;
 }
 
-// RXP keeps every `#completewith` step showing (`addon:LoadGuide` in
-// GuideWindow.lua), and a window that names a showing step ends only when
-// that step completes (`addon.UpdateStepCompletion`). So a window that names
-// a `#completewith` step lasts through that step's own window.
-function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
+/**
+ * The last step of each label's `#completewith` window, by label. RXP makes
+ * every `#completewith` step that is not `#tip` sticky (`addon:LoadGuide` in
+ * GuideWindow.lua), and a window that names a sticky step ends only when that
+ * step completes (`addon.UpdateStepCompletion`). So a window that names a
+ * `#completewith` step lasts through that step's own window. `next` skips a
+ * step that its `step <<` condition drops, because RXP drops the step before
+ * it numbers the steps (`addon.ParseGuide` in GuideLoader.lua).
+ */
+export function windowEnds(steps: readonly Step[], profile: Profile): Map<string, number> {
   const labels = stepLabels(steps, profile);
+  const after = (i: number) => {
+    const next = steps.findIndex((step, j) => j > i && holds(step.line.condition, profile));
+    return next < 0 ? undefined : next;
+  };
   const end = (i: number, seen: Set<number>): number => {
     const tag = steps[i]!.body.find((l) => l.kind === "tag" && l.name === "completewith" && holds(l.condition, profile));
-    const next = tag?.kind !== "tag" || seen.has(i) ? undefined : tag.value === "next" ? i + 1 : labels.get(tag.value);
-    return next === undefined || next >= steps.length ? i : end(next, seen.add(i));
+    const next = tag?.kind !== "tag" || seen.has(i) ? undefined : tag.value === "next" ? after(i) : labels.get(tag.value);
+    return next === undefined ? i : end(next, seen.add(i));
   };
   return new Map([...labels].map(([label, i]) => [label, end(i, new Set())]));
+}
+
+/**
+ * Whether a window that `windowEnds` ends at step `end` is open at step `s`.
+ * RXP completes the window's step once the current step is past `end`
+ * (`addon.UpdateStepCompletion` in GuideWindow.lua).
+ */
+export const windowOpen = (end: number, s: number): boolean => s <= end;
+
+/**
+ * The end of a `#completewith next` window that reaches shown step `s`: still
+ * `next` at a `#completewith next` step, the label's `windowEnds` end at a
+ * `#completewith <label>` step, else `s`. RXP makes every `#completewith`
+ * step that is not `#tip` sticky, and ends a window that names a sticky step
+ * when that step completes (`addon:LoadGuide` and `addon.UpdateStepCompletion`
+ * in GuideWindow.lua). A lone `#sticky` step ends the window, because the
+ * simulation completes its lines at the step.
+ */
+export function nextWindowEnd(s: number, preview: StepPreview, ends: ReadonlyMap<string, number>): number | "next" {
+  const until = preview.tags.get("completewith")?.value;
+  return until === "next" ? "next" : until === undefined ? s : (ends.get(until) ?? s);
 }
 
 function passing(legs: readonly WalkLeg[], p: WorldLocation): { off: number; along: number; leg: number } | undefined {

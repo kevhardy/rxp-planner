@@ -18,7 +18,7 @@ import { useGuideIcons } from "./context.ts";
 import { Described } from "./Described.tsx";
 import { NO_DRAFT } from "./drafts.ts";
 import { useEventListener, usePendingAction } from "./effects.ts";
-import { useDraft, type FieldText } from "./fields.tsx";
+import { commitOnLeave, useDraftCommit, type FieldText } from "./fields.tsx";
 import { IconPicker, IconTool } from "./IconPicker.tsx";
 import { readRxpSelection, renderRxpText, restoreRxpSelection, sourceRange } from "./rxpTextDom.ts";
 import { Button } from "./ui/Button.tsx";
@@ -44,7 +44,7 @@ export function RxpTextField(props: {
   tools?: (field: FieldText) => ReactNode;
 }) {
   const { label, value, onCommit } = props;
-  const [{ draft, error }, setState] = useDraft(props.draftName);
+  const [{ draft, error }, setState, commit] = useDraftCommit(props.draftName, value, onCommit);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const source = draft ?? value;
@@ -150,13 +150,6 @@ export function RxpTextField(props: {
     },
   );
 
-  const commit = () => {
-    if (draft === null) return;
-    setState(NO_DRAFT);
-    const message = draft === value ? null : onCommit(draft);
-    if (message) setState({ draft, error: message });
-  };
-
   const paint = (color: RxpColor | null) => {
     const range = selection();
     if (range[0] !== range[1]) edit({ kind: "color", range, color });
@@ -192,16 +185,7 @@ export function RxpTextField(props: {
   );
 
   return (
-    <div
-      className="rxp-field"
-      onBlur={(e) => {
-        // Ignore blurs inside a tool's dialog, which React passes up from its portal.
-        if (!e.currentTarget.contains(e.target)) return;
-        const next = e.relatedTarget;
-        const dialog = next?.closest("dialog");
-        if (!(next && e.currentTarget.contains(next)) && !(dialog && !dialog.contains(root.current))) commit();
-      }}
-    >
+    <div className="rxp-field" onBlur={commitOnLeave(root, commit)}>
       <span id={`${id}-label`} className={props.hideLabel ? "sr-only" : "ui-field-label"}>
         {label}
       </span>

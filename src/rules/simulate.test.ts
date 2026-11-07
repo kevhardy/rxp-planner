@@ -267,6 +267,55 @@ describe("simulateRoute", () => {
     });
   });
 
+  describe("at the step after a #completewith window's run of steps", () => {
+    const data = {
+      ...simData(
+        {
+          456: { objectives: [{ index: 1, kind: "monster", ids: [2031], count: 2, name: "Young Nightsaber" }] },
+          458: { baseXp: 100 },
+          3519: {},
+        },
+        { "Teldrassil,1,1": shadowglen(0, 0), "Teldrassil,2,2": shadowglen(200, 0) },
+        { 2031: { levels: { min: 1, max: 1 }, elite: false, zoneIds: [] } },
+      ),
+      spawns: () => [{ ...shadowglen(100, 20), id: "nightsaber" }],
+    };
+    const passByKills = (steps: string) =>
+      simulate(`step\n.goto Teldrassil,1,1\n.accept 456\n.accept 458\n${steps}\nstep\n#label End\n.goto Teldrassil,2,2\n.turnin 458`, data)
+        .guides[0]!.steps.at(-1)!
+        .kills.map((k) => k.count);
+    const hunt = "step\n#completewith next\n.complete 456,1\n.mob Young Nightsaber::2031";
+    const huntUntil = (label: string) => `step\n#completewith ${label}\n.complete 456,1\n.mob Young Nightsaber::2031`;
+
+    // `addon.UpdateStepCompletion` in GuideWindow.lua ends a window that names a sticky step when that step completes,
+    // and the simulation completes a lone #sticky step's lines at the step.
+    it.each([
+      ["#completewith next", `${hunt}\nstep\n#sticky\n.accept 3519`],
+      [
+        "#completewith next through a label",
+        `${huntUntil("Lead")}\nstep\n#label Lead\n#completewith next\n+Look\nstep\n#sticky\n.accept 3519`,
+      ],
+    ])("kills nothing once a %s window reaches a lone #sticky step", (_, steps) => {
+      expect(passByKills(steps)).toEqual([]);
+    });
+
+    it.each([
+      ["a #completewith next step", `${hunt}\nstep\n#completewith next\n.accept 3519`],
+      [
+        "a #completewith <label> step, past a step that is not #completewith,",
+        `${hunt}\nstep\n#completewith End\n+Look\nstep\n.accept 3519`,
+      ],
+      ["a #completewith <label> step, past a #sticky step,", `${hunt}\nstep\n#completewith End\n+Look\nstep\n#sticky\n.accept 3519`],
+    ])("kills on the walk through a #completewith next window that names %s", (_, steps) => {
+      expect(passByKills(steps)).toEqual([1]);
+    });
+
+    // `addon.ParseGuide` in GuideLoader.lua drops a step whose `step <<` condition fails, so `next` names the step after.
+    it("runs a labeled #completewith next window past a step that the character's step condition drops", () => {
+      expect(passByKills(`${huntUntil("Lead")}\nstep\n#label Lead\n#completewith next\n+Look\nstep << Orc\n.accept 3519`)).toEqual([1]);
+    });
+  });
+
   it("kills one pass-by mob at each of two spawns at one spot", () => {
     const rows = [
       { ...shadowglen(100, 20), id: "npc:2031:286" },
@@ -443,6 +492,23 @@ describe("simulateRoute", () => {
     expect(s.afterHeader).toMatchObject({ level: 2, xp: 0 });
     expect(s.checkpoints.map((c) => c.gap)).toEqual([400]);
     expect(s.steps[0]!.levelUps).toEqual([]);
+  });
+
+  it("takes a quest that a header's done= turns in out of the log, with the kills that it still owed", () => {
+    const docs = [
+      guide("P", "step\n.goto Elwynn Forest,1,1\n.accept 412\n.complete 412,1,1", "#next S\n"),
+      guide("S", "step\n.goto Elwynn Forest,1,1,10\n.collect 3083,3,412", "-- @sim done=412\n"),
+    ];
+    const data = simData(
+      { 412: { objectives: [{ index: 1, kind: "item", ids: [3083], count: 3, name: "Restabilization Cog" }] } },
+      { "Elwynn Forest,1,1": loc(1, 1), "Elwynn Forest,1,1,10": loc(1, 1) },
+      { 1211: { levels: { min: 8, max: 10 }, elite: false, zoneIds: [1] } },
+      { 3083: { droppers: [{ id: 1211 }], sold: false, objectsOnly: false } },
+    );
+    const s = simulateRoute(docs, 0, createProfile({ race: "Human", class: "WARRIOR" }), data).guides[1]!;
+    expect([[...s.afterHeader.log.keys()], [...s.afterHeader.done]]).toEqual([[], [412]]);
+    // RXP completes a .collect line for a quest turned in (`addon.functions.collect` in functions.lua).
+    expect(s.steps[0]!.acts).toEqual([]);
   });
 
   it("runs predecessors with hardcore mode off, even after a #hardcore guide", () => {
@@ -1534,9 +1600,28 @@ describe("kills", () => {
     expect(unproven("step\n.accept 7\nstep\n.turnin 7")).toEqual([true]);
     expect(unproven(`${deferred}step\n.turnin 7`)).toEqual([false]);
     expect(unproven(`${deferred}.turnin 7`)).toEqual([false]);
+    expect(unproven(`${deferred}step\n-- @sim state={"log": {"7": {"1": 3}}}\n.turnin 7`)).toEqual([false]);
     expect(unproven(`${deferred}step\n.abandon 7\nstep\n.accept 7\nstep\n.turnin 7`)).toEqual([true]);
     expect(unproven(`${deferred}.abandon 7\nstep\n.accept 7\nstep\n.turnin 7`)).toEqual([true]);
     expect(unproven(`${deferred}.abandon 7\n.accept 7\nstep\n.turnin 7`)).toEqual([true]);
+  });
+
+  it("warns about a turn-in's kills for each objective that no .disablecheckbox line deferred", () => {
+    const two = simData({ 456: { objectives: [monsters(7, [6], "Kobold Vermin"), { ...monsters(4, [707]), index: 2 }] } }, {}, npcs);
+    const acts = simulate("step\n.accept 456\n.complete 456,1\n.disablecheckbox\nstep\n.turnin 456", two).guides[0]!.steps[1]!.acts;
+    expect(
+      acts.flatMap((a) => (a.kind === "kill" ? [[a.kills.map((k) => [k.objective!.row, k.count]), a.unproven ?? false]] : [])),
+    ).toEqual([
+      [[[0, 7]], false],
+      [[[1, 4]], true],
+    ]);
+  });
+
+  it("grinds the mob of the last kill in a turn-in's acts", () => {
+    const two = simData({ 456: { objectives: [monsters(7, [6], "Kobold Vermin"), { ...monsters(4, [707]), index: 2 }] } }, {}, npcs);
+    const steps = simulate("step\n.accept 456\n.complete 456,2\n.disablecheckbox\nstep\n.turnin 456\nstep\n.xp 3", two).guides[0]!.steps;
+    const mobs = steps[1]!.acts.flatMap((a) => (a.kind === "kill" ? a.kills.flatMap((k) => k.mobs.map((m) => m.npcId)) : []));
+    expect([mobs, steps[2]!.checkpoints[0]!.kills?.mobs.map((m) => m.npcId)]).toEqual([[707, 6], [6]]);
   });
 
   it("leaves a #completewith or .disablecheckbox line's kills to the next line that counts them", () => {
@@ -1680,6 +1765,15 @@ describe("seeded start", () => {
     expect(step.state.log.size).toBe(0);
     expect(step.state).toMatchObject({ level: 1, xp: 0 });
   });
+
+  it("counts a quest that the seed puts in the log and turns in as turned in", () => {
+    const sim = simulateRoute([guide("A", "step\n.turnin 456")], 0, profile, data, 0, {
+      log: new Map([[456, [{ count: 4, complete: false }]]]),
+      done: new Set([456]),
+    });
+    expect([[...sim.start.log.keys()], [...sim.start.done]]).toEqual([[], [456]]);
+    expect(sim.guides[0]!.steps[0]!.kills).toEqual([]);
+  });
 });
 
 describe("state= on arrival", () => {
@@ -1728,6 +1822,16 @@ describe("state= on arrival", () => {
     expect(complete.before.log.get(456)).toEqual({ status: "complete", objectives: [{ count: 3, complete: true }] });
     expect(complete.kills).toEqual([]);
     expect([...steps(`{"log": {"456": false}}`)[1]!.before.log.keys()]).toEqual([]);
+  });
+
+  it("keeps a quest in the log or turned in, whichever field applies last", () => {
+    const before = (text: string, json: string) => {
+      const { log, done } = simulate(`${text}step\n${state(json)}\n.turnin 456`, data).guides[0]!.steps.at(-1)!.before;
+      return [[...log.keys()], [...done]];
+    };
+    expect(before("step\n.accept 456\n", `{"done": {"456": true}}`)).toEqual([[], [456]]);
+    expect(before("step\n.accept 456\n.turnin 456\n", `{"log": {"456": {"1": 2}}}`)).toEqual([[456], []]);
+    expect(before("", `{"done": {"456": true}, "log": {"456": "complete"}}`)).toEqual([[456], []]);
   });
 
   describe("under a running #completewith window", () => {

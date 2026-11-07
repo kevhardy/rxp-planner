@@ -148,6 +148,13 @@ const AreaPaths = memo(function AreaPaths({ areas }: { areas: Area[] }) {
 
 const clampView = (p: ViewPoint): ViewPoint => ({ x: clamp(p.x, 0, 100), y: clamp(p.y, 0, 100) });
 
+type PinGesture =
+  | { kind: "idle" }
+  | { kind: "pressed"; key: string; x: number; y: number }
+  | { kind: "dragging" | "keyMoving"; key: string; at: ViewPoint };
+
+const IDLE: PinGesture = { kind: "idle" };
+
 const WHOLE_STAGE: ViewRequest = {};
 
 /**
@@ -188,8 +195,9 @@ export function MapCanvas(props: {
     menu?: MapMenu;
     button?: HTMLElement;
   } | null>(null);
-  const drag = useRef<{ key: string; x: number; y: number; moved: boolean } | null>(null);
-  const dragged = useRef(false);
+  // A ref, because a pointer up can arrive before React renders the state of the pointer move before it.
+  const gesture = useRef<PinGesture>(IDLE);
+  const dropClick = useRef(false);
   const hintId = useId();
 
   const [, catchUp] = useState(snapshot);
@@ -211,13 +219,26 @@ export function MapCanvas(props: {
 
   const toView = (e: { clientX: number; clientY: number }) => clampView(mapView.toStage(e));
 
-  const place = (pin: Pin, at: ViewPoint) => {
-    setMoving(null);
-    pin.move!(at);
+  const set = (next: PinGesture) => {
+    if (gesture.current.kind === "dragging" && next.kind !== "dragging") dropClick.current = true;
+    gesture.current = next;
+    setMoving(next.kind === "dragging" || next.kind === "keyMoving" ? next : null);
   };
-  const preview = (pin: Pin, at: ViewPoint | null) => {
-    setMoving(at && { key: pin.key, at });
+  const preview = (pin: Pin, kind: "dragging" | "keyMoving", at: ViewPoint) => {
+    set({ kind, key: pin.key, at });
     pin.drag?.(at);
+  };
+  const place = (pin: Pin, at: ViewPoint) => {
+    set(IDLE);
+    pin.move?.(at);
+  };
+  const cancel = (pin: Pin) => {
+    set(IDLE);
+    pin.drag?.(null);
+  };
+  const movingHere = (pin: Pin) => {
+    const g = gesture.current;
+    return (g.kind === "dragging" || g.kind === "keyMoving") && g.key === pin.key ? g : null;
   };
 
   const openPin = (key: string, button: HTMLButtonElement) =>
@@ -294,31 +315,41 @@ export function MapCanvas(props: {
                   aria-haspopup={!pin.activate && pin.menu ? "menu" : undefined}
                   tabIndex={pin.kind === "previous" || pin.kind === "upcoming" ? -1 : 0}
                   onPointerDown={(e) => {
-                    dragged.current = false;
-                    if (e.button !== 0 || !pin.move) return;
-                    drag.current = { key: pin.key, x: e.clientX, y: e.clientY, moved: false };
+                    const g = gesture.current;
+                    const other = g.kind !== "idle" && pins.find((p) => p.key === g.key);
+                    // The blur that places a keyboard move comes after this event, so the press places it.
+                    if (other && g.kind === "keyMoving") place(other, g.at);
+                    else if (other && g.kind === "dragging") cancel(other);
+                    dropClick.current = false;
+                    if (e.button !== 0 || !pin.move) {
+                      set(IDLE);
+                      return;
+                    }
+                    set({ kind: "pressed", key: pin.key, x: e.clientX, y: e.clientY });
                     e.currentTarget.setPointerCapture?.(e.pointerId);
                   }}
                   onPointerMove={(e) => {
-                    const d = drag.current;
-                    if (d?.key !== pin.key || (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 3)) return;
-                    d.moved = true;
-                    preview(pin, toView(e));
+                    const g = gesture.current;
+                    if (!pin.move) return;
+                    const drags =
+                      g.kind === "pressed"
+                        ? g.key === pin.key && Math.hypot(e.clientX - g.x, e.clientY - g.y) >= 3
+                        : movingHere(pin)?.kind === "dragging";
+                    if (drags) preview(pin, "dragging", toView(e));
                   }}
                   onPointerUp={(e) => {
-                    const d = drag.current;
-                    drag.current = null;
-                    if (d?.key !== pin.key || !d.moved) return;
-                    dragged.current = true;
-                    place(pin, toView(e));
+                    const g = gesture.current;
+                    if (movingHere(pin)?.kind === "dragging") place(pin, toView(e));
+                    else if (g.kind === "pressed" && g.key === pin.key) set(IDLE);
                   }}
                   onPointerCancel={() => {
-                    if (drag.current?.key !== pin.key) return;
-                    drag.current = null;
-                    preview(pin, null);
+                    const g = gesture.current;
+                    if (movingHere(pin)?.kind === "dragging") cancel(pin);
+                    else if (g.kind === "pressed" && g.key === pin.key) set(IDLE);
                   }}
                   onClick={(e) => {
-                    if (dragged.current) dragged.current = false;
+                    // A keyboard click has no detail, and a touch drag ends with no click.
+                    if (dropClick.current && e.detail > 0) dropClick.current = false;
                     else if (pin.activate) pin.activate();
                     else if (pin.menu) openPin(pin.key, e.currentTarget);
                   }}
@@ -329,19 +360,20 @@ export function MapCanvas(props: {
                   }}
                   onKeyDown={(e) => {
                     if (!pin.move) return;
-                    const mine = moving?.key === pin.key ? moving : null;
+                    const mine = movingHere(pin);
                     const d = (e.shiftKey ? 1 : 0.2) / zoom.s;
                     const delta = { ArrowLeft: [-d, 0], ArrowRight: [d, 0], ArrowUp: [0, -d], ArrowDown: [0, d] }[e.key];
                     if (delta) {
                       const from = mine?.at ?? pin.at;
-                      preview(pin, clampView({ x: from.x + delta[0]!, y: from.y + delta[1]! }));
+                      preview(pin, mine?.kind ?? "keyMoving", clampView({ x: from.x + delta[0]!, y: from.y + delta[1]! }));
                     } else if (e.key === "Enter" && mine) place(pin, mine.at);
-                    else if (e.key === "Escape" && mine) preview(pin, null);
+                    else if (e.key === "Escape" && mine) cancel(pin);
                     else return;
                     e.preventDefault();
                   }}
                   onBlur={() => {
-                    if (moving?.key === pin.key) place(pin, moving.at);
+                    const mine = movingHere(pin);
+                    if (mine) place(pin, mine.at);
                   }}
                 >
                   {text && <span aria-hidden="true">{text}</span>}

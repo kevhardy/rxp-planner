@@ -140,6 +140,17 @@ describe("PlaybackStore", () => {
     expect([replaced, store.getState().playing]).toEqual([true, false]);
   });
 
+  it("shows the playback as current after a detach and a re-attach of the same input", async () => {
+    const store = new PlaybackStore();
+    const route = input(70);
+    const detach = store.attach(route, straight, session);
+    await settled(store);
+    detach();
+    store.attach(route, straight, { view: "g1", start: "g1" });
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(store.getState().status).toMatchObject({ kind: "ready", stale: false });
+  });
+
   it("fails when routing fails, and prices again on the next input", async () => {
     const play = vi.spyOn(PlaybackRouting.prototype, "play").mockRejectedValueOnce(new Error("Worker crashed"));
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -148,6 +159,7 @@ describe("PlaybackStore", () => {
       store.attach(input(70), straight, session);
       await waitFor(() => expect(store.getState().status).toEqual({ kind: "failed", error: "Worker crashed" }));
       store.attach(input(140), straight, session);
+      await Promise.resolve();
       expect(store.getState().status).toEqual({ kind: "pricing" });
       expect((await settled(store)).timeline.steps.map((s) => s.start)).toEqual([0, 0, 24]);
     } finally {
@@ -180,6 +192,22 @@ describe("PlaybackStore", () => {
       await settled(store);
       store.follow(2, 0);
       await waitFor(() => expect([store.getState().playhead, store.currentStep()]).toEqual([24, 3]));
+    });
+
+    it("drops a pending seek of a step when the person plays first", async () => {
+      const raf = vi.spyOn(globalThis, "requestAnimationFrame").mockReturnValue(0);
+      try {
+        const store = new PlaybackStore();
+        store.attach(chain(), straight, session);
+        store.follow(0, null);
+        await settled(store);
+        store.follow(2, 0);
+        store.play();
+        await waitFor(() => expect(ready(store.getState())?.timeline.totals.seconds).toBe(36));
+        expect([store.getState().playhead, store.getState().playing]).toEqual([0, true]);
+      } finally {
+        raf.mockRestore();
+      }
     });
 
     it("never shrinks the reach that the person asked for", async () => {
@@ -287,6 +315,31 @@ describe("Playback in the app", () => {
       ]),
     );
     await waitFor(() => expect([Math.round(stores.playback.getState().playhead), stores.playback.currentStep()]).toEqual([12, 2]));
+  });
+
+  it("keeps the step that the person sought when the selected step shows only after a change of character", async () => {
+    const goto = (x: number, when = "") => `step${when}\n.goto Elwynn Forest,${x},50\n+Walk\n`;
+    const text = `#group G\n#name A\n${goto(40)}${goto(42, " << Mage")}${goto(44)}${goto(46)}`;
+    const stores = createStores({ guides: [{ id: "g0", order: 0, text }], session: { guideId: "g0", step: 1, line: null } });
+    function Host() {
+      useAttachPlayback(straight);
+      return null;
+    }
+    render(
+      <StoresContext value={stores}>
+        <GameDataContext value={plannerData()}>
+          <EntityContext value={unrelatedEntities}>
+            <Host />
+          </EntityContext>
+        </GameDataContext>
+      </StoresContext>,
+    );
+    const shown = () => ready(stores.playback.getState())?.timeline.steps.map((s) => s.step);
+    await waitFor(() => expect(shown()).toEqual([0, 2, 3]));
+    act(() => stores.playback.seekStep(2));
+    act(() => stores.preview.update({ class: "MAGE" }));
+    await waitFor(() => expect(shown()).toEqual([0, 1, 2, 3]));
+    expect(stores.playback.currentStep()).toBe(3);
   });
 
   it("keeps the guides asked for through the first edit of a built-in guide, and forgets them for another guide", async () => {

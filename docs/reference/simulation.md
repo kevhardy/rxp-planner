@@ -47,7 +47,7 @@ reads the keys in this table.
 | Key              | Where                                                               | What it does                                                                                                                                                              |
 | ---------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `party=2`        | Header                                                              | Makes the guide a duo guide. `party=1`, or no `party=`, makes it solo. See [Party](#party).                                                                               |
-| `done=ID,ID`     | Header                                                              | Counts the quests as turned in.                                                                                                                                           |
+| `done=ID,ID`     | Header                                                              | Counts the quests as turned in, and takes them out of the quest log.                                                                                                      |
 | `level=TARGET`   | Header, step, or line                                               | A checkpoint. See below.                                                                                                                                                  |
 | `kills=N`        | `.complete` line                                                    | Counts N kills of the line's objective at the line, of `mob=ID` when given.                                                                                               |
 | `mob=ID`         | `.complete` line                                                    | Sets the mob of the objective's kills.                                                                                                                                    |
@@ -114,6 +114,10 @@ in the log with every objective complete. An object gives counts by
 `.complete` objective index, such as `{"1": 2}`. The counts are progress
 already made, so a later `.complete` line or the turn-in counts only the
 rest.
+
+A quest is never in the log and turned in at once. A quest that `done`
+turns in leaves the log, and a quest that `log` puts in the log is no longer
+turned in.
 
 The fields apply in table order, so `xp` uses the level that the same object
 sets. The step's gates, such as `#level` and `.isQuestTurnedIn`, read the
@@ -219,11 +223,20 @@ warning in Playback.
 
 RXP shows a `#completewith` step alongside the steps after it until its
 window ends (`addon.UpdateStepCompletion` and `addon:LoadGuide` in
-`GuideWindow.lua`). The window lasts through the step that its label names.
-For `next`, it lasts through the next step that is not `#completewith` or
-`#sticky`. When the label names a `#completewith` step, the window also
-lasts through that step's window, because that step shows until its own
-window ends.
+`GuideWindow.lua`). The window lasts through the step that its label names,
+or for `next`, the next step. RXP drops a step whose `step <<` condition
+fails before it numbers the steps (`addon.ParseGuide` in `GuideLoader.lua`),
+so `next` skips that step.
+
+RXP makes each `#completewith` step that is not `#tip` sticky, and it ends
+a window that names a sticky step only when that step completes. The
+simulation does not model `#tip`. So when the window names a
+`#completewith` step, the window also lasts through that step's window. When
+the window names a lone `#sticky` step, RXP ends the window when that step's
+lines are done. The simulation completes those lines at the `#sticky` step,
+so the window ends there. RXP also gives a `#sticky` step a window through a
+later step whose `#requires` names it (`addon:LoadGuide`), but the simulation
+does not model `#requires`.
 
 In the window, the step's `.complete` lines without `kills=`, and its
 `.collect` lines, keep their objectives running. RXP tells the player to
@@ -441,14 +454,15 @@ never optional.
   goes to the quest NPC before that NPC's `.accept` or `.turnin`, else to
   the guide's last place.
 
-A `.turnin` can count kills that no `.complete` line counted. If a
-`.disablecheckbox` line left them to a later line, the player made them on
-the way, and the timeline prices them. Otherwise no step shows where or when
-the player made them, so they take no time. They still give their XP and
-complete their objectives, because RXP keeps the step until the player turns
-the quest in. The step gives a warning that suggests `state=`. A guide that
-leaves out a kill step can therefore look faster. Read these warnings when
-you compare versions of a guide.
+A `.turnin` can count kills that no `.complete` line counted. The simulation
+prices these kills for each objective. If a `.disablecheckbox` line left the
+objective's kills to a later line, the player made them on the way, and the
+timeline prices them. Otherwise no step shows where or when the player made
+them, so they take no time. They still give their XP and complete their
+objectives, because RXP keeps the step until the player turns the quest in.
+The step gives a warning that suggests `state=`. A guide that leaves out a
+kill step can therefore look faster. Read these warnings when you compare
+versions of a guide.
 
 ### Travel
 
@@ -586,7 +600,9 @@ and `--min-share` set the options in [Method](#method).
    remains, then the distance.
 
 An objective is `covered` when an active `#completewith` or `#sticky` step
-before the step names it. The window's kills, or a `#sticky` step's
+before the step names it. A `#completewith` step is active at the steps of
+its window, as [Background kills](#background-kills) gives it, so the
+finder and the simulation agree. The window's kills, or a `#sticky` step's
 `.complete` line, can mark it done while the window still works on it. So a
 covered objective reads its progress from before the first as-you-go step
 that names it. `plannedStep` is the next step that works on the objective,
@@ -620,3 +636,6 @@ objective, the finder must suggest that objective.
   because the window covers only the objective. RXP ends the line when the
   game finishes the objective, which can be earlier. With no such step, the
   objective stays covered while its quest is in the log.
+- A `#completewith` window that reaches a lone `#sticky` step ends at that
+  step, as in the simulation. RXP keeps the window until the `#sticky`
+  step's lines are done, which can be later.

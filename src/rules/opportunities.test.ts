@@ -265,6 +265,85 @@ step
       remaining: 3,
     });
   });
+
+  it("ends a #completewith next window's cover at a lone #sticky step, as the simulation does", () => {
+    const found = run(`#group G
+#name A
+step
+.accept 12
+.accept 9
+step
+#completewith next
+.complete 9,1
+step
+#sticky
+.accept 13
+step
+.goto Westfall,64.06,20.12
+.complete 12,1
+`);
+    expect(found.find((s) => s.step === 3)!.opportunities.map((o) => [`${o.questId},${o.objective.index}`, o.covered])).toEqual([
+      ["9,1", false],
+      ["151,1", false],
+      ["38,2", false],
+    ]);
+  });
+
+  it("covers an objective through the window of the #completewith step that next names, past a #sticky step", () => {
+    const found = run(`#group G
+#name A
+step
+.accept 12
+.accept 9
+step
+#completewith next
+.complete 9,1
+step
+#completewith Fields
++Look
+step
+#sticky
+.accept 13
+step
+#label Fields
+.goto Westfall,64.06,20.12
+.complete 12,1
+`);
+    expect(found.find((s) => s.step === 4)!.opportunities.map((o) => [`${o.questId},${o.objective.index}`, o.covered])).toEqual([
+      ["151,1", false],
+      ["38,2", false],
+      ["9,1", true],
+    ]);
+  });
+
+  it("covers an objective through the window of the #completewith step that a label names", () => {
+    const found = run(`#group G
+#name A
+step
+.accept 12
+.accept 9
+.accept 13
+step
+#completewith Fields
+.complete 9,1
+step
+#label Fields
+#completewith Farm
+.complete 13,1
+step
+.goto Westfall,64.06,20.12
+.complete 12,1
+step
+#label Farm
+.goto Westfall,64.06,20.12
+.complete 9,1
+`);
+    expect(found.find((s) => s.step === 3)!.opportunities.map((o) => [`${o.questId},${o.objective.index}`, o.covered])).toEqual([
+      ["151,1", false],
+      ["38,2", false],
+      ["9,1", true],
+    ]);
+  });
 });
 
 describe("opportunityData", () => {

@@ -2,7 +2,8 @@
 import { act, cleanup, fireEvent, render, renderHook } from "@testing-library/react";
 import { useRef, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { useEachFrame, useEventListener, useOutsidePress, usePendingAction, useTimeout } from "./effects.ts";
+import { useDisclosure, useEachFrame, useEventListener, useOutsidePress, usePendingAction, useTimeout } from "./effects.ts";
+import userEvent from "@testing-library/user-event";
 
 afterEach(() => {
   cleanup();
@@ -86,6 +87,72 @@ describe("useOutsidePress", () => {
     expect(onOutside).not.toHaveBeenCalled();
     fireEvent.pointerDown(getByText("Outside"));
     expect(onOutside).toHaveBeenCalledOnce();
+  });
+});
+
+describe("useDisclosure", () => {
+  function Popover(props: { lightDismiss?: boolean; buttonWhileOpen?: boolean }) {
+    const { open, toggle, close, button, wrap } = useDisclosure({
+      focus: (wrap) => wrap.querySelector("input"),
+      lightDismiss: props.lightDismiss ?? true,
+    });
+    const outside = useRef<HTMLButtonElement>(null);
+    return (
+      <>
+        <span {...wrap}>
+          {(props.buttonWhileOpen ?? true) || !open ? (
+            <button ref={button} type="button" onClick={toggle}>
+              Toggle
+            </button>
+          ) : null}
+          {open && (
+            <button
+              type="button"
+              onClick={() => {
+                close();
+                outside.current?.focus();
+              }}
+            >
+              Done
+            </button>
+          )}
+          {open && <input aria-label="Field" />}
+        </span>
+        <button ref={outside} type="button">
+          Outside
+        </button>
+      </>
+    );
+  }
+
+  it("stays open on a press or focus outside without light dismiss, and still closes on Escape", async () => {
+    const user = userEvent.setup();
+    const { getByRole, queryByRole } = render(<Popover lightDismiss={false} />);
+    await user.click(getByRole("button", { name: "Toggle" }));
+    await user.click(getByRole("button", { name: "Outside" }));
+    await user.click(getByRole("textbox", { name: "Field" }));
+    await user.tab();
+    expect(document.activeElement).toBe(getByRole("button", { name: "Outside" }));
+    await user.click(getByRole("textbox", { name: "Field" }));
+    await user.keyboard("{Escape}");
+    expect([queryByRole("textbox"), document.activeElement]).toEqual([null, getByRole("button", { name: "Toggle" })]);
+  });
+
+  it("leaves focus where a handler moves it after close", async () => {
+    const user = userEvent.setup();
+    const { getByRole, queryByRole } = render(<Popover />);
+    await user.click(getByRole("button", { name: "Toggle" }));
+    await user.click(getByRole("button", { name: "Done" }));
+    expect([queryByRole("textbox"), document.activeElement]).toEqual([null, getByRole("button", { name: "Outside" })]);
+  });
+
+  it("focuses a button that shows only while closed once Escape closes the popover", async () => {
+    const user = userEvent.setup();
+    const { getByRole } = render(<Popover buttonWhileOpen={false} />);
+    await user.click(getByRole("button", { name: "Toggle" }));
+    expect(document.activeElement).toBe(getByRole("textbox", { name: "Field" }));
+    await user.keyboard("{Escape}");
+    expect(document.activeElement).toBe(getByRole("button", { name: "Toggle" }));
   });
 });
 

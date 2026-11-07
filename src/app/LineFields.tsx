@@ -423,7 +423,10 @@ function TextForm(props: { line: TextLine; replace: (update: (l: BodyLine) => Bo
           hideLabel
           value={line.text}
           tools={(field) => <InsertReference field={field} />}
-          onCommit={(value) => replace((l) => (l.kind === "text" ? setText(l, value) : l))}
+          onCommit={(value) => {
+            setError(null);
+            return replace((l) => (l.kind === "text" ? setText(l, value) : l));
+          }}
         />
         {error && (
           <span className="error" role="alert">
@@ -545,7 +548,14 @@ export function AddLineMenu(props: {
   const [error, setError] = useState<string | null>(null);
   const { showGuideSyntax } = useLayout();
   return (
-    <PopoverMenu className={props.className} label={props.label} icon={props.icon} description={props.description} align="start">
+    <PopoverMenu
+      className={props.className}
+      label={props.label}
+      icon={props.icon}
+      description={props.description}
+      align="start"
+      onOpen={() => setError(null)}
+    >
       {(close) => (
         <div className="add-line">
           <Select aria-label="New line type" value={key} onChange={(e) => setKey(e.target.value)}>
