@@ -791,6 +791,36 @@ describe("PlaybackRouting", () => {
     ]);
   });
 
+  it("prices a known flight at its routed time when the router flies it", async () => {
+    const [stormwind, thelsamar] = [world(478.62, -8832.77), world(-2930.01, -5421.91)];
+    const flights = new FlightNodes({
+      "2": { name: "Stormwind, Elwynn", faction: "Alliance", world: stormwind },
+      "8": { name: "Thelsamar, Loch Modan", faction: "Alliance", world: thelsamar },
+    });
+    const take = "Stormwind City,66.27,62.13";
+    const walk = guideInput([[take, stormwind]]);
+    const text = `step\n-- @sim state={"flightPaths": {"Thelsamar": true}}\n.goto ${take}\n.fly Thelsamar\n`;
+    const fly: PlaybackInput = { ...walk, data: { ...walk.data, flights }, guides: [parseGuide(`#group G\n#name A\n${text}`)] };
+    fly.simulation = simulateRoute(fly.guides, 0, fly.profile, fly.data);
+    const link: TransportLink = {
+      service: "flight-test",
+      mode: "flight",
+      from: { id: "FLIGHT_2", name: "Stormwind", map: 0, point: native(stormwind) },
+      to: { id: "FLIGHT_8", name: "Thelsamar", map: 0, point: native(thelsamar) },
+      requires: { faction: "Alliance" },
+      seconds: { min: 40, average: 40, max: 40 },
+    };
+    const leg: JourneyLeg = { kind: "transport", parts: [{ kind: "ride", link }], seconds: 40 };
+    const fake: WayRouter = {
+      frames: [frame],
+      route: async () => ({ journeys: [{ mode: { name: "Run", speed: 7, activation: 0 }, legs: [leg], seconds: 40 }] }),
+    };
+    const playback = await new PlaybackRouting(fake, { every: 0 }).play(fly, Infinity, () => 0);
+    // The flight model prices this trip at far more than 40 seconds, so 40 can only come from the routed journey.
+    expect(playback.ways(0).map((w) => [w.seconds, w.source])).toEqual([[40, "routing"]]);
+    expect(playback.timeline.warnings).toEqual([]);
+  });
+
   it("walks the character through the spawns while it kills, on the line until each run routes", async () => {
     const [start, area] = [loc(0, 0), loc(30, 60)];
     const vermin = { index: 1, kind: "monster" as const, ids: [6], count: 2, name: "Kobold Vermin" };
