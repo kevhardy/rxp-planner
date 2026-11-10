@@ -4,6 +4,7 @@ import { act, cleanup, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
+import { insertLine, insertStep } from "../guide/index.ts";
 import { EntityIndex, type GameData } from "../data/index.ts";
 import { plannerData, plannerNames } from "../data/plannerFixture.ts";
 import { textureKey, type GuideIcon } from "../../packages/data-contract/guideIcons.ts";
@@ -348,6 +349,24 @@ step
     expect(shownRows()).toHaveLength(6);
     expect(error).not.toHaveBeenCalled();
     error.mockRestore();
+  });
+
+  it("stay open when a step is added before them", async () => {
+    const { user, store } = mount(runs);
+    await user.click(document.querySelector<HTMLElement>(".fold-toggle")!);
+    act(() => void store.edit((d) => insertStep(d, 0), { step: 0, line: null }));
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-2", "step-3", "step-4", "step-5"]);
+  });
+
+  it("stay closed when an undo brings back a step from before they were closed", async () => {
+    const { user, store } = mount(runs);
+    await user.click(document.querySelector<HTMLElement>(".fold-toggle")!);
+    const line = { kind: "command" as const, indent: "    ", name: "accept", args: ["34"] };
+    act(() => void store.edit((d) => insertLine(d, { step: 2, index: 0 }, line), { step: 0, line: null }));
+    await user.click(screen.getByRole("button", { name: "Steps 2–4" }));
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-4"]);
+    act(() => store.undo());
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-4"]);
   });
 
   it("draw no open-trigger look on an open run's button, which shows the steps in place", async () => {
