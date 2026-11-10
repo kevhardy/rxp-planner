@@ -12,7 +12,7 @@ import { EntityIndex, GameData, mapToWorld, type LoadedWorldMap } from "../../da
 import { interiorsFixture } from "../../data/manifestFixture.ts";
 import { MAP_BOUNDS, plannerContext, plannerFile } from "../../data/plannerFixture.ts";
 import { worldMap } from "../../data/terrainFixture.ts";
-import { insertStep } from "../../guide/index.ts";
+import { deleteStep, insertStep } from "../../guide/index.ts";
 import type { Builtins } from "../../io/index.ts";
 import type { ZoneGrid } from "../../routing/zones.ts";
 import { loadSetting, saveSetting } from "../../storage/index.ts";
@@ -603,6 +603,26 @@ describe("terrain", () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it("drops an edit message when the selection leaves its step, so a return does not show it again", async () => {
+    const { user } = await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,48.94,40.16\n.accept 33\n");
+    select(null);
+    await addAt(user, ELWYNN, 45, 55);
+    expect(screen.getByRole("alert").textContent).toBe("Select a step to add points to it.");
+    select(0);
+    expect(screen.queryByRole("alert")).toBeNull();
+    select(null);
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("drops an edit message when its step is deleted, so the step that takes its place does not show it", async () => {
+    const { user } = await mount("#group T\n#name One\nstep\n.goto Elwynn Forest,48.94,40.16\nstep\n.goto Elwynn Forest,45,55\n");
+    await user.pointer({ keys: "[MouseRight]", target: mapArea(), coords: { clientX: 5, clientY: 5 } });
+    await user.click(screen.getByRole("menuitem", { name: "Add .goto" }));
+    expect(screen.getByRole("alert").textContent).toBe("No zone map covers that point.");
+    act(() => void editor().edit((d) => deleteStep(d, 0), { step: 0, line: null }));
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
   it("reports tiles that fail to load and asks for them again on retry, keeping the view", async () => {
