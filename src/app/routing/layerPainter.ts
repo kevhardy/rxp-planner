@@ -38,7 +38,9 @@ export interface LayerWorker {
 }
 
 export interface LayerPainter {
+  /** `""` for a tile with nothing to draw. Undefined for a tile that is not painted yet or whose paint failed. */
   image(key: string): string | undefined;
+  /** Paints these tiles in order, and drops the tiles that the call before still waits for. A tile whose paint failed is painted again. */
   want(wanted: readonly LayerTile[]): void;
   subscribe: (listener: () => void) => () => void;
   version: () => number;
@@ -73,20 +75,21 @@ export function layerPainter(create: () => LayerWorker = createWorker, kept = KE
     if (images.has(wish.key)) return next();
     busy = true;
     const w = (worker ??= create());
-    const done = (url: string) => {
+    const done = (url?: string) => {
       busy = false;
-      keep(wish.key, url);
+      if (url !== undefined) keep(wish.key, url);
       next();
     };
     w.onmessage = ({ data }) => {
-      if (data.error) console.warn(`Router layer ${data.key}`, data.error);
-      done(data.url);
+      if (data.error === undefined) return done(data.url);
+      console.warn(`Router layer ${data.key}`, data.error);
+      done();
     };
     w.onerror = (event) => {
       console.warn(`Router layer ${wish.key}`, event.message);
       w.terminate();
       worker = undefined;
-      done("");
+      done();
     };
     w.postMessage(wish);
   };
