@@ -346,3 +346,21 @@ it("keeps valid recovery data when saving it to IndexedDB fails", async () => {
   await expect(loadLibrary()).rejects.toThrow("full");
   expect(localStorage.getItem(RECOVERY)).toBe(raw);
 });
+
+it("reports a database that a newer planner upgraded as outdated", async () => {
+  const onStatus = vi.fn();
+  const { autosave, edit } = editor(await loadLibrary(), onStatus);
+  const { name, version } = await openDb();
+  const upgrade = indexedDB.open(name, version + 1);
+  const newer = await result(upgrade);
+  onTestFinished(async () => {
+    await close(autosave);
+    newer.close();
+    await result(indexedDB.deleteDatabase(name));
+  });
+
+  edit({ id: "h", text: "#name H\n", order: 7 });
+  autosave.flush();
+  await autosave.settled();
+  expect(onStatus).toHaveBeenLastCalledWith("outdated", expect.objectContaining({ name: "VersionError" }));
+});

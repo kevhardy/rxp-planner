@@ -154,7 +154,11 @@ export async function saveSetting(key: string, value: unknown): Promise<void> {
   await done(tx);
 }
 
-export type SaveStatus = "saved" | "pending" | "error";
+/** `outdated`: a newer planner upgraded the database, so this page cannot save until it reloads. */
+export type SaveStatus = "saved" | "pending" | "error" | "outdated";
+
+// IndexedDB rejects an open with this error when the stored database has a higher version.
+const outdated = (error: unknown) => error instanceof DOMException && error.name === "VersionError";
 
 export interface AutosaveSource {
   subscribe(listener: () => void): () => void;
@@ -222,7 +226,7 @@ export function startAutosave(
     timer = undefined;
     const run: Promise<void> = running.then(save).then(
       () => onStatus(timer || running !== run ? "pending" : "saved"),
-      (error: unknown) => onStatus("error", error),
+      (error: unknown) => onStatus(outdated(error) ? "outdated" : "error", error),
     );
     running = run;
   };

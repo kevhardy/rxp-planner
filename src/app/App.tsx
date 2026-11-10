@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { guideIconCatalog } from "../data/guideIcons.ts";
+import type { SaveStatus } from "../storage/index.ts";
 import {
   DatasetContext,
   EntityContext,
@@ -168,6 +169,14 @@ function Shell(props: ComponentProps<"div">) {
   );
 }
 
+const SAVE_PROBLEMS: Partial<Record<SaveStatus, { label: string; help: string }>> = {
+  error: { label: "Save failed", help: "Edits stay in this window. The next edit retries." },
+  outdated: {
+    label: "Reload to save",
+    help: "Another tab updated the planner's storage. This window cannot save until you reload it. The reload keeps your edits.",
+  },
+};
+
 function TopBar(props: {
   libraryOpen: boolean;
   libraryButton: RefObject<HTMLButtonElement | null>;
@@ -178,7 +187,7 @@ function TopBar(props: {
   const { guides } = useEditor();
   const { mode } = useLayout();
   const { autosave } = useStores();
-  const saveStatus = useSyncExternalStore(autosave.subscribe, autosave.getState);
+  const saveProblem = SAVE_PROBLEMS[useSyncExternalStore(autosave.subscribe, autosave.getState)];
   return (
     <header className="topbar">
       <h1 className="brand">
@@ -204,11 +213,11 @@ function TopBar(props: {
         </Button>
       </Described>
       <span className="spacer" />
-      {saveStatus === "error" && (
-        <Described text="Edits stay in this window. The next edit retries.">
+      {saveProblem && (
+        <Described text={saveProblem.help}>
           <span className="save-failed" role="alert">
             <Icon name="warning" />
-            Save failed
+            {saveProblem.label}
           </span>
         </Described>
       )}
