@@ -189,6 +189,12 @@ step
     expect(screen.getByRole("option", { name }).id).toBe("step-1");
   });
 
+  it("moves a warning badge with its step as soon as a step is added before it", () => {
+    const { store } = mount("#group G\n#name Warned\nstep\n.accept 33\nstep\n.accept 999\n");
+    act(() => void store.edit((d) => insertStep(d, 0), { step: 0, line: null }));
+    expect([0, 1, 2].map((step) => !!document.querySelector(`#step-${step} .step-warn-badge`))).toEqual([false, false, true]);
+  });
+
   it("pins a badge's description on a click without selecting its step", async () => {
     const { user, store } = mount();
     const badge = document.querySelector("#step-2 .step-warn-badge")!;

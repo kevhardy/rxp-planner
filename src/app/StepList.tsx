@@ -42,7 +42,8 @@ export function StepList(props: { libraryOpen?: boolean }) {
   const store = useEditorStore();
   const data = useGameData();
   const filter = useStepFilter();
-  const route = useRoute();
+  // The live route, so a warning's step index is an index of the document that the rows show.
+  const route = useRoute(true);
   const settingsStore = useSettingsStore();
   const layoutStore = useLayoutStore();
   const [drop, setDrop] = useState<{ index: number; after: boolean } | null>(null);
