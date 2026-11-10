@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "fake-indexeddb/auto";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
@@ -301,6 +301,21 @@ describe("the list", () => {
     await user.tab();
     expect(document.activeElement).toBe(screen.getByRole("listbox"));
     expect(scrolled).toEqual(["step-1"]);
+  });
+
+  it("marks the row that a dragged step is over, and no row after the drag leaves the list", () => {
+    mount();
+    const marked = () => [...document.querySelectorAll(".drop-before, .drop-after")].map((row) => row.id);
+    const dataTransfer = { types: ["application/x-rxp-step"] };
+    fireEvent.dragOver(document.getElementById("step-1")!, { dataTransfer });
+    expect(marked()).toEqual(["step-1"]);
+    // jsdom has no DragEvent, and the event that fireEvent.dragLeave makes in its place has no relatedTarget.
+    const leaveTo = (relatedTarget: Element) =>
+      fireEvent(document.getElementById("step-1")!, new MouseEvent("dragleave", { bubbles: true, relatedTarget }));
+    leaveTo(document.getElementById("step-0")!);
+    expect(marked()).toEqual(["step-1"]);
+    leaveTo(document.body);
+    expect(marked()).toEqual([]);
   });
 });
 

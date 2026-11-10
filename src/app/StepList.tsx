@@ -294,6 +294,9 @@ export function StepList(props: { libraryOpen?: boolean }) {
         }}
         onPointerDown={() => setKeyed(false)}
         onBlur={() => setKeyed(false)}
+        onDragLeave={(e) => {
+          if (!(e.relatedTarget instanceof Node && e.currentTarget.contains(e.relatedTarget))) setDrop(null);
+        }}
       >
         {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus -- The listbox takes the keys and points at the active option. */}
         <div
