@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { GuideDocument } from "../guide/index.ts";
 import { Described } from "./Described.tsx";
-import { useTimeout } from "./effects.ts";
+import { useBriefMessage } from "./effects.ts";
 import { Icon } from "./icons.tsx";
 import { sectionRange } from "./sections.ts";
 import { Button } from "./ui/Button.tsx";
@@ -33,8 +33,7 @@ export function GuideSource(props: { text: string; doc: GuideDocument; step: num
 }
 
 export function CopyTextButton(props: { text: string }) {
-  const [status, setStatus] = useState<string | null>(null);
-  useTimeout(() => setStatus(null), status ? 2000 : null, status);
+  const [status, setStatus] = useBriefMessage(2000);
   return (
     <>
       <Described text="Copy the guide text for RXP's import window">

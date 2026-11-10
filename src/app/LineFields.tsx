@@ -198,16 +198,17 @@ function MoreOptions(props: { drafts: readonly string[]; summary: string; childr
   const owner = useContext(DraftScope)!;
   const failed = useSyncExternalStore(subscribeDrafts, () => props.drafts.some((name) => readDraft(owner, name).error !== null));
   const [open, setOpen] = useState(false);
+  // An error opens the section, and it stays open after the error clears. A section that closed then would hide the field with the focus.
+  if (failed && !open) setOpen(true);
   const id = useId();
-  const shown = open || failed;
   return (
     <div className="more-options">
-      <Button variant="ghost" expanded={shown} aria-controls={id} onClick={() => setOpen(!shown)}>
+      <Button variant="ghost" expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
         <DisclosureIcon />
         More options
-        {!shown && props.summary && <span className="muted"> · {props.summary}</span>}
+        {!open && props.summary && <span className="muted"> · {props.summary}</span>}
       </Button>
-      <div id={id} className="more-options-body" hidden={!shown}>
+      <div id={id} className="more-options-body" hidden={!open}>
         {props.children}
       </div>
     </div>

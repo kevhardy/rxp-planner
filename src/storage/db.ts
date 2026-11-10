@@ -33,7 +33,7 @@ export function openDb(): Promise<IDBDatabase> {
     request.onblocked = () => blocked();
     request.onsuccess = () => {
       const db = request.result;
-      // Lets a tab with a newer version upgrade; the next call here opens again.
+      // Lets a tab with a newer version upgrade. The next open here then rejects with a VersionError.
       db.onversionchange = () => {
         db.close();
         opening = undefined;

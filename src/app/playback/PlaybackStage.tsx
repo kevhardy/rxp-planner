@@ -137,7 +137,7 @@ export function PlaybackStage() {
           follows={following}
           onAt={(at) => {
             here.current = at;
-            if (at && follow.on && !follow.at) setFollow((f) => (f.on && !f.at ? { ...f, at } : f));
+            if (at && !follow.at) setFollow((f) => (f.at ? f : { ...f, at }));
           }}
         />
       </>

@@ -788,6 +788,25 @@ describe("EditorDock outline", () => {
     expect(screen.getByRole("alert").textContent).toBe(error);
     expect(record(store)).toBe("#group G\n#name A\nstep\n.accept 1,2 << Orc -- note\n.goto Elwynn Forest,1,1\n");
   });
+
+  it("keeps More options open, with the focus in its field, after its rejected draft is fixed", async () => {
+    const { store, user } = mount("#group G\n#name A\nstep\n.accept 1 << Orc\n.goto Elwynn Forest,1,1\n");
+    const more = () => screen.getByRole("button", { name: /^More options/ });
+    const condition = () => screen.getByRole("textbox", { name: "Line condition" });
+    await user.click(more());
+    await user.clear(condition());
+    await user.type(condition(), "Orc -- x{Enter}");
+    await user.click(more());
+    await showLine(user, 2);
+    await showLine(user, 1);
+
+    await user.clear(condition());
+    await user.type(condition(), "Troll{Enter}");
+    expect(record(store)).toBe("#group G\n#name A\nstep\n.accept 1 << Troll\n.goto Elwynn Forest,1,1\n");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(more().getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(condition());
+  });
 });
 
 describe("EditorDock button looks", () => {

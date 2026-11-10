@@ -210,7 +210,9 @@ export function useGuideMap(
     },
   });
   const { shown: shownMap, focus: focused } = view;
-  const [message, setMessage] = useState<{ follow: string; text: string; error: boolean; draft?: boolean } | null>(null);
+  const [message, setMessage] = useState<{ guide: string; step: Step | undefined; text: string; error: boolean; draft?: boolean } | null>(
+    null,
+  );
   const highlight = hovered ?? focused?.objective ?? null;
   const [card, setCard] = useState<Feature | null>(null);
   const indexRef = useRef(index);
@@ -223,6 +225,7 @@ export function useGuideMap(
   const addQuestRef = useRef<(action: QuestAction) => void>(null);
   const addQuestStep = useCallback((action: QuestAction) => addQuestRef.current?.(action), []);
   const stepObject = guide && step !== null ? guide.doc.steps[step] : undefined;
+  if (message && (message.guide !== guide?.id || message.step !== stepObject)) setMessage(null);
   const spots = useMemo(
     () => (data && stepObject ? questSpots(data, stepObject, faction, sim) : NO_SPOTS),
     [data, stepObject, faction, sim],
@@ -285,10 +288,11 @@ export function useGuideMap(
   if (!data || !guide) return null;
   const doc = guide.doc;
 
-  const say = (text: string | null, error = true) => setMessage(text === null ? null : { follow, text, error });
+  const say = (text: string | null, error = true, draft = false) =>
+    setMessage(text === null ? null : { guide: guide.id, step: stepObject, text, error, draft });
 
   const showOutcome = (result: SectionEdit) => {
-    if (!result.ok && result.reason === "waits") return setMessage({ follow, text: result.error, error: true, draft: true });
+    if (!result.ok && result.reason === "waits") return say(result.error, true, true);
     say(result.ok || result.reason === "opened" ? null : result.error);
   };
   const editPoints = (op: DocOp, at: Selection, line?: number) => {
@@ -349,7 +353,7 @@ export function useGuideMap(
     };
   }
 
-  const messageNote = message?.follow === follow && (!message.draft || rawWaits) && (
+  const messageNote = message && (!message.draft || rawWaits) && (
     <p key="message" className={message.error ? "error" : undefined} role={message.error ? "alert" : undefined}>
       {message.text}
       {message.draft && (

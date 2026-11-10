@@ -5,22 +5,23 @@ export interface SkipRun {
 
 /**
  * The runs of `count` steps where `skipped` holds, by first step. A run
- * folds unless `open` holds its first step or `selected` is inside it past
- * its first step.
+ * folds unless `open` holds for one of its steps or `selected` is inside it
+ * past its first step.
  */
 export function skipRuns(
   count: number,
   skipped: (step: number) => boolean,
   selected: number | null,
-  open: ReadonlySet<number>,
+  open: (step: number) => boolean,
 ): Map<number, SkipRun> {
   const runs = new Map<number, SkipRun>();
   for (let i = 0; i < count; i++) {
     if (!skipped(i)) continue;
     const first = i;
-    while (i + 1 < count && skipped(i + 1)) i++;
+    let opened = open(first);
+    while (i + 1 < count && skipped(i + 1)) opened = open(++i) || opened;
     const inside = selected !== null && selected > first && selected <= i;
-    if (i > first) runs.set(first, { last: i, folded: !open.has(first) && !inside });
+    if (i > first) runs.set(first, { last: i, folded: !opened && !inside });
   }
   return runs;
 }

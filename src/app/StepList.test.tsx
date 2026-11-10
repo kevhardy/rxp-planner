@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 import "fake-indexeddb/auto";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
+import { insertLine, insertStep } from "../guide/index.ts";
 import { EntityIndex, type GameData } from "../data/index.ts";
 import { plannerData, plannerNames } from "../data/plannerFixture.ts";
 import { textureKey, type GuideIcon } from "../../packages/data-contract/guideIcons.ts";
@@ -188,6 +189,12 @@ step
     expect(screen.getByRole("option", { name }).id).toBe("step-1");
   });
 
+  it("moves a warning badge with its step as soon as a step is added before it", () => {
+    const { store } = mount("#group G\n#name Warned\nstep\n.accept 33\nstep\n.accept 999\n");
+    act(() => void store.edit((d) => insertStep(d, 0), { step: 0, line: null }));
+    expect([0, 1, 2].map((step) => !!document.querySelector(`#step-${step} .step-warn-badge`))).toEqual([false, false, true]);
+  });
+
   it("pins a badge's description on a click without selecting its step", async () => {
     const { user, store } = mount();
     const badge = document.querySelector("#step-2 .step-warn-badge")!;
@@ -295,6 +302,21 @@ describe("the list", () => {
     expect(document.activeElement).toBe(screen.getByRole("listbox"));
     expect(scrolled).toEqual(["step-1"]);
   });
+
+  it("marks the row that a dragged step is over, and no row after the drag leaves the list", () => {
+    mount();
+    const marked = () => [...document.querySelectorAll(".drop-before, .drop-after")].map((row) => row.id);
+    const dataTransfer = { types: ["application/x-rxp-step"] };
+    fireEvent.dragOver(document.getElementById("step-1")!, { dataTransfer });
+    expect(marked()).toEqual(["step-1"]);
+    // jsdom has no DragEvent, and the event that fireEvent.dragLeave makes in its place has no relatedTarget.
+    const leaveTo = (relatedTarget: Element) =>
+      fireEvent(document.getElementById("step-1")!, new MouseEvent("dragleave", { bubbles: true, relatedTarget }));
+    leaveTo(document.getElementById("step-0")!);
+    expect(marked()).toEqual(["step-1"]);
+    leaveTo(document.body);
+    expect(marked()).toEqual([]);
+  });
 });
 
 describe("runs of skipped steps", () => {
@@ -348,6 +370,24 @@ step
     expect(shownRows()).toHaveLength(6);
     expect(error).not.toHaveBeenCalled();
     error.mockRestore();
+  });
+
+  it("stay open when a step is added before them", async () => {
+    const { user, store } = mount(runs);
+    await user.click(document.querySelector<HTMLElement>(".fold-toggle")!);
+    act(() => void store.edit((d) => insertStep(d, 0), { step: 0, line: null }));
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-2", "step-3", "step-4", "step-5"]);
+  });
+
+  it("stay closed when an undo brings back a step from before they were closed", async () => {
+    const { user, store } = mount(runs);
+    await user.click(document.querySelector<HTMLElement>(".fold-toggle")!);
+    const line = { kind: "command" as const, indent: "    ", name: "accept", args: ["34"] };
+    act(() => void store.edit((d) => insertLine(d, { step: 2, index: 0 }, line), { step: 0, line: null }));
+    await user.click(screen.getByRole("button", { name: "Steps 2–4" }));
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-4"]);
+    act(() => store.undo());
+    expect(shownRows()).toEqual(["step-header", "step-0", "step-1", "step-4"]);
   });
 
   it("draw no open-trigger look on an open run's button, which shows the steps in place", async () => {

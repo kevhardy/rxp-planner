@@ -62,6 +62,18 @@ describe("layerPainter", () => {
     expect([1, 2, 3].map((x) => painter.image(layerKey(at(x))))).toEqual(["data:1", undefined, "data:3"]);
   });
 
+  it("paints a tile again after its paint failed, when a later call wants it", () => {
+    const { workers, create, answer } = fakeWorkers();
+    const painter = layerPainter(create);
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    painter.want([at(1)]);
+    workers[0]!.onmessage!({ data: { key: "0/1,0/floors", url: "", error: "offline" } } as MessageEvent<LayerReply>);
+    expect(painter.image("0/1,0/floors")).toBeUndefined();
+    painter.want([at(1)]);
+    answer("data:one");
+    expect([workers[0]!.sent, painter.image("0/1,0/floors")]).toEqual([["0/1,0/floors", "0/1,0/floors"], "data:one"]);
+  });
+
   it("starts a new worker after a worker fails, and after release", () => {
     const { workers, create } = fakeWorkers();
     const painter = layerPainter(create);
@@ -69,7 +81,7 @@ describe("layerPainter", () => {
     painter.want([at(1), at(2)]);
     workers[0]!.onerror!({ message: "boom" } as ErrorEvent);
     expect(workers[0]!.terminate).toHaveBeenCalled();
-    expect(painter.image("0/1,0/floors")).toBe("");
+    expect(painter.image("0/1,0/floors")).toBeUndefined();
     expect(workers[1]!.sent).toEqual(["0/2,0/floors"]);
     painter.release();
     expect(workers[1]!.terminate).toHaveBeenCalled();

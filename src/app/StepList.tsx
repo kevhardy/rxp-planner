@@ -42,12 +42,15 @@ export function StepList(props: { libraryOpen?: boolean }) {
   const store = useEditorStore();
   const data = useGameData();
   const filter = useStepFilter();
-  const route = useRoute();
+  // The live route, so a warning's step index is an index of the document that the rows show.
+  const route = useRoute(true);
   const settingsStore = useSettingsStore();
   const layoutStore = useLayoutStore();
   const [drop, setDrop] = useState<{ index: number; after: boolean } | null>(null);
   const [keyed, setKeyed] = useState(false);
-  const [open, setOpen] = useState<{ guide: string | undefined; firsts: ReadonlySet<number> }>({ guide: undefined, firsts: new Set() });
+  // An open run is kept by the objects of its steps: an index moves when a step before it changes, and one edited step
+  // of the run gets a new object.
+  const [open, setOpen] = useState<{ guide: string | undefined; steps: ReadonlySet<Step> }>({ guide: undefined, steps: new Set() });
   const warnings = useMemo(() => {
     const source = route?.records.findIndex((r) => r.id === current?.id) ?? -1;
     return route && data && source >= 0 ? stepWarnings(route, data, source) : new Map<number, string[]>();
@@ -101,15 +104,25 @@ export function StepList(props: { libraryOpen?: boolean }) {
   const skipOf = (i: number) => skipReason(filter?.guide.steps[i], hidden || undefined, filter?.stepProfiles[i], rowNames, labels);
   const simulation = hidden ? undefined : filter?.simulation;
   const bands = simulation && data ? levelBands(data.rules, simulation) : [];
-  const openFirsts = open.guide === current.id ? open.firsts : new Set<number>();
+  const openSteps = open.guide === current.id ? open.steps : new Set<Step>();
   const runs =
-    filter && !filter.showAll ? skipRuns(count, (i) => skipOf(i) !== undefined, selected, openFirsts) : new Map<number, SkipRun>();
+    filter && !filter.showAll
+      ? skipRuns(
+          count,
+          (i) => skipOf(i) !== undefined,
+          selected,
+          (i) => openSteps.has(doc.steps[i]!),
+        )
+      : new Map<number, SkipRun>();
   const toggle = (first: number, show: boolean) => {
-    const firsts = new Set(openFirsts);
-    if (show) firsts.add(first);
-    else firsts.delete(first);
-    setOpen({ guide: current.id, firsts });
     const last = runs.get(first)!.last;
+    // Without the steps that an edit replaced, which would open their run again when an undo brings them back.
+    const steps = new Set(doc.steps.filter((step) => openSteps.has(step)));
+    for (const step of doc.steps.slice(first, last + 1)) {
+      if (show) steps.add(step);
+      else steps.delete(step);
+    }
+    setOpen({ guide: current.id, steps });
     if (!show && selected !== null && selected > first && selected <= last) store.select({ step: first, line: null });
   };
   const runOf = (step: number) => [...runs].find(([first, { last }]) => step >= first && step <= last);
@@ -281,6 +294,9 @@ export function StepList(props: { libraryOpen?: boolean }) {
         }}
         onPointerDown={() => setKeyed(false)}
         onBlur={() => setKeyed(false)}
+        onDragLeave={(e) => {
+          if (!(e.relatedTarget instanceof Node && e.currentTarget.contains(e.relatedTarget))) setDrop(null);
+        }}
       >
         {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus -- The listbox takes the keys and points at the active option. */}
         <div

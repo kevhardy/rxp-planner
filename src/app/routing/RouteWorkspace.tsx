@@ -38,7 +38,7 @@ import { DatasetContext, useGameData, useStores } from "../context.ts";
 import { usePreviewSettings } from "../preview/settings.ts";
 import { Described } from "../Described.tsx";
 import { Dialog } from "../Dialog.tsx";
-import { usePendingAction, useRetain, useTimeout } from "../effects.ts";
+import { useBriefMessage, usePendingAction, useRetain } from "../effects.ts";
 import { Icon } from "../icons.tsx";
 import { Button, DisclosureIcon } from "../ui/Button.tsx";
 import { Checkbox } from "../ui/Checkbox.tsx";
@@ -131,8 +131,7 @@ export function RouteWorkspace(props: {
   const [deleting, setDeleting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [copyText, setCopyText] = useState<string | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
-  useTimeout(() => setCopied(null), copied ? 2000 : null, copied);
+  const [copied, setCopied] = useBriefMessage(2000);
   const [borders, setBorders] = useState(false);
   const [tiles, setTiles] = useState({ failed: false, attempt: 0 });
   const legLayer = useRef<SVGSVGElement>(null);

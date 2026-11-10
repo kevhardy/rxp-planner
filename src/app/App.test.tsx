@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 
 import { GameData } from "../data/index.ts";
 import { extractGuides } from "../guide/index.ts";
 import { exportAddon, type Builtins } from "../io/index.ts";
+import { openDb, result } from "../storage/db.ts";
 import * as storage from "../storage/index.ts";
 import { loadLibrary, loadSetting, saveLibrary, saveSetting } from "../storage/index.ts";
 import { renderPlanner } from "./renderPlanner.tsx";
@@ -268,6 +269,31 @@ describe("editor", () => {
     expect(screen.getByRole("tab", { name: "XP simulation" }).getAttribute("aria-selected")).toBe("true");
     expect(screen.getByRole("separator", { name: "Resize editor" }).getAttribute("aria-valuenow")).toBe("352");
     second.unmount();
+  });
+
+  it("asks for a reload when a save finds a database that a newer planner upgraded", async () => {
+    await saveLibrary([{ id: "a", text: "#group Mine\n#name A\nstep\n    .accept 1 >>Hello\n", order: 0 }], [], {
+      guideId: "a",
+      step: 0,
+      line: null,
+    });
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { user } = await mount();
+    const { name, version } = await openDb();
+    const newer = await result(indexedDB.open(name, version + 1));
+    onTestFinished(async () => {
+      consoleError.mockRestore();
+      newer.close();
+      await result(indexedDB.deleteDatabase(name));
+    });
+    const text = within(screen.getByRole("group", { name: "Line 1, Accept quest" })).getByLabelText(">> Text");
+    selectText(text, "Hello".length);
+    await user.keyboard("abc{Enter}");
+    const alert = await within(screen.getByRole("banner")).findByRole("alert", undefined, { timeout: 3000 });
+    expect([alert.textContent, document.getElementById(alert.getAttribute("aria-describedby")!)!.textContent]).toEqual([
+      "Reload to save",
+      "Another tab updated the planner's storage. This window cannot save until you reload it. The reload keeps your edits.",
+    ]);
   });
 
   it("shows a failed save, keeps the edit, and saves it with the next edit", async () => {
