@@ -176,6 +176,13 @@ export function useTimeout(fire: () => void, delay: number | null, key?: unknown
   }, [delay, key]);
 }
 
+/** A message that `show` sets and that clears after `ms`. Each `show` restarts the wait, also with an equal message. */
+export function useBriefMessage(ms: number): [message: string | null, show: (message: string) => void] {
+  const [shown, setShown] = useState<{ message: string } | null>(null);
+  useTimeout(() => setShown(null), shown ? ms : null, shown);
+  return [shown?.message ?? null, (message) => setShown({ message })];
+}
+
 /** After each render, calls `update` before paint, then each frame until it returns false. */
 export function useEachFrame(update: () => boolean | void): void {
   useLayoutEffect(() => {
