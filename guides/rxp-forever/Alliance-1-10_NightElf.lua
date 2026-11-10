@@ -46,7 +46,7 @@ step << Druid
     .mob +Young Thistle Boar
 step << Druid
     #completewith next
-    +|cRXP_WARN_Make sure that you have at least 96 copper worth of vendor trash|r, you can count your staff that vendors for 9c
+    +|cRXP_WARN_Make sure that you have at least 1 silver 2 copper worth of vendor trash|r, you can count your staff that vendors for 9c
 step << !sod/Warrior
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Dirania Silvershine|r and |cRXP_FRIENDLY_Melithar Staghelm|r
     #label GoodProtector
@@ -121,7 +121,7 @@ step << !Priest !Rogue
 	.accept 3120 >> Accept Verdant Sigil << Druid
 step << !Hunter !Druid !Warrior
     #completewith next
-    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron
+    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron. You don't have to complete this now
     .complete 457,2 --Kill Thistle Boar (x7)
     .mob +Thistle Boar
 step << !Hunter !Druid !Warrior
@@ -146,6 +146,7 @@ step << Priest/Rogue
 	.goto 1438/1,826.03,10328.97
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Conservator Ilthalaine|r
     .turnin 456 >> Turn in The Balance of Nature
+    .accept 457 >> Accept The Balance of Nature
     .target Conservator Ilthalaine
 	.accept 3119 >> Accept Hallowed Sigil << Priest
 step << Druid
@@ -162,7 +163,7 @@ step << Druid
     .mob Grellkin
 step << Druid
     #completewith next
-    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron
+    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron. You don't have to complete this now
     .complete 457,2 --Kill Thistle Boar (x7)
     .mob +Thistle Boar
 step << Druid
@@ -257,7 +258,7 @@ step
     .mob Webwood Spider
 step
     #completewith next
-    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to the Grells
+    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to the Grells. You don't have to complete this now
     .complete 457,2 --Kill Thistle Boar (x7)
     .mob +Thistle Boar
 step << !Druid
@@ -284,7 +285,7 @@ step
     .turnin 97977 >>Turn in Nature's Call
 step
     #completewith next
-    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron
+    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron. You don't have to complete this now
     .complete 457,2 --Kill Thistle Boar (x7)
     .mob +Thistle Boar
 step
@@ -320,7 +321,7 @@ step << Hunter/Rogue
     .itemStat 16,ITEM_MOD_DAMAGE_PER_SECOND_SHORT,<2.05
 step
     #completewith next
-    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron
+    >>Kill |cRXP_ENEMY_Thistle Boars|r on the way to Iverron. You don't have to complete this now
     .complete 457,2 --Kill Thistle Boar (x7)
     .mob +Thistle Boar
 step
@@ -491,6 +492,8 @@ step
 step
     .goto 1438/1,882.300,9909.101
     >>Use the |cRXP_WARN_/sit|r emote next to the campfire and |cRXP_WARN_sit still for 1 minute|r to complete the objective
+    >>|cRXP_WARN_If you don't get the quest credit for sitting down abandon the quest and pick it up again!|r
+    .complete 96606,1 --Sit
     .complete 96606,2 --Gain the Boosted Rest buff
 step
     .goto 1438/1,879.700,9907.601
@@ -599,7 +602,7 @@ step << Rogue
 step << Druid
     .goto 1438/1,947.57,9812.38
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Shalomon|r
-    >>|cRXP_BUY_Buy and equip a|r |T135145:0|t[Walking Stick] |cRXP_BUY_if you can afford it (4s 79c), if not skip this step|r
+    >>|cRXP_BUY_Buy and equip a|r |T135145:0|t[Walking Stick] |cRXP_BUY_if you can afford it (5s 4c), if not skip this step|r
     .collect 2495,1 --Walking Stick (1)
     .target Shalomon
     .itemStat 16,ITEM_MOD_DAMAGE_PER_SECOND_SHORT,<4.20
@@ -1406,7 +1409,7 @@ step << Druid/Priest
     .accept 940 >> Accept Teldrassil
 step << Druid/Priest
     #label xp10
-    .xp 10-900 >> Grind until you are 900 xp off level 10 (5600/6500)
+    .xp 10-870 >> Grind until you are 870 xp off level 10 (5630/6500)
 step << Hunter
     #completewith xp10
     #label mist1
@@ -1608,7 +1611,7 @@ step << !Rogue
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Priestess A'moora|r upstairs
     .accept 2518 >> Accept Tears of the Moon
 step << Priest
-    .goto Darnassus,40.0,80.0
+    .goto 1457/1,2515.0296,9673.7323
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Priestess Alathea|r upstairs
     .accept 5627 >>Accept Stars of Elune
     .turnin 5627 >>Turn in Stars of Elune
@@ -2040,9 +2043,6 @@ step
     #loop
     .goto 1438/1,1828.600,10964.800
     >>Kill |cRXP_ENEMY_Lady Sathrah|r. Loot her for her |cRXP_LOOT_Spinnerets|r
-    >>|cRXP_ENEMY_Lady Sathrah|r |cRXP_WARN_can spawn in 3 different locations, check your map for a recomended path to take|r
-    >>|cRXP_WARN_Head north along the river and check the easternmost spawn point first. Work on the|r |T134339:0|t[Tumors] |cRXP_WARN_quest as you go|r
-    >>|cRXP_WARN_If she's not east of the river complete the|r |T134339:0|t[Tumors] |cRXP_WARN_quest before heading west|r
     .complete 2518,1 --Collect Silvery Spinnerets (x1)
     .mob Lady Sathrah
 step
@@ -2126,22 +2126,20 @@ step
     >>Go to the |cRXP_FRIENDLY_Oracle Tree Bark|r
     .turnin 98398 >> Turn in The Oracle Tree
     .accept 940 >> Accept Teldrassil
-step
+step << !Warrior --remove warrior tag if they fix the ress sickness
     #softcore
 	#completewith darn << era
     #completewith darnSoD << sod
     .deathskip >>Die and respawn at the Darnassus graveyard
     >>|cRXP_WARN_Make sure you're on the west side of the river or you might end up going the wrong way|r << sod
     .target Spirit Healer
-step
-    #hardcore
+step << Warrior --remove warrior tag if they fix the ress sickness
     #completewith next
     .goto 1457/1,2070.42,9979.310
     .zone Darnassus >> Travel to Darnassus
-step
+step << !Warrior --remove warrior tag if they fix the ress sickness 
     #hardcore
     #completewith next
-    #season 2
     .goto 1457/1,2070.42,9979.310
     .zone Darnassus >> Travel to Darnassus
 step << !Warrior
@@ -2318,14 +2316,12 @@ step << Hunter
     >>|cRXP_WARN_You will need it to feed your owl, they only eat meat and there's no meat vendor in Darkshore|r
     .collect 117,15
     .target Jaeana
-step << Hunter/Warrior/Priest/Sod Rogue
+step << Hunter/Warrior/Priest
     .goto 1457/1,2329.19,9908.53
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Ilyenia Moonfire|r
     .skipgossipid 96881
     .train 227 >>Train Staves << Hunter/Warrior/Priest
-    .train 265 >>Train Bows << Sod Rogue
     >>If you have a Staff in your bags, equip it << Hunter
-    >>If you have a Bow in your bags, equip it << Rogue
     .target Ilyenia Moonfire
 step << Hunter
     #optional

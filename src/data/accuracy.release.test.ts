@@ -140,20 +140,21 @@ describe("bundled Forever guides", () => {
         if (nearest.yards > 10) outliers.push(`${title} step ${index + 1}: ${nearest.npc} ${Math.round(nearest.yards)} yd`);
       });
     }
-    expect(distances).toHaveLength(276);
+    expect(distances).toHaveLength(290);
     expect(summary(distances).median).toBeLessThan(5);
     expect(outliers).toEqual([
-      "1-9 Zephras Isle step 28: Destin Thriceforged 18 yd",
       "1-9 Zephras Isle step 63: Dalia the Collector 75 yd",
       "1-9 Zephras Isle step 132: Dorii Brightwhisper 848 yd",
       "1-9 Zephras Isle step 155: Dorii Brightwhisper 848 yd",
       "1-9 Zephras Isle step 206: Dorii Brightwhisper 848 yd",
-      "1-9 Zephras Isle step 290: Sania Silverstream 419 yd",
-      "9-13 Zephras Isle step 16: Alvarion Windfield 14 yd",
-      "9-13 Zephras Isle step 36: Fillion Flamebreeze 166 yd",
-      "9-13 Zephras Isle step 92: Aamelia Windfield 135 yd",
-      "9-13 Zephras Isle step 272: Elegael Thornpaw 217 yd",
-      "9-13 Zephras Isle step 337: Ayessa Dawnsinger 11 yd",
+      "1-9 Zephras Isle step 291: Sania Silverstream 419 yd",
+      "9-13 Zephras Isle step 19: Alvarion Windfield 14 yd",
+      "9-13 Zephras Isle step 39: Fillion Flamebreeze 166 yd",
+      "9-13 Zephras Isle step 99: Aamelia Windfield 135 yd",
+      "9-13 Zephras Isle step 182: Strange Hermit 694 yd",
+      "9-13 Zephras Isle step 293: Elegael Thornpaw 217 yd",
+      "9-13 Zephras Isle step 363: Ayessa Dawnsinger 10 yd",
+      "9-13 Zephras Isle step 364: Ayessa Dawnsinger 11 yd",
     ]);
   });
 });

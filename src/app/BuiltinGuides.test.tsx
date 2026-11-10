@@ -52,8 +52,8 @@ async function mount() {
   return user;
 }
 
-function mountDrawer(library: StoredLibrary = { guides: [] }, beside?: ReactNode) {
-  const stores = createStores(library, builtins);
+function mountDrawer(library: StoredLibrary = { guides: [] }, beside?: ReactNode, from: Builtins = builtins) {
+  const stores = createStores(library, from);
   render(
     <StoresContext.Provider value={stores}>
       <LibraryDrawer open onClose={() => {}} />
@@ -86,7 +86,7 @@ describe("built-in guides in the library", () => {
   it("lists the groups and subgroups for the preview character's faction", async () => {
     const { stores, user } = mountDrawer();
     expect(rows()).toEqual(["▸ RestedXP Guides"]);
-    expect(within(section()).getByRole("button", { name: "RestedXP Guides v4.11.26" }).getAttribute("aria-expanded")).toBe("false");
+    expect(within(section()).getByRole("button", { name: "RestedXP Guides v4.11.30" }).getAttribute("aria-expanded")).toBe("false");
 
     await expand(user, "RestedXP Guides", "RestedXP Forever Guide (A)");
     expect(within(section()).getByRole("link", { name: "CC BY-NC-SA 4.0" }).getAttribute("href")).toBe(
@@ -115,18 +115,22 @@ describe("built-in guides in the library", () => {
   });
 
   it("lists #internal guides, with their reason, only under Show all", async () => {
-    const { stores, user } = mountDrawer();
+    const internal = {
+      id: "rxp:Helper.lua#1",
+      text: "#group RestedXP Forever Dungeon Guide (A) << Alliance\n#group RestedXP Forever Dungeon Guide (H) << Horde\n#name Class Quests\n#internal\nstep\n",
+      order: builtins.guides.length,
+      fileName: "Helper.lua",
+    };
+    const { stores, user } = mountDrawer(undefined, undefined, { ...builtins, guides: [...builtins.guides, internal] });
     await expand(user, "RestedXP Guides");
-    expect(rows()).not.toContain("Skyborne Druid Class Quests");
+    expect(rows()).not.toContain("Class Quests");
 
     await user.click(within(section()).getByRole("button", { name: "Show all RestedXP guides" }));
     await expand(user, "RestedXP Forever Dungeon Guide (A)");
-    const helper = within(section()).getByRole("button", {
-      name: "Skyborne Druid Class Quests Internal guide",
-    });
-    expect(within(section()).getAllByRole("button", { name: /^Skyborne Druid Class Quests Internal guide$/ })).toHaveLength(1);
+    const helper = within(section()).getByRole("button", { name: "Class Quests Internal guide" });
+    expect(within(section()).getAllByRole("button", { name: /^Class Quests Internal guide$/ })).toHaveLength(1);
     await user.click(helper);
-    expect(stores.editor.getState().current).toMatchObject({ name: "Skyborne Druid Class Quests", builtin: true });
+    expect(stores.editor.getState().current).toMatchObject({ name: "Class Quests", builtin: true });
   });
 
   it("opens a built-in with a hint in the editor, and lists its copy after the first edit", async () => {
@@ -204,11 +208,11 @@ describe("built-in guides in the library", () => {
     await expand(user, "RestedXP Guides");
     await user.click(within(section()).getByRole("button", { name: "Customize group RestedXP Forever Guide (A)" }));
     const dialog = screen.getByRole("dialog", { name: "Customize RestedXP Forever Guide (A)?" });
-    expect(dialog.textContent).toContain("copies its 16 listed guides into “RestedXP Forever Guide (A) (custom)”");
+    expect(dialog.textContent).toContain("copies its 17 listed guides into “RestedXP Forever Guide (A) (custom)”");
     await user.click(within(dialog).getByRole("button", { name: "Customize" }));
 
     const copies = within(library()).getByRole("region", { name: "Group RestedXP Forever Guide (A) (custom)" });
-    expect(within(copies).getAllByRole("listitem")).toHaveLength(16);
+    expect(within(copies).getAllByRole("listitem")).toHaveLength(17);
     expect(stores.editor.getState().current).toMatchObject({ group: "RestedXP Forever Guide (A) (custom)", name: "1-9 Zephras Isle" });
   });
 

@@ -31,9 +31,9 @@ describe("built-in guide file", () => {
 describe("decodeBuiltins", () => {
   it("returns the RXP version and a record per guide with stable IDs", async () => {
     const { version, guides } = await decodeBuiltins(bytes);
-    expect(version).toBe("v4.11.26");
-    expect(guides).toHaveLength(83);
-    expect(new Set(guides.map((g) => g.id)).size).toBe(83);
+    expect(version).toBe("v4.11.30");
+    expect(guides).toHaveLength(80);
+    expect(new Set(guides.map((g) => g.id)).size).toBe(80);
     expect(guides.map((g) => g.order)).toEqual([...guides.keys()]);
     expect(guides[0]).toEqual({
       id: "rxp:RestedXP-Skyborne.lua#1",
@@ -52,7 +52,7 @@ describe("fetchBuiltins", () => {
       "fetch",
       vi.fn(async () => new Response(bytes)),
     );
-    expect((await fetchBuiltins())?.guides).toHaveLength(83);
+    expect((await fetchBuiltins())?.guides).toHaveLength(80);
     expect(fetch).toHaveBeenCalledWith(`/${BUILTIN_PATH}`);
   });
 

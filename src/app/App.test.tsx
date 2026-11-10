@@ -104,8 +104,8 @@ describe("editor", () => {
     await importMageAddon(user);
 
     const library = screen.getByRole("navigation", { name: "Library" });
-    const horde = within(library).getByRole("region", { name: "Group RestedXP Forever Guide (H)" });
-    const alliance = within(library).getByRole("region", { name: "Group RestedXP Forever Guide (A)" });
+    const horde = within(library).getByRole("region", { name: "Group RestedXP Horde Mage AoE" });
+    const alliance = within(library).getByRole("region", { name: "Group RestedXP Alliance Mage" });
     const names = (group: HTMLElement) =>
       within(group)
         .getAllByRole("listitem")
@@ -747,7 +747,7 @@ describe("import", () => {
     await user.click(within(dialog).getByRole("button", { name: "Keep both for all" }));
     await user.click(within(dialog).getByRole("button", { name: "Import 7 guides" }));
 
-    const alliance = screen.getByRole("region", { name: "Group RestedXP Forever Guide (A)" });
+    const alliance = screen.getByRole("region", { name: "Group RestedXP Alliance Mage" });
     const rows = within(alliance)
       .getAllByRole("button", { name: /^\d/ })
       .map((b) => b.textContent);
