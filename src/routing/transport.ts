@@ -1,5 +1,5 @@
 import type { RideRequirements, TransportLinkRecord, TransportsFile } from "../../packages/data-contract/transports.ts";
-import type { Faction } from "../rules/profile.ts";
+import type { Faction } from "../../packages/data-contract/shared.ts";
 import type { ClassName } from "../data/races.ts";
 import type { InstanceId } from "../data/index.ts";
 import { TILE_PIXELS, TILE_WORLD_UNITS } from "./artifact.ts";

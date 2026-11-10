@@ -30,7 +30,7 @@ import { factionData, previewDoc } from "../../src/rules/index.ts";
 import { CLASSES, PLAYABLE_RACES, RACE_FACTION, type ClassName, type WorldLocation } from "../../src/data/index.ts";
 import { guideNamed } from "../../src/rules/registration.ts";
 import { importGuides } from "../../src/io/import.ts";
-import { routeTrip, type MapGround } from "../../src/routing/journey.ts";
+import { routeOf, routeTrip, type MapGround } from "../../src/routing/journey.ts";
 import { createPlan, DEFAULT_MAX_SLOPE, withHeight } from "../../src/routing/plan.ts";
 import {
   buildTimeline,
@@ -45,7 +45,6 @@ import {
 import type { GuideRecord } from "../../src/guide/index.ts";
 import { BUILTIN_FILE, loadGuides } from "./load-guides.ts";
 import { installedDataset } from "../dataset/local.ts";
-import { routeOf } from "../../src/routing/result.ts";
 import { openInstalled, travelCacheKey } from "../routing/installed.ts";
 
 interface RoutingStats {

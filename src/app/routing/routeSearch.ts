@@ -1,7 +1,7 @@
-import { keptLegs, type Journey, type JourneyLeg, type Journeys, type LegUpdate } from "../../routing/journey.ts";
+import { keptLegs, routeOf, type Journey, type JourneyLeg, type Journeys, type LegUpdate } from "../../routing/journey.ts";
 import type { NativeFrame } from "../../routing/frame.ts";
 import type { RoutePlan } from "../../routing/plan.ts";
-import { routeOf, summarizeLeg, type JourneySummary, type LegSummary } from "../../routing/result.ts";
+import { summarizeLeg, type JourneySummary, type LegSummary } from "../../routing/result.ts";
 import type { Rides } from "../../routing/transport.ts";
 
 export interface SearchKey {

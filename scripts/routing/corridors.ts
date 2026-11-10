@@ -1,9 +1,9 @@
 import type { Point } from "../../src/routing/frame.ts";
-import { fail, fields, list } from "../../src/routing/artifact.ts";
 import { MODE_NAMES, MODES, type Mode, type RoutedCorridor } from "../../src/routing/calibration.ts";
 import { DEFAULT_LEG, DEFAULT_MAX_SLOPE, DEFAULT_MODES, DEFAULT_SWIM_SPEED } from "../../src/routing/plan.ts";
-import { routeOf } from "../../src/routing/result.ts";
+import { routeOf } from "../../src/routing/journey.ts";
 import { routeLeg } from "../../src/routing/search.ts";
+import { fail, fields, list } from "../../src/routing/shape.ts";
 import type { Terrain } from "../../src/routing/terrain.ts";
 
 export interface CorridorCases {

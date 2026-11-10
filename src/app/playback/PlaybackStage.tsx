@@ -3,7 +3,7 @@ import { interiorAt } from "../../data/heightMap.ts";
 import { frameOf, nativeToWorld, type NativeFrame } from "../../routing/frame.ts";
 import type { WayView } from "../../routing/playback.ts";
 import { DEFAULT_MAX_SLOPE, withHeight, type WorldStop } from "../../routing/plan.ts";
-import { routeOf } from "../../routing/result.ts";
+import { routeOf } from "../../routing/journey.ts";
 import { DatasetContext, useGameData, useStores } from "../context.ts";
 import { Described } from "../Described.tsx";
 import { Icon } from "../icons.tsx";
