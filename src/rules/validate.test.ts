@@ -136,10 +136,16 @@ describe("quest order", () => {
     expect(validate(`step\n${accepts(41)}\n.turnin ${logIds[0]}`)).toEqual([]);
   });
 
-  it("applies a step's log changes together", () => {
+  it("leaves a quest that a step accepts and turns in out of the log, in either order", () => {
     const forty = `step\n${accepts(40)}`;
     expect(validate(`step\n.turnin 47\n.accept 47\n${forty}`)).toEqual([]);
     expect(validate(`step\n.accept 47\n.turnin 47\n${forty}`)).toEqual([]);
+  });
+
+  it("applies a step's accepts and abandons in line order", () => {
+    const again = `step\n.accept 47\nstep\n${accepts(40)}\n`;
+    expect(validate(`${again}.abandon 47\n.accept 47`)).toEqual([{ kind: "questLogFull", at: { guide: 0, step: 1, line: 41 }, count: 41 }]);
+    expect(validate(`${again}.accept 47\n.abandon 47`)).toEqual([]);
   });
 
   it("leaves a quest accepted again after its turn-in out of the log", () => {

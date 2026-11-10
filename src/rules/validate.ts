@@ -317,15 +317,13 @@ function walkRoute(route: RoutePreview, lookup: QuestLookup, out: Warning[]) {
   for (const step of steps) {
     const stepAccepts = new Set(step.filter((l) => l.command.startsWith("accept")).flatMap((l) => l.ids));
     const stepTurnIns = new Set(step.filter((l) => l.command.endsWith("turnin")).flatMap((l) => l.ids));
-    const added: number[] = [];
-    const removed: number[] = [];
     let lastAccept: Location | undefined;
     for (const line of step) {
       const { command, ids, conditional, at } = line;
       if (command === "accept" && !conditional) {
         const done = (pre: number) => turnedIn.has(pre) || stepTurnIns.has(pre);
         checkPrerequisites(ids[0]!, at, done, lookup, turnedInAt, out);
-        if (!turnedIn.has(ids[0]!)) added.push(ids[0]!);
+        if (!turnedIn.has(ids[0]!)) log.add(ids[0]!);
         lastAccept = at;
       }
       if (command.startsWith("accept")) ids.forEach((id) => accepted.add(id));
@@ -335,10 +333,8 @@ function walkRoute(route: RoutePreview, lookup: QuestLookup, out: Warning[]) {
           out.push({ kind: "notAccepted", at, questId: id, command });
       }
       if (command.endsWith("turnin")) ids.forEach((id) => turnedIn.add(id));
-      if (command.endsWith("turnin") || command === "abandon") removed.push(...ids);
+      if (command.endsWith("turnin") || command === "abandon") ids.forEach((id) => log.delete(id));
     }
-    added.forEach((id) => log.add(id));
-    removed.forEach((id) => log.delete(id));
     if (lastAccept && log.size > QUEST_LOG_SIZE) out.push({ kind: "questLogFull", at: lastAccept, count: log.size });
   }
   checkEnd(route.end, out);
