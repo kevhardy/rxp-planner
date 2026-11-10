@@ -240,6 +240,17 @@ export function MapCanvas(props: {
     const g = gesture.current;
     return (g.kind === "dragging" || g.kind === "keyMoving") && g.key === pin.key ? g : null;
   };
+  // A removed pin gets no more pointer events, so its gesture ends here. No click follows that `dropClick` would skip.
+  const lastPins = useRef(pins);
+  useLayoutEffect(() => {
+    const g = gesture.current;
+    if (g.kind !== "idle" && !pins.some((p) => p.key === g.key)) {
+      gesture.current = IDLE;
+      setMoving(null);
+      if (g.kind !== "pressed") lastPins.current.find((p) => p.key === g.key)?.drag?.(null);
+    }
+    lastPins.current = pins;
+  }, [pins]);
 
   const openPin = (key: string, button: HTMLButtonElement) =>
     setOpened({ ...under(button, mapView.getSnapshot().viewport!), pin: key, button });

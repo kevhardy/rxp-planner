@@ -686,6 +686,24 @@ describe("MapCanvas", () => {
     expect([dragA.mock.calls, moveA.mock.calls, moveB.mock.calls]).toEqual([[[{ x: 52.5, y: 50 }], [null]], [], [[{ x: 62.5, y: 50 }]]]);
   });
 
+  it("ends the drag of a pin that is removed, and opens another pin on the next click", () => {
+    placeStage();
+    const [drag, activate] = [vi.fn(), vi.fn()];
+    const props = canvas({ fit: area }).props;
+    const a = { key: "A", at: { x: 40, y: 50 }, kind: "goto" as const, label: "A", move: () => {}, drag };
+    const b = { key: "B", at: { x: 60, y: 50 }, kind: "goto" as const, label: "B", activate };
+    const { rerender } = render(<MapCanvas {...props} pins={[a, b]} />);
+    const pinA = screen.getByRole("button", { name: "A" });
+    fireEvent.pointerDown(pinA, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerMove(pinA, { clientX: 300, clientY: 200 });
+    rerender(<MapCanvas {...props} pins={[b]} />);
+    const pinB = screen.getByRole("button", { name: "B" });
+    fireEvent.pointerDown(pinB, { button: 0, clientX: 200, clientY: 200 });
+    fireEvent.pointerUp(pinB, { clientX: 200, clientY: 200 });
+    fireEvent.click(pinB, { detail: 1 });
+    expect([drag.mock.calls, activate.mock.calls]).toEqual([[[{ x: 62.5, y: 50 }], [null]], [[]]]);
+  });
+
   it("skips only the pointer click that ends a drag, through a keyboard move, and opens the pin on a later keyboard click or tap", () => {
     placeStage();
     const [move, activate] = [vi.fn(), vi.fn()];
