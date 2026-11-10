@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "fake-indexeddb/auto";
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Interior } from "../../../packages/data-contract/interiors.ts";
 import type { LoadedWorldMap } from "../../data/index.ts";
@@ -46,7 +46,7 @@ const FOLLOW = `#group G\n#name Follow\n${[40, 40.1, 60, 65].map((x) => `step\n>
 const straight: HostRouting = { router: null, unavailable: "not loaded" };
 let stores: ReturnType<typeof createStores>;
 
-async function mount(loadWorldMap: () => Promise<LoadedWorldMap> = () => Promise.resolve(worldMap), text = FOLLOW, edit = false) {
+async function start(loadWorldMap: () => Promise<LoadedWorldMap> = () => Promise.resolve(worldMap), text = FOLLOW, edit = false) {
   stores = createStores({ guides: [{ id: "g", order: 0, text }], session: { guideId: "g", step: 0, line: null } });
   const game = plannerData();
   stores.preview.setGame(game);
@@ -73,6 +73,10 @@ async function mount(loadWorldMap: () => Promise<LoadedWorldMap> = () => Promise
     </StoresContext.Provider>,
     { reactStrictMode: true },
   );
+}
+
+async function mount(loadWorldMap?: () => Promise<LoadedWorldMap>, text?: string, edit = false) {
+  await start(loadWorldMap, text, edit);
   if (edit) await screen.findByRole("combobox", { name: "Map shown" });
   else await screen.findByRole("img", { name: "Character" });
 }
@@ -205,6 +209,17 @@ describe("Playback following", () => {
     pan();
     fireEvent.click(follow());
     expect(markerCenter()).toEqual(CENTER);
+  });
+
+  it("lets Follow resume after a pan made before the character has a place", async () => {
+    await start(undefined, `#group G\n#name Late\nstep\n.vendor\n${FOLLOW.slice(FOLLOW.indexOf("step"))}`);
+    await waitFor(() => expect(viewport()).not.toBeNull());
+    pan();
+    const panned = transform();
+    next();
+    expect([follow().getAttribute("aria-pressed"), follow().hasAttribute("disabled"), transform()]).toEqual(["false", false, panned]);
+    fireEvent.click(follow());
+    expect([follow().getAttribute("aria-pressed"), markerCenter()]).toEqual(["true", CENTER]);
   });
 
   it("opens following after a Focus on map press in Edit", async () => {
