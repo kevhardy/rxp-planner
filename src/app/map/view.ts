@@ -176,11 +176,11 @@ export class MapView implements MapViewSource {
     viewport.addEventListener("pointerdown", (e) => this.#pointerDown(e), { signal });
     viewport.addEventListener("pointermove", (e) => this.#pointerMove(e), { signal });
     viewport.addEventListener("pointerup", (e) => this.#pointerUp(e), { signal });
-    viewport.addEventListener("pointercancel", () => this.#endPan(), { signal });
+    viewport.addEventListener("pointercancel", (e) => this.#endPan(e), { signal });
     viewport.addEventListener(
       "lostpointercapture",
       (e) => {
-        if (e.target === viewport) this.#endPan();
+        if (e.target === viewport) this.#endPan(e);
       },
       { signal },
     );
@@ -330,8 +330,9 @@ export class MapView implements MapViewSource {
     for (const listener of this.#pointerListeners) listener(at);
   }
 
-  #endPan() {
+  #endPan(by?: PointerEvent) {
     const p = this.#pan;
+    if (by && by.pointerId !== p?.pointerId) return null;
     this.#pan = null;
     this.#attachment!.viewport.classList.remove("panning");
     return p;
@@ -360,7 +361,7 @@ export class MapView implements MapViewSource {
     this.#report();
     const p = this.#pan;
     const { zoom, box } = this.#snapshot;
-    if (!p || !box) return;
+    if (!p || !box || p.pointerId !== e.pointerId) return;
     const [dx, dy] = [e.clientX - p.x, e.clientY - p.y];
     if (!p.moved && Math.hypot(dx, dy) < 4) return;
     const { viewport, stage } = this.#attachment!;
@@ -378,7 +379,7 @@ export class MapView implements MapViewSource {
   }
 
   #pointerUp(e: PointerEvent): void {
-    const p = this.#endPan();
+    const p = this.#endPan(e);
     if (p && !p.moved) this.#props!.onClick?.(this.toStage(e), this.#snapshot.pxPerPercent);
   }
 
