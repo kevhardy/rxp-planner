@@ -56,7 +56,7 @@
     "oxlint-plugin-rxpplanner": "workspace:*",
     "oxlint-tsgolint": "7.0.2005",
     "postcss": "^8.5.32",
-    "stylelint": "^17.16.0",
+    "stylelint": "^18.0.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
